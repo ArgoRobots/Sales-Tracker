@@ -211,6 +211,20 @@ namespace Sales_Tracker.DataClasses
             new SearchResult("Zimbabwe", Properties.Flags.Zimbabwe ,0)
         ];
 
+        /// <summary>
+        /// Returns an array of all country names.
+        /// </summary>
+        /// <returns>String array containing all country names</returns>
+        public static string[] GetAllCountryNames()
+        {
+            return CountrySearchResults
+                .Where(result => !string.IsNullOrEmpty(result.Name) &&
+                                result.Name != "Unkown" &&
+                                result.Name != SearchBox.AddLine)
+                .Select(result => result.Name)
+                .ToArray();
+        }
+
         public static string NormalizeCountryName(string countryOfOrigin)
         {
             if (string.IsNullOrWhiteSpace(countryOfOrigin))

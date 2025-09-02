@@ -738,10 +738,10 @@ namespace Sales_Tracker.UI
             [Flags]
             private enum SearchTermType
             {
-                Normal = 0,
-                ExactPhrase = 1,
-                Exclusion = 2,
-                Required = 4
+                Normal,
+                ExactPhrase,
+                Exclusion,
+                Required
             }
         }
     }

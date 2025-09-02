@@ -40,7 +40,7 @@ namespace Sales_Tracker.Classes
                 stopwatch.Stop();
 
                 // Track the API usage data
-                AnonymousDataManager.AddOpenAIUsageData("gpt-3.5-turbo", stopwatch.ElapsedMilliseconds, _queryTranslator.LastTokenUsage);
+                AnonymousDataManager.AddOpenAIUsageData(AIQueryTranslator.Model, stopwatch.ElapsedMilliseconds, _queryTranslator.LastTokenUsage);
 
                 IsUsingAIQuery = true;
                 Log.WriteWithFormat(2, "AI translated '{0}' to '{1}' (Used {2} tokens)", naturalLanguageQuery, _translatedQuery, _queryTranslator.LastTokenUsage);

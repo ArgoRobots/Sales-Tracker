@@ -14,10 +14,10 @@ namespace Sales_Tracker.Classes
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiEndpoint;
-        private readonly DataGridViewSchemaInfo _schemaInfo;
 
         // Getter
         public int LastTokenUsage { get; private set; }
+        public static string Model { get; private set; } = "gpt-3.5-turbo";
 
         // Methods
         public AIQueryTranslator(string apiKey, string apiEndpoint = "https://api.openai.com/v1/chat/completions")
@@ -26,9 +26,6 @@ namespace Sales_Tracker.Classes
             _apiEndpoint = apiEndpoint;
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
-
-            // Initialize schema information - this helps the AI understand your data structure
-            _schemaInfo = BuildSchemaInfo();
         }
 
         /// <summary>
@@ -65,7 +62,7 @@ namespace Sales_Tracker.Classes
                 return naturalLanguageQuery;
             }
         }
-        private string BuildPrompt(string naturalLanguageQuery)
+        private static string BuildPrompt(string naturalLanguageQuery)
         {
             // Create a detailed prompt that explains the search system and what we need
             StringBuilder promptBuilder = new();
@@ -79,24 +76,15 @@ namespace Sales_Tracker.Classes
             promptBuilder.AppendLine("- Field:value for field-specific searches (e.g., Company:AliExpress)");
             promptBuilder.AppendLine("- Field:>value for greater than comparisons (e.g., Discount:>10)");
             promptBuilder.AppendLine("- Field:<value for less than comparisons (e.g., Total:<50)");
-            promptBuilder.AppendLine("- Use OR operator with pipe character '|' for multiple options (e.g., Country:France|Germany|Italy)");
+            promptBuilder.AppendLine("- Use OR operator with pipe character '|' for multiple options (e.g., +Country of origin::France|Germany|Italy, and NOT +Country of origin:France|Germany +Country of origin:Italy).");
 
             // Add information about the data schema
             promptBuilder.AppendLine("\nData includes the following fields:");
 
-            foreach (FieldInfo field in _schemaInfo.Fields)
-            {
-                promptBuilder.AppendLine($"- {field.Name}: {field.Description}");
-
-                // Include full country list for the Country field
-                if (field.Name == "Country" && field.CommonValues != null && field.CommonValues.Count > 0)
-                {
-                    promptBuilder.AppendLine("  When the user refers to a country, map it to one of these exact country names:");
-                    // Include the first 10 countries to give an idea
-                    promptBuilder.AppendLine($"\n{string.Join(", ", field.CommonValues)}");
-                    promptBuilder.AppendLine("\n For example, 'America' and 'USA' should be mapped to 'United States', 'UK' should be mapped to 'United Kingdom'");
-                }
-            }
+            promptBuilder.AppendLine("  When the user refers to a country, map it to one of these exact country names:");
+            // Include the first 10 countries to give an idea
+            promptBuilder.AppendLine($"\n{string.Join(", ", Country.GetAllCountryNames())}");
+            promptBuilder.AppendLine("\n For example, 'America' and 'USA' should be mapped to 'United States', 'UK' should be mapped to 'United Kingdom'");
 
             // Regional Groupings for OR conditions
             promptBuilder.AppendLine("\nREGIONAL GROUPINGS INSTRUCTIONS:");
@@ -140,11 +128,20 @@ namespace Sales_Tracker.Classes
             promptBuilder.AppendLine("\nQuery: \"expensive purchases from last month\"");
             promptBuilder.AppendLine("Translation: \"+Total:>200 +Date:>2023-12-01\"");
 
-            promptBuilder.AppendLine("\nQuery: \"sales with free shipping\"");
-            promptBuilder.AppendLine("Translation: \"+Shipping:0\"");
+            promptBuilder.AppendLine("\nQuery: \"sales with free shipping that are not from Germany\"");
+            promptBuilder.AppendLine("Translation: \"+Shipping:0 -Company of origin:Germany\"");
 
-            promptBuilder.AppendLine("\nQuery: \"orders from china with discount greater than 10\"");
-            promptBuilder.AppendLine("Translation: \"+Country of origin:China +Discount:>10\"");
+            promptBuilder.AppendLine("\nQuery: \"orders from germany with discount greater than 10\"");
+            promptBuilder.AppendLine("Translation: \"+Country of origin:Germany +Discount:>10\"");
+
+            promptBuilder.AppendLine("\nQuery: \"orders from germany with discount of 10 or more\"");
+            promptBuilder.AppendLine("Translation: \"+Country of origin:Germany +Discount:>9.9\"");
+
+            promptBuilder.AppendLine("\nQuery: \"orders from germany made by John\"");
+            promptBuilder.AppendLine("Translation: \"+Country of origin:Germany \"John\"");
+
+            promptBuilder.AppendLine("\nQuery: \"orders from germany and Italy\"");
+            promptBuilder.AppendLine("Translation: \"+Country of origin:Germany|Italy");
 
             promptBuilder.AppendLine("\nQuery: \"orders from europe\"");
             promptBuilder.AppendLine("Translation: \"+Country of origin:France|Germany|United Kingdom|Italy|Spain|Netherlands|Sweden|Switzerland|Norway|Finland|Belgium|Denmark|Austria|Portugal|Greece|Ireland\"");
@@ -163,6 +160,7 @@ namespace Sales_Tracker.Classes
             promptBuilder.AppendLine("\nIMPORTANT: Return ONLY the structured search query without any explanation or additional text.");
             promptBuilder.AppendLine("Use the exact field names as provided above and ensure proper syntax with + for required terms.");
             promptBuilder.AppendLine("Remember to use the pipe character '|' for OR conditions when translating regional terms.");
+            promptBuilder.AppendLine("Do NOT add any single or double quotes around your response.");
 
             return promptBuilder.ToString();
         }
@@ -173,7 +171,7 @@ namespace Sales_Tracker.Classes
                 // Create the API request payload
                 var requestBody = new
                 {
-                    model = "gpt-3.5-turbo",
+                    model = Model,
                     messages = new[]
                     {
                         new { role = "system", content = "You are a search query translator." },
@@ -217,6 +215,11 @@ namespace Sales_Tracker.Classes
                 throw;
             }
         }
+
+        /// <summary>
+        /// The model is instructed not to include explanations, but handle it just in case.
+        /// </summary>
+        /// <returns></returns>
         private static string ParseResponse(string response)
         {
             // Extract just the query part (strip explanations)
@@ -234,130 +237,28 @@ namespace Sales_Tracker.Classes
                 if ((trimmed.Contains('+') || trimmed.Contains('-') ||
                      trimmed.Contains(':') || trimmed.Contains('>') ||
                      trimmed.Contains('<')) &&
-                    trimmed.Length < 100 &&
-                    !trimmed.EndsWith('.'))
+                     trimmed.Length < 100 &&
+                     !trimmed.EndsWith('.'))
                 {
-                    return trimmed;
+                    return StripQuotes(trimmed);
                 }
             }
 
             // If we can't find a good translation, return a cleaned-up version of the first non-empty line
-            return lines.Length > 0 ? lines[0].Trim() : "";
+            return lines.Length > 0 ? StripQuotes(lines[0].Trim()) : "";
         }
-        private static DataGridViewSchemaInfo BuildSchemaInfo()
+        private static string StripQuotes(string input)
         {
-            // Create schema information based on your actual data structure
-            // This helps the AI understand what fields exist and typical values
-            return new()
+            if (string.IsNullOrEmpty(input)) return input;
+
+            // Remove leading and trailing " or ' if present
+            if ((input.StartsWith('\"') && input.EndsWith('\"')) ||
+                (input.StartsWith('\'') && input.EndsWith('\'')))
             {
-                Fields =
-                [
-                    new FieldInfo
-                    {
-                        Name = "Order #",
-                        Description = "Unique identifier for purchases",
-                        Type = FieldType.String
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Sale #",
-                        Description = "Unique identifier for sales",
-                        Type = FieldType.String
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Accountant",
-                        Description = "Name of the accountant handling the transaction",
-                        Type = FieldType.String,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Product",
-                        Description = "Name of the product",
-                        Type = FieldType.String
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Category",
-                        Description = "Product category",
-                        Type = FieldType.String,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Country of origin",
-                        Description = "Country of origin or destination",
-                        Type = FieldType.String,
-                        CommonValues = GetAllCountryNames()
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Country of destination",
-                        Description = "Country where the product is sent to (for sales)",
-                        Type = FieldType.String,
-                        CommonValues = GetAllCountryNames()
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Company of origin",
-                        Description = "Company name",
-                        Type = FieldType.String,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Date",
-                        Description = "Transaction date",
-                        Type = FieldType.Date
-                    },
-                    new FieldInfo
-                    {
-                        Name = "TotalItems",
-                        Description = "Number of items in the transaction",
-                        Type = FieldType.Number,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "PricePerUnit",
-                        Description = "Price per unit of product",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Shipping",
-                        Description = "Shipping cost",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Tax",
-                        Description = "Tax amount",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Fee",
-                        Description = "Additional fees",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Discount",
-                        Description = "Discount amount",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "ChargedDifference",
-                        Description = "Difference between expected and actual charged amount",
-                        Type = FieldType.Currency,
-                    },
-                    new FieldInfo
-                    {
-                        Name = "Total",
-                        Description = "Total amount for the transaction (revenue for sales, expenses for purchases)",
-                        Type = FieldType.Currency,
-                    }
-                ]
-            };
+                return input.Substring(1, input.Length - 2);
+            }
+
+            return input;
         }
         private static List<string> GetAllCountryNames()
         {
@@ -372,17 +273,6 @@ namespace Sales_Tracker.Classes
     /// <summary>
     /// Supporting classes for the AI Query Translator.
     /// </summary>
-    public class DataGridViewSchemaInfo
-    {
-        public List<FieldInfo> Fields { get; set; } = [];
-    }
-    public class FieldInfo
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public FieldType Type { get; set; }
-        public List<string> CommonValues { get; set; } = [];
-    }
     public enum FieldType
     {
         String,
