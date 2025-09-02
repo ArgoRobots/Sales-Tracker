@@ -146,10 +146,8 @@ namespace Sales_Tracker
         }
         private void ConstructDataGridViews()
         {
-            Size size = new(740, 280);
-
             _accountant_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(_accountant_DataGridView, "accountants_DataGridView", size, ColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(_accountant_DataGridView, "accountants_DataGridView", ColumnHeaders, null, this);
             _accountant_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _accountant_DataGridView.Location = new Point((ClientSize.Width - _accountant_DataGridView.Width) / 2, _topForDataGridView);
             _accountant_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;

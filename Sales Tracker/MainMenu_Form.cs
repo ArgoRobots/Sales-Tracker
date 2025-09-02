@@ -158,17 +158,13 @@ namespace Sales_Tracker
             AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
-            if (Purchase_DataGridView == null)
-            {
-                Size size = new(1300, 350);
-                Purchase_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders, null, this);
-                Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+            Purchase_DataGridView = new();
+            DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", PurchaseColumnHeaders, null, this);
+            Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-                Sale_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders, null, this);
-                Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-            }
+            Sale_DataGridView = new();
+            DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
+            Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
             SetHasReceiptColumnVisibilty();
 

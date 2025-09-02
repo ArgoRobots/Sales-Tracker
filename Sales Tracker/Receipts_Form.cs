@@ -27,7 +27,7 @@ namespace Sales_Tracker
             _oldOption = MainMenu_Form.Instance.Selected;
 
             MainMenu_Form.IsProgramLoading = true;
-            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", ColumnHeaders, null, this);
             Receipts_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
             AddAllReceiptsAndGetOldestDate();
