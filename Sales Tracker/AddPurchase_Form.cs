@@ -709,7 +709,7 @@ namespace Sales_Tracker
             _addButton.Visible = false;
 
             float scale = DpiHelper.GetRelativeDpiScale();
-            MinimumSize = new Size(Width, Notes_TextBox.Bottom + (int)(100 * scale));
+            MinimumSize = new Size(Width, Notes_TextBox.Bottom + (int)(140 * scale));
             Size = MinimumSize;
 
             SetReceiptLabelLocation();

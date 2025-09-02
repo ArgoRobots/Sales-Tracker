@@ -288,6 +288,11 @@ namespace Sales_Tracker.Language
                 Security_Form.Instance.BeginInvoke(new Action(Security_Form.Instance.CenterEncryptControls));
             }
 
+            if (Tools.IsFormOpen<Products_Form>())
+            {
+                Products_Form.Instance.BeginInvoke(new Action(Products_Form.Instance.PopulateTypeComboBox));
+            }
+
             if (Tools.IsFormOpen<AddPurchase_Form>())
             {
                 AddPurchase_Form.Instance.BeginInvoke(new Action(AddPurchase_Form.Instance.RecalculateMultipleItemsLayout));

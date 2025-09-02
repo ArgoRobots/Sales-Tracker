@@ -46,6 +46,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CountryOfOrigin_Label = new Label();
             CountryOfOrigin_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddProduct_Label = new Label();
@@ -72,6 +74,8 @@ namespace Sales_Tracker
             ForPurchase_Label = new Label();
             Purchase_RadioButton = new Guna.UI2.WinForms.Guna2CustomRadioButton();
             Total_Label = new Label();
+            Type_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            Type_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningProductName_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningCategory_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningCompany_PictureBox).BeginInit();
@@ -82,7 +86,7 @@ namespace Sales_Tracker
             CountryOfOrigin_Label.Anchor = AnchorStyles.Top;
             CountryOfOrigin_Label.AutoSize = true;
             CountryOfOrigin_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CountryOfOrigin_Label.Location = new Point(972, 115);
+            CountryOfOrigin_Label.Location = new Point(844, 115);
             CountryOfOrigin_Label.Name = "CountryOfOrigin_Label";
             CountryOfOrigin_Label.Size = new Size(186, 31);
             CountryOfOrigin_Label.TabIndex = 0;
@@ -101,7 +105,7 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             CountryOfOrigin_TextBox.Font = new Font("Segoe UI", 9F);
             CountryOfOrigin_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            CountryOfOrigin_TextBox.Location = new Point(972, 154);
+            CountryOfOrigin_TextBox.Location = new Point(844, 154);
             CountryOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CountryOfOrigin_TextBox.MaxLength = 32;
             CountryOfOrigin_TextBox.Name = "CountryOfOrigin_TextBox";
@@ -118,11 +122,11 @@ namespace Sales_Tracker
             AddProduct_Label.Anchor = AnchorStyles.Top;
             AddProduct_Label.AutoSize = true;
             AddProduct_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddProduct_Label.Location = new Point(713, 30);
+            AddProduct_Label.Location = new Point(667, 30);
             AddProduct_Label.Name = "AddProduct_Label";
-            AddProduct_Label.Size = new Size(200, 45);
+            AddProduct_Label.Size = new Size(345, 45);
             AddProduct_Label.TabIndex = 0;
-            AddProduct_Label.Text = "Add product";
+            AddProduct_Label.Text = "Add product or service";
             AddProduct_Label.Click += CloseAllPanels;
             // 
             // ProductName_Label
@@ -130,7 +134,7 @@ namespace Sales_Tracker
             ProductName_Label.Anchor = AnchorStyles.Top;
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductName_Label.Location = new Point(354, 115);
+            ProductName_Label.Location = new Point(226, 115);
             ProductName_Label.Name = "ProductName_Label";
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
@@ -149,7 +153,7 @@ namespace Sales_Tracker
             ProductName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProductName_TextBox.Location = new Point(354, 154);
+            ProductName_TextBox.Location = new Point(226, 154);
             ProductName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
@@ -174,7 +178,7 @@ namespace Sales_Tracker
             AddProduct_Button.FillColor = Color.White;
             AddProduct_Button.Font = new Font("Segoe UI", 10F);
             AddProduct_Button.ForeColor = Color.Black;
-            AddProduct_Button.Location = new Point(706, 292);
+            AddProduct_Button.Location = new Point(732, 292);
             AddProduct_Button.Name = "AddProduct_Button";
             AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             AddProduct_Button.Size = new Size(215, 50);
@@ -188,7 +192,7 @@ namespace Sales_Tracker
             ProductCategory_Label.Anchor = AnchorStyles.Top;
             ProductCategory_Label.AutoSize = true;
             ProductCategory_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductCategory_Label.Location = new Point(663, 115);
+            ProductCategory_Label.Location = new Point(535, 115);
             ProductCategory_Label.Name = "ProductCategory_Label";
             ProductCategory_Label.Size = new Size(189, 31);
             ProductCategory_Label.TabIndex = 0;
@@ -207,7 +211,7 @@ namespace Sales_Tracker
             ProductCategory_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductCategory_TextBox.Font = new Font("Segoe UI", 9F);
             ProductCategory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProductCategory_TextBox.Location = new Point(663, 154);
+            ProductCategory_TextBox.Location = new Point(535, 154);
             ProductCategory_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductCategory_TextBox.MaxLength = 32;
             ProductCategory_TextBox.Name = "ProductCategory_TextBox";
@@ -231,7 +235,7 @@ namespace Sales_Tracker
             ProductID_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductID_TextBox.Font = new Font("Segoe UI", 9F);
             ProductID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProductID_TextBox.Location = new Point(45, 154);
+            ProductID_TextBox.Location = new Point(38, 154);
             ProductID_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductID_TextBox.MaxLength = 50;
             ProductID_TextBox.Name = "ProductID_TextBox";
@@ -239,7 +243,7 @@ namespace Sales_Tracker
             ProductID_TextBox.SelectedText = "";
             ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ProductID_TextBox.ShortcutsEnabled = false;
-            ProductID_TextBox.Size = new Size(300, 50);
+            ProductID_TextBox.Size = new Size(180, 50);
             ProductID_TextBox.TabIndex = 3;
             ProductID_TextBox.TextChanged += ValidateInputs;
             ProductID_TextBox.Click += CloseAllPanels;
@@ -248,7 +252,7 @@ namespace Sales_Tracker
             // 
             WarningProductName_PictureBox.Anchor = AnchorStyles.Top;
             WarningProductName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningProductName_PictureBox.Location = new Point(366, 210);
+            WarningProductName_PictureBox.Location = new Point(238, 210);
             WarningProductName_PictureBox.Name = "WarningProductName_PictureBox";
             WarningProductName_PictureBox.Size = new Size(28, 28);
             WarningProductName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -262,7 +266,7 @@ namespace Sales_Tracker
             WarningProductName_Label.Anchor = AnchorStyles.Top;
             WarningProductName_Label.AutoSize = true;
             WarningProductName_Label.Font = new Font("Segoe UI", 10F);
-            WarningProductName_Label.Location = new Point(406, 210);
+            WarningProductName_Label.Location = new Point(278, 210);
             WarningProductName_Label.Name = "WarningProductName_Label";
             WarningProductName_Label.Size = new Size(202, 28);
             WarningProductName_Label.TabIndex = 0;
@@ -274,7 +278,7 @@ namespace Sales_Tracker
             // 
             WarningCategory_PictureBox.Anchor = AnchorStyles.Top;
             WarningCategory_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCategory_PictureBox.Location = new Point(675, 210);
+            WarningCategory_PictureBox.Location = new Point(547, 210);
             WarningCategory_PictureBox.Name = "WarningCategory_PictureBox";
             WarningCategory_PictureBox.Size = new Size(28, 28);
             WarningCategory_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -289,7 +293,7 @@ namespace Sales_Tracker
             WarningCategory_LinkLabel.AutoSize = true;
             WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCategory_LinkLabel.LinkArea = new LinkArea(21, 15);
-            WarningCategory_LinkLabel.Location = new Point(713, 210);
+            WarningCategory_LinkLabel.Location = new Point(585, 210);
             WarningCategory_LinkLabel.Name = "WarningCategory_LinkLabel";
             WarningCategory_LinkLabel.Size = new Size(194, 59);
             WarningCategory_LinkLabel.TabIndex = 0;
@@ -314,7 +318,7 @@ namespace Sales_Tracker
             Search_TextBox.IconRight = Properties.Resources.CloseGray;
             Search_TextBox.IconRightOffset = new Point(5, 0);
             Search_TextBox.IconRightSize = new Size(22, 22);
-            Search_TextBox.Location = new Point(1281, 292);
+            Search_TextBox.Location = new Point(1316, 292);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
@@ -333,7 +337,7 @@ namespace Sales_Tracker
             ProductID_Label.Anchor = AnchorStyles.Top;
             ProductID_Label.AutoSize = true;
             ProductID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductID_Label.Location = new Point(45, 115);
+            ProductID_Label.Location = new Point(38, 115);
             ProductID_Label.Name = "ProductID_Label";
             ProductID_Label.Size = new Size(122, 31);
             ProductID_Label.TabIndex = 0;
@@ -345,7 +349,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(709, 345);
+            ShowingResultsFor_Label.Location = new Point(735, 345);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 0;
@@ -357,7 +361,7 @@ namespace Sales_Tracker
             CompanyOfOrigin_Label.Anchor = AnchorStyles.Top;
             CompanyOfOrigin_Label.AutoSize = true;
             CompanyOfOrigin_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CompanyOfOrigin_Label.Location = new Point(1281, 115);
+            CompanyOfOrigin_Label.Location = new Point(1153, 115);
             CompanyOfOrigin_Label.Name = "CompanyOfOrigin_Label";
             CompanyOfOrigin_Label.Size = new Size(203, 31);
             CompanyOfOrigin_Label.TabIndex = 0;
@@ -376,7 +380,7 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             CompanyOfOrigin_TextBox.Font = new Font("Segoe UI", 9F);
             CompanyOfOrigin_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            CompanyOfOrigin_TextBox.Location = new Point(1281, 154);
+            CompanyOfOrigin_TextBox.Location = new Point(1153, 154);
             CompanyOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CompanyOfOrigin_TextBox.MaxLength = 32;
             CompanyOfOrigin_TextBox.Name = "CompanyOfOrigin_TextBox";
@@ -392,7 +396,7 @@ namespace Sales_Tracker
             // 
             WarningCompany_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompany_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCompany_PictureBox.Location = new Point(1293, 211);
+            WarningCompany_PictureBox.Location = new Point(1165, 211);
             WarningCompany_PictureBox.Name = "WarningCompany_PictureBox";
             WarningCompany_PictureBox.Size = new Size(28, 28);
             WarningCompany_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -407,7 +411,7 @@ namespace Sales_Tracker
             WarningCompany_LinkLabel.AutoSize = true;
             WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCompany_LinkLabel.LinkArea = new LinkArea(20, 15);
-            WarningCompany_LinkLabel.Location = new Point(1332, 206);
+            WarningCompany_LinkLabel.Location = new Point(1204, 206);
             WarningCompany_LinkLabel.Name = "WarningCompany_LinkLabel";
             WarningCompany_LinkLabel.Size = new Size(199, 59);
             WarningCompany_LinkLabel.TabIndex = 0;
@@ -423,7 +427,7 @@ namespace Sales_Tracker
             ProductsRemaining_LinkLabel.AutoSize = true;
             ProductsRemaining_LinkLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);
-            ProductsRemaining_LinkLabel.Location = new Point(1376, 36);
+            ProductsRemaining_LinkLabel.Location = new Point(1402, 36);
             ProductsRemaining_LinkLabel.Name = "ProductsRemaining_LinkLabel";
             ProductsRemaining_LinkLabel.Size = new Size(214, 31);
             ProductsRemaining_LinkLabel.TabIndex = 0;
@@ -436,7 +440,7 @@ namespace Sales_Tracker
             ForSale_Label.Anchor = AnchorStyles.Top;
             ForSale_Label.AutoSize = true;
             ForSale_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForSale_Label.Location = new Point(260, 37);
+            ForSale_Label.Location = new Point(286, 37);
             ForSale_Label.Name = "ForSale_Label";
             ForSale_Label.Padding = new Padding(5);
             ForSale_Label.Size = new Size(102, 41);
@@ -452,7 +456,7 @@ namespace Sales_Tracker
             Sale_RadioButton.CheckedState.BorderThickness = 0;
             Sale_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
-            Sale_RadioButton.Location = new Point(237, 47);
+            Sale_RadioButton.Location = new Point(263, 47);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges15;
             Sale_RadioButton.Size = new Size(25, 25);
@@ -468,7 +472,7 @@ namespace Sales_Tracker
             ForPurchase_Label.Anchor = AnchorStyles.Top;
             ForPurchase_Label.AutoSize = true;
             ForPurchase_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForPurchase_Label.Location = new Point(68, 37);
+            ForPurchase_Label.Location = new Point(94, 37);
             ForPurchase_Label.Name = "ForPurchase_Label";
             ForPurchase_Label.Padding = new Padding(5);
             ForPurchase_Label.Size = new Size(155, 41);
@@ -484,7 +488,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.CheckedState.BorderThickness = 0;
             Purchase_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
-            Purchase_RadioButton.Location = new Point(45, 47);
+            Purchase_RadioButton.Location = new Point(71, 47);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Purchase_RadioButton.Size = new Size(25, 25);
@@ -500,17 +504,48 @@ namespace Sales_Tracker
             Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Total_Label.Location = new Point(1513, 754);
+            Total_Label.Location = new Point(1565, 754);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(68, 31);
             Total_Label.TabIndex = 56;
             Total_Label.Text = "Total:";
             // 
+            // Type_ComboBox
+            // 
+            Type_ComboBox.Anchor = AnchorStyles.Top;
+            Type_ComboBox.BackColor = Color.Transparent;
+            Type_ComboBox.CustomizableEdges = customizableEdges17;
+            Type_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            Type_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            Type_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
+            Type_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Type_ComboBox.Font = new Font("Segoe UI", 10F);
+            Type_ComboBox.ForeColor = Color.Black;
+            Type_ComboBox.ItemHeight = 44;
+            Type_ComboBox.Location = new Point(1460, 154);
+            Type_ComboBox.Name = "Type_ComboBox";
+            Type_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Type_ComboBox.Size = new Size(180, 50);
+            Type_ComboBox.TabIndex = 57;
+            // 
+            // Type_Label
+            // 
+            Type_Label.Anchor = AnchorStyles.Top;
+            Type_Label.AutoSize = true;
+            Type_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Type_Label.Location = new Point(1460, 115);
+            Type_Label.Name = "Type_Label";
+            Type_Label.Size = new Size(62, 31);
+            Type_Label.TabIndex = 58;
+            Type_Label.Text = "Type";
+            // 
             // Products_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1626, 794);
+            ClientSize = new Size(1678, 794);
+            Controls.Add(Type_Label);
+            Controls.Add(Type_ComboBox);
             Controls.Add(Total_Label);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
@@ -539,7 +574,7 @@ namespace Sales_Tracker
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(1648, 850);
+            MinimumSize = new Size(1700, 850);
             Name = "Products_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -582,5 +617,7 @@ namespace Sales_Tracker
         private Label ForPurchase_Label;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
         public Label Total_Label;
+        public Guna.UI2.WinForms.Guna2ComboBox Type_ComboBox;
+        private Label Type_Label;
     }
 }

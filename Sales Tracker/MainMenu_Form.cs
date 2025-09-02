@@ -1863,7 +1863,7 @@ namespace Sales_Tracker
         {
             { Column.ID, "Order #" },
             { Column.Accountant, "Accountant" },
-            { Column.Product, "Product" },
+            { Column.Product, "Product / Service" },
             { Column.Category, "Category" },
             { Column.Country, "Country of origin" },
             { Column.Company, "Company of origin" },
@@ -1883,7 +1883,7 @@ namespace Sales_Tracker
         {
             { Column.ID, "Sale #" },
             { Column.Accountant, "Accountant" },
-            { Column.Product, "Product" },
+            { Column.Product, "Product / Service" },
             { Column.Category, "Category" },
             { Column.Country, "Country of destination" },
             { Column.Company, "Company of origin" },
@@ -2270,7 +2270,12 @@ namespace Sales_Tracker
             CreateAnalyticsTabControl();
             OrganizeChartsIntoTabs();
 
-            MouseClickChartManager.InitCharts(_analyticsControls.OfType<Chart>().ToArray());
+            Control[] chartsAndMaps = _analyticsControls
+                .Where(c => c is Chart || c is GeoMap)
+                .ToArray();
+
+            MouseClickChartManager.InitCharts(chartsAndMaps);
+
         }
         private void CreateAnalyticsTabControl()
         {
@@ -2291,7 +2296,7 @@ namespace Sales_Tracker
                 BorderRadius = 8,
                 Anchor = AnchorStyles.Top
             };
-            tabButtonsPanel.Click += (s, e) => { CloseAllPanels(null, null); };
+            tabButtonsPanel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Create tab buttons
             List<Guna2Button> tabButtons = [];
@@ -2657,10 +2662,6 @@ namespace Sales_Tracker
                         SetProfitsChartTitle(profitsData.Total);
                         break;
 
-                    case AnalyticsTab.Geographic:
-                        LoadChart.LoadWorldMapChart(WorldMap_GeoMap);
-                        break;
-
                     case AnalyticsTab.Financial:
                         LoadOrRefreshMainCharts(true);
                         break;
@@ -2727,7 +2728,7 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _worldMapDataType_Label.Click += (s, e) => { CloseAllPanels(null, null); };
+            _worldMapDataType_Label.Click += (s, e) => CloseAllPanels(null, null);
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             // Combined data option
@@ -2763,8 +2764,8 @@ namespace Sales_Tracker
 
             _purchasesOnly_Label = new Label
             {
-                Text = "Countries of origin",
-                Name = "CountriesOfOrigin_Label",
+                Text = "Purchases",
+                Name = "Purchases_Label",
                 AutoSize = true,
                 Padding = new Padding(5),
                 Font = new Font("Segoe UI", 11),
@@ -2787,8 +2788,8 @@ namespace Sales_Tracker
 
             _salesOnly_Label = new Label
             {
-                Text = "Countries of destination",
-                Name = "CountriesOfDestination_Label",
+                Text = "Sales",
+                Name = "Sales_Label",
                 AutoSize = true,
                 Padding = new Padding(5),
                 Font = new Font("Segoe UI", 11),
@@ -2809,7 +2810,7 @@ namespace Sales_Tracker
                 BorderThickness = 0,
                 Visible = false
             };
-            WorldMapControls_Panel.Click += (s, e) => { CloseAllPanels(null, null); };
+            WorldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Add all controls to panel
             WorldMapControls_Panel.Controls.AddRange([

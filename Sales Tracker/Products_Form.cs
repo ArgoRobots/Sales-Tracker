@@ -41,6 +41,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
+            PopulateTypeComboBox();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchase_DataGridView, _sale_DataGridView);
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -98,7 +99,8 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
+                    Product.TypeOption type = product.ItemType ?? Product.TypeOption.Product;
+                    _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type);
                 }
             }
             DataGridViewManager.ScrollToTopOfDataGridView(_purchase_DataGridView);
@@ -107,7 +109,8 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
+                    Product.TypeOption type = product.ItemType ?? Product.TypeOption.Product;
+                    _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type);
                 }
             }
             DataGridViewManager.ScrollToTopOfDataGridView(_sale_DataGridView);
@@ -137,6 +140,9 @@ namespace Sales_Tracker
             WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Prevent automatic translation since we handle it manually
+            Type_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers
@@ -182,19 +188,20 @@ namespace Sales_Tracker
             }
 
             string name = ProductName_TextBox.Text.Trim();
-            Product product = new(productID, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
+            Product.TypeOption type = Type_ComboBox.SelectedIndex == 0 ? Product.TypeOption.Product : Product.TypeOption.Service;
+            Product product = new(productID, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text, type);
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategorySaleList, category, product);
-                int newRowIndex = _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
+                int newRowIndex = _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategoryPurchaseList, category, product);
-                int newRowIndex = _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
+                int newRowIndex = _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
@@ -327,10 +334,9 @@ namespace Sales_Tracker
                 ProductsRemaining_LinkLabel.ForeColor = CustomColors.Text;
             }
 
-            ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);  // This fixes a rendering bug. The last letter "w" was being cut off
             ProductsRemaining_LinkLabel.Text = $"{productsRemaining} products remaining. Upgrade now";
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(ProductsRemaining_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
-            ProductsRemaining_LinkLabel.Left = CompanyOfOrigin_TextBox.Right - ProductsRemaining_LinkLabel.Width;
+            ProductsRemaining_LinkLabel.Left = Width - 70 - ProductsRemaining_LinkLabel.Width;
             AddProduct_Label.Focus();
         }
 
@@ -352,15 +358,9 @@ namespace Sales_Tracker
         }
         private bool IsProductValid()
         {
-            List<Category> categories;
-            if (Sale_RadioButton.Checked)
-            {
-                categories = MainMenu_Form.Instance.CategorySaleList;
-            }
-            else
-            {
-                categories = MainMenu_Form.Instance.CategoryPurchaseList;
-            }
+            List<Category> categories = Sale_RadioButton.Checked
+                ? MainMenu_Form.Instance.CategorySaleList
+                : MainMenu_Form.Instance.CategoryPurchaseList;
 
             string category = ProductCategory_TextBox.Text.Trim();
 
@@ -380,15 +380,9 @@ namespace Sales_Tracker
         // Validate category name
         private void ValidateCategoryTextBox()
         {
-            List<Category> categoryList;
-            if (Sale_RadioButton.Checked)
-            {
-                categoryList = MainMenu_Form.Instance.CategorySaleList;
-            }
-            else
-            {
-                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
-            }
+            List<Category> categoryList = Sale_RadioButton.Checked
+                ? MainMenu_Form.Instance.CategorySaleList
+                : MainMenu_Form.Instance.CategoryPurchaseList;
 
             if (categoryList.Count == 0)
             {
@@ -440,7 +434,8 @@ namespace Sales_Tracker
             ProductName,
             ProductCategory,
             CountryOfOrigin,
-            CompanyOfOrigin
+            CompanyOfOrigin,
+            Type
         }
         public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
@@ -449,6 +444,7 @@ namespace Sales_Tracker
             { Column.ProductCategory, "Product category" },
             { Column.CountryOfOrigin, "Country of origin" },
             { Column.CompanyOfOrigin, "Company of origin" },
+            { Column.Type, "Type" }
         };
         private Guna2DataGridView _purchase_DataGridView, _sale_DataGridView, _selectedDataGridView;
         public Guna2DataGridView Purchase_DataGridView => _purchase_DataGridView;
@@ -457,10 +453,8 @@ namespace Sales_Tracker
         // DataGridView methods
         private void ConstructDataGridViews()
         {
-            Size size = new(840, 270);
-
             _purchase_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
             _purchase_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _purchase_DataGridView.RowsRemoved += DataGridView_RowsChanged;
             _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -468,7 +462,7 @@ namespace Sales_Tracker
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
             _sale_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, ColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
             _sale_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _sale_DataGridView.RowsRemoved += DataGridView_RowsChanged;
             _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -501,6 +495,19 @@ namespace Sales_Tracker
                 allFieldsFilled &= GetProductsRemaining() > 0;
             }
             AddProduct_Button.Enabled = allFieldsFilled;
+        }
+        public void PopulateTypeComboBox()
+        {
+            int index = Type_ComboBox.SelectedIndex;
+
+            // Clear and repopulate with translated text
+            Type_ComboBox.Items.Clear();
+
+            Type_ComboBox.Items.Add(LanguageManager.TranslateString("Product"));
+            Type_ComboBox.Items.Add(LanguageManager.TranslateString("Service"));
+
+            // Restore selection
+            Type_ComboBox.SelectedIndex = index != -1 ? index : 0;
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

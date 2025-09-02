@@ -29,7 +29,7 @@ namespace Sales_Tracker.UI
         public static DataGridViewRow SelectedRowInMainMenu { get; set; }
 
         // Construct DataGridView
-        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
+        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
         {
             dataGridView.Name = name;
             dataGridView.ReadOnly = true;
@@ -46,7 +46,6 @@ namespace Sales_Tracker.UI
             dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.Text;
             dataGridView.Theme = CustomColors.DataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.ControlBack;
-            dataGridView.Size = size;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dataGridView.ScrollBars = ScrollBars.Vertical;
@@ -568,7 +567,7 @@ namespace Sales_Tracker.UI
         }
         private static bool IsNoteCell(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
         {
-            if (e.RowIndex < 0) { return false; }
+            if (e?.RowIndex < 0) { return false; }
 
             DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 

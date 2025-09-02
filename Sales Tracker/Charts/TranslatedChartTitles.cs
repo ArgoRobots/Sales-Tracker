@@ -17,9 +17,9 @@ namespace Sales_Tracker.Charts
         public static string TotalProfits => Translate("Total profits");
 
         // Geographic Analysis Charts
-        public static string CountriesOfOrigin => Translate("Countries of origin for purchased products");
-        public static string CompaniesOfOrigin => Translate("Companies of origin for purchased products");
-        public static string CountriesOfDestination => Translate("Countries of destination for sold products");
+        public static string CountriesOfOrigin => Translate("Countries of origin for purchases");
+        public static string CompaniesOfOrigin => Translate("Companies of origin for purchases");
+        public static string CountriesOfDestination => Translate("Countries of destination for sales");
 
         // Operational Charts
         public static string AccountantsTransactions => Translate("Transactions managed by accountants");
