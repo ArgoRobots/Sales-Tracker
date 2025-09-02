@@ -2275,7 +2275,6 @@ namespace Sales_Tracker
                 .ToArray();
 
             MouseClickChartManager.InitCharts(chartsAndMaps);
-
         }
         private void CreateAnalyticsTabControl()
         {

@@ -1,5 +1,4 @@
-﻿using LiveChartsCore.SkiaSharpView.WinForms;
-using Sales_Tracker.UI;
+﻿using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Charts
 {
@@ -8,23 +7,23 @@ namespace Sales_Tracker.Charts
     /// </summary>
     public static class MouseClickChartManager
     {
-        private static readonly HashSet<Chart> _registeredCharts = [];
-        private static Action<Chart> _onLeftClick;
-        private static Action<Chart, Point> _onRightClick;
+        private static readonly HashSet<Control> _registeredCharts = [];
+        private static Action<Control> _onLeftClick;
+        private static Action<Control, Point> _onRightClick;
         private static CustomMessageFilter _messageFilter;
 
         /// <summary>
         /// Initializes the click manager for mixed chart types.
         /// </summary>
-        public static void InitCharts(Chart[] charts)
+        public static void InitCharts(Control[] charts)
         {
-            static void leftClickAction(Chart chartControl) => CustomControls.CloseAllPanels();
+            static void leftClickAction(Control chartControl) => CustomControls.CloseAllPanels();
             Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
         }
-        private static void Initialize(Chart[] charts, Action<Chart> onLeftClick, Action<Chart, Point> onRightClick)
+        private static void Initialize(Control[] charts, Action<Control> onLeftClick, Action<Control, Point> onRightClick)
         {
             // Add new charts to the collection
-            foreach (Chart chart in charts)
+            foreach (Control chart in charts)
             {
                 _registeredCharts.Add(chart);
             }
@@ -100,7 +99,7 @@ namespace Sales_Tracker.Charts
                 }
 
                 // Check if the click happened on any of the registered charts
-                foreach (Chart chart in _registeredCharts)
+                foreach (Control chart in _registeredCharts)
                 {
                     if (!chart.Visible)
                     {

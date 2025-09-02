@@ -571,7 +571,7 @@ namespace Sales_Tracker.UI
 
             DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
-            return cell.Value.ToString() == ReadOnlyVariables.Show_text && cell.Tag is string;
+            return cell.Value?.ToString() == ReadOnlyVariables.Show_text && cell.Tag is string;
         }
         private static bool IsClickOnText(DataGridViewCell cell, out Rectangle hitbox)
         {

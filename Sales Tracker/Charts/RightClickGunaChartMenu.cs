@@ -12,7 +12,7 @@ namespace Sales_Tracker.Charts
     public static class RightClickGunaChartMenu
     {
         // Properties
-        private static Guna2Button _resetZoomButton;
+        private static Guna2Button _resetZoomButton, _exportExcel, _exportSheets;
 
         // Getter
         public static Guna2Panel RightClickGunaChart_Panel { get; private set; }
@@ -31,18 +31,18 @@ namespace Sales_Tracker.Charts
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
 
-            button = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
-            button.Click += ExportToMicrosoftExcel;
+            _exportExcel = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
+            _exportExcel.Click += ExportToMicrosoftExcel;
 
-            button = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
-            button.Click += ExportToGoogleSheets;
+            _exportSheets = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
+            _exportSheets.Click += ExportToGoogleSheets;
 
             _resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
             _resetZoomButton.Click += ResetZoom;
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            Chart chart = (Chart)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickGunaChart_Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -56,7 +56,7 @@ namespace Sales_Tracker.Charts
                 SaveChartAsImage(chart, dialog.FileName);
             }
         }
-        private static void SaveChartAsImage(Chart chart, string fileName)
+        private static void SaveChartAsImage(Control chart, string fileName)
         {
             try
             {
@@ -530,7 +530,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Other methods
-        public static void ShowMenu(Chart chart, Point mousePosition)
+        public static void ShowMenu(Control chart, Point mousePosition)
         {
             if (!ChartHasData(chart)) { return; }
 
@@ -543,12 +543,21 @@ namespace Sales_Tracker.Charts
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
+
             if (IsPieChart(chart))
             {
                 flowPanel.Controls.Remove(_resetZoomButton);
             }
+            else if (IsGeoMap(chart))
+            {
+                flowPanel.Controls.Remove(_resetZoomButton);
+                flowPanel.Controls.Remove(_exportExcel);
+                flowPanel.Controls.Remove(_exportSheets);
+            }
             else
             {
+                flowPanel.Controls.Add(_exportExcel);
+                flowPanel.Controls.Add(_exportSheets);
                 flowPanel.Controls.Add(_resetZoomButton);
             }
 
@@ -598,6 +607,10 @@ namespace Sales_Tracker.Charts
         private static bool IsPieChart(Control chart)
         {
             return chart is PieChart;
+        }
+        private static bool IsGeoMap(Control chart)
+        {
+            return chart is GeoMap;
         }
         private static string GetChartTitle(Control chart)
         {
