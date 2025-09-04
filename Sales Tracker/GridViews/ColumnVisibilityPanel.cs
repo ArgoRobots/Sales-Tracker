@@ -1,8 +1,9 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.GridViews
 {
     public static class ColumnVisibilityPanel
     {
@@ -91,7 +92,7 @@ namespace Sales_Tracker.UI
             ConstructColumnCheckBoxes();
 
             // Dynamically adjust panel size based on number of columns
-            int newHeight = Math.Max(250, _titleHeight + (_currentColumnHeaders.Length * _spacingBetweenCheckBoxes) + 80);  // 80 for buttons and padding
+            int newHeight = Math.Max(250, _titleHeight + _currentColumnHeaders.Length * _spacingBetweenCheckBoxes + 80);  // 80 for buttons and padding
             Panel.Size = new Size(400, newHeight);
 
             // Adjust control positions

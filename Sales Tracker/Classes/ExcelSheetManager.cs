@@ -5,8 +5,8 @@ using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Style;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.GridViews;
 using Sales_Tracker.Language;
-using Sales_Tracker.UI;
 using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
