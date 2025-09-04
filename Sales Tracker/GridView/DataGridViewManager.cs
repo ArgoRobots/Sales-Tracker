@@ -1,13 +1,13 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.GridViews;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 using System.ComponentModel;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.GridView
 {
     /// <summary>
     /// Manages the setup, interactions, and event handling for DataGridView components in the.
@@ -1284,6 +1284,66 @@ namespace Sales_Tracker.UI
                 if (column.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
                 {
                     return column;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds a DataGridView column by its HeaderText (display name) property.
+        /// This is useful when searching for columns by what users see in the UI.
+        /// </summary>
+        /// <returns>The matching DataGridViewColumn or null if not found</returns>
+        public static DataGridViewColumn? FindColumnByDisplayName(DataGridView dataGridView, string displayName)
+        {
+            if (dataGridView?.Columns == null || string.IsNullOrWhiteSpace(displayName))
+            {
+                return null;
+            }
+
+            // Try to find column by HeaderText (case insensitive)
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                if (column.HeaderText.Equals(displayName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return column;
+                }
+            }
+
+            // Handle common aliases and variations that might be used in AI queries
+            Dictionary<string, string[]> displayNameAliases = new(StringComparer.OrdinalIgnoreCase)
+            {
+                { "country", ["Country of origin", "Country of destination"] },
+                { "company", ["Company of origin"] },
+                { "price", ["Price per unit", "Total"] },
+                { "cost", ["Total", "Price per unit"] },
+                { "discount", ["Discount"] },
+                { "shipping", ["Shipping"] },
+                { "date", ["Date"] },
+                { "category", ["Category"] },
+                { "product", ["Product"] },
+                { "quantity", ["Total items"] },
+                { "items", ["Total items"] },
+                { "tax", ["Tax"] },
+                { "fee", ["Fee"] },
+                { "accountant", ["Accountant"] },
+                { "note", ["Note"] },
+                { "receipt", ["Has receipt"] }
+            };
+
+            // Check if the search term matches any aliases
+            if (displayNameAliases.TryGetValue(displayName, out string[]? aliases))
+            {
+                foreach (string alias in aliases)
+                {
+                    foreach (DataGridViewColumn column in dataGridView.Columns)
+                    {
+                        if (column.HeaderText.Equals(alias, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return column;
+                        }
+                    }
                 }
             }
 

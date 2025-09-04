@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.UI
+﻿namespace Sales_Tracker.GridView
 {
     /// <summary>
     /// A custom DataGridView column header cell that combines an image and text in the header,

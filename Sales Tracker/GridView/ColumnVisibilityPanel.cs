@@ -3,7 +3,7 @@ using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
-namespace Sales_Tracker.GridViews
+namespace Sales_Tracker.GridView
 {
     public static class ColumnVisibilityPanel
     {
@@ -188,11 +188,11 @@ namespace Sales_Tracker.GridViews
         {
             foreach (MainMenu_Form.Column columnHeader in _currentColumnHeaders)
             {
-                string displayName = columnHeader.ToString();
+                string columnName = columnHeader.ToString();
 
-                if (_checkBoxes.TryGetValue(displayName, out Guna2CustomCheckBox? value))
+                if (_checkBoxes.TryGetValue(columnName, out Guna2CustomCheckBox? value))
                 {
-                    DataGridViewColumn column = DataGridViewManager.FindColumnByName(_dataGridView, displayName);
+                    DataGridViewColumn column = DataGridViewManager.FindColumnByName(_dataGridView, columnName);
                     if (column != null)
                     {
                         column.Visible = value.Checked;

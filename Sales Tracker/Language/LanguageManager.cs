@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.GridViews;
+using Sales_Tracker.GridView;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 using System.Text.RegularExpressions;

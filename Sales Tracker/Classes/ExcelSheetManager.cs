@@ -5,7 +5,7 @@ using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Style;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.GridViews;
+using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
 using System.Diagnostics;
 
@@ -1707,8 +1707,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Handle the Notes column
-            int notesCellIndex = row.Cells[MainMenu_Form.Column.Note.ToString()].RowIndex;
-            DataGridViewCell notesCell = row.Cells[notesCellIndex];
+            DataGridViewCell notesCell = row.Cells[MainMenu_Form.Column.Note.ToString()];
             string? notesCellValue = notesCell.Value?.ToString();
             IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);
 

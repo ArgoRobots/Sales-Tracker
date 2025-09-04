@@ -2,7 +2,7 @@
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.GridViews;
+using Sales_Tracker.GridView;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Language;
 using Sales_Tracker.Properties;

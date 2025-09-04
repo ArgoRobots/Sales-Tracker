@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.GridView
 {
     /// <summary>
     /// Provides advanced search functionality for DataGridView controls with support for exact phrases,
@@ -338,7 +338,7 @@ namespace Sales_Tracker.UI
             bool structuredTermsMatch = structuredTerms.All(term =>
             {
                 // Match against specific column/field
-                DataGridViewColumn column = DataGridViewManager.FindColumnByName(row.DataGridView, term.Field);
+                DataGridViewColumn column = DataGridViewManager.FindColumnByDisplayName(row.DataGridView, term.Field);
                 if (column == null)
                 {
                     // Field not found, can't be a match unless it's an exclusion

@@ -1,5 +1,5 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.UI;
+using Sales_Tracker.GridView;
 using System.Drawing;
 using System.Windows.Forms;
 

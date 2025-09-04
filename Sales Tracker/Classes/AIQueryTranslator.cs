@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.UI;
 using System.Text;
 
 namespace Sales_Tracker.Classes
@@ -260,25 +259,5 @@ namespace Sales_Tracker.Classes
 
             return input;
         }
-        private static List<string> GetAllCountryNames()
-        {
-            return Country.CountrySearchResults
-                .Where(c => c.DisplayName != SearchBox.AddLine && c.DisplayName != "Unkown")
-                .Select(c => c.DisplayName)
-                .OrderBy(s => s)
-                .ToList();
-        }
-    }
-
-    /// <summary>
-    /// Supporting classes for the AI Query Translator.
-    /// </summary>
-    public enum FieldType
-    {
-        String,
-        Number,
-        Currency,
-        Date,
-        Boolean
     }
 }
