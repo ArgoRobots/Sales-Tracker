@@ -338,7 +338,7 @@ namespace Sales_Tracker.UI
             bool structuredTermsMatch = structuredTerms.All(term =>
             {
                 // Match against specific column/field
-                DataGridViewColumn column = FindColumnByName(row.DataGridView, term.Field);
+                DataGridViewColumn column = DataGridViewManager.FindColumnByName(row.DataGridView, term.Field);
                 if (column == null)
                 {
                     // Field not found, can't be a match unless it's an exclusion
@@ -464,57 +464,6 @@ namespace Sales_Tracker.UI
             }
 
             return remainingText.Trim();
-        }
-        private static readonly string[]
-            CountryAliases = ["Country of origin", "Country of destination"],
-            CompanyAliases = ["Company of origin"],
-            PriceAliases = ["Price per unit", "Total"],
-            TotalAliases = ["Total"],
-            DiscountAliases = ["Discount"],
-            ShippingAliases = ["Shipping"],
-            DateAliases = ["Date"];
-        private static DataGridViewColumn? FindColumnByName(DataGridView dataGridView, string fieldName)
-        {
-            // Try to find column by name or header text (case insensitive)
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (column.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase) ||
-                    column.HeaderText.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return column;
-                }
-            }
-
-            // Handle special cases for field names that might be translated or have variations
-            // This helps match AI-translated queries to the actual column names
-            Dictionary<string, string[]> fieldAliases = new()
-            {
-                {"country", CountryAliases},
-                {"company", CompanyAliases},
-                {"price", PriceAliases},
-                {"expensive", TotalAliases},
-                {"cheap", TotalAliases},
-                {"discount", DiscountAliases},
-                {"shipping", ShippingAliases},
-                {"date", DateAliases}
-            };
-
-            if (fieldAliases.TryGetValue(fieldName.ToLower(), out string[] aliases))
-            {
-                foreach (string alias in aliases)
-                {
-                    foreach (DataGridViewColumn column in dataGridView.Columns)
-                    {
-                        if (column.Name.Equals(alias, StringComparison.OrdinalIgnoreCase) ||
-                            column.HeaderText.Equals(alias, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return column;
-                        }
-                    }
-                }
-            }
-
-            return null;
         }
         private static bool IsNumericComparison(string cellValue, string compareValue, string comparisonOperator, out bool result)
         {

@@ -61,7 +61,6 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_Label.Left = SalesReceipts_CheckBox.Left - SalesReceipts_Label.Width - 2;
             AnimateButtons_Label.Left = AnimateButtons_CheckBox.Left - AnimateButtons_Label.Width - 2;
             AnimateCharts_Label.Left = AnimateCharts_CheckBox.Left - AnimateCharts_Label.Width - 2;
-            ShowHasReceiptColumn_Label.Left = ShowHasReceiptColumn_CheckBox.Left - ShowHasReceiptColumn_Label.Width - 2;
             EnableAISearch_Label.Left = EnableAISearch_CheckBox.Left - EnableAISearch_Label.Width - 2;
             ShowCompanyLogo_Label.Left = ShowCompanyLogo_CheckBox.Left - ShowCompanyLogo_Label.Width - 2;
         }
@@ -108,7 +107,12 @@ namespace Sales_Tracker.Settings.Menus
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
-        // Event handlers
+        // Label event handlers
+        private void ShowTooltips_Label_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            ShowTooltips_CheckBox.Checked = !ShowTooltips_CheckBox.Checked;
+        }
         private void ShowDebugInfo_Label_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
@@ -129,6 +133,28 @@ namespace Sales_Tracker.Settings.Menus
             CloseAllPanels(null, null);
             SalesReceipts_CheckBox.Checked = !SalesReceipts_CheckBox.Checked;
         }
+        private void AnimateButtons_Label_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            AnimateButtons_CheckBox.Checked = !AnimateButtons_CheckBox.Checked;
+        }
+        private void AnimateCharts_Label_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            AnimateCharts_CheckBox.Checked = !AnimateCharts_CheckBox.Checked;
+        }
+        private void EnableAISearch_Label_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            EnableAISearch_CheckBox.Checked = !EnableAISearch_CheckBox.Checked;
+        }
+        private void ShowCompanyLogo_Label_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            ShowCompanyLogo_CheckBox.Checked = !ShowCompanyLogo_CheckBox.Checked;
+        }
+
+        // Event handlers
         private void MoreInformation_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
@@ -232,7 +258,6 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.Checked = Properties.Settings.Default.SaleReceipts;
             AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
             AnimateCharts_CheckBox.Checked = Properties.Settings.Default.AnimateCharts;
-            ShowHasReceiptColumn_CheckBox.Checked = Properties.Settings.Default.ShowHasReceiptColumn;
             ShowCompanyLogo_CheckBox.Checked = Properties.Settings.Default.ShowCompanyLogo;
             EnableAISearch_CheckBox.Checked = Properties.Settings.Default.AISearchEnabled;
         }

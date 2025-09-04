@@ -181,7 +181,7 @@
             // Attempt to get the current value
             if (!settings.TryGetValue(keyString, out string? value) || string.IsNullOrEmpty(value))
             {
-                return; // Nothing to remove
+                return;  // Nothing to remove
             }
 
             // Split into list

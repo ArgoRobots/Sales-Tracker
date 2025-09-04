@@ -157,18 +157,6 @@ namespace Sales_Tracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowHasReceiptColumn {
-            get {
-                return ((bool)(this["ShowHasReceiptColumn"]));
-            }
-            set {
-                this["ShowHasReceiptColumn"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LicenseKey {
             get {

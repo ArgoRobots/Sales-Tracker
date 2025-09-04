@@ -826,11 +826,6 @@ namespace Sales_Tracker.Classes
                 summary.SaleTransactionsImported = successfulTransactions;
             }
 
-            if (summary.HasAnyImports)
-            {
-                MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
-            }
-
             return summary;
         }
 
@@ -1064,8 +1059,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void FormatNoteCell(DataGridViewRow row)
         {
-            int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? row.Cells.Count - 2 : row.Cells.Count - 1;
-            DataGridViewCell lastCell = row.Cells[noteCellIndex];
+            DataGridViewCell lastCell = row.Cells[MainMenu_Form.Column.Note.ToString()];
 
             // Only add underline if the cell has a note
             if (lastCell.Value?.ToString() == ReadOnlyVariables.Show_text && lastCell.Tag != null)
@@ -1118,10 +1112,10 @@ namespace Sales_Tracker.Classes
                 case InvalidValueAction.Skip:
                     return ImportTransactionResult.Skip;
                 case InvalidValueAction.Continue:
-                    break; // Continue processing
+                    break;  // Continue processing
             }
 
-            int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? newRow.Cells.Count - 2 : newRow.Cells.Count - 1;
+            int noteCellIndex = newRow.Cells[MainMenu_Form.Column.Note.ToString()].RowIndex;
             for (int i = 0; i < noteCellIndex; i++)
             {
                 // Check for cancellation before processing each cell
@@ -1647,13 +1641,11 @@ namespace Sales_Tracker.Classes
             string transactionDate = row.Cells[6].Value?.ToString() ?? DateTime.Today.ToString("yyyy-MM-dd");
             decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
 
+            // Skip the Notes column - it will be handled separately
+            int notesColumnIndex = row.Cells[MainMenu_Form.Column.Note.ToString()].ColumnIndex;
+
             for (int i = 0; i < row.Cells.Count; i++)
             {
-                // Skip the Notes column - it will be handled separately
-                int notesColumnIndex = Properties.Settings.Default.ShowHasReceiptColumn
-                    ? row.Cells.Count - 2
-                    : row.Cells.Count - 1;
-
                 if (i == notesColumnIndex)
                 {
                     break;
@@ -1715,7 +1707,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Handle the Notes column
-            int notesCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? row.Cells.Count - 2 : row.Cells.Count - 1;
+            int notesCellIndex = row.Cells[MainMenu_Form.Column.Note.ToString()].RowIndex;
             DataGridViewCell notesCell = row.Cells[notesCellIndex];
             string? notesCellValue = notesCell.Value?.ToString();
             IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);

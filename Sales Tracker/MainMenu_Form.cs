@@ -166,8 +166,6 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
             Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-            SetHasReceiptColumnVisibilty();
-
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
         }
@@ -635,11 +633,9 @@ namespace Sales_Tracker
         }
         public static void SetHasReceiptColumn(DataGridViewRow row, string? receipt)
         {
-            if (!Properties.Settings.Default.ShowHasReceiptColumn) { return; }
-
             string newReceipt = receipt != null ? ReceiptManager.ProcessReceiptTextFromRowTag(receipt) : null;
-            DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
-            SetReceiptStatusSymbol(lastCell, newReceipt);
+            DataGridViewCell noteCell = row.Cells[Column.HasReceipt.ToString()];
+            SetReceiptStatusSymbol(noteCell, newReceipt);
         }
         private static void SetReceiptStatusSymbol(DataGridViewCell cell, string processedReceipt)
         {
@@ -655,21 +651,6 @@ namespace Sales_Tracker
             }
 
             cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        }
-        public void SetHasReceiptColumnVisibilty()
-        {
-            bool showReceipts = Properties.Settings.Default.ShowHasReceiptColumn;
-            Purchase_DataGridView.Columns[Column.HasReceipt.ToString()].Visible = showReceipts;
-            Sale_DataGridView.Columns[Column.HasReceipt.ToString()].Visible = showReceipts;
-
-            if (!showReceipts) { return; }
-
-            foreach (DataGridViewRow row in GetAllRows())
-            {
-                DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
-                string? receiptPath = ReceiptManager.GetReceiptPathFromRow(row);
-                SetReceiptStatusSymbol(lastCell, receiptPath);
-            }
         }
 
         // Form event handlers

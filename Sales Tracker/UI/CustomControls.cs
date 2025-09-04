@@ -39,6 +39,7 @@ namespace Sales_Tracker.UI
             DataGridViewManager.ConstructRightClickRowMenu();
             RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
             CompanyLogo.ConstructCompanyLogoRightClickMenu();
+            ColumnVisibilityPanel.ConstructPanel();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
@@ -732,6 +733,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Remove(HelpMenu);
             MainMenu_Form.Instance.CloseDateRangePanel();
             MenuKeyShortcutManager.SelectedPanel = null;
+            ColumnVisibilityPanel.HidePanel();
             DeselectAllMenuButtons(FileMenu);
             DeselectAllMenuButtons(RecentlyOpenedMenu);
             DeselectAllMenuButtons(HelpMenu);

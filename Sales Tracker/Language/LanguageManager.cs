@@ -284,7 +284,7 @@ namespace Sales_Tracker.Language
 
             if (Tools.IsFormOpen<Security_Form>())
             {
-                Security_Form.Instance.SetPasswordButton();
+                Security_Form.Instance.BeginInvoke(new Action(Security_Form.Instance.SetPasswordButton));
                 Security_Form.Instance.BeginInvoke(new Action(Security_Form.Instance.CenterEncryptControls));
             }
 

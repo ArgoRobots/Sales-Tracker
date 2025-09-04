@@ -20,7 +20,7 @@ namespace Sales_Tracker.UI
         private static readonly string _deleteAction = LanguageManager.TranslateString("deleted");
         private static readonly string _moveAction = LanguageManager.TranslateString("moved");
         private static DataGridViewCell _currentlyHoveredNoteCell;
-        private static bool _isMouseDown;
+        private static bool _isMouseDown, _skipNextPanelClose;
         private static int RowHeight => (int)(35 * DpiHelper.GetRelativeDpiScale());
         private static int ColumnHeaderHeight => (int)(60 * DpiHelper.GetRelativeDpiScale());
 
@@ -188,7 +188,11 @@ namespace Sales_Tracker.UI
             _isMouseDown = false;
             Guna2DataGridView grid = (Guna2DataGridView)sender;
 
-            CustomControls.CloseAllPanels();
+            if (!_skipNextPanelClose)
+            {
+                CustomControls.CloseAllPanels();
+            }
+            _skipNextPanelClose = false;  // Reset the flag
 
             SelectRowAndDeselectAllOthers(grid, e);
 
@@ -290,33 +294,29 @@ namespace Sales_Tracker.UI
         }
         private static void DataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView dataGridView = (DataGridView)sender;
-
-            // Always restore underline for any currently tracked note cell
             if (_currentlyHoveredNoteCell != null)
             {
                 RestoreNoteCellUnderline(_currentlyHoveredNoteCell);
                 _currentlyHoveredNoteCell = null;
             }
-
-            // Fallback: also check the cell being left (original logic)
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && e.ColumnIndex < dataGridView.Columns.Count)
-            {
-                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (cell.Value != null && cell.Value.ToString() == ReadOnlyVariables.Show_text && cell.Tag is string)
-                {
-                    RestoreNoteCellUnderline(cell);
-                }
-            }
         }
         private static void DataGridView_ColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
         {
+            CustomControls.CloseAllPanels();
+
+            // Show right click panel
+            if (e.Button == MouseButtons.Right && e.RowIndex == -1 && e.ColumnIndex >= 0)
+            {
+                _skipNextPanelClose = true;  // Prevent the next CloseAllPanels() call in DataGridView_MouseUp()
+                ColumnVisibilityPanel.ShowPanel(sender as Guna2DataGridView, e);
+            }
+
             UpdateAlternatingRowColors((DataGridView)sender);
         }
         private static void DataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
             // Check if this is a money column
-            if (IsMoneyColumn(((DataGridView)sender).Columns[e.Column.Index].Name))
+            if (MoneyColumns.Contains(((DataGridView)sender).Columns[e.Column.Index].Name))
             {
                 // Parse values as decimals for proper numeric comparison
                 if (decimal.TryParse(e.CellValue1?.ToString().Replace(MainMenu_Form.CurrencySymbol, "").Replace(",", ""), out decimal num1) &&
@@ -337,10 +337,6 @@ namespace Sales_Tracker.UI
             ReadOnlyVariables.ChargedDifference_column,
             ReadOnlyVariables.Total_column
         ];
-        private static bool IsMoneyColumn(string columnName)
-        {
-            return MoneyColumns.Contains(columnName);
-        }
 
         // Methods for DataGridView_UserDeletingRow
         private static void HandlePurchasesDeletion(DataGridViewRowCancelEventArgs e)
@@ -763,57 +759,69 @@ namespace Sales_Tracker.UI
 
             CustomControls.SetRightClickMenuHeight(RightClickDataGridView_Panel);
 
-            SetHorizontalPosition(grid, e, formWidth);
-            SetVerticalPosition(grid, info, formHeight);
+            SetHorizontalPosition(grid, RightClickDataGridView_Panel, e, formWidth);
+            SetVerticalPosition(grid, RightClickDataGridView_Panel, info, formHeight);
 
             grid.Parent.Controls.Add(RightClickDataGridView_Panel);
             RightClickDataGridView_Panel.BringToFront();
         }
-        private static void SetHorizontalPosition(Guna2DataGridView grid, MouseEventArgs e, int formWidth)
+        public static void SetHorizontalPosition(Guna2DataGridView grid, Control control, MouseEventArgs e, int formWidth)
         {
-            if (grid.Left + RightClickDataGridView_Panel.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + ReadOnlyVariables.PaddingRightClickPanel > formWidth)
+            if (grid.Left + control.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + ReadOnlyVariables.PaddingRightClickPanel > formWidth)
             {
-                RightClickDataGridView_Panel.Left = formWidth - RightClickDataGridView_Panel.Width - ReadOnlyVariables.PaddingRightClickPanel;
+                control.Left = formWidth - control.Width - ReadOnlyVariables.PaddingRightClickPanel;
             }
             else
             {
-                RightClickDataGridView_Panel.Left = grid.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
+                control.Left = grid.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
             }
         }
-        private static void SetVerticalPosition(Guna2DataGridView grid, DataGridView.HitTestInfo info, int formHeight)
+        public static void SetVerticalPosition(Guna2DataGridView grid, Control control, DataGridView.HitTestInfo info, int formHeight)
         {
-            int rowHeight = grid.Rows[0].Height;
-            int headerHeight = grid.ColumnHeadersHeight;
+            int targetTop;
 
-            // Calculate scroll offset considering only visible rows
-            int scrollOffset = 0;
-            for (int i = 0; i < grid.FirstDisplayedScrollingRowIndex; i++)
+            // Handle column header clicks differently from row clicks
+            if (info.RowIndex == -1) // Column header click
             {
-                if (grid.Rows[i].Visible)
+                // Position the panel right below the column header
+                targetTop = grid.Top + grid.ColumnHeadersHeight;
+            }
+            else // Regular row click
+            {
+                int rowHeight = grid.Rows[0].Height;
+                int headerHeight = grid.ColumnHeadersHeight;
+
+                // Calculate scroll offset considering only visible rows
+                int scrollOffset = 0;
+                for (int i = 0; i < grid.FirstDisplayedScrollingRowIndex; i++)
                 {
-                    scrollOffset += rowHeight;
+                    if (grid.Rows[i].Visible)
+                    {
+                        scrollOffset += rowHeight;
+                    }
                 }
+
+                // Calculate position up to target row, counting only visible rows
+                int visibleRowsBeforeTarget = 0;
+                for (int i = 0; i < info.RowIndex; i++)
+                {
+                    if (grid.Rows[i].Visible)
+                    {
+                        visibleRowsBeforeTarget++;
+                    }
+                }
+
+                targetTop = headerHeight + ((visibleRowsBeforeTarget + 1) * rowHeight) - scrollOffset + grid.Top;
             }
 
-            // Calculate position up to target row, counting only visible rows
-            int visibleRowsBeforeTarget = 0;
-            for (int i = 0; i < info.RowIndex; i++)
+            // Ensure the panel fits within the form bounds
+            if (targetTop + control.Height > formHeight - ReadOnlyVariables.PaddingRightClickPanel)
             {
-                if (grid.Rows[i].Visible)
-                {
-                    visibleRowsBeforeTarget++;
-                }
-            }
-
-            int rowTop = headerHeight + ((visibleRowsBeforeTarget + 1) * rowHeight) - scrollOffset + grid.Top;
-
-            if (rowTop + RightClickDataGridView_Panel.Height > formHeight - ReadOnlyVariables.PaddingRightClickPanel)
-            {
-                RightClickDataGridView_Panel.Top = formHeight - RightClickDataGridView_Panel.Height - ReadOnlyVariables.PaddingRightClickPanel;
+                control.Top = formHeight - control.Height - ReadOnlyVariables.PaddingRightClickPanel;
             }
             else
             {
-                RightClickDataGridView_Panel.Top = rowTop;
+                control.Top = targetTop;
             }
         }
 
@@ -1266,6 +1274,19 @@ namespace Sales_Tracker.UI
                 return false;
             }
             return true;
+        }
+        public static DataGridViewColumn? FindColumnByName(DataGridView dataGridView, string fieldName)
+        {
+            // Try to find column by name
+            foreach (DataGridViewColumn column in dataGridView?.Columns)
+            {
+                if (column.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return column;
+                }
+            }
+
+            return null;
         }
 
         // Validate TextBoxes in other forms

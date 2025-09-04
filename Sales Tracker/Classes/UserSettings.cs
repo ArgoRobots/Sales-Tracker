@@ -77,14 +77,6 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.AnimateCharts();
             }
 
-            // Handle receipt column visibility
-            if (settings.ShowHasReceiptColumn != form.ShowHasReceiptColumn_CheckBox.Checked)
-            {
-                UpdateSetting("Show has receipt column", settings.ShowHasReceiptColumn, form.ShowHasReceiptColumn_CheckBox.Checked,
-                    value => settings.ShowHasReceiptColumn = value);
-                MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
-            }
-
             // Handle company logo visibility
             if (settings.ShowCompanyLogo != form.ShowCompanyLogo_CheckBox.Checked)
             {
@@ -135,7 +127,6 @@ namespace Sales_Tracker.Classes
             CustomColors.SetColors();
             FormThemeManager.UpdateAllForms();
             ThemeManager.UpdateOtherControls();
-            MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
 
             // Remove previous messages that mention theme changes
             string message = "Changed the color theme to";
