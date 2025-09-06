@@ -546,13 +546,15 @@ namespace Sales_Tracker.Charts
 
             if (IsPieChart(chart))
             {
+                flowPanel.Controls.Add(_exportExcel);
+                flowPanel.Controls.Add(_exportSheets);
                 flowPanel.Controls.Remove(_resetZoomButton);
             }
             else if (IsGeoMap(chart))
             {
-                flowPanel.Controls.Remove(_resetZoomButton);
                 flowPanel.Controls.Remove(_exportExcel);
                 flowPanel.Controls.Remove(_exportSheets);
+                flowPanel.Controls.Remove(_resetZoomButton);
             }
             else
             {

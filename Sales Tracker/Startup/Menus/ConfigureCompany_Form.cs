@@ -157,10 +157,10 @@ namespace Sales_Tracker.Startup.Menus
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
             // Set accountant name
-            MainMenu_Form.SelectedAccountant = AccountantName_TextBox.Text;
-            Directories.WriteTextToFile(Directories.Accountants_file, AccountantName_TextBox.Text);
+            string name = AccountantName_TextBox.Text.Trim();
+            MainMenu_Form.SelectedAccountant = name;
+            Directories.WriteTextToFile(Directories.Accountants_file, name);
 
-            ArgoCompany.SaveAll();
             ArgoCompany.CreateMutex(CompanyName_TextBox.Text);
 
             Startup_Form.CanExitApp = false;
@@ -176,6 +176,9 @@ namespace Sales_Tracker.Startup.Menus
             {
                 Directories.DeleteDirectory(tempDir, true);
                 MainMenu_Form.Instance.ResetData();
+
+                // Add accountant
+                MainMenu_Form.Instance.AccountantList.Add(name);
 
                 // Reset controls
                 MainMenu_Form.Instance.SetCompanyLabel();
@@ -201,6 +204,8 @@ namespace Sales_Tracker.Startup.Menus
 
                 Tools.CloseAllOpenForms();
             }
+
+            ArgoCompany.SaveAll();
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {

@@ -283,7 +283,7 @@ namespace Sales_Tracker
 
             switch (selectedIndex)
             {
-                case 0:
+                case 0:  // .zip backup
                     Directories.CreateBackup(filePath);
                     TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, ExportType.Backup);
 
@@ -291,7 +291,7 @@ namespace Sales_Tracker
                     FinalizeExport(backupMessage);
                     break;
 
-                case 1:
+                case 1:  // .xlsx spreadsheet
                     string exportFolder = Path.Combine(directoryPath, fileName);
 
                     // Create export folder
@@ -302,8 +302,9 @@ namespace Sales_Tracker
                     string xlsxPath = Path.Combine(exportFolder, fileName + ArgoFiles.XlsxFileExtension);
                     ExcelSheetManager.ExportSpreadsheet(xlsxPath, currency);
 
-                    string successMessage = GetSpreadsheetSuccessMessage(exportReceipts, exportFolder, fileName);
                     TrackExport(stopwatch, xlsxPath, ExportType.XLSX);
+
+                    string successMessage = ExportReceiptsAndGetSpreadsheetSuccessMessage(exportReceipts, exportFolder);
                     FinalizeExport(successMessage);
                     break;
             }
@@ -313,7 +314,7 @@ namespace Sales_Tracker
             string template = LanguageManager.TranslateString("Successfully backed up '{0}'");
             return string.Format(template, Directories.CompanyName);
         }
-        private static string GetSpreadsheetSuccessMessage(bool exportReceipts, string exportFolder, string fileName)
+        private static string ExportReceiptsAndGetSpreadsheetSuccessMessage(bool exportReceipts, string exportFolder)
         {
             string baseTemplate = LanguageManager.TranslateString("Successfully created spreadsheet for '{0}'");
             string successMessage = string.Format(baseTemplate, Directories.CompanyName);
@@ -323,7 +324,7 @@ namespace Sales_Tracker
             {
                 try
                 {
-                    ExportReceiptsToFolder(Path.Combine(exportFolder, fileName));
+                    ExportReceiptsToFolder(Path.Combine(exportFolder, "Receipts"));
                     string receiptsText = LanguageManager.TranslateString(" and exported receipts");
                     successMessage += receiptsText;
                 }
@@ -337,11 +338,10 @@ namespace Sales_Tracker
 
             return successMessage;
         }
-        private static void ExportReceiptsToFolder(string basePath)
+        private static void ExportReceiptsToFolder(string folder)
         {
             // Create receipts folder
-            string receiptsFolder = basePath + "_Receipts";
-            Directory.CreateDirectory(receiptsFolder);
+            Directory.CreateDirectory(folder);
 
             List<string> allReceipts = [];
 
@@ -369,7 +369,7 @@ namespace Sales_Tracker
             foreach (string receiptPath in allReceipts)
             {
                 string fileName = Path.GetFileName(receiptPath);
-                string destinationPath = Path.Combine(receiptsFolder, fileName);
+                string destinationPath = Path.Combine(folder, fileName);
                 File.Copy(receiptPath, destinationPath, true);
             }
         }

@@ -74,7 +74,7 @@ namespace Sales_Tracker.Encryption
         /// <summary>
         /// Writes footer data to a company file with proper formatting.
         /// </summary>
-        public static void WriteFooter(string filePath, FooterData footer)
+        public static void WriteFooterToStream(MemoryStream stream, FooterData footer)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace Sales_Tracker.Encryption
                     footerLines.Add(EncryptionManager.encryptedTag);
                 }
 
-                // Always add password (encrypted)
+                // Always add password (always encrypted)
                 if (!string.IsNullOrEmpty(footer.Password))
                 {
                     string passwordLine = EncryptionManager.EncryptString(EncryptionManager.passwordTag + footer.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
@@ -128,17 +128,16 @@ namespace Sales_Tracker.Encryption
                     footerLines.Add(passwordLine);
                 }
 
-                // Write footer lines with proper line endings
-                using FileStream fs = new(filePath, FileMode.Append, FileAccess.Write, FileShare.None);
-                using StreamWriter writer = new(fs, System.Text.Encoding.UTF8);
+                // Write footer lines to stream with consistent line endings
+                using StreamWriter writer = new(stream, System.Text.Encoding.UTF8, leaveOpen: true);
 
                 foreach (string line in footerLines)
                 {
-                    writer.WriteLine();  // Add a newline before the footer line
-                    writer.Write(line);  // Write the line without adding extra newline
+                    writer.Write(Environment.NewLine);
+                    writer.Write(line);
                 }
 
-                Log.WriteWithFormat(1, "Successfully wrote footer with {0} lines", footerLines.Count);
+                writer.Flush();
             }
             catch (Exception ex)
             {

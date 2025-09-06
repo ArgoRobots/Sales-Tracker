@@ -264,7 +264,7 @@ namespace Sales_Tracker.Classes
                         SaveAll();
                         break;
                     case CustomMessageBoxResult.DontSave:
-                        // Do nothing so the hidden directory is deleted
+                        ResetChanges();
                         break;
                     case CustomMessageBoxResult.Cancel:
                         return;

@@ -88,8 +88,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                 _spreadsheetFilePath = dialog.FileName;
                 if (!ValidateSpreadsheet()) { return; }
 
-                AutoDetectReceiptsFolder();
                 ShowSpreadsheetLabel(dialog.SafeFileName);
+                AutoDetectReceiptsFolder();
 
                 await DetectCurrencyAsync();
                 await RefreshPanelsAsync();
@@ -711,7 +711,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void AutoDetectReceiptsFolder()
         {
             _receiptsFolderPath = "";
-
             if (string.IsNullOrEmpty(_spreadsheetFilePath))
             {
                 return;
@@ -720,15 +719,12 @@ namespace Sales_Tracker.ImportSpreadsheet
             string spreadsheetDirectory = Path.GetDirectoryName(_spreadsheetFilePath);
             string spreadsheetNameWithoutExtension = Path.GetFileNameWithoutExtension(_spreadsheetFilePath);
 
-            // Check for various receipts folder naming conventions
+            // Check for various receipts folder naming conventions (File Explorer is not case sensitive)
             string[] possibleFolderNames =
             [
-                $"{spreadsheetNameWithoutExtension}_receipts",
                 $"{spreadsheetNameWithoutExtension}_Receipts",
-                $"{spreadsheetNameWithoutExtension} receipts",
                 $"{spreadsheetNameWithoutExtension} Receipts",
-                "receipts",
-                "Receipts"
+                "Receipts",
             ];
 
             foreach (string folderName in possibleFolderNames)
@@ -736,7 +732,9 @@ namespace Sales_Tracker.ImportSpreadsheet
                 string possiblePath = Path.Combine(spreadsheetDirectory, folderName);
                 if (Directory.Exists(possiblePath))
                 {
-                    _receiptsFolderPath = possiblePath;
+                    // Get the actual folder name with correct casing from the file system
+                    DirectoryInfo dirInfo = new(possiblePath);
+                    _receiptsFolderPath = dirInfo.FullName;  // This preserves the actual case
                     ShowReceiptsFolderLabel();
                     break;
                 }

@@ -737,7 +737,13 @@ namespace Sales_Tracker.Classes
                 DataGridViewRow newRow = (DataGridViewRow)targetGridView.RowTemplate.Clone();
                 newRow.CreateCells(targetGridView);
 
-                ImportTransactionResult importResult = ImportTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
+                // Add the row to the DataGridView right away to give it a OwningColumn.Name so it can be accessed by the column name
+                targetGridView.InvokeIfRequired(() =>
+                {
+                    newRowIndex = targetGridView.Rows.Add(newRow);
+                });
+
+                ImportTransactionResult importResult = ImportTransaction(targetGridView, newRowIndex, row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
 
                 switch (importResult)
                 {
@@ -788,12 +794,6 @@ namespace Sales_Tracker.Classes
                     case ImportTransactionResult.Success:
                         break;
                 }
-
-                // Add the row to the DataGridView
-                targetGridView.InvokeIfRequired(() =>
-                {
-                    newRowIndex = targetGridView.Rows.Add(newRow);
-                });
 
                 FormatNoteCell(newRow);
 
@@ -1059,7 +1059,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void FormatNoteCell(DataGridViewRow row)
         {
-            DataGridViewCell lastCell = row.Cells[MainMenu_Form.Column.Note.ToString()];
+            DataGridViewCell lastCell = row.Cells[ReadOnlyVariables.Note_column];
 
             // Only add underline if the cell has a note
             if (lastCell.Value?.ToString() == ReadOnlyVariables.Show_text && lastCell.Tag != null)
@@ -1072,7 +1072,7 @@ namespace Sales_Tracker.Classes
         /// Imports data into a DataGridViewRow with source currency support and immediate cancellation support.
         /// </summary>
         /// <returns>ImportTransactionResult indicating the result of the import operation.</returns>
-        private static ImportTransactionResult ImportTransaction(IXLRow row, DataGridViewRow newRow, int rowNumber, string worksheetName, string sourceCurrency, ImportSession session)
+        private static ImportTransactionResult ImportTransaction(DataGridView targetGridView, int rowIndex, IXLRow row, DataGridViewRow transaction, int rowNumber, string worksheetName, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
@@ -1115,7 +1115,7 @@ namespace Sales_Tracker.Classes
                     break;  // Continue processing
             }
 
-            int noteCellIndex = newRow.Cells[MainMenu_Form.Column.Note.ToString()].RowIndex;
+            int noteCellIndex = targetGridView.Rows[rowIndex].Cells[ReadOnlyVariables.Note_column].RowIndex;
             for (int i = 0; i < noteCellIndex; i++)
             {
                 // Check for cancellation before processing each cell
@@ -1153,10 +1153,10 @@ namespace Sales_Tracker.Classes
                     switch (conversionResult.Action)
                     {
                         case InvalidValueAction.Cancel:
-                            return ImportTransactionResult.Cancel; // This will stop the import process
+                            return ImportTransactionResult.Cancel;  // This will stop the import process
 
                         case InvalidValueAction.Skip:
-                            return ImportTransactionResult.Skip; // This will skip this transaction but continue importing others
+                            return ImportTransactionResult.Skip;  // This will skip this transaction but continue importing others
 
                         case InvalidValueAction.Continue:
                             // Process normally
@@ -1200,13 +1200,13 @@ namespace Sales_Tracker.Classes
                     }
 
                     // Store the display value in default currency
-                    newRow.Cells[i].Value = useEmpty
+                    transaction.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
                         : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
                 }
                 else
                 {
-                    newRow.Cells[i].Value = value;
+                    transaction.Cells[i].Value = value;
                 }
             }
 
@@ -1224,7 +1224,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Set the note
-            DataGridViewCell noteCell = newRow.Cells[noteCellIndex];
+            DataGridViewCell noteCell = transaction.Cells[noteCellIndex];
             IXLCell excelNoteCell = row.Cell(16);
             string excelNoteCellValue = excelNoteCell.GetValue<string>();
 
@@ -1238,7 +1238,7 @@ namespace Sales_Tracker.Classes
                 noteCell.Tag = excelNoteCellValue;
             }
 
-            newRow.Tag = tagData;
+            transaction.Tag = tagData;
             return ImportTransactionResult.Success;
         }
         private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency, ImportSession session)
@@ -1250,7 +1250,12 @@ namespace Sales_Tracker.Classes
             int currentRowOffset = 0;
 
             // Get exchange rates
-            string date = transaction.Cells[6].Value?.ToString() ?? DateTime.Today.ToString("yyyy-MM-dd");
+            string dateCellValue = transaction.Cells[6].Value?.ToString();
+
+            string date = (string.IsNullOrWhiteSpace(dateCellValue) || dateCellValue == "-")
+                ? DateTime.Today.ToString("yyyy-MM-dd")
+                : dateCellValue;
+
             decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
             decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType), date, false);
 
@@ -1707,7 +1712,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Handle the Notes column
-            DataGridViewCell notesCell = row.Cells[MainMenu_Form.Column.Note.ToString()];
+            DataGridViewCell notesCell = row.Cells[ReadOnlyVariables.Note_column];
             string? notesCellValue = notesCell.Value?.ToString();
             IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);
 

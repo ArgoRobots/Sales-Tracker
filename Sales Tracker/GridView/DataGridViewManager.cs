@@ -317,7 +317,7 @@ namespace Sales_Tracker.GridView
         private static void DataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
             // Check if this is a money column
-            if (MoneyColumns.Contains(((DataGridView)sender).Columns[e.Column.Index].Name))
+            if (MoneyColumns.Contains(((Guna2DataGridView)sender).Columns[e.Column.Index].Name))
             {
                 // Parse values as decimals for proper numeric comparison
                 if (decimal.TryParse(e.CellValue1?.ToString().Replace(MainMenu_Form.CurrencySymbol, "").Replace(",", ""), out decimal num1) &&
@@ -1636,7 +1636,9 @@ namespace Sales_Tracker.GridView
 
                 // Check if transaction has multiple items
                 if (row.Tag is not (List<string> items, TagData))
+                {
                     continue;
+                }
 
                 // Do not check receipt if present
                 int itemsToCheck = items[^1].StartsWith(ReadOnlyVariables.Receipt_text)

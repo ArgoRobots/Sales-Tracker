@@ -431,7 +431,7 @@ namespace Sales_Tracker.Classes
                 };
 
                 // Add footer to the complete file stream in memory
-                WriteFooterToStream(completeFileStream, footer);
+                FooterManager.WriteFooterToStream(completeFileStream, footer);
 
                 // Write the complete file (content + footer) to disk in one operation
                 using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -446,73 +446,6 @@ namespace Sales_Tracker.Classes
                 string info = $"Error during tar creation or encryption: {ex.Message}";
                 Log.Error_Save(info, destinationFile);
             }
-        }
-
-        /// <summary>
-        /// Writes footer data to a stream (used internally for creating files in memory).
-        /// </summary>
-        private static void WriteFooterToStream(MemoryStream stream, FooterData footer)
-        {
-            List<string> footerLines = [];
-
-            if (footer.Accountants?.Count > 0)
-            {
-                string accountantList = string.Join(",", footer.Accountants);
-                string accountantLine = $"accountants:{accountantList}";
-
-                if (footer.IsEncrypted)
-                {
-                    accountantLine = EncryptionManager.EncryptString(accountantLine, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                }
-
-                footerLines.Add(accountantLine);
-            }
-
-            if (!string.IsNullOrEmpty(footer.Version))
-            {
-                string versionLine = $"version:{footer.Version}";
-
-                if (footer.IsEncrypted)
-                {
-                    versionLine = EncryptionManager.EncryptString(versionLine, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                }
-
-                footerLines.Add(versionLine);
-            }
-
-            // Always add encryption marker
-            if (footer.IsEncrypted)
-            {
-                footerLines.Add(EncryptionManager.encryptedTag + EncryptionManager.encryptedValue);
-            }
-            else
-            {
-                footerLines.Add(EncryptionManager.encryptedTag);
-            }
-
-            // Always add password (always encrypted)
-            if (!string.IsNullOrEmpty(footer.Password))
-            {
-                string passwordLine = EncryptionManager.EncryptString(EncryptionManager.passwordTag + footer.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                footerLines.Add(passwordLine);
-            }
-            else
-            {
-                // Even if no password, add an encrypted empty password line to maintain structure
-                string passwordLine = EncryptionManager.EncryptString(EncryptionManager.passwordTag, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                footerLines.Add(passwordLine);
-            }
-
-            // Write footer lines to stream with consistent line endings
-            using StreamWriter writer = new(stream, System.Text.Encoding.UTF8, leaveOpen: true);
-
-            foreach (string line in footerLines)
-            {
-                writer.Write(Environment.NewLine);
-                writer.Write(line);
-            }
-
-            writer.Flush();
         }
 
         /// <summary>

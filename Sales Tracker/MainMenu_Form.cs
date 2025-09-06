@@ -56,6 +56,7 @@ namespace Sales_Tracker
             ConstructControlsForAnalytics();
             InitiateSearchTimer();
             SetCompanyLabel();
+            InitDataGridViews();
             LoadData();
             LoadCustomColumnHeaders();
             CreateUpgradeButtonIfNeeded();
@@ -151,6 +152,14 @@ namespace Sales_Tracker
             SortFromDate = default;
             SortToDate = default;
         }
+        private void InitDataGridViews()
+        {
+            DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", PurchaseColumnHeaders, null, this);
+            Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+
+            DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
+            Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+        }
         public void LoadData()
         {
             LoadCategoriesFromFile(Directories.CategoryPurchases_file, CategoryPurchaseList);
@@ -158,14 +167,6 @@ namespace Sales_Tracker
 
             AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
-
-            Purchase_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", PurchaseColumnHeaders, null, this);
-            Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-
-            Sale_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
-            Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
@@ -1800,8 +1801,8 @@ namespace Sales_Tracker
         public SelectedOption Selected { get; set; }
 
         // DataGridView getters
-        public Guna2DataGridView Purchase_DataGridView { get; private set; }
-        public Guna2DataGridView Sale_DataGridView { get; private set; }
+        public Guna2DataGridView Purchase_DataGridView { get; private set; } = new();
+        public Guna2DataGridView Sale_DataGridView { get; private set; } = new();
         public Guna2DataGridView SelectedDataGridView { get; private set; }
         public Chart Profits_Chart { get; private set; }
 

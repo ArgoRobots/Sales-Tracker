@@ -264,6 +264,7 @@
             // 
             // DetectCurrency_Button
             // 
+            DetectCurrency_Button.Anchor = AnchorStyles.Top;
             DetectCurrency_Button.BorderColor = Color.FromArgb(217, 221, 226);
             DetectCurrency_Button.BorderRadius = 3;
             DetectCurrency_Button.BorderThickness = 1;
@@ -275,7 +276,7 @@
             DetectCurrency_Button.FillColor = Color.White;
             DetectCurrency_Button.Font = new Font("Segoe UI", 9F);
             DetectCurrency_Button.ForeColor = Color.Black;
-            DetectCurrency_Button.Location = new Point(611, 195);
+            DetectCurrency_Button.Location = new Point(611, 197);
             DetectCurrency_Button.Name = "DetectCurrency_Button";
             DetectCurrency_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             DetectCurrency_Button.Size = new Size(150, 40);
@@ -285,7 +286,8 @@
             // 
             // Currency_TextBox
             // 
-            Currency_TextBox.BorderRadius = 5;
+            Currency_TextBox.Anchor = AnchorStyles.Top;
+            Currency_TextBox.BorderRadius = 3;
             Currency_TextBox.CustomizableEdges = customizableEdges15;
             Currency_TextBox.DefaultText = "";
             Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -306,6 +308,7 @@
             // 
             // Currency_Label
             // 
+            Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 10F);
             Currency_Label.Location = new Point(354, 199);
