@@ -140,7 +140,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (!worksheet.RowsUsed().Any()) { continue; }
 
                 // Get the first data row (skip header if needed)
-                IXLRow dataRow = worksheet.RowsUsed().Skip(IncludeHeaderRow_CheckBox.Checked ? 0 : 1).FirstOrDefault();
+                IXLRow dataRow = worksheet.RowsUsed().Skip(IncludeHeaderRow_CheckBox.Checked ? 1 : 0).FirstOrDefault();
                 if (dataRow == null) { continue; }
 
                 // Check currency columns (8-14)
@@ -540,7 +540,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
-            bool includeheader = IncludeHeaderRow_CheckBox.Checked;
+            bool hasHeader = IncludeHeaderRow_CheckBox.Checked;
 
             foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
             {
@@ -576,40 +576,40 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, includeheader, importSession);
+                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, hasHeader, importSession);
                         if (accountantsImported)
                         {
-                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet, hasHeader);
                         }
                         break;
 
                     case _companiesName:
-                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, includeheader, importSession);
+                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, hasHeader, importSession);
                         if (companiesImported)
                         {
-                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet, hasHeader);
                         }
                         break;
 
                     case _purchaseProductsName:
-                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, includeheader, importSession);
+                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, hasHeader, importSession);
                         if (purchaseProductsImported)
                         {
-                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet, hasHeader);
                         }
                         break;
 
                     case _saleProductsName:
-                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, includeheader, importSession);
+                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, hasHeader, importSession);
                         if (saleProductsImported)
                         {
-                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet, hasHeader);
                         }
                         break;
 
                     case _purchasesName:
                         ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
-                            worksheet, includeheader, _selectedSourceCurrency, importSession);
+                            worksheet, hasHeader, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
@@ -625,14 +625,14 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true, importSession);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, hasHeader, _receiptsFolderPath, true, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
 
                     case _salesName:
                         ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
-                            worksheet, includeheader, _selectedSourceCurrency, importSession);
+                            worksheet, hasHeader, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
@@ -648,7 +648,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false, importSession);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, hasHeader, _receiptsFolderPath, false, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
@@ -672,11 +672,11 @@ namespace Sales_Tracker.ImportSpreadsheet
         /// <summary>
         /// Helper method to count rows that would be imported (for non-transaction imports).
         /// </summary>
-        private static int CountRowsToImport(IXLWorksheet worksheet, bool includeHeader)
+        private static int CountRowsToImport(IXLWorksheet worksheet, bool hasHeader)
         {
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = hasHeader
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             int count = 0;
 
@@ -977,8 +977,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             List<string> firstCells = [];
 
             IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
             {
@@ -997,8 +997,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             List<string> products = [];
 
             IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? productsWorksheet.RowsUsed()
-                : productsWorksheet.RowsUsed().Skip(1);
+                ? productsWorksheet.RowsUsed().Skip(1)
+                : productsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
             {
@@ -1019,8 +1019,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             List<string> transactions = [];
 
             IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? transactionsWorksheet.RowsUsed()
-                : transactionsWorksheet.RowsUsed().Skip(1);
+                ? transactionsWorksheet.RowsUsed().Skip(1)
+                : transactionsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
             {

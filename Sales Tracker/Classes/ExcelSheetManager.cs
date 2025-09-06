@@ -101,26 +101,26 @@ namespace Sales_Tracker.Classes
         }
 
         // Import data with rollback and cancellation support
-        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool includeHeader, ImportSession session)
+        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool hasHeader, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
             return ImportSimpleListData(
                 worksheet,
-                includeHeader,
+                hasHeader,
                 MainMenu_Form.Instance.AccountantList,
                 MainMenu_Form.SelectedOption.Accountants,
                 "Accountant",
                 session.AddedAccountants,
                 session);
         }
-        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool includeHeader, ImportSession session)
+        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool hasHeader, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
             return ImportSimpleListData(
                 worksheet,
-                includeHeader,
+                hasHeader,
                 MainMenu_Form.Instance.CompanyList,
                 MainMenu_Form.SelectedOption.Companies,
                 "Company",
@@ -133,7 +133,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static bool ImportSimpleListData(
             IXLWorksheet worksheet,
-            bool includeHeader,
+            bool hasHeader,
             List<string> existingList,
             MainMenu_Form.SelectedOption optionType,
             string itemTypeName,
@@ -142,9 +142,9 @@ namespace Sales_Tracker.Classes
         {
             if (session.IsCancelled == true) { return false; }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = hasHeader
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             bool wasSomethingImported = false;
 
@@ -249,13 +249,13 @@ namespace Sales_Tracker.Classes
             return wasSomethingImported;
         }
 
-        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool includeHeader, ImportSession session)
+        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool hasHeader, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = hasHeader
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             bool wasSomethingImported = false;
 
@@ -514,27 +514,27 @@ namespace Sales_Tracker.Classes
             return product;
         }
 
-        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency, ImportSession session)
+        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, bool hasHeader, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, true, sourceCurrency, session);
+            return ImportTransactionData(worksheet, hasHeader, true, sourceCurrency, session);
         }
-        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency, ImportSession session)
+        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, bool hasHeader, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, false, sourceCurrency, session);
+            return ImportTransactionData(worksheet, hasHeader, false, sourceCurrency, session);
         }
-        public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase, ImportSession session = null)
+        public static int ImportReceiptsData(IXLWorksheet worksheet, bool hasHeader, string receiptsFolderPath, bool isPurchase, ImportSession session = null)
         {
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = hasHeader
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             int importedCount = 0;
 
@@ -659,7 +659,7 @@ namespace Sales_Tracker.Classes
         /// Helper method for importing purchase and sales data with source currency support and immediate cancellation support.
         /// Returns ImportSummary with actual counts instead of just boolean.
         /// </summary>
-        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool includeHeader, bool isPurchase, string sourceCurrency, ImportSession session)
+        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool hasHeader, bool isPurchase, string sourceCurrency, ImportSession session)
         {
             ImportSummary summary = new();
 
@@ -669,12 +669,12 @@ namespace Sales_Tracker.Classes
                 return summary;
             }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = hasHeader
+                ? worksheet.RowsUsed().Skip(1)
+                : worksheet.RowsUsed();
 
             int newRowIndex = -1;
-            int currentRowNumber = includeHeader ? 1 : 2;
+            int currentRowNumber = hasHeader ? 1 : 0;
             int successfulTransactions = 0;
 
             Guna2DataGridView targetGridView = isPurchase
