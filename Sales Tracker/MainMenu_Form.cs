@@ -654,6 +654,12 @@ namespace Sales_Tracker
 
             cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
+        public static void SetReceiptCellToX(DataGridViewCell cell)
+        {
+            cell.Value = "✗";
+            cell.Style.ForeColor = CustomColors.AccentRed;
+            cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
 
         // Form event handlers
         private void MainMenu_Form_Load(object sender, EventArgs e)

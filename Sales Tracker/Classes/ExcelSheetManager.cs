@@ -178,7 +178,7 @@ namespace Sales_Tracker.Classes
 
                     if (existingChoice.HasValue)
                     {
-                        shouldSkip = !existingChoice.Value; // If choice is false, skip (don't import)
+                        shouldSkip = !existingChoice.Value;  // If choice is false, skip (don't import)
                     }
                     else
                     {
@@ -193,10 +193,10 @@ namespace Sales_Tracker.Classes
                         switch (result)
                         {
                             case CustomMessageBoxResult.Yes:
-                                shouldSkip = false; // Import this one
+                                shouldSkip = false;  // Import this one
                                 break;
                             case CustomMessageBoxResult.No:
-                                shouldSkip = true; // Skip this one
+                                shouldSkip = true;  // Skip this one
                                 break;
                             case CustomMessageBoxResult.YesAll:
                                 // Import all duplicates from now on
@@ -240,7 +240,6 @@ namespace Sales_Tracker.Classes
                 wasSomethingImported = true;
             }
 
-            // Only save if not using session tracking (immediate save mode)
             if (addedItems == null)
             {
                 MainMenu_Form.SaveListToFile(existingList, optionType);
@@ -346,7 +345,6 @@ namespace Sales_Tracker.Classes
                 wasSomethingImported = true;
             }
 
-            // Only save if not using session tracking (immediate save mode)
             if (session == null)
             {
                 MainMenu_Form.Instance.SaveCategoriesToFile(purchase
@@ -371,7 +369,7 @@ namespace Sales_Tracker.Classes
 
                 CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Country does not exist",
-                    "Country '{0}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
+                    "Country '{0}' does not exist in the system. Please check the documentation for more information. Do you want to skip this product and continue?",
                     CustomMessageBoxIcon.Exclamation,
                     CustomMessageBoxButtons.YesNoAll,
                     countryName);
@@ -543,14 +541,7 @@ namespace Sales_Tracker.Classes
                 string transactionId = row.Cell(1).GetValue<string>();
                 string receiptFileName = row.Cell(17).GetValue<string>();
 
-                // Skip if any essential field is empty
-                if (string.IsNullOrWhiteSpace(transactionId) ||
-                    string.IsNullOrWhiteSpace(receiptFileName) ||
-                    string.IsNullOrWhiteSpace(receiptsFolderPath) ||
-                    receiptFileName == ReadOnlyVariables.EmptyCell)
-                {
-                    continue;
-                }
+                DataGridViewRow? targetRow = FindTransactionRow(transactionId, isPurchase);
 
                 // Skip item rows (rows without transaction IDs)
                 if (string.IsNullOrEmpty(transactionId) || transactionId == ReadOnlyVariables.EmptyCell)
@@ -561,6 +552,17 @@ namespace Sales_Tracker.Classes
                 // Skip receipt if the transaction was skipped during import
                 if (session != null && session.SkippedTransactionIds.Contains(transactionId))
                 {
+                    continue;
+                }
+
+                // Skip if any essential field is empty
+                if (string.IsNullOrWhiteSpace(transactionId) ||
+                    string.IsNullOrWhiteSpace(receiptFileName) ||
+                    string.IsNullOrWhiteSpace(receiptsFolderPath) ||
+                    receiptFileName == ReadOnlyVariables.EmptyCell)
+                {
+                    DataGridViewCell noteCell = targetRow.Cells[ReadOnlyVariables.HasReceipt_column];
+                    MainMenu_Form.SetReceiptCellToX(noteCell);
                     continue;
                 }
 
@@ -579,7 +581,6 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Find the transaction in the correct DataGridView
-                DataGridViewRow? targetRow = FindTransactionRow(transactionId, isPurchase);
                 if (targetRow == null)
                 {
                     string transactionType = isPurchase ? "purchase" : "sale";
@@ -914,20 +915,18 @@ namespace Sales_Tracker.Classes
                     : InvalidValueAction.Cancel;
             }
 
-            string message = "Product not found during transaction import:\n\n" +
-                             "Worksheet: {0}\n" +
-                             "Row: {1}\n" +
-                             "Transaction ID: {2}\n" +
-                             "Product: '{3}'\n" +
-                             "Category: '{4}'\n" +
-                             "Error: {5}\n\n" +
-                             "The transaction cannot be imported because the product does not exist in the system. " +
-                             "Please ensure the product is created before importing transactions that reference it.\n\n" +
-                             "How would you like to proceed?";
-
             CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                 "Product Not Found - Transaction Import",
-                message,
+                "Product not found during transaction import:\n\n" +
+                "Worksheet: {0}\n" +
+                "Row: {1}\n" +
+                "Transaction ID: {2}\n" +
+                "Product: '{3}'\n" +
+                "Category: '{4}'\n" +
+                "Error: {5}\n\n" +
+                "The transaction cannot be imported because the product does not exist in the system. " +
+                "Please ensure the product is created before importing transactions that reference it.\n\n" +
+                "How would you like to proceed?",
                 CustomMessageBoxIcon.Error,
                 CustomMessageBoxButtons.SkipCancel,
                 worksheetName, rowNumber, transactionId, productName, categoryName, errorDescription);
@@ -984,17 +983,15 @@ namespace Sales_Tracker.Classes
         }
         private static CustomMessageBoxResult ShowDetailedImportError(ImportError error)
         {
-            string message = "Invalid value found during import:\n\n" +
-                             "Worksheet: {0}\n" +
-                             "Row: {1}\n" +
-                             "Transaction ID: {2}\n" +
-                             "Field: {3}\n" +
-                             "Invalid Value: '{4}'\n\n" +
-                             "This value cannot be converted to a valid monetary amount. How would you like to proceed?";
-
             return CustomMessageBox.ShowWithFormat(
                 "Import Error - Invalid Monetary Value",
-                message,
+                "Invalid value found during import:\n\n" +
+                "Worksheet: {0}\n" +
+                "Row: {1}\n" +
+                "Transaction ID: {2}\n" +
+                "Field: {3}\n" +
+                "Invalid Value: '{4}'\n\n" +
+                "This value cannot be converted to a valid monetary amount. How would you like to proceed?",
                 CustomMessageBoxIcon.Error,
                 CustomMessageBoxButtons.SkipRetryCancel,
                 error.WorksheetName, error.RowNumber, error.TransactionId, error.FieldName, error.InvalidValue);
@@ -1115,7 +1112,7 @@ namespace Sales_Tracker.Classes
                     break;  // Continue processing
             }
 
-            int noteCellIndex = targetGridView.Rows[rowIndex].Cells[ReadOnlyVariables.Note_column].RowIndex;
+            int noteCellIndex = targetGridView.Rows[rowIndex].Cells[ReadOnlyVariables.Note_column].ColumnIndex;
             for (int i = 0; i < noteCellIndex; i++)
             {
                 // Check for cancellation before processing each cell
@@ -1647,7 +1644,7 @@ namespace Sales_Tracker.Classes
             decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
 
             // Skip the Notes column - it will be handled separately
-            int notesColumnIndex = row.Cells[MainMenu_Form.Column.Note.ToString()].ColumnIndex;
+            int notesColumnIndex = row.Cells[ReadOnlyVariables.Note_column].ColumnIndex;
 
             for (int i = 0; i < row.Cells.Count; i++)
             {

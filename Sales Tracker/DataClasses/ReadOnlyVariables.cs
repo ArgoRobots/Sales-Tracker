@@ -3,7 +3,7 @@
     /// <summary>
     /// Contains a set of read-only variables used for various UI and data-related text and formatting values.
     /// </summary>
-    public class ReadOnlyVariables
+    public static class ReadOnlyVariables
     {
         public static string EmptyCell => "-";
         public static string MultipleItems_text => "Multiple items";
