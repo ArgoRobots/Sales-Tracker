@@ -40,4 +40,4 @@ To use the program effectively, follow these steps:
 
 ## Publishing Argo Sales Tracker to a .exe file
 The `.exe` installer for Argo Sales Tracker is built using [Advanced Installer Professional Edition](https://www.advancedinstaller.com/) to ensure a smooth and professional installation experience.
-Feel free to contact me directly to request the Advanced Installer project files. Note that the proffesional edition is a paid product.
+Feel free to contact me directly to request the Advanced Installer project files. Note that the professional edition is a paid product.

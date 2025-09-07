@@ -33,7 +33,7 @@ namespace Sales_Tracker.UI
             ConstructRecentlyOpenedMenu();
             ConstructFileMenu();
             ConstructHelpMenu();
-            ContructControlsDropDownButton();
+            ConstructControlsDropDownButton();
             ConstructControlsDropDownMenu();
 
             // Other controls
@@ -53,7 +53,7 @@ namespace Sales_Tracker.UI
         }
 
         // Properties
-        private static readonly byte spaceForSeperator = 11, offsetForKeyboardShortcutOrArrow = 15;
+        private static readonly byte spaceForSeparator = 11, offsetForKeyboardShortcutOrArrow = 15;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -99,7 +99,7 @@ namespace Sales_Tracker.UI
             panel.Controls.Add(flowLayoutPanel);
             return panel;
         }
-        public static Guna2Separator ConstructSeperator(int width, Control control)
+        public static Guna2Separator ConstructSeparator(int width, Control control)
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledWidth = (int)(width * scale);
@@ -231,7 +231,7 @@ namespace Sales_Tracker.UI
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledButtonHeight = (int)(PanelButtonHeight * scale);
-            int scaledSeparatorSpace = (int)(spaceForSeperator * scale);
+            int scaledSeparatorSpace = (int)(spaceForSeparator * scale);
             int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
 
             // Calculate height using scaled values: 9 buttons + 2 separators + panel padding
@@ -279,7 +279,7 @@ namespace Sales_Tracker.UI
             menuBtn.MouseLeave += CascadingMenu.CloseMenu;
             OpenRecentCompany_Button = menuBtn;
 
-            ConstructSeperator(PanelBtnWidth, flowPanel);
+            ConstructSeparator(PanelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Save", PanelBtnWidth, true, flowPanel);
             menuBtn.Name = "Save";
@@ -323,7 +323,7 @@ namespace Sales_Tracker.UI
                 }
             };
 
-            ConstructSeperator(PanelBtnWidth, flowPanel);
+            ConstructSeparator(PanelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show company in folder", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -426,7 +426,7 @@ namespace Sales_Tracker.UI
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledButtonHeight = (int)(PanelButtonHeight * scale);
-            int scaledSeparatorSpace = (int)(spaceForSeperator * scale);
+            int scaledSeparatorSpace = (int)(spaceForSeparator * scale);
             int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
 
             // Calculate height using scaled values: 8 buttons + 1 separator + panel padding
@@ -460,7 +460,7 @@ namespace Sales_Tracker.UI
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
-            ConstructSeperator(PanelBtnWidth, flowPanel);
+            ConstructSeparator(PanelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Contact us", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
@@ -490,7 +490,7 @@ namespace Sales_Tracker.UI
         // Control dropdown
         public static Guna2Button ControlsDropDown_Button { get; private set; }
         public static Guna2Panel ControlDropDown_Panel { get; private set; }
-        private static void ContructControlsDropDownButton()
+        private static void ConstructControlsDropDownButton()
         {
             float scale = DpiHelper.GetRelativeDpiScale();
 
@@ -541,7 +541,7 @@ namespace Sales_Tracker.UI
             int btnHeight = (int)(50 * scale);
 
             // Calculate proper height using scaled values
-            int calculatedHeight = btnHeight * 6 + (int)(15 * scale) + (int)(spaceForSeperator * scale) * 5;
+            int calculatedHeight = btnHeight * 6 + (int)(15 * scale) + (int)(spaceForSeparator * scale) * 5;
 
             ControlDropDown_Panel = ConstructPanelForMenu(new Size((int)(300 * scale), calculatedHeight), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
@@ -553,7 +553,7 @@ namespace Sales_Tracker.UI
                 Tools.OpenForm(new Accountants_Form());
             };
 
-            ConstructSeperator(btnWidth, flowPanel);
+            ConstructSeparator(btnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Companies_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
@@ -562,7 +562,7 @@ namespace Sales_Tracker.UI
                 Tools.OpenForm(new Companies_Form());
             };
 
-            ConstructSeperator(btnWidth, flowPanel);
+            ConstructSeparator(btnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Categories_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
@@ -571,7 +571,7 @@ namespace Sales_Tracker.UI
                 Tools.OpenForm(new Categories_Form(true));
             };
 
-            ConstructSeperator(btnWidth, flowPanel);
+            ConstructSeparator(btnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Products_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
@@ -580,7 +580,7 @@ namespace Sales_Tracker.UI
                 Tools.OpenForm(new Products_Form(true));
             };
 
-            ConstructSeperator(btnWidth, flowPanel);
+            ConstructSeparator(btnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddSale_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
@@ -589,7 +589,7 @@ namespace Sales_Tracker.UI
                 Tools.OpenForm(new AddSale_Form());
             };
 
-            ConstructSeperator(btnWidth, flowPanel);
+            ConstructSeparator(btnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddPurchase_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;

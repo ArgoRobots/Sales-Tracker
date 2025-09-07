@@ -33,7 +33,7 @@ namespace Sales_Tracker.Classes
             public List<Category> AddedCategories { get; set; } = [];
             public HashSet<string> SkippedTransactionIds { get; set; } = [];
             public bool IsCancelled { get; set; } = false;
-            public ImportUserChoices UserChoices { get; set; } = new ImportUserChoices();
+            public ImportUserChoices UserChoices { get; set; } = new();
             public bool HasChanges()
             {
                 return AddedAccountants.Count > 0 || AddedCompanies.Count > 0 ||
@@ -44,7 +44,8 @@ namespace Sales_Tracker.Classes
 
         public class ImportUserChoices
         {
-            public bool? DuplicateItemChoice { get; set; } = null;  // null = ask, true = yes to all, false = no to all
+            // null = ask, true = yes to all, false = no to all
+            public bool? DuplicateItemChoice { get; set; } = null;
             public bool? CountryNotFoundChoice { get; set; } = null;
             public bool? ProductNotFoundChoice { get; set; } = null;
             public bool? DuplicateAccountantChoice { get; set; } = null;

@@ -36,11 +36,11 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             TextBoxManager.Attach(Currency_TextBox);
             SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
-            Currency_TextBox.TextChanged += SourceCurrency_TextBox_TextChanged;
+            Currency_TextBox.TextChanged += Currency_TextBox_TextChanged;
 
             HideCurrencyControls();
         }
-        private void SourceCurrency_TextBox_TextChanged(object sender, EventArgs e)
+        private void Currency_TextBox_TextChanged(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(Currency_TextBox.Text))
             {

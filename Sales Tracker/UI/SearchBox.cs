@@ -213,7 +213,7 @@ namespace Sales_Tracker.UI
                     }
                     else
                     {
-                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), SearchResultBox);
+                        separator = CustomControls.ConstructSeparator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), SearchResultBox);
                         SearchResultBox.Controls.Add(separator);
                         SearchResultControls.Add(separator);
                     }

@@ -29,7 +29,7 @@ namespace Sales_Tracker.Classes
 
         // Installer arguments discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
         // in the directory where the exe is located.
-        // These arguements are used for silent installation without user interaction.
+        // These arguments are used for silent installation without user interaction.
         private const string SILENT_INSTALL_ARGUMENT = "/exenoui /norestart";
 
         // Public properties
@@ -204,7 +204,7 @@ namespace Sales_Tracker.Classes
 
                     CustomMessageBox.Show(
                     "Download Error",
-                    "The update failed to download, please try again or contact support. You can also donwload it directly from agorobots.com",
+                    "The update failed to download, please try again or contact support. You can also download it directly from agorobots.com",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok);
                 }
@@ -296,8 +296,7 @@ namespace Sales_Tracker.Classes
 
             if (status == UpdateStatus.UpdateAvailable)
             {
-
-                // Gget the available version from the sparkle updater
+                // Get the available version from the sparkle updater
                 if (_sparkle != null && _sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
                 {
                     AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
