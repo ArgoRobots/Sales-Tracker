@@ -71,6 +71,37 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
+        /// Asks the user to save any changes.
+        /// </summary>
+        /// <returns>Returns true if the user saves or there is nothing to save. Returns false if the user cancels.</returns>
+        public static bool AskUserToSave()
+        {
+            if (!AreAnyChangesMade()) { return true; }
+
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+            "Save changes", "Save changes to the following items?",
+            CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+
+            switch (result)
+            {
+                case CustomMessageBoxResult.Save:
+                    SaveAll();
+                    break;
+                case CustomMessageBoxResult.DontSave:
+                    // Do nothing so the temp directory is deleted
+                    break;
+                case CustomMessageBoxResult.Cancel:
+                    // Cancel close
+                    return false;
+                default:  // If the CustomMessageBox was closed
+                    // Cancel close
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Checks if any changes have been made across all forms in the application.
         /// </summary>
         /// <returns>True if any changes have been made, false otherwise.</returns>
@@ -252,25 +283,9 @@ namespace Sales_Tracker.Classes
             }
 
             // Save current company
-            if (AreAnyChangesMade())
+            if (!AskUserToSave())
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Save changes",
-                    "Would you like to save your changes before opening a new company?",
-                    CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
-
-                switch (result)
-                {
-                    case CustomMessageBoxResult.Save:
-                        SaveAll();
-                        break;
-                    case CustomMessageBoxResult.DontSave:
-                        ResetChanges();
-                        break;
-                    case CustomMessageBoxResult.Cancel:
-                        return;
-                    default:  // If the CustomMessageBox was closed
-                        return;
-                }
+                return;
             }
 
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);

@@ -243,6 +243,12 @@ namespace Sales_Tracker.UI
             Guna2Button menuBtn = ConstructBtnForMenu("Create new company", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
+                // Save current company
+                if (!ArgoCompany.AskUserToSave())
+                {
+                    return;
+                }
+
                 Tools.OpenForm(new Startup_Form(["autoClickButton"]));
             };
 

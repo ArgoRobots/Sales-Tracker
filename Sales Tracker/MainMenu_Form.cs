@@ -753,7 +753,7 @@ namespace Sales_Tracker
             }
             else if (e.Alt & e.KeyCode == Keys.F4)  // Close program
             {
-                if (AskUserToSaveBeforeClosing())
+                if (!ArgoCompany.AskUserToSave())
                 {
                     e.Handled = true;
                 }
@@ -766,7 +766,7 @@ namespace Sales_Tracker
 
             if (ArgoCompany.AreAnyChangesMade())
             {
-                if (AskUserToSaveBeforeClosing())
+                if (!ArgoCompany.AskUserToSave())
                 {
                     e.Cancel = true;
                     Log.Write(2, "Close canceled");
@@ -1038,35 +1038,6 @@ namespace Sales_Tracker
             return [
                 Accountants_Button, Categories_Button, Companies_Button,
                 Products_Button, AddSale_Button, AddPurchase_Button];
-        }
-
-        /// <summary>
-        /// Asks the user to save any changes.
-        /// </summary>
-        /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
-        private static bool AskUserToSaveBeforeClosing()
-        {
-            CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Save changes", "Save changes to the following items?",
-                CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
-
-            switch (result)
-            {
-                case CustomMessageBoxResult.Save:
-                    ArgoCompany.SaveAll();
-                    break;
-                case CustomMessageBoxResult.DontSave:
-                    // Do nothing so the temp directory is deleted
-                    break;
-                case CustomMessageBoxResult.Cancel:
-                    // Cancel close
-                    return true;
-                default:  // If the CustomMessageBox was closed
-                    // Cancel close
-                    return true;
-            }
-
-            return false;
         }
 
         // Event handlers - top bar
