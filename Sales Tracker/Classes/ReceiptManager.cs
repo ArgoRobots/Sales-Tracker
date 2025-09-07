@@ -168,8 +168,6 @@ namespace Sales_Tracker.Classes
                     continue;
                 }
 
-                receipt = ProcessReceiptTextFromRowTag(receipt);
-
                 if (!File.Exists(receipt))
                 {
                     Log.Error_FileDoesNotExist(receipt);
@@ -228,8 +226,12 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string ProcessReceiptTextFromRowTag(string receipt)
         {
-            return receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
-                .Replace(ReadOnlyVariables.Receipt_text, "");
+            if (receipt.Contains(ReadOnlyVariables.Receipt_text))
+            {
+                return receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
+                    .Replace(ReadOnlyVariables.Receipt_text, "");
+            }
+            return receipt;
         }
 
         /// <summary>

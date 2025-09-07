@@ -636,8 +636,8 @@ namespace Sales_Tracker
         public static void SetHasReceiptColumn(DataGridViewRow row, string? receipt)
         {
             string newReceipt = receipt != null ? ReceiptManager.ProcessReceiptTextFromRowTag(receipt) : null;
-            DataGridViewCell noteCell = row.Cells[Column.HasReceipt.ToString()];
-            SetReceiptStatusSymbol(noteCell, newReceipt);
+            DataGridViewCell hasReceiptCell = row.Cells[Column.HasReceipt.ToString()];
+            SetReceiptStatusSymbol(hasReceiptCell, newReceipt);
         }
         private static void SetReceiptStatusSymbol(DataGridViewCell cell, string processedReceipt)
         {
@@ -764,14 +764,11 @@ namespace Sales_Tracker
             CustomControls.CloseAllPanels();
             Log.Write(2, "Closing Argo Sales Tracker");
 
-            if (ArgoCompany.AreAnyChangesMade())
+            if (!ArgoCompany.AskUserToSave())
             {
-                if (!ArgoCompany.AskUserToSave())
-                {
-                    e.Cancel = true;
-                    Log.Write(2, "Close canceled");
-                    return;
-                }
+                e.Cancel = true;
+                Log.Write(2, "Close canceled");
+                return;
             }
 
             CompanyLogo.Cleanup();
@@ -779,7 +776,6 @@ namespace Sales_Tracker
             ThemeChangeDetector.StopListeningForThemeChanges();
             Log.SaveLogs();
             ArgoCompany.ApplicationMutex?.Dispose();
-            Directories.DeleteDirectory(Directories.TempCompany_dir, true);
             Environment.Exit(0);  // Make sure all processes are fully closed
         }
 

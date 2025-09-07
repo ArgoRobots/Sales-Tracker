@@ -71,9 +71,9 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Asks the user to save any changes.
+        /// Asks the user to save if there are any changes.
         /// </summary>
-        /// <returns>Returns true if the user saves or there is nothing to save. Returns false if the user cancels.</returns>
+        /// <returns>Returns true if the operation should continue (save, don't save, or no changes). Returns false if the user cancels.</returns>
         public static bool AskUserToSave()
         {
             if (!AreAnyChangesMade()) { return true; }
@@ -88,7 +88,7 @@ namespace Sales_Tracker.Classes
                     SaveAll();
                     break;
                 case CustomMessageBoxResult.DontSave:
-                    // Do nothing so the temp directory is deleted
+                    Directories.DeleteDirectory(Directories.TempCompany_dir, true);
                     break;
                 case CustomMessageBoxResult.Cancel:
                     // Cancel close
