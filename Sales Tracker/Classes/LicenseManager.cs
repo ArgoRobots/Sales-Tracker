@@ -87,11 +87,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                // Handle any exceptions
-                CustomMessageBox.ShowWithFormat("License Error", "Error validating license: {0}",
-                    CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok,
-                    ex.Message);
+                Log.WriteWithFormat(0, "Error validating license: {0}", ex.Message);
 
                 // If we can't validate, default to the stored setting
                 return Properties.Settings.Default.LicenseActivated;

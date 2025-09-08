@@ -943,7 +943,7 @@ namespace Sales_Tracker.GridView
                 UpdateAlternatingRowColors(dataGrid);
             }
         }
-        public static void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
+        public static void UpdateChargedDifferenceInRowWithMultipleItems(DataGridViewRow selectedRow)
         {
             List<string> items = selectedRow.Tag is (List<string> itemList, TagData) ? itemList : [];
 
@@ -1014,9 +1014,8 @@ namespace Sales_Tracker.GridView
 
             selectedRow.Cells[ReadOnlyVariables.ChargedDifference_column].Value = chargedDifference.ToString("N2");
         }
-        public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
+        public static void UpdateChargedDifferenceInRowWithNoItems(DataGridViewRow selectedRow)
         {
-            // Update charged difference
             int quantity = int.Parse(selectedRow.Cells[ReadOnlyVariables.TotalItems_column].Value.ToString());
             decimal pricePerUnit = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.PricePerUnit_column].Value.ToString());
             decimal shipping = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Shipping_column].Value.ToString());

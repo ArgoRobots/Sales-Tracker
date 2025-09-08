@@ -71,7 +71,7 @@ namespace Sales_Tracker
                 else
                 {
                     UpdateMainMenuRowTag();
-                    DataGridViewManager.UpdateRowWithMultipleItems(DataGridViewManager.SelectedRowInMainMenu);
+                    DataGridViewManager.UpdateChargedDifferenceInRowWithMultipleItems(DataGridViewManager.SelectedRowInMainMenu);
                 }
 
                 DataGridViewManager.DataGridViewRowChanged(Items_DataGridView, MainMenu_Form.Instance.Selected);

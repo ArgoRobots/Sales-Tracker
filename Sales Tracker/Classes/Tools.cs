@@ -53,6 +53,12 @@ namespace Sales_Tracker.Classes
             int hours = (int)timespan.TotalHours;
             return $"{hours}h {timespan.Minutes}m {timespan.Seconds}s";
         }
+        public static DateTime ParseDateOrToday(string dateValue)
+        {
+            return DateTime.TryParse(dateValue, out DateTime parsedDate)
+                ? parsedDate
+                : DateTime.Today;
+        }
 
         // General
         /// <summary>

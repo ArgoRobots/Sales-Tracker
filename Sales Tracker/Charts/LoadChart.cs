@@ -150,7 +150,8 @@ namespace Sales_Tracker.Charts
                 double? value = valueExtractor(row);
                 if (!value.HasValue) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (dataByDate.TryGetValue(formattedDate, out double existing))
@@ -180,7 +181,8 @@ namespace Sales_Tracker.Charts
                 double? value = valueExtractor(row);
                 if (!value.HasValue) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (dataByDate.TryGetValue(formattedDate, out (double total, int count) existing))
@@ -205,11 +207,10 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in rows)
             {
-                if (!row.Visible) { continue; }
+                if (!row.Visible || !shouldCount(row)) { continue; }
 
-                if (!shouldCount(row)) { continue; }
-
-                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (dataByDate.TryGetValue(formattedDate, out int existing))
@@ -990,6 +991,11 @@ namespace Sales_Tracker.Charts
 
                     string accountant = row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString();
 
+                    if (string.IsNullOrEmpty(accountant) || accountant == ReadOnlyVariables.EmptyCell)
+                    {
+                        accountant = LanguageManager.TranslateString("Unknown");
+                    }
+
                     if (!string.IsNullOrEmpty(accountant))
                     {
                         if (accountantCounts.TryGetValue(accountant, out int value))
@@ -1556,7 +1562,8 @@ namespace Sales_Tracker.Charts
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (purchaseReturnValueByDate.TryGetValue(formattedDate, out double value))
@@ -1576,7 +1583,8 @@ namespace Sales_Tracker.Charts
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (saleReturnValueByDate.TryGetValue(formattedDate, out double value))
@@ -2031,7 +2039,9 @@ namespace Sales_Tracker.Charts
 
                     if (row.Cells[ReadOnlyVariables.Date_column].Value != null)
                     {
-                        DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                        string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
+                        DateTime date = Tools.ParseDateOrToday(dateValue);
+
                         if (date < minDate) { minDate = date; }
                         if (date > maxDate) { maxDate = date; }
                     }

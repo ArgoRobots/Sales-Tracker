@@ -1077,7 +1077,9 @@ namespace Sales_Tracker.Classes
             TagData tagData = new();
 
             // Get exchange rate from source currency to default currency
-            string date = row.Cell(7).GetValue<string>();
+            string dateCellValue = row.Cell(7).Value.ToString();
+            string date = Tools.FormatDate(Tools.ParseDateOrToday(dateCellValue));
+
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, defaultCurrency, date, false);
@@ -1204,7 +1206,7 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    transaction.Cells[i].Value = value;
+                    transaction.Cells[i].Value = string.IsNullOrEmpty(value) ? ReadOnlyVariables.EmptyCell : value;
                 }
             }
 
@@ -1249,10 +1251,7 @@ namespace Sales_Tracker.Classes
 
             // Get exchange rates
             string dateCellValue = transaction.Cells[6].Value?.ToString();
-
-            string date = (string.IsNullOrWhiteSpace(dateCellValue) || dateCellValue == ReadOnlyVariables.EmptyCell)
-                ? Tools.FormatDate(DateTime.Today)
-                : dateCellValue;
+            string date = Tools.FormatDate(Tools.ParseDateOrToday(dateCellValue));
 
             decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
             decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType), date, false);
@@ -1736,7 +1735,7 @@ namespace Sales_Tracker.Classes
                 string cellValue = row[i];
 
                 // Check if this should be a numeric value (quantity, price, etc.)
-                if (i == 4 || i == 5) // quantity and price columns
+                if (i == 4 || i == 5)  // quantity and price columns
                 {
                     if (decimal.TryParse(cellValue, out decimal numericValue))
                     {
@@ -1746,7 +1745,7 @@ namespace Sales_Tracker.Classes
                             excelCell.Value = convertedPrice;
                             excelCell.Style.NumberFormat.Format = currencyFormatPattern;
                         }
-                        else // quantity column
+                        else  // quantity column
                         {
                             excelCell.Value = numericValue;
                             excelCell.Style.NumberFormat.Format = _decimalFormatPattern;

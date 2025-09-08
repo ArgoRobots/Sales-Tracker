@@ -36,6 +36,7 @@ namespace Sales_Tracker
             }
 
             ConstructControls();
+            ValidateInputs(null, null);  // This is needed in case the cell contains "-", which is possible if it was imported from a spreadsheet
             AttachChangeHandlers();
             SetAccessibleDescriptions();
             UpdateTheme();
@@ -124,7 +125,7 @@ namespace Sales_Tracker
             CloseSearchBox(null, null);
             SaveInListsAndUpdateMainMenuForm();
             SaveInMainMenuRow();
-            UpdateRow();
+            UpdateChargedDifferenceInMainMenuRow();
 
             // If the user selected a new receipt
             if (_receiptFilePath != null)
@@ -552,7 +553,8 @@ namespace Sales_Tracker
 
                     case nameof(MainMenu_Form.Column.Date):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], left, Panel);
-                        ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
+                        DateTime date = Tools.ParseDateOrToday(cellValue);
+                        ConstructDatePicker(left, columnName, date, Panel);
                         left += _controlWidth;
                         break;
 
@@ -970,7 +972,9 @@ namespace Sales_Tracker
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
-                    if (string.IsNullOrEmpty(gunaTextBox.Text) || gunaTextBox.Tag?.ToString() == "0")
+                    if (string.IsNullOrEmpty(gunaTextBox.Text)
+                        || gunaTextBox.Text == ReadOnlyVariables.EmptyCell
+                        || gunaTextBox.Tag?.ToString() == "0")
                     {
                         Save_Button.Enabled = false;
                         return;
@@ -992,20 +996,20 @@ namespace Sales_Tracker
             }
             Save_Button.Enabled = true;
         }
-        private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProduct)
+        private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProductForm)
         {
-            string productColumn = isProduct ? Products_Form.Column.ProductName.ToString() : ReadOnlyVariables.Product_column;
+            string productColumn = isProductForm ? Products_Form.Column.ProductName.ToString() : ReadOnlyVariables.Product_column;
             _selectedRow.Cells[productColumn].Value = productName;
 
-            string categoryColumn = isProduct ? Products_Form.Column.ProductCategory.ToString() : ReadOnlyVariables.Category_column;
+            string categoryColumn = isProductForm ? Products_Form.Column.ProductCategory.ToString() : ReadOnlyVariables.Category_column;
             string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[categoryColumn].Value = category;
 
-            string countryColumn = isProduct ? Products_Form.Column.CountryOfOrigin.ToString() : ReadOnlyVariables.Country_column;
+            string countryColumn = isProductForm ? Products_Form.Column.CountryOfOrigin.ToString() : ReadOnlyVariables.Country_column;
             string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[countryColumn].Value = country;
 
-            string companyColumn = isProduct ? Products_Form.Column.CompanyOfOrigin.ToString() : ReadOnlyVariables.Company_column;
+            string companyColumn = isProductForm ? Products_Form.Column.CompanyOfOrigin.ToString() : ReadOnlyVariables.Company_column;
             string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[companyColumn].Value = company;
 
@@ -1037,7 +1041,7 @@ namespace Sales_Tracker
 
             _selectedRow.Tag = (itemList, tagData);
         }
-        private void UpdateRow()
+        private void UpdateChargedDifferenceInMainMenuRow()
         {
             if (_selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
@@ -1047,11 +1051,11 @@ namespace Sales_Tracker
 
                 if (productName == ReadOnlyVariables.MultipleItems_text)
                 {
-                    DataGridViewManager.UpdateRowWithMultipleItems(_selectedRow);
+                    DataGridViewManager.UpdateChargedDifferenceInRowWithMultipleItems(_selectedRow);
                 }
                 else
                 {
-                    DataGridViewManager.UpdateRowWithNoItems(_selectedRow);
+                    DataGridViewManager.UpdateChargedDifferenceInRowWithNoItems(_selectedRow);
                 }
 
                 MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
