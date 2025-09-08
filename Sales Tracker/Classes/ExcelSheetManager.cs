@@ -1251,7 +1251,7 @@ namespace Sales_Tracker.Classes
             string dateCellValue = transaction.Cells[6].Value?.ToString();
 
             string date = (string.IsNullOrWhiteSpace(dateCellValue) || dateCellValue == ReadOnlyVariables.EmptyCell)
-                ? DateTime.Today.ToString("yyyy-MM-dd")
+                ? Tools.FormatDate(DateTime.Today)
                 : dateCellValue;
 
             decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
@@ -1641,7 +1641,7 @@ namespace Sales_Tracker.Classes
             int excelColumnIndex = 1;
 
             // Get exchange rate from USD to target currency
-            string transactionDate = row.Cells[6].Value?.ToString() ?? DateTime.Today.ToString("yyyy-MM-dd");
+            string transactionDate = row.Cells[6].Value?.ToString() ?? Tools.FormatDate(DateTime.Today);
             decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
 
             // Skip the Notes column - it will be handled separately
@@ -1724,7 +1724,7 @@ namespace Sales_Tracker.Classes
         {
             // Get transaction date from the main row for exchange rate calculation
             string transactionDate = worksheet.Cell(currentRow - GetItemOffsetForTransaction(worksheet, currentRow), 7).Value.ToString()
-                ?? DateTime.Today.ToString("yyyy-MM-dd");
+                ?? Tools.FormatDate(DateTime.Today);
             decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
 
             for (int i = 0; i < row.Length - 1; i++)  // Skip the total value with - 1
@@ -1790,7 +1790,7 @@ namespace Sales_Tracker.Classes
                 // Parse date to ensure correct format
                 if (DateTime.TryParse(transactionDate, out DateTime parsedDate))
                 {
-                    string formattedDate = parsedDate.ToString("yyyy-MM-dd");
+                    string formattedDate = Tools.FormatDate(parsedDate);
                     decimal rate = Currency.GetExchangeRate("USD", targetCurrency, formattedDate, false);
                     return rate > 0 ? rate : 1.0m;  // Fallback to 1:1 if rate fetch fails
                 }

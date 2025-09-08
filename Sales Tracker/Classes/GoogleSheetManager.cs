@@ -83,7 +83,7 @@ namespace Sales_Tracker.Classes
                 {
                     Properties = new SpreadsheetProperties
                     {
-                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {Tools.FormatDate(DateTime.Today)}"
                     },
                     Sheets = [
                         new Sheet
@@ -271,7 +271,7 @@ namespace Sales_Tracker.Classes
                 {
                     Properties = new SpreadsheetProperties
                     {
-                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {Tools.FormatDate(DateTime.Today)}"
                     },
                     Sheets = [
                         new Sheet
@@ -457,7 +457,7 @@ namespace Sales_Tracker.Classes
                 {
                     Properties = new SpreadsheetProperties
                     {
-                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {Tools.FormatDate(DateTime.Today)}"
                     },
                     Sheets = [
                         new Sheet
@@ -659,7 +659,7 @@ namespace Sales_Tracker.Classes
                 {
                     Properties = new SpreadsheetProperties
                     {
-                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {Tools.FormatDate(DateTime.Today)}"
                     },
                     Sheets = [
                         new Sheet
