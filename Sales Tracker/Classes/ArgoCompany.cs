@@ -88,7 +88,7 @@ namespace Sales_Tracker.Classes
                     SaveAll();
                     break;
                 case CustomMessageBoxResult.DontSave:
-                    Directories.DeleteDirectory(Directories.TempCompany_dir, true);
+                    ResetChanges();
                     break;
                 case CustomMessageBoxResult.Cancel:
                     // Cancel close
