@@ -231,7 +231,7 @@ namespace Sales_Tracker
         private void ConstructControlsForAccountant()
         {
             string columnName = _selectedRow.DataGridView.Columns[0].Name;
-            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? "";
+            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
             _listOfOldValues.Add(cellValue);
 
             ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
@@ -268,7 +268,7 @@ namespace Sales_Tracker
         private void ConstructControlsForCategory()
         {
             string columnName = _selectedRow.DataGridView.Columns[0].Name;
-            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? "";
+            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
             _listOfOldValues.Add(cellValue);
 
             ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Column.CategoryName], 0, Panel);
@@ -317,7 +317,7 @@ namespace Sales_Tracker
         private void ConstructControlsForCompany()
         {
             string columnName = _selectedRow.DataGridView.Columns[0].Name;
-            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? "";
+            string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
             _listOfOldValues.Add(cellValue);
 
             ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
@@ -359,7 +359,7 @@ namespace Sales_Tracker
             foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
             {
                 string columnName = column.Name;
-                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
                 _listOfOldValues.Add(cellValue);
                 int searchBoxMaxHeight = 100;
 
@@ -430,7 +430,7 @@ namespace Sales_Tracker
             foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
             {
                 string columnName = column.Name;
-                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
                 _listOfOldValues.Add(cellValue);
                 string text;
                 List<SearchResult> searchResult;
@@ -640,7 +640,7 @@ namespace Sales_Tracker
             foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
             {
                 string columnName = column.Name;
-                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
                 _listOfOldValues.Add(cellValue);
 
                 switch (columnName)
@@ -721,12 +721,15 @@ namespace Sales_Tracker
         }
         private void RemoveReceiptLabel()
         {
-            Controls.Remove(_selectedReceipt_Label);
-            Controls.Remove(_removeReceipt_ImageButton);
+            if (_receipt_Button != null)
+            {
+                Controls.Remove(_selectedReceipt_Label);
+                Controls.Remove(_removeReceipt_ImageButton);
 
-            _receipt_Button.Text = LanguageManager.TranslateString("Add receipt");
+                _receipt_Button.Text = LanguageManager.TranslateString("Add receipt");
 
-            ValidateInputs(null, null);
+                ValidateInputs(null, null);
+            }
         }
 
         // Warning label

@@ -156,8 +156,26 @@ namespace Sales_Tracker
             {
                 string[] values = itemList[i].Split(',');
 
+                // Check all values and replace null/empty with "-"
+                for (int j = 0; j < values.Length; j++)
+                {
+                    if (string.IsNullOrEmpty(values[j]))
+                    {
+                        values[j] = ReadOnlyVariables.EmptyCell;
+                    }
+                }
+
                 int sourceIndex = (defaultCurrencyType == "USD") ? 6 : 5;
-                values[5] = decimal.Parse(values[sourceIndex]).ToString("N2");
+
+                // Only format as decimal if it's not "-" and is a valid decimal
+                if (values[sourceIndex] != ReadOnlyVariables.EmptyCell && decimal.TryParse(values[sourceIndex], out decimal result))
+                {
+                    values[5] = result.ToString("N2");
+                }
+                else
+                {
+                    values[5] = ReadOnlyVariables.EmptyCell;
+                }
 
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;

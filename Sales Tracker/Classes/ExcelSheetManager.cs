@@ -1250,7 +1250,7 @@ namespace Sales_Tracker.Classes
             // Get exchange rates
             string dateCellValue = transaction.Cells[6].Value?.ToString();
 
-            string date = (string.IsNullOrWhiteSpace(dateCellValue) || dateCellValue == "-")
+            string date = (string.IsNullOrWhiteSpace(dateCellValue) || dateCellValue == ReadOnlyVariables.EmptyCell)
                 ? DateTime.Today.ToString("yyyy-MM-dd")
                 : dateCellValue;
 
