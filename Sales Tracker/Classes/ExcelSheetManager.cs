@@ -102,26 +102,24 @@ namespace Sales_Tracker.Classes
         }
 
         // Import data with rollback and cancellation support
-        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool includeHeader, ImportSession session)
+        public static bool ImportAccountantsData(IXLWorksheet worksheet, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
             return ImportSimpleListData(
                 worksheet,
-                includeHeader,
                 MainMenu_Form.Instance.AccountantList,
                 MainMenu_Form.SelectedOption.Accountants,
                 "Accountant",
                 session.AddedAccountants,
                 session);
         }
-        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool includeHeader, ImportSession session)
+        public static bool ImportCompaniesData(IXLWorksheet worksheet, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
             return ImportSimpleListData(
                 worksheet,
-                includeHeader,
                 MainMenu_Form.Instance.CompanyList,
                 MainMenu_Form.SelectedOption.Companies,
                 "Company",
@@ -134,7 +132,6 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static bool ImportSimpleListData(
             IXLWorksheet worksheet,
-            bool includeHeader,
             List<string> existingList,
             MainMenu_Form.SelectedOption optionType,
             string itemTypeName,
@@ -143,9 +140,20 @@ namespace Sales_Tracker.Classes
         {
             if (session.IsCancelled == true) { return false; }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            ExcelColumnHelper columnHelper = new(worksheet);
+
+            // Determine expected column name based on item type
+            string expectedColumnName = itemTypeName == "Accountant" ? "Accountant name" : "Company name";
+
+            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateSimpleListColumns(expectedColumnName);
+            if (!validation.IsValid)
+            {
+                ShowColumnValidationError(itemTypeName, validation.MissingColumns, validation.AvailableColumns);
+                return false;
+            }
+
+            // Always skip header row (row 1) since we use it for column lookup
+            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
 
             bool wasSomethingImported = false;
 
@@ -162,7 +170,9 @@ namespace Sales_Tracker.Classes
                 // Check for cancellation before processing each row
                 if (session.IsCancelled == true) { break; }
 
-                string itemName = row.Cell(1).GetValue<string>();
+                string itemName = columnHelper.GetCellValue(row, expectedColumnName);
+                if (string.IsNullOrWhiteSpace(itemName)) { continue; }
+
                 string itemNameLower = itemName.ToLowerInvariant();
 
                 if (existingItems.Contains(itemNameLower))
@@ -249,13 +259,22 @@ namespace Sales_Tracker.Classes
             return wasSomethingImported;
         }
 
-        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool includeHeader, ImportSession session)
+        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            // Create column helper and validate required columns
+            ExcelColumnHelper columnHelper = new(worksheet);
+            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateProductColumns();
+
+            if (!validation.IsValid)
+            {
+                ShowColumnValidationError("Products", validation.MissingColumns, validation.AvailableColumns);
+                return false;
+            }
+
+            // Always skip header row (row 1) since we use it for column lookup
+            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
 
             bool wasSomethingImported = false;
 
@@ -277,11 +296,11 @@ namespace Sales_Tracker.Classes
                 // Check for cancellation before processing each row
                 if (session.IsCancelled == true) { break; }
 
-                string productId = row.Cell(1).GetValue<string>();
-                string productName = row.Cell(2).GetValue<string>();
-                string categoryName = row.Cell(3).GetValue<string>();
-                string countryOfOrigin = row.Cell(4).GetValue<string>();
-                string companyOfOrigin = row.Cell(5).GetValue<string>();
+                string productId = columnHelper.GetCellValue(row, "Product ID");
+                string productName = columnHelper.GetCellValue(row, "Product Name");
+                string categoryName = columnHelper.GetCellValue(row, "Category");
+                string countryOfOrigin = columnHelper.GetCellValue(row, "Country of Origin");
+                string companyOfOrigin = columnHelper.GetCellValue(row, "Company of Origin");
 
                 // Skip if any essential field is empty
                 if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(categoryName))
@@ -476,7 +495,7 @@ namespace Sales_Tracker.Classes
                         session.UserChoices.DuplicateProductChoice = false;  // Skip all duplicates
                         return true;
                     default:
-                        return true; // Default to skip
+                        return true;  // Default to skip
                 }
             }
 
@@ -513,27 +532,26 @@ namespace Sales_Tracker.Classes
             return product;
         }
 
-        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency, ImportSession session)
+        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, true, sourceCurrency, session);
+            return ImportTransactionData(worksheet, true, sourceCurrency, session);
         }
-        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency, ImportSession session)
+        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, false, sourceCurrency, session);
+            return ImportTransactionData(worksheet, false, sourceCurrency, session);
         }
-        public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase, ImportSession session = null)
+        public static int ImportReceiptsData(IXLWorksheet worksheet, string receiptsFolderPath, bool isPurchase, ImportSession session = null)
         {
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            // Always skip header row (row 1) since we use it for column lookup
+            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
 
             int importedCount = 0;
 
@@ -661,7 +679,7 @@ namespace Sales_Tracker.Classes
         /// Helper method for importing purchase and sales data with source currency support and immediate cancellation support.
         /// Returns ImportSummary with actual counts instead of just boolean.
         /// </summary>
-        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool includeHeader, bool isPurchase, string sourceCurrency, ImportSession session)
+        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool isPurchase, string sourceCurrency, ImportSession session)
         {
             ImportSummary summary = new();
 
@@ -671,27 +689,43 @@ namespace Sales_Tracker.Classes
                 return summary;
             }
 
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
-
-            int newRowIndex = -1;
-            int currentRowNumber = includeHeader ? 1 : 2;
-            int successfulTransactions = 0;
-
+            // Get the target DataGridView to use its column structure
             Guna2DataGridView targetGridView = isPurchase
                 ? MainMenu_Form.Instance.Purchase_DataGridView
                 : MainMenu_Form.Instance.Sale_DataGridView;
 
+            // Create column helper and validate required columns
+            ExcelColumnHelper columnHelper = new(worksheet);
+            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateTransactionColumns(isPurchase);
+
+            if (!validation.IsValid)
+            {
+                ShowColumnValidationError("Transactions", validation.MissingColumns, validation.AvailableColumns);
+                summary.Errors.Add(new ImportError
+                {
+                    WorksheetName = isPurchase ? "Purchases" : "Sales",
+                    FieldName = "Column Validation",
+                    InvalidValue = $"Missing columns: {string.Join(", ", validation.MissingColumns)}"
+                });
+                return summary;
+            }
+
+            // Always skip header row (row 1) since we use it for column lookup
+            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
+
+            int newRowIndex = -1;
+            int currentRowNumber = 2;  // Start at 2 since we're skipping header row (row 1)
+            int successfulTransactions = 0;
+
             // Get existing transaction numbers
             HashSet<string> existingTransactionNumbers = new(targetGridView.Rows.Count);
-            string idColumn = ReadOnlyVariables.ID_column;
+            string idColumnHeader = targetGridView.Columns[0].HeaderText;
 
             foreach (DataGridViewRow row in targetGridView.Rows)
             {
-                if (row.Cells[idColumn].Value != null)
+                if (row.Cells[0].Value != null)
                 {
-                    existingTransactionNumbers.Add(row.Cells[idColumn].Value.ToString());
+                    existingTransactionNumbers.Add(row.Cells[0].Value.ToString());
                 }
             }
 
@@ -709,7 +743,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 currentRowNumber++;
-                string transactionNumber = row.Cell(1).GetValue<string>();
+                string transactionNumber = columnHelper.GetCellValue(row, idColumnHeader);
 
                 // Check if this is an item row (part of a multi-item transaction)
                 if (string.IsNullOrEmpty(transactionNumber) || transactionNumber == ReadOnlyVariables.EmptyCell)
@@ -745,7 +779,7 @@ namespace Sales_Tracker.Classes
                     newRowIndex = targetGridView.Rows.Add(newRow);
                 });
 
-                ImportTransactionResult importResult = ImportTransaction(targetGridView, newRowIndex, row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
+                ImportTransactionResult importResult = ImportTransaction(targetGridView, newRowIndex, row, newRow, currentRowNumber, worksheetName, sourceCurrency, session, columnHelper);
 
                 switch (importResult)
                 {
@@ -771,7 +805,7 @@ namespace Sales_Tracker.Classes
                         break;
                 }
 
-                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
+                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session, columnHelper);
 
                 switch (itemsImportResult)
                 {
@@ -940,6 +974,27 @@ namespace Sales_Tracker.Classes
             };
         }
 
+        /// <summary>
+        /// Shows column validation error to user
+        /// </summary>
+        private static void ShowColumnValidationError(string importType, List<string> missingColumns, List<string> availableColumns)
+        {
+            string missingColumnsText = string.Join(", ", missingColumns.Select(c => $"'{c}'"));
+            string availableColumnsText = availableColumns.Count > 0
+                ? string.Join(", ", availableColumns.Select(c => $"'{c}'"))
+                : "None found";
+
+            CustomMessageBox.ShowWithFormat(
+                "Missing Required Columns",
+                "Cannot import {0} data because the following required columns are missing:\n\n" +
+                "Missing: {1}\n\n" +
+                "Available columns in worksheet: {2}\n\n" +
+                "Please ensure your spreadsheet has the correct column headers.",
+                CustomMessageBoxIcon.Error,
+                CustomMessageBoxButtons.Ok,
+                importType, missingColumnsText, availableColumnsText);
+        }
+
         // Export spreadsheet methods
         private static ConversionResult ConvertStringToDecimalWithOptions(string value, ImportError errorContext)
         {
@@ -971,12 +1026,11 @@ namespace Sales_Tracker.Classes
                     {
                         case CustomMessageBoxResult.Skip:  // Skip transaction
                             return new ConversionResult { Value = 0, IsValid = false, Action = InvalidValueAction.Skip };
-                        case CustomMessageBoxResult.Cancel: // Cancel import
+                        case CustomMessageBoxResult.Cancel:  // Cancel import
                             return new ConversionResult { Value = 0, IsValid = false, Action = InvalidValueAction.Cancel };
                         case CustomMessageBoxResult.Retry:  // Retry with user input
-                            //   currentValue = newValue;
-                            break; // Continue the loop with the new value
-                        default:  // This shouldn't happen, but treat as cancel
+                            break;  // Continue the while loop - the user may update the spreadsheet with a new value
+                        default:  // Treat as cancel
                             return new ConversionResult { Value = 0, IsValid = false, Action = InvalidValueAction.Cancel };
                     }
                 }
@@ -1070,14 +1124,23 @@ namespace Sales_Tracker.Classes
         /// Imports data into a DataGridViewRow with source currency support and immediate cancellation support.
         /// </summary>
         /// <returns>ImportTransactionResult indicating the result of the import operation.</returns>
-        private static ImportTransactionResult ImportTransaction(DataGridView targetGridView, int rowIndex, IXLRow row, DataGridViewRow transaction, int rowNumber, string worksheetName, string sourceCurrency, ImportSession session)
+        private static ImportTransactionResult ImportTransaction(
+            DataGridView targetGridView,
+            int rowIndex,
+            IXLRow row,
+            DataGridViewRow transaction,
+            int rowNumber,
+            string worksheetName,
+            string sourceCurrency,
+            ImportSession session,
+            ExcelColumnHelper columnHelper)
         {
             if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
             TagData tagData = new();
 
-            // Get exchange rate from source currency to default currency
-            string dateCellValue = row.Cell(7).Value.ToString();
+            // Get exchange rates
+            string dateCellValue = columnHelper.GetCellValue(row, "Date");
             string date = Tools.FormatDate(Tools.ParseDateOrToday(dateCellValue));
 
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
@@ -1085,17 +1148,15 @@ namespace Sales_Tracker.Classes
             decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, defaultCurrency, date, false);
             if (exchangeRateToDefault == -1) { return ImportTransactionResult.Failed; }
 
-            // Get exchange rate from source currency to USD for TagData storage
             decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
             if (exchangeRateToUSD == -1) { return ImportTransactionResult.Failed; }
 
-            string transactionId = row.Cell(1).GetValue<string>();  // Get transaction ID for error reporting
-
-            string productName = row.Cell(3).GetValue<string>();
-            string categoryName = row.Cell(4).GetValue<string>();
+            string transactionId = columnHelper.GetCellValue(row, targetGridView.Columns[0].HeaderText);
+            string productName = columnHelper.GetCellValue(row, "Product Name");
+            string categoryName = columnHelper.GetCellValue(row, "Category");
             bool isPurchase = worksheetName.Equals("Purchases", StringComparison.OrdinalIgnoreCase);
 
-            // Make sure the product exists
+            // Validate product exists
             InvalidValueAction productValidationResult = ValidateProductExists(
                 productName,
                 categoryName,
@@ -1112,89 +1173,80 @@ namespace Sales_Tracker.Classes
                 case InvalidValueAction.Skip:
                     return ImportTransactionResult.Skip;
                 case InvalidValueAction.Continue:
-                    break;  // Continue processing
+                    break;
             }
 
             int noteCellIndex = targetGridView.Rows[rowIndex].Cells[ReadOnlyVariables.Note_column].ColumnIndex;
+
+            // Add values to each cell in the transaction row
             for (int i = 0; i < noteCellIndex; i++)
             {
-                // Check for cancellation before processing each cell
                 if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
-                string value = row.Cell(i + 1).GetValue<string>();
-
-                if (i >= 8 && i <= 14)
+                // Skip the "Has Receipt" column
+                if (targetGridView.Columns[i].Name == ReadOnlyVariables.HasReceipt_column)
                 {
-                    // Get field name for better error reporting
-                    string fieldName = i switch
-                    {
-                        8 => "Price Per Unit",
-                        9 => "Shipping",
-                        10 => "Tax",
-                        11 => "Fee",
-                        12 => "Discount",
-                        13 => "Charged Difference",
-                        14 => "Charged Or Credited",
-                        _ => "Unknown"
-                    };
+                    continue;
+                }
 
-                    // Create error context for better error reporting
+                string columnHeaderText = targetGridView.Columns[i].HeaderText;
+                string value = columnHelper.GetCellValue(row, columnHeaderText);
+
+                // Handle monetary fields (typically columns 8-14 in the original structure)
+                if (IsMonetaryColumn(columnHeaderText))
+                {
                     ImportError errorContext = new()
                     {
                         TransactionId = transactionId,
-                        FieldName = fieldName,
+                        FieldName = columnHeaderText,
                         RowNumber = rowNumber,
                         WorksheetName = worksheetName
                     };
 
                     ConversionResult conversionResult = ConvertStringToDecimalWithOptions(value, errorContext);
 
-                    // Handle the user's choice
                     switch (conversionResult.Action)
                     {
                         case InvalidValueAction.Cancel:
-                            return ImportTransactionResult.Cancel;  // This will stop the import process
-
+                            return ImportTransactionResult.Cancel;
                         case InvalidValueAction.Skip:
-                            return ImportTransactionResult.Skip;  // This will skip this transaction but continue importing others
-
+                            return ImportTransactionResult.Skip;
                         case InvalidValueAction.Continue:
-                            // Process normally
                             break;
                     }
 
                     decimal sourceValue = conversionResult.Value;
                     bool useEmpty = false;
 
-                    switch (i)
+                    // Store USD values in TagData based on column type
+                    switch (columnHeaderText.ToLowerInvariant())
                     {
-                        case 8:
+                        case "price per unit":
                             if (value == ReadOnlyVariables.EmptyCell)
                             {
                                 useEmpty = true;
                             }
                             else
                             {
-                                // Store USD value in TagData
                                 tagData.PricePerUnitUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             }
                             break;
-                        case 9:
+                        case "shipping":
                             tagData.ShippingUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case 10:
+                        case "tax":
                             tagData.TaxUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case 11:
+                        case "fee":
                             tagData.FeeUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case 12:
+                        case "discount":
                             tagData.DiscountUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case 13:
+                        case "charged difference":
                             tagData.ChargedDifferenceUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case 14:
+                        case "charged or credited":
                             tagData.ChargedOrCreditedUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                     }
@@ -1206,6 +1258,7 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
+                    // Handle non-monetary fields
                     transaction.Cells[i].Value = string.IsNullOrEmpty(value) ? ReadOnlyVariables.EmptyCell : value;
                 }
             }
@@ -1223,10 +1276,9 @@ namespace Sales_Tracker.Classes
                 tagData.OriginalChargedOrCredited = Math.Round(tagData.ChargedOrCreditedUSD / exchangeRateToUSD, 2);
             }
 
-            // Set the note
+            // Handle notes
             DataGridViewCell noteCell = transaction.Cells[noteCellIndex];
-            IXLCell excelNoteCell = row.Cell(16);
-            string excelNoteCellValue = excelNoteCell.GetValue<string>();
+            string excelNoteCellValue = columnHelper.GetCellValue(row, "Note");
 
             if (string.IsNullOrWhiteSpace(excelNoteCellValue) || excelNoteCellValue == ReadOnlyVariables.EmptyCell)
             {
@@ -1241,7 +1293,26 @@ namespace Sales_Tracker.Classes
             transaction.Tag = tagData;
             return ImportTransactionResult.Success;
         }
-        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency, ImportSession session)
+
+        /// <summary>
+        /// Determines if a column contains monetary values based on header text
+        /// </summary>
+        private static bool IsMonetaryColumn(string columnHeaderText)
+        {
+            string[] monetaryColumns =
+            [
+                "price per unit",
+                "shipping",
+                "tax",
+                "fee",
+                "discount",
+                "charged difference",
+                "charged or credited"
+            ];
+
+            return monetaryColumns.Contains(columnHeaderText.ToLowerInvariant());
+        }
+        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency, ImportSession session, ExcelColumnHelper columnHelper)
         {
             if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
@@ -1277,18 +1348,19 @@ namespace Sales_Tracker.Classes
                     break;
                 }
 
-                // Get data from every item in the transaction
-                string number = nextRow.Cell(1).GetValue<string>();
+                // Check if the next row has a transaction ID - if it does, it's not an item row
+                string transactionIdColumn = transaction.Cells[0].OwningColumn.HeaderText;
+                string number = columnHelper.GetCellValue(nextRow, transactionIdColumn);
 
                 // Check if the next row has no number, indicating multiple items
                 if (string.IsNullOrEmpty(number))
                 {
-                    string productName = nextRow.Cell(3).Value.ToString();
-                    string categoryName = nextRow.Cell(4).Value.ToString();
-                    string currentCountry = nextRow.Cell(5).Value.ToString();
-                    string currentCompany = nextRow.Cell(6).Value.ToString();
+                    string productName = columnHelper.GetCellValue(nextRow, "Product Name");
+                    string categoryName = columnHelper.GetCellValue(nextRow, "Category");
+                    string currentCountry = columnHelper.GetCellValue(nextRow, "Country of Origin");
+                    string currentCompany = columnHelper.GetCellValue(nextRow, "Company of Origin");
 
-                    // Make sure the product exists
+                    // Validate product exists
                     string transactionId = transaction.Cells[0].Value?.ToString() ?? "Unknown";
                     InvalidValueAction productValidationResult = ValidateProductExists(
                         productName,
@@ -1306,10 +1378,14 @@ namespace Sales_Tracker.Classes
                         case InvalidValueAction.Skip:
                             return ImportTransactionResult.Skip;
                         case InvalidValueAction.Continue:
-                            break; // Continue processing
+                            break;
                     }
 
-                    // Use enhanced error handling for quantity
+                    // Get quantity and price using column headers
+                    string quantityValue = columnHelper.GetCellValue(nextRow, "Quantity");
+                    string priceValue = columnHelper.GetCellValue(nextRow, "Price Per Unit");
+
+                    // Use error handling for quantity and price
                     ImportError quantityErrorContext = new()
                     {
                         TransactionId = transactionId,
@@ -1318,8 +1394,7 @@ namespace Sales_Tracker.Classes
                         WorksheetName = worksheetName
                     };
 
-                    ConversionResult quantityResult = ConvertStringToDecimalWithOptions(
-                        nextRow.Cell(8).Value.ToString(), quantityErrorContext);
+                    ConversionResult quantityResult = ConvertStringToDecimalWithOptions(quantityValue, quantityErrorContext);
 
                     if (quantityResult.Action == InvalidValueAction.Cancel)
                     {
@@ -1330,7 +1405,6 @@ namespace Sales_Tracker.Classes
                         return ImportTransactionResult.Skip;
                     }
 
-                    // Use enhanced error handling for price per unit
                     ImportError priceErrorContext = new()
                     {
                         TransactionId = transactionId,
@@ -1339,8 +1413,7 @@ namespace Sales_Tracker.Classes
                         WorksheetName = worksheetName
                     };
 
-                    ConversionResult priceResult = ConvertStringToDecimalWithOptions(
-                        nextRow.Cell(9).Value.ToString(), priceErrorContext);
+                    ConversionResult priceResult = ConvertStringToDecimalWithOptions(priceValue, priceErrorContext);
 
                     if (priceResult.Action == InvalidValueAction.Cancel)
                     {
@@ -1364,14 +1437,17 @@ namespace Sales_Tracker.Classes
                         currentCountry,
                         currentCompany,
                         quantity.ToString(),
-                        defaultPricePerUnit.ToString("F2"),  // Default currency for display
-                        usdPricePerUnit.ToString("F2")       // USD for storage
+                        defaultPricePerUnit.ToString("F2"),
+                        usdPricePerUnit.ToString("F2")
                     );
 
                     items.Add(item);
                     row = nextRow;  // Move to the next row
                 }
-                else { break; }
+                else
+                {
+                    break;
+                }
             }
 
             // Save

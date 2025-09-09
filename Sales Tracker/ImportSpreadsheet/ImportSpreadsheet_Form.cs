@@ -57,7 +57,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void SetAccessibleDescriptions()
         {
-            IncludeHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
@@ -101,6 +100,71 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using XLWorkbook workbook = new(stream);
+
+                List<string> validationErrors = [];
+
+                foreach (IXLWorksheet worksheet in workbook.Worksheets)
+                {
+                    // Skip empty worksheets
+                    if (!worksheet.RowsUsed().Any()) { continue; }
+
+                    ExcelColumnHelper columnHelper = new(worksheet);
+                    string worksheetNameLower = worksheet.Name.ToLowerInvariant();
+
+                    // Validate based on worksheet name
+                    if (worksheetNameLower.Contains("accountant"))
+                    {
+                        ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateSimpleListColumns("Accountant name");
+                        if (!validation.IsValid)
+                        {
+                            validationErrors.Add($"Accountants worksheet is missing required columns: {string.Join(", ", validation.MissingColumns)}");
+                        }
+                    }
+                    else if (worksheetNameLower.Contains("compan"))  // No, this is not a typo
+                    {
+                        ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateSimpleListColumns("Company name");
+                        if (!validation.IsValid)
+                        {
+                            validationErrors.Add($"Companies worksheet is missing required columns: {string.Join(", ", validation.MissingColumns)}");
+                        }
+                    }
+                    else if (worksheetNameLower.Contains("product"))
+                    {
+                        ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateProductColumns();
+                        if (!validation.IsValid)
+                        {
+                            validationErrors.Add($"{worksheet.Name} worksheet is missing required columns: {string.Join(", ", validation.MissingColumns)}");
+                        }
+                    }
+                    else if (worksheetNameLower.Contains("purchase") || worksheetNameLower.Contains("sale"))
+                    {
+                        // Get appropriate DataGridView for validation
+                        bool isPurchase = worksheetNameLower.Contains("purchase");
+                        DataGridView targetDataGridView = isPurchase
+                            ? MainMenu_Form.Instance.Purchase_DataGridView
+                            : MainMenu_Form.Instance.Sale_DataGridView;
+
+                        ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateTransactionColumns(isPurchase);
+                        if (!validation.IsValid)
+                        {
+                            validationErrors.Add($"{worksheet.Name} worksheet is missing required columns: {string.Join(", ", validation.MissingColumns)}");
+                        }
+                    }
+                }
+
+                if (validationErrors.Count > 0)
+                {
+                    string errorMessage = "The spreadsheet has the following structure issues:\n\n" +
+                        string.Join("\n", validationErrors) +
+                        "\n\nPlease correct these issues before importing.";
+
+                    CustomMessageBox.Show("Spreadsheet Structure Issues",
+                        errorMessage,
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok);
+                    return false;
+                }
+
                 return true;
             }
             catch
@@ -139,8 +203,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                 // Skip if worksheet is empty
                 if (!worksheet.RowsUsed().Any()) { continue; }
 
-                // Get the first data row (skip header if needed)
-                IXLRow dataRow = worksheet.RowsUsed().Skip(IncludeHeaderRow_CheckBox.Checked ? 0 : 1).FirstOrDefault();
+                // Get the first data row (skip header)
+                IXLRow dataRow = worksheet.RowsUsed().Skip(1).FirstOrDefault();
                 if (dataRow == null) { continue; }
 
                 // Check currency columns (8-14)
@@ -540,7 +604,6 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
-            bool includeheader = IncludeHeaderRow_CheckBox.Checked;
 
             foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
             {
@@ -576,40 +639,40 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, includeheader, importSession);
+                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, importSession);
                         if (accountantsImported)
                         {
-                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet);
                         }
                         break;
 
                     case _companiesName:
-                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, includeheader, importSession);
+                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, importSession);
                         if (companiesImported)
                         {
-                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet);
                         }
                         break;
 
                     case _purchaseProductsName:
-                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, includeheader, importSession);
+                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, importSession);
                         if (purchaseProductsImported)
                         {
-                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet);
                         }
                         break;
 
                     case _saleProductsName:
-                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, includeheader, importSession);
+                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, importSession);
                         if (saleProductsImported)
                         {
-                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet);
                         }
                         break;
 
                     case _purchasesName:
                         ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
-                            worksheet, includeheader, _selectedSourceCurrency, importSession);
+                            worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
@@ -625,14 +688,14 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true, importSession);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, true, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
 
                     case _salesName:
                         ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
-                            worksheet, includeheader, _selectedSourceCurrency, importSession);
+                            worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
@@ -648,7 +711,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false, importSession);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, false, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
@@ -672,11 +735,9 @@ namespace Sales_Tracker.ImportSpreadsheet
         /// <summary>
         /// Helper method to count rows that would be imported (for non-transaction imports).
         /// </summary>
-        private static int CountRowsToImport(IXLWorksheet worksheet, bool includeHeader)
+        private static int CountRowsToImport(IXLWorksheet worksheet)
         {
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);  // Skip header
 
             int count = 0;
 
@@ -697,16 +758,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             CloseAllPanels(null, null);
             Tools.OpenLink("https://argorobots.com/documentation/index.php#spreadsheets");
-        }
-        private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            await RefreshPanelsAsync();
-        }
-        private void IncludeHeaderRow_Label_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            IncludeHeaderRow_CheckBox.Checked = !IncludeHeaderRow_CheckBox.Checked;
         }
         private void AutoDetectReceiptsFolder()
         {
@@ -958,6 +1009,16 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return false;
             }
 
+            ExcelColumnHelper columnHelper = new(worksheet);
+
+            // Check if this worksheet has at least one recognizable column
+            List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+            if (availableHeaders.Count == 0)
+            {
+                emptyWorksheets.Add($"{worksheetName} (no headers)");
+                return false;
+            }
+
             List<T> extractedData = extractionMethod(worksheet);
 
             if (extractedData.Count > 0)
@@ -968,25 +1029,53 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             else
             {
-                emptyWorksheets.Add(worksheetName);
+                emptyWorksheets.Add($"{worksheetName} (no valid data)");
                 return false;
             }
         }
         private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
             List<string> firstCells = [];
+            ExcelColumnHelper columnHelper = new(worksheet);
 
-            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
+            // Try to find the appropriate column for this worksheet type
+            string targetColumn = null;
+            string worksheetNameLower = worksheet.Name.ToLowerInvariant();
+
+            if (worksheetNameLower.Contains("accountant"))
+            {
+                targetColumn = "Accountant name";
+            }
+            else if (worksheetNameLower.Contains("compan"))
+            {
+                targetColumn = "Company name";
+            }
+
+            // If we can't find the expected column, look for common alternatives
+            if (targetColumn == null || !columnHelper.HasColumn(targetColumn))
+            {
+                List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+
+                // Look for name-related columns
+                targetColumn = availableHeaders.FirstOrDefault(h =>
+                    h.Contains("name", StringComparison.OrdinalIgnoreCase)) ??
+                    availableHeaders.FirstOrDefault();  // Fall back to first column
+            }
+
+            if (targetColumn == null)
+            {
+                return firstCells;  // No columns available
+            }
+
+            IEnumerable<IXLRow> rows = worksheet.RowsUsed().Skip(1);  // Skip header
 
             foreach (IXLRow row in rows)
             {
-                string firstCellValue = row.Cell(1).GetValue<string>();
+                string cellValue = columnHelper.GetCellValue(row, targetColumn);
 
-                if (!string.IsNullOrWhiteSpace(firstCellValue))
+                if (!string.IsNullOrWhiteSpace(cellValue))
                 {
-                    firstCells.Add(firstCellValue.Trim());
+                    firstCells.Add(cellValue.Trim());
                 }
             }
 
@@ -995,15 +1084,23 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractProducts(IXLWorksheet productsWorksheet)
         {
             List<string> products = [];
+            ExcelColumnHelper columnHelper = new(productsWorksheet);
 
-            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? productsWorksheet.RowsUsed()
-                : productsWorksheet.RowsUsed().Skip(1);
+            // Look for product and category columns with flexible naming
+            string productColumn = FindProductNameColumn(columnHelper);
+            string categoryColumn = FindCategoryNameColumn(columnHelper);
+
+            if (productColumn == null || categoryColumn == null)
+            {
+                return products;  // Cannot extract products without these columns
+            }
+
+            IEnumerable<IXLRow> rows = productsWorksheet.RowsUsed().Skip(1);  // Skip header
 
             foreach (IXLRow row in rows)
             {
-                string productName = row.Cell(2).GetValue<string>();
-                string categoryName = row.Cell(3).GetValue<string>();
+                string productName = columnHelper.GetCellValue(row, productColumn);
+                string categoryName = columnHelper.GetCellValue(row, categoryColumn);
 
                 // Only add if both fields have values
                 if (!string.IsNullOrWhiteSpace(productName) && !string.IsNullOrWhiteSpace(categoryName))
@@ -1017,24 +1114,93 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractTransactions(IXLWorksheet transactionsWorksheet)
         {
             List<string> transactions = [];
+            ExcelColumnHelper columnHelper = new(transactionsWorksheet);
 
-            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? transactionsWorksheet.RowsUsed()
-                : transactionsWorksheet.RowsUsed().Skip(1);
+            // Get the appropriate DataGridView to determine expected columns
+            bool isPurchaseWorksheet = transactionsWorksheet.Name.Contains("purchase", StringComparison.InvariantCultureIgnoreCase);
+            DataGridView targetDataGridView = isPurchaseWorksheet
+                ? MainMenu_Form.Instance.Purchase_DataGridView
+                : MainMenu_Form.Instance.Sale_DataGridView;
+
+            // Look for columns that match DataGridView structure
+            string productColumn = FindProductNameColumn(columnHelper);
+            string dateColumn = FindDateColumn(columnHelper);
+
+            // If we still can't find the required columns, return empty list
+            if (productColumn == null || dateColumn == null)
+            {
+                return transactions;
+            }
+
+            IEnumerable<IXLRow> rows = transactionsWorksheet.RowsUsed().Skip(1);  // Skip header
 
             foreach (IXLRow row in rows)
             {
-                string productName = row.Cell(3).GetValue<string>();
-                string date = row.Cell(7).GetValue<string>();
+                string productName = columnHelper.GetCellValue(row, productColumn);
+                string date = columnHelper.GetCellValue(row, dateColumn);
 
-                // Only add if both fields have values
+                // Only add if both fields have values and this is a main transaction row (not an item row)
                 if (!string.IsNullOrWhiteSpace(productName) && !string.IsNullOrWhiteSpace(date))
                 {
-                    transactions.Add($"{productName.Trim()} - {date.Trim()}");
+                    // Check if this row has a transaction ID (indicating it's a main transaction, not an item)
+                    string transactionIdColumn = FindTransactionIdColumn(columnHelper, targetDataGridView);
+                    if (transactionIdColumn != null)
+                    {
+                        string transactionId = columnHelper.GetCellValue(row, transactionIdColumn);
+                        if (!string.IsNullOrWhiteSpace(transactionId))
+                        {
+                            transactions.Add($"{productName.Trim()} - {date.Trim()}");
+                        }
+                    }
+                    else
+                    {
+                        // If no transaction ID column found, just add all rows with product and date
+                        transactions.Add($"{productName.Trim()} - {date.Trim()}");
+                    }
                 }
             }
 
             return transactions;
+        }
+        private static string FindProductNameColumn(ExcelColumnHelper columnHelper)
+        {
+            List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+
+            // Try exact matches first
+            string[] exactMatches = ["Product Name", "ProductName", "Product"];
+            foreach (string match in exactMatches)
+            {
+                if (columnHelper.HasColumn(match))
+                {
+                    return match;
+                }
+            }
+
+            // Try partial matches
+            return availableHeaders.FirstOrDefault(h =>
+                    h.Contains("product", StringComparison.OrdinalIgnoreCase) &&
+                    h.Contains("name", StringComparison.OrdinalIgnoreCase)) ??
+                availableHeaders.FirstOrDefault(h =>
+                    h.Contains("product", StringComparison.OrdinalIgnoreCase))
+                ?? "";
+        }
+        private static string FindCategoryNameColumn(ExcelColumnHelper columnHelper)
+        {
+            List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+
+            // Try exact matches first
+            string[] exactMatches = ["Category", "CategoryName", "Category"];
+            foreach (string match in exactMatches)
+            {
+                if (columnHelper.HasColumn(match))
+                {
+                    return match;
+                }
+            }
+
+            // Try partial matches
+            return availableHeaders.FirstOrDefault(h =>
+                h.Contains("category", StringComparison.OrdinalIgnoreCase)) ?? "";
         }
 
         // Spreadsheet helper methods
@@ -1093,7 +1259,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             _receiptsFolderPath = "";
         }
 
-        // Helper method
+        // Helper methods
         private static void PositionLabelAndImageButtonBelowButton(
             Control button,
             Label label,
@@ -1108,6 +1274,53 @@ namespace Sales_Tracker.ImportSpreadsheet
             imageButton.Location = new Point(
                 label.Right + CustomControls.SpaceBetweenControls,
                 button.Bottom + (imageButton.Height - label.Height) / 2);
+        }
+        private static string FindDateColumn(ExcelColumnHelper columnHelper)
+        {
+            List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+
+            // Try exact matches first
+            string[] exactMatches = ["Date", "Transaction Date", "Purchase Date", "Sale Date"];
+            foreach (string match in exactMatches)
+            {
+                if (columnHelper.HasColumn(match))
+                {
+                    return match;
+                }
+            }
+
+            // Try partial matches
+            return availableHeaders.FirstOrDefault(h =>
+                h.Contains("date", StringComparison.OrdinalIgnoreCase)) ?? "";
+        }
+        private static string FindTransactionIdColumn(ExcelColumnHelper columnHelper, DataGridView dataGridView)
+        {
+            // Get the first column header from DataGridView (should be the ID column)
+            if (dataGridView.Columns.Count > 0)
+            {
+                string expectedIdColumn = dataGridView.Columns[0].HeaderText;
+                if (columnHelper.HasColumn(expectedIdColumn))
+                {
+                    return expectedIdColumn;
+                }
+            }
+
+            // Fall back to common ID column names
+            List<string> availableHeaders = columnHelper.GetAvailableHeaders().ToList();
+            string[] idMatches = ["Transaction ID", "ID", "TransactionID", "Purchase ID", "Sale ID"];
+
+            foreach (string match in idMatches)
+            {
+                if (columnHelper.HasColumn(match))
+                {
+                    return match;
+                }
+            }
+
+            // Try partial matches
+            return availableHeaders.FirstOrDefault(h =>
+                h.Contains("id", StringComparison.OrdinalIgnoreCase) ||
+                h.Contains("transaction", StringComparison.OrdinalIgnoreCase)) ?? "";
         }
 
         // Other methods

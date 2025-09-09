@@ -42,8 +42,6 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportSpreadsheet_Form));
             ImportSpreadsheet_Label = new Label();
             SelectSpreadsheet_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -51,8 +49,6 @@
             RemoveSpreadsheet_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             SelectedSpreadsheet_Label = new Label();
             OpenTutorial_Button = new Guna.UI2.WinForms.Guna2Button();
-            IncludeHeaderRow_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
-            IncludeHeaderRow_Label = new Label();
             SelectReceiptsFolder_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectedReceiptsFolder_Label = new Label();
             RemoveReceiptsFolder_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
@@ -175,46 +171,13 @@
             OpenTutorial_Button.Text = "Open tutorial";
             OpenTutorial_Button.Click += OpenTutorial_Button_Click;
             // 
-            // IncludeHeaderRow_CheckBox
-            // 
-            IncludeHeaderRow_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            IncludeHeaderRow_CheckBox.Animated = true;
-            IncludeHeaderRow_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            IncludeHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
-            IncludeHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
-            IncludeHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            IncludeHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
-            IncludeHeaderRow_CheckBox.Location = new Point(875, 30);
-            IncludeHeaderRow_CheckBox.Name = "IncludeHeaderRow_CheckBox";
-            IncludeHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
-            IncludeHeaderRow_CheckBox.Size = new Size(20, 20);
-            IncludeHeaderRow_CheckBox.TabIndex = 2;
-            IncludeHeaderRow_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            IncludeHeaderRow_CheckBox.UncheckedState.BorderRadius = 2;
-            IncludeHeaderRow_CheckBox.UncheckedState.BorderThickness = 0;
-            IncludeHeaderRow_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            IncludeHeaderRow_CheckBox.CheckedChanged += IncludeHeaderRow_CheckBox_CheckedChanged;
-            // 
-            // IncludeHeaderRow_Label
-            // 
-            IncludeHeaderRow_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            IncludeHeaderRow_Label.AutoSize = true;
-            IncludeHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            IncludeHeaderRow_Label.Location = new Point(893, 20);
-            IncludeHeaderRow_Label.Name = "IncludeHeaderRow_Label";
-            IncludeHeaderRow_Label.Padding = new Padding(5);
-            IncludeHeaderRow_Label.Size = new Size(210, 40);
-            IncludeHeaderRow_Label.TabIndex = 0;
-            IncludeHeaderRow_Label.Text = "Include header row";
-            IncludeHeaderRow_Label.Click += IncludeHeaderRow_Label_Click;
-            // 
             // SelectReceiptsFolder_Button
             // 
             SelectReceiptsFolder_Button.Anchor = AnchorStyles.Top;
             SelectReceiptsFolder_Button.BorderColor = Color.FromArgb(217, 221, 226);
             SelectReceiptsFolder_Button.BorderRadius = 3;
             SelectReceiptsFolder_Button.BorderThickness = 1;
-            SelectReceiptsFolder_Button.CustomizableEdges = customizableEdges10;
+            SelectReceiptsFolder_Button.CustomizableEdges = customizableEdges8;
             SelectReceiptsFolder_Button.DisabledState.BorderColor = Color.DarkGray;
             SelectReceiptsFolder_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             SelectReceiptsFolder_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -225,7 +188,7 @@
             SelectReceiptsFolder_Button.Location = new Point(583, 84);
             SelectReceiptsFolder_Button.Margin = new Padding(6, 5, 6, 5);
             SelectReceiptsFolder_Button.Name = "SelectReceiptsFolder_Button";
-            SelectReceiptsFolder_Button.ShadowDecoration.CustomizableEdges = customizableEdges11;
+            SelectReceiptsFolder_Button.ShadowDecoration.CustomizableEdges = customizableEdges9;
             SelectReceiptsFolder_Button.Size = new Size(220, 45);
             SelectReceiptsFolder_Button.TabIndex = 6;
             SelectReceiptsFolder_Button.Text = "Select receipts folder";
@@ -255,7 +218,7 @@
             RemoveReceiptsFolder_ImageButton.Location = new Point(675, 140);
             RemoveReceiptsFolder_ImageButton.Name = "RemoveReceiptsFolder_ImageButton";
             RemoveReceiptsFolder_ImageButton.PressedState.ImageSize = new Size(30, 30);
-            RemoveReceiptsFolder_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            RemoveReceiptsFolder_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges10;
             RemoveReceiptsFolder_ImageButton.Size = new Size(38, 38);
             RemoveReceiptsFolder_ImageButton.TabIndex = 8;
             RemoveReceiptsFolder_ImageButton.Click += RemoveReceiptsFolder_ImageButton_Click;
@@ -268,7 +231,7 @@
             DetectCurrency_Button.BorderColor = Color.FromArgb(217, 221, 226);
             DetectCurrency_Button.BorderRadius = 3;
             DetectCurrency_Button.BorderThickness = 1;
-            DetectCurrency_Button.CustomizableEdges = customizableEdges13;
+            DetectCurrency_Button.CustomizableEdges = customizableEdges11;
             DetectCurrency_Button.DisabledState.BorderColor = Color.DarkGray;
             DetectCurrency_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             DetectCurrency_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -278,7 +241,7 @@
             DetectCurrency_Button.ForeColor = Color.Black;
             DetectCurrency_Button.Location = new Point(611, 197);
             DetectCurrency_Button.Name = "DetectCurrency_Button";
-            DetectCurrency_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            DetectCurrency_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             DetectCurrency_Button.Size = new Size(150, 40);
             DetectCurrency_Button.TabIndex = 3;
             DetectCurrency_Button.Text = "Auto Detect";
@@ -288,7 +251,7 @@
             // 
             Currency_TextBox.Anchor = AnchorStyles.Top;
             Currency_TextBox.BorderRadius = 3;
-            Currency_TextBox.CustomizableEdges = customizableEdges15;
+            Currency_TextBox.CustomizableEdges = customizableEdges13;
             Currency_TextBox.DefaultText = "";
             Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -302,7 +265,7 @@
             Currency_TextBox.Name = "Currency_TextBox";
             Currency_TextBox.PlaceholderText = "";
             Currency_TextBox.SelectedText = "";
-            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Currency_TextBox.Size = new Size(150, 40);
             Currency_TextBox.TabIndex = 0;
             // 
@@ -329,8 +292,6 @@
             Controls.Add(SelectedReceiptsFolder_Label);
             Controls.Add(Currency_TextBox);
             Controls.Add(SelectReceiptsFolder_Button);
-            Controls.Add(IncludeHeaderRow_CheckBox);
-            Controls.Add(IncludeHeaderRow_Label);
             Controls.Add(OpenTutorial_Button);
             Controls.Add(RemoveSpreadsheet_ImageButton);
             Controls.Add(SelectedSpreadsheet_Label);
@@ -358,8 +319,6 @@
         private Guna.UI2.WinForms.Guna2ImageButton RemoveSpreadsheet_ImageButton;
         private Label SelectedSpreadsheet_Label;
         public Guna.UI2.WinForms.Guna2Button OpenTutorial_Button;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeHeaderRow_CheckBox;
-        private Label IncludeHeaderRow_Label;
         public Guna.UI2.WinForms.Guna2Button SelectReceiptsFolder_Button;
         private Label SelectedReceiptsFolder_Label;
         private Guna.UI2.WinForms.Guna2ImageButton RemoveReceiptsFolder_ImageButton;
