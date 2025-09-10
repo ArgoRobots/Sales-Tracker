@@ -158,12 +158,10 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                 if (validationErrors.Count > 0)
                 {
-                    string errorMessage = "The spreadsheet has the following structure issues:\n\n" +
-                        string.Join("\n", validationErrors) +
-                        "\n\nPlease correct these issues before importing.";
-
                     CustomMessageBox.Show("Spreadsheet Structure Issues",
-                        errorMessage,
+                        "The spreadsheet has the following structure issues:\n\n" +
+                        string.Join("\n", validationErrors) +
+                        "\n\nPlease correct these issues before importing.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok);
                     return false;

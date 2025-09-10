@@ -1300,7 +1300,7 @@ namespace Sales_Tracker.Classes
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
-            foreach (var kvp in columnHeaders)
+            foreach (KeyValuePair<MainMenu_Form.Column, string> kvp in columnHeaders)
             {
                 if (string.Equals(kvp.Value, headerText, StringComparison.OrdinalIgnoreCase))
                 {

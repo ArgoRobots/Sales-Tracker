@@ -8,83 +8,61 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static partial class ExcelColumnHelper
     {
-        // Methods
+        // Match Excel headers to DataGridView columns
         /// <summary>
         /// Performs flexible matching for column headers - extended to handle all form types.
         /// </summary>
-        private static bool IsFlexibleMatch(string excelHeader, string standardHeader, Enum columnType)
+        private static bool IsFlexibleMatch(string excelHeader, Enum columnType)
         {
-            // Remove common punctuation and extra spaces
+            // Remove common punctuation
             string cleanExcel = excelHeader.Replace("/", " ").Replace("-", " ").Replace("_", " ");
-            string cleanStandard = standardHeader.Replace("/", " ").Replace("-", " ").Replace("_", " ");
 
             // Normalize multiple spaces to single space
             cleanExcel = CleanExcel().Replace(cleanExcel, " ").Trim().ToLowerInvariant();
-            cleanStandard = CleanStandard().Replace(cleanStandard, " ").Trim().ToLowerInvariant();
 
-            // Handle MainMenu_Form.Column types (existing logic)
-            if (columnType is MainMenu_Form.Column mainMenuColumn)
+            return columnType switch
             {
-                return mainMenuColumn switch
-                {
-                    MainMenu_Form.Column.Product => IsProductMatch(cleanExcel),
-                    MainMenu_Form.Column.Category => IsCategoryMatch(cleanExcel),
-                    MainMenu_Form.Column.Country => IsCountryMatch(cleanExcel),
-                    MainMenu_Form.Column.Company => IsCompanyMatch(cleanExcel),
-                    MainMenu_Form.Column.Date => IsDateMatch(cleanExcel),
-                    MainMenu_Form.Column.TotalItems => IsTotalItemsMatch(cleanExcel),
-                    MainMenu_Form.Column.PricePerUnit => IsPricePerUnitMatch(cleanExcel),
-                    MainMenu_Form.Column.ID => IsIdMatch(cleanExcel),
-                    MainMenu_Form.Column.Note => IsNoteMatch(cleanExcel),
-                    MainMenu_Form.Column.HasReceipt => IsReceiptMatch(cleanExcel),
-                    _ => IsGenericMatch(cleanExcel, cleanStandard)
-                };
-            }
+                MainMenu_Form.Column.Product => IsProductMatch(cleanExcel),
+                MainMenu_Form.Column.Category => IsCategoryMatch(cleanExcel),
+                MainMenu_Form.Column.Country => IsCountryMatch(cleanExcel),
+                MainMenu_Form.Column.Company => IsCompanyMatch(cleanExcel),
+                MainMenu_Form.Column.Date => IsDateMatch(cleanExcel),
+                MainMenu_Form.Column.TotalItems => IsTotalItemsMatch(cleanExcel),
+                MainMenu_Form.Column.PricePerUnit => IsPricePerUnitMatch(cleanExcel),
+                MainMenu_Form.Column.ID => IsIdMatch(cleanExcel),
+                MainMenu_Form.Column.Note => IsNoteMatch(cleanExcel),
+                MainMenu_Form.Column.HasReceipt => IsReceiptMatch(cleanExcel),
 
-            // Handle Accountants_Form.Column types
-            if (columnType is Accountants_Form.Column accountantColumn)
-            {
-                return accountantColumn switch
-                {
-                    Accountants_Form.Column.AccountantName => IsAccountantNameMatch(cleanExcel),
-                    _ => IsGenericMatch(cleanExcel, cleanStandard)
-                };
-            }
+                Accountants_Form.Column.AccountantName => IsAccountantNameMatch(cleanExcel),
 
-            // Handle Companies_Form.Column types
-            if (columnType is Companies_Form.Column companyColumn)
-            {
-                return companyColumn switch
-                {
-                    Companies_Form.Column.Company => IsCompanyNameMatch(cleanExcel),
-                    _ => IsGenericMatch(cleanExcel, cleanStandard)
-                };
-            }
+                Companies_Form.Column.Company => IsCompanyNameMatch(cleanExcel),
 
-            // Handle Products_Form.Column types
-            if (columnType is Products_Form.Column productColumn)
-            {
-                return productColumn switch
-                {
-                    Products_Form.Column.ProductID => IsProductIdMatch(cleanExcel),
-                    Products_Form.Column.ProductName => IsProductNameMatch(cleanExcel),
-                    Products_Form.Column.ProductCategory => IsCategoryMatch(cleanExcel),
-                    Products_Form.Column.CountryOfOrigin => IsCountryMatch(cleanExcel),
-                    Products_Form.Column.CompanyOfOrigin => IsCompanyMatch(cleanExcel),
-                    _ => IsGenericMatch(cleanExcel, cleanStandard)
-                };
-            }
+                Products_Form.Column.ProductID => IsProductIdMatch(cleanExcel),
+                Products_Form.Column.ProductName => IsProductNameMatch(cleanExcel),
+                Products_Form.Column.ProductCategory => IsCategoryMatch(cleanExcel),
+                Products_Form.Column.CountryOfOrigin => IsCountryMatch(cleanExcel),
+                Products_Form.Column.CompanyOfOrigin => IsCompanyMatch(cleanExcel),
 
-            // Fallback to generic matching for unknown types
-            return IsGenericMatch(cleanExcel, cleanStandard);
+                _ => HandleUnknownColumnType(columnType)
+            };
         }
-        private static bool IsCompanyNameMatch(string excel)
+        private static bool IsProductMatch(string excel)
         {
-            return excel.Contains("company") ||
-                   excel == "company" || excel == "companies" ||
-                   excel == "name" || excel == "company name" ||
-                   excel.Contains("business") || excel.Contains("organization") ||
-                   excel.Contains("corp") || excel.Contains("corporation");
+            return excel.Contains("product") || excel.Contains("service");
+        }
+        private static bool IsCategoryMatch(string excel)
+        {
+            return excel.Contains("category") || excel.Contains("group");
+        }
+        private static bool IsCountryMatch(string excel)
+        {
+            return excel.Contains("country") || excel.Contains("countries");
+        }
+        private static bool IsCompanyMatch(string excel)
+        {
+            return excel.Contains("company") || excel.Contains("companies") ||
+                excel.Contains("manufacturer") || excel.Contains("supplier") ||
+                excel.Contains("vendor");
         }
         private static bool IsDateMatch(string excel)
         {
@@ -93,96 +71,65 @@ namespace Sales_Tracker.Classes
         private static bool IsTotalItemsMatch(string excel)
         {
             return excel.Contains("total") && excel.Contains("item") ||
-                   excel == "quantity" || excel == "qty" || excel.Contains("amount");
+                excel.Contains("quantity") || excel.Contains("qty") || excel.Contains("amount");
         }
         private static bool IsPricePerUnitMatch(string excel)
         {
             return (excel.Contains("price") && excel.Contains("unit")) ||
-                   excel == "unit price" || excel == "price" || excel.Contains("cost per unit");
+                (excel.Contains("cost") && excel.Contains("unit")) ||
+                (excel.Contains("price") && excel.Contains("each")) ||
+                (excel.Contains("cost") && excel.Contains("each"));
         }
         private static bool IsIdMatch(string excel)
         {
             return excel.Contains("id") || excel.Contains("number") || excel.Contains('#') ||
-                   excel == "transaction id" || excel == "order" || excel == "sale" || excel == "purchase";
+                excel.Contains("order") || excel.Contains("sale") || excel.Contains("purchase");
         }
         private static bool IsNoteMatch(string excel)
         {
-            return excel.Contains("note") || excel == "notes" || excel == "comment" ||
-                   excel == "comments" || excel == "remarks";
+            return excel.Contains("note") || excel == "comment" ||
+                excel.Contains("comments") || excel.Contains("remarks");
         }
         private static bool IsReceiptMatch(string excel)
         {
             return excel.Contains("receipt") || excel.Contains("attachment") ||
-                   excel.Contains("file") || excel == "receipt";
+                excel.Contains("file") || excel == "receipt";
         }
         private static bool IsAccountantNameMatch(string excel)
         {
-            return excel.Contains("accountant") ||
-                   excel == "accountant" || excel == "accountants" ||
-                   excel == "name" || excel == "accountant name" ||
-                   excel == "cpa" || excel == "bookkeeper";
+            return excel.Contains("accountant") || excel.Contains("name") ||
+                excel.Contains("cpa") || excel.Contains("bookkeeper");
+        }
+        private static bool IsCompanyNameMatch(string excel)
+        {
+            return excel.Contains("company") || excel.Contains("companies") ||
+                excel.Contains("name") || excel.Contains("business") ||
+                excel.Contains("organization") || excel.Contains("corp") ||
+                excel.Contains("corporation");
         }
         private static bool IsProductIdMatch(string excel)
         {
-            return excel.Contains("id") || excel.Contains("product") ||
-                   excel == "product id" || excel == "productid" ||
-                   excel.Contains("sku") || excel.Contains("code") ||
-                   excel == "id" || excel == "#";
+            return excel.Contains("id") || excel.Contains("sku") ||
+                excel.Contains("code") || excel.Contains('#');
         }
         private static bool IsProductNameMatch(string excel)
         {
-            return excel.Contains("product") || excel.Contains("service") ||
-                   excel == "product" || excel == "products" ||
-                   excel == "service" || excel == "services" ||
-                   excel == "name" || excel == "product name" ||
-                   excel == "item" || excel == "items";
+            return (excel.Contains("product") || excel.Contains("service"))
+                && !IsProductIdMatch(excel);
         }
-        private static bool IsProductMatch(string excel)
+        private static bool HandleUnknownColumnType(Enum columnType)
         {
-            return excel.Contains("product") || excel.Contains("service") ||
-                   excel == "product" || excel == "products" || excel == "service" || excel == "services";
-        }
-        private static bool IsCategoryMatch(string excel)
-        {
-            return excel == "category" || excel == "categories" || excel.Contains("category");
-        }
-        private static bool IsCountryMatch(string excel)
-        {
-            return excel.Contains("country") || excel.Contains("origin") || excel.Contains("destination");
-        }
-        private static bool IsCompanyMatch(string excel)
-        {
-            return excel.Contains("company") || excel.Contains("origin") || excel.Contains("manufacturer") ||
-                   excel.Contains("supplier") || excel.Contains("vendor");
-        }
-        private static bool IsGenericMatch(string cleanExcel, string cleanStandard)
-        {
-            // Direct match
-            if (cleanExcel == cleanStandard)
-            {
-                return true;
-            }
-
-            // One contains the other
-            if (cleanExcel.Contains(cleanStandard) || cleanStandard.Contains(cleanExcel))
-            {
-                return true;
-            }
-
-            // Handle "name" suffix variations
-            if (cleanExcel.EndsWith(" name") && cleanStandard == cleanExcel.Substring(0, cleanExcel.Length - 5))
-            {
-                return true;
-            }
-
-            if (cleanStandard.EndsWith(" name") && cleanExcel == cleanStandard.Substring(0, cleanStandard.Length - 5))
-            {
-                return true;
-            }
+            CustomMessageBox.ShowWithFormat(
+                "Column Validation Error",
+                "An unexpected column type was encountered during import. The spreadsheet structure may have changed after validation.\n\nColumn type: {0}\n\nThe import operation will be cancelled.",
+                CustomMessageBoxIcon.Error,
+                CustomMessageBoxButtons.Ok,
+                columnType.ToString());
 
             return false;
         }
 
+        // Main methods
         /// <summary>
         /// Gets a cell value by column type using standard column headers.
         /// </summary>
@@ -233,7 +180,7 @@ namespace Sales_Tracker.Classes
                     return columnIndex;
                 }
 
-                if (IsFlexibleMatch(excelHeader, standardHeader, column))
+                if (IsFlexibleMatch(excelHeader, column))
                 {
                     return columnIndex;
                 }
@@ -276,7 +223,7 @@ namespace Sales_Tracker.Classes
                     return true;
                 }
 
-                if (IsFlexibleMatch(excelHeader, standardHeader, column))
+                if (IsFlexibleMatch(excelHeader, column))
                 {
                     return true;
                 }
@@ -392,9 +339,6 @@ namespace Sales_Tracker.Classes
             public List<string> MissingColumns { get; } = missingColumns;
             public bool IsValid { get => MissingColumns.Count == 0; }
         }
-
-        [GeneratedRegex(@"\s+")]
-        private static partial Regex CleanStandard();
 
         [GeneratedRegex(@"\s+")]
         private static partial Regex CleanExcel();
