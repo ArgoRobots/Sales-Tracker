@@ -134,9 +134,9 @@ namespace Sales_Tracker
         // DataGridView
         public enum Column
         {
-            Company,
+            Company
         }
-        public readonly Dictionary<Column, string> ColumnHeaders = new()
+        public static readonly Dictionary<Enum, string> ColumnHeaders = new()
         {
             { Column.Company, "Company" },
         };

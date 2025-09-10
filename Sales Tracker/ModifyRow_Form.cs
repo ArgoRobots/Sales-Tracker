@@ -235,7 +235,7 @@ namespace Sales_Tracker
             string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
             _listOfOldValues.Add(cellValue);
 
-            ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
+            ConstructLabel(Accountants_Form.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
 
             _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyLetters, true, false, false, Panel);
             _controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
@@ -321,7 +321,7 @@ namespace Sales_Tracker
             string cellValue = _selectedRow.Cells[0].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
             _listOfOldValues.Add(cellValue);
 
-            ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
+            ConstructLabel(Companies_Form.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
 
             _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, false, Panel);
             _controlToFocus.TextChanged += Company_TextBox_TextChanged;
@@ -367,18 +367,18 @@ namespace Sales_Tracker
                 switch (columnName)
                 {
                     case nameof(Products_Form.Column.ProductID):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
                         _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel);
                         break;
 
                     case nameof(Products_Form.Column.ProductName):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
                         _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel);
                         _oldProductName = cellValue;
                         break;
 
                     case nameof(Products_Form.Column.ProductCategory):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
 
                         Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight, false, false, false, true);
@@ -388,7 +388,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
 
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
 
                         Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
@@ -397,7 +397,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Column.CompanyOfOrigin):
 
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
 
                         textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);

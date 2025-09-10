@@ -111,6 +111,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.AccountantList,
                 MainMenu_Form.SelectedOption.Accountants,
                 "Accountant",
+                Accountants_Form.Column.AccountantName,
                 session.AddedAccountants,
                 session);
         }
@@ -123,32 +124,29 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.CompanyList,
                 MainMenu_Form.SelectedOption.Companies,
                 "Company",
+                Companies_Form.Column.Company,
                 session.AddedCompanies,
                 session);
         }
 
         /// <summary>
-        /// Generic method to import simple list data like accountants or companies with immediate cancellation.
+        /// Helper method for importing simple list data like accountants or companies.
         /// </summary>
         private static bool ImportSimpleListData(
             IXLWorksheet worksheet,
             List<string> existingList,
             MainMenu_Form.SelectedOption optionType,
             string itemTypeName,
+            Enum column,
             List<string> addedItems,
             ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
-            ExcelColumnHelper columnHelper = new(worksheet);
-
-            // Determine expected column name based on item type
-            string expectedColumnName = itemTypeName == "Accountant" ? "Accountant name" : "Company name";
-
-            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateSimpleListColumns(expectedColumnName);
+            ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateSimpleListColumns(worksheet, column, GetColumnHeadersForType(optionType));
             if (!validation.IsValid)
             {
-                ShowColumnValidationError(itemTypeName, validation.MissingColumns, validation.AvailableColumns);
+                ShowColumnValidationError(itemTypeName, validation.MissingColumns);
                 return false;
             }
 
@@ -170,7 +168,7 @@ namespace Sales_Tracker.Classes
                 // Check for cancellation before processing each row
                 if (session.IsCancelled == true) { break; }
 
-                string itemName = columnHelper.GetCellValue(row, expectedColumnName);
+                string itemName = ExcelColumnHelper.GetCellValue(row, column);
                 if (string.IsNullOrWhiteSpace(itemName)) { continue; }
 
                 string itemNameLower = itemName.ToLowerInvariant();
@@ -258,18 +256,27 @@ namespace Sales_Tracker.Classes
 
             return wasSomethingImported;
         }
-
-        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, ImportSession session)
+        private static Dictionary<Enum, string> GetColumnHeadersForType(MainMenu_Form.SelectedOption optionType)
+        {
+            return optionType switch
+            {
+                MainMenu_Form.SelectedOption.Accountants =>
+                    Accountants_Form.ColumnHeaders.ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                MainMenu_Form.SelectedOption.Companies =>
+                    Companies_Form.ColumnHeaders.ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                _ => []
+            };
+        }
+        public static bool ImportProductsData(IXLWorksheet worksheet, bool isPurchase, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }
 
             // Create column helper and validate required columns
-            ExcelColumnHelper columnHelper = new(worksheet);
-            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateProductColumns();
+            ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateProductColumns(worksheet);
 
             if (!validation.IsValid)
             {
-                ShowColumnValidationError("Products", validation.MissingColumns, validation.AvailableColumns);
+                ShowColumnValidationError("Products", validation.MissingColumns);
                 return false;
             }
 
@@ -278,7 +285,7 @@ namespace Sales_Tracker.Classes
 
             bool wasSomethingImported = false;
 
-            List<Category> list = purchase
+            List<Category> list = isPurchase
                 ? MainMenu_Form.Instance.CategoryPurchaseList
                 : MainMenu_Form.Instance.CategorySaleList;
 
@@ -296,11 +303,11 @@ namespace Sales_Tracker.Classes
                 // Check for cancellation before processing each row
                 if (session.IsCancelled == true) { break; }
 
-                string productId = columnHelper.GetCellValue(row, "Product ID");
-                string productName = columnHelper.GetCellValue(row, "Product Name");
-                string categoryName = columnHelper.GetCellValue(row, "Category");
-                string countryOfOrigin = columnHelper.GetCellValue(row, "Country of Origin");
-                string companyOfOrigin = columnHelper.GetCellValue(row, "Company of Origin");
+                string productId = ExcelColumnHelper.GetCellValue(row, Products_Form.Column.ProductID);
+                string productName = ExcelColumnHelper.GetCellValue(row, Products_Form.Column.ProductName);
+                string categoryName = ExcelColumnHelper.GetCellValue(row, Products_Form.Column.ProductCategory);
+                string countryOfOrigin = ExcelColumnHelper.GetCellValue(row, Products_Form.Column.CountryOfOrigin);
+                string companyOfOrigin = ExcelColumnHelper.GetCellValue(row, Products_Form.Column.CompanyOfOrigin);
 
                 // Skip if any essential field is empty
                 if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(categoryName))
@@ -333,7 +340,7 @@ namespace Sales_Tracker.Classes
                     categoryName,
                     productNameLower,
                     productName,
-                    purchase,
+                    isPurchase,
                     session))
                 {
                     continue;
@@ -367,7 +374,7 @@ namespace Sales_Tracker.Classes
 
             if (session == null)
             {
-                MainMenu_Form.Instance.SaveCategoriesToFile(purchase
+                MainMenu_Form.Instance.SaveCategoriesToFile(isPurchase
                     ? MainMenu_Form.SelectedOption.CategoryPurchases
                     : MainMenu_Form.SelectedOption.CategorySales);
             }
@@ -694,13 +701,11 @@ namespace Sales_Tracker.Classes
                 ? MainMenu_Form.Instance.Purchase_DataGridView
                 : MainMenu_Form.Instance.Sale_DataGridView;
 
-            // Create column helper and validate required columns
-            ExcelColumnHelper columnHelper = new(worksheet);
-            ExcelColumnHelper.ValidationResult validation = columnHelper.ValidateTransactionColumns(isPurchase);
+            ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateTransactionColumns(worksheet, isPurchase);
 
             if (!validation.IsValid)
             {
-                ShowColumnValidationError("Transactions", validation.MissingColumns, validation.AvailableColumns);
+                ShowColumnValidationError("Transactions", validation.MissingColumns);
                 summary.Errors.Add(new ImportError
                 {
                     WorksheetName = isPurchase ? "Purchases" : "Sales",
@@ -743,7 +748,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 currentRowNumber++;
-                string transactionNumber = columnHelper.GetCellValue(row, idColumnHeader);
+                string transactionNumber = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ID);
 
                 // Check if this is an item row (part of a multi-item transaction)
                 if (string.IsNullOrEmpty(transactionNumber) || transactionNumber == ReadOnlyVariables.EmptyCell)
@@ -779,7 +784,7 @@ namespace Sales_Tracker.Classes
                     newRowIndex = targetGridView.Rows.Add(newRow);
                 });
 
-                ImportTransactionResult importResult = ImportTransaction(targetGridView, newRowIndex, row, newRow, currentRowNumber, worksheetName, sourceCurrency, session, columnHelper);
+                ImportTransactionResult importResult = ImportTransaction(targetGridView, newRowIndex, row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
 
                 switch (importResult)
                 {
@@ -805,7 +810,7 @@ namespace Sales_Tracker.Classes
                         break;
                 }
 
-                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session, columnHelper);
+                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
 
                 switch (itemsImportResult)
                 {
@@ -974,25 +979,18 @@ namespace Sales_Tracker.Classes
             };
         }
 
-        /// <summary>
-        /// Shows column validation error to user
-        /// </summary>
-        private static void ShowColumnValidationError(string importType, List<string> missingColumns, List<string> availableColumns)
+        private static void ShowColumnValidationError(string importType, List<string> missingColumns)
         {
             string missingColumnsText = string.Join(", ", missingColumns.Select(c => $"'{c}'"));
-            string availableColumnsText = availableColumns.Count > 0
-                ? string.Join(", ", availableColumns.Select(c => $"'{c}'"))
-                : "None found";
 
             CustomMessageBox.ShowWithFormat(
                 "Missing Required Columns",
                 "Cannot import {0} data because the following required columns are missing:\n\n" +
                 "Missing: {1}\n\n" +
-                "Available columns in worksheet: {2}\n\n" +
                 "Please ensure your spreadsheet has the correct column headers.",
                 CustomMessageBoxIcon.Error,
                 CustomMessageBoxButtons.Ok,
-                importType, missingColumnsText, availableColumnsText);
+                importType, missingColumnsText);
         }
 
         // Export spreadsheet methods
@@ -1123,7 +1121,6 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Imports data into a DataGridViewRow with source currency support and immediate cancellation support.
         /// </summary>
-        /// <returns>ImportTransactionResult indicating the result of the import operation.</returns>
         private static ImportTransactionResult ImportTransaction(
             DataGridView targetGridView,
             int rowIndex,
@@ -1132,15 +1129,14 @@ namespace Sales_Tracker.Classes
             int rowNumber,
             string worksheetName,
             string sourceCurrency,
-            ImportSession session,
-            ExcelColumnHelper columnHelper)
+            ImportSession session)
         {
             if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
             TagData tagData = new();
 
             // Get exchange rates
-            string dateCellValue = columnHelper.GetCellValue(row, "Date");
+            string dateCellValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Date);
             string date = Tools.FormatDate(Tools.ParseDateOrToday(dateCellValue));
 
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
@@ -1151,9 +1147,9 @@ namespace Sales_Tracker.Classes
             decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
             if (exchangeRateToUSD == -1) { return ImportTransactionResult.Failed; }
 
-            string transactionId = columnHelper.GetCellValue(row, targetGridView.Columns[0].HeaderText);
-            string productName = columnHelper.GetCellValue(row, "Product Name");
-            string categoryName = columnHelper.GetCellValue(row, "Category");
+            string transactionId = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ID);
+            string productName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Product);
+            string categoryName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Category);
             bool isPurchase = worksheetName.Equals("Purchases", StringComparison.OrdinalIgnoreCase);
 
             // Validate product exists
@@ -1190,10 +1186,11 @@ namespace Sales_Tracker.Classes
                 }
 
                 string columnHeaderText = targetGridView.Columns[i].HeaderText;
-                string value = columnHelper.GetCellValue(row, columnHeaderText);
+                MainMenu_Form.Column columnType = GetColumnTypeFromHeader(columnHeaderText, isPurchase);
+                string value = ExcelColumnHelper.GetCellValue(row, columnType);
 
-                // Handle monetary fields (typically columns 8-14 in the original structure)
-                if (IsMonetaryColumn(columnHeaderText))
+                // Handle monetary fields using column type detection
+                if (IsMonetaryColumn(columnHeaderText, isPurchase))
                 {
                     ImportError errorContext = new()
                     {
@@ -1219,9 +1216,9 @@ namespace Sales_Tracker.Classes
                     bool useEmpty = false;
 
                     // Store USD values in TagData based on column type
-                    switch (columnHeaderText.ToLowerInvariant())
+                    switch (columnType)
                     {
-                        case "price per unit":
+                        case MainMenu_Form.Column.PricePerUnit:
                             if (value == ReadOnlyVariables.EmptyCell)
                             {
                                 useEmpty = true;
@@ -1231,22 +1228,22 @@ namespace Sales_Tracker.Classes
                                 tagData.PricePerUnitUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             }
                             break;
-                        case "shipping":
+                        case MainMenu_Form.Column.Shipping:
                             tagData.ShippingUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case "tax":
+                        case MainMenu_Form.Column.Tax:
                             tagData.TaxUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case "fee":
+                        case MainMenu_Form.Column.Fee:
                             tagData.FeeUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case "discount":
+                        case MainMenu_Form.Column.Discount:
                             tagData.DiscountUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case "charged difference":
+                        case MainMenu_Form.Column.ChargedDifference:
                             tagData.ChargedDifferenceUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
-                        case "charged or credited":
+                        case MainMenu_Form.Column.Total:
                             tagData.ChargedOrCreditedUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                     }
@@ -1278,7 +1275,7 @@ namespace Sales_Tracker.Classes
 
             // Handle notes
             DataGridViewCell noteCell = transaction.Cells[noteCellIndex];
-            string excelNoteCellValue = columnHelper.GetCellValue(row, "Note");
+            string excelNoteCellValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Note);
 
             if (string.IsNullOrWhiteSpace(excelNoteCellValue) || excelNoteCellValue == ReadOnlyVariables.EmptyCell)
             {
@@ -1295,24 +1292,60 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Determines if a column contains monetary values based on header text
+        /// Gets the column type from a header text.
         /// </summary>
-        private static bool IsMonetaryColumn(string columnHeaderText)
+        private static MainMenu_Form.Column GetColumnTypeFromHeader(string headerText, bool isPurchase)
         {
-            string[] monetaryColumns =
+            Dictionary<MainMenu_Form.Column, string> columnHeaders = isPurchase
+                ? MainMenu_Form.Instance.PurchaseColumnHeaders
+                : MainMenu_Form.Instance.SalesColumnHeaders;
+
+            foreach (var kvp in columnHeaders)
+            {
+                if (string.Equals(kvp.Value, headerText, StringComparison.OrdinalIgnoreCase))
+                {
+                    return kvp.Key;
+                }
+            }
+
+            return MainMenu_Form.Column.Note;  // Default fallback
+        }
+
+        /// <summary>
+        /// Determines if a column contains monetary values based on header text and context.
+        /// </summary>
+        private static bool IsMonetaryColumn(string columnHeaderText, bool isPurchase)
+        {
+            // Get the appropriate column headers dictionary
+            Dictionary<MainMenu_Form.Column, string> columnHeaders = isPurchase
+                ? MainMenu_Form.Instance.PurchaseColumnHeaders
+                : MainMenu_Form.Instance.SalesColumnHeaders;
+
+            // Define which columns are monetary
+            MainMenu_Form.Column[] monetaryColumnTypes =
             [
-                "price per unit",
-                "shipping",
-                "tax",
-                "fee",
-                "discount",
-                "charged difference",
-                "charged or credited"
+                MainMenu_Form.Column.PricePerUnit,
+                MainMenu_Form.Column.Shipping,
+                MainMenu_Form.Column.Tax,
+                MainMenu_Form.Column.Fee,
+                MainMenu_Form.Column.Discount,
+                MainMenu_Form.Column.ChargedDifference,
+                MainMenu_Form.Column.Total
             ];
 
-            return monetaryColumns.Contains(columnHeaderText.ToLowerInvariant());
+            // Check if the given header text matches any of the monetary columns
+            foreach (MainMenu_Form.Column columnType in monetaryColumnTypes)
+            {
+                if (columnHeaders.TryGetValue(columnType, out string standardHeader) &&
+                    string.Equals(standardHeader, columnHeaderText, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
-        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency, ImportSession session, ExcelColumnHelper columnHelper)
+        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency, ImportSession session)
         {
             if (session.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
@@ -1348,17 +1381,16 @@ namespace Sales_Tracker.Classes
                     break;
                 }
 
-                // Check if the next row has a transaction ID - if it does, it's not an item row
-                string transactionIdColumn = transaction.Cells[0].OwningColumn.HeaderText;
-                string number = columnHelper.GetCellValue(nextRow, transactionIdColumn);
+                // Check if the next row has a transaction ID - if it doesn't, it's an item row
+                string number = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.ID);
 
                 // Check if the next row has no number, indicating multiple items
                 if (string.IsNullOrEmpty(number))
                 {
-                    string productName = columnHelper.GetCellValue(nextRow, "Product Name");
-                    string categoryName = columnHelper.GetCellValue(nextRow, "Category");
-                    string currentCountry = columnHelper.GetCellValue(nextRow, "Country of Origin");
-                    string currentCompany = columnHelper.GetCellValue(nextRow, "Company of Origin");
+                    string productName = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Product);
+                    string categoryName = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Category);
+                    string currentCountry = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Country);
+                    string currentCompany = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Company);
 
                     // Validate product exists
                     string transactionId = transaction.Cells[0].Value?.ToString() ?? "Unknown";
@@ -1381,9 +1413,9 @@ namespace Sales_Tracker.Classes
                             break;
                     }
 
-                    // Get quantity and price using column headers
-                    string quantityValue = columnHelper.GetCellValue(nextRow, "Quantity");
-                    string priceValue = columnHelper.GetCellValue(nextRow, "Price Per Unit");
+                    // Get quantity and price using column types
+                    string quantityValue = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.TotalItems);
+                    string priceValue = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.PricePerUnit);
 
                     // Use error handling for quantity and price
                     ImportError quantityErrorContext = new()

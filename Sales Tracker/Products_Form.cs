@@ -438,7 +438,7 @@ namespace Sales_Tracker
             CompanyOfOrigin,
             Type
         }
-        public readonly Dictionary<Column, string> ColumnHeaders = new()
+        public static readonly Dictionary<Column, string> ColumnHeaders = new()
         {
             { Column.ProductID, "Product ID" },
             { Column.ProductName, "Product name" },

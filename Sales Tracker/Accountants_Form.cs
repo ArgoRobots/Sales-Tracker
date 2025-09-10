@@ -132,9 +132,9 @@ namespace Sales_Tracker
         // DataGridView
         public enum Column
         {
-            AccountantName,
+            AccountantName
         }
-        public readonly Dictionary<Column, string> ColumnHeaders = new()
+        public static readonly Dictionary<Enum, string> ColumnHeaders = new()
         {
             { Column.AccountantName, "Accountant" },
         };
