@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.UI;
+﻿using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -19,6 +20,9 @@ namespace Sales_Tracker.Classes
                     {
                         CustomControls.CloseAllPanels();
                     }
+
+                    // Close other panels not called in CloseAllPanels()
+                    GetStarted_Form.Instance.Controls.Remove(GetStarted_Form.RightClickOpenRecent_Panel);
                 }
             }
             base.WndProc(ref m);
