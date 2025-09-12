@@ -744,7 +744,7 @@ namespace Sales_Tracker
 
             if (WarningProduct_PictureBox.Visible)
             {
-                WarningProduct_PictureBox.Location = new Point(_addButton.Left + CustomControls.SpaceBetweenControls, _addButton.Top - CustomControls.SpaceBetweenControls * 2);
+                WarningProduct_PictureBox.Location = new Point(_flowPanel.Left + SpaceOnSidesOfPanel / 2, _flowPanel.Bottom + CustomControls.SpaceBetweenControls);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
                 _addButton.Visible = false;
             }
@@ -963,7 +963,7 @@ namespace Sales_Tracker
             _addButton.Top = _flowPanel.Bottom + CustomControls.SpaceBetweenControls;
 
             float scale = DpiHelper.GetRelativeDpiScale();
-            MinimumSize = new Size(Width, _flowPanel.Bottom + (int)(150 * scale));
+            MinimumSize = new Size(Width, _flowPanel.Bottom + (int)(180 * scale));
         }
         private void CalculatePanelDimensions()
         {
