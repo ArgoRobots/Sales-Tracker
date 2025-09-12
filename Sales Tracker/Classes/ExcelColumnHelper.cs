@@ -12,7 +12,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Performs flexible matching for column headers - extended to handle all form types.
         /// </summary>
-        private static bool IsFlexibleMatch(string excelHeader, Enum columnType)
+        public static bool IsFlexibleMatch(string excelHeader, Enum columnType)
         {
             // Remove common punctuation
             string cleanExcel = excelHeader.Replace("/", " ").Replace("-", " ").Replace("_", " ");
@@ -22,6 +22,8 @@ namespace Sales_Tracker.Classes
 
             return columnType switch
             {
+                MainMenu_Form.Column.ID => IsIdMatch(cleanExcel),
+                MainMenu_Form.Column.Accountant => IsAccountantMatch(cleanExcel),
                 MainMenu_Form.Column.Product => IsProductMatch(cleanExcel),
                 MainMenu_Form.Column.Category => IsCategoryMatch(cleanExcel),
                 MainMenu_Form.Column.Country => IsCountryMatch(cleanExcel),
@@ -29,7 +31,12 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Column.Date => IsDateMatch(cleanExcel),
                 MainMenu_Form.Column.TotalItems => IsTotalItemsMatch(cleanExcel),
                 MainMenu_Form.Column.PricePerUnit => IsPricePerUnitMatch(cleanExcel),
-                MainMenu_Form.Column.ID => IsIdMatch(cleanExcel),
+                MainMenu_Form.Column.Shipping => IsShippingMatch(cleanExcel),
+                MainMenu_Form.Column.Tax => IsTaxMatch(cleanExcel),
+                MainMenu_Form.Column.Fee => IsFeeMatch(cleanExcel),
+                MainMenu_Form.Column.Discount => IsDiscountMatch(cleanExcel),
+                MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(cleanExcel),
+                MainMenu_Form.Column.Total => IsTotalMatch(cleanExcel),
                 MainMenu_Form.Column.Note => IsNoteMatch(cleanExcel),
                 MainMenu_Form.Column.HasReceipt => IsReceiptMatch(cleanExcel),
 
@@ -45,6 +52,11 @@ namespace Sales_Tracker.Classes
 
                 _ => HandleUnknownColumnType(columnType)
             };
+        }
+        private static bool IsIdMatch(string excel)
+        {
+            return excel.Contains("id") || excel.Contains("number") || excel.Contains('#') ||
+                excel.Contains("order") || excel.Contains("sale") || excel.Contains("purchase");
         }
         private static bool IsProductMatch(string excel)
         {
@@ -80,11 +92,6 @@ namespace Sales_Tracker.Classes
                 (excel.Contains("price") && excel.Contains("each")) ||
                 (excel.Contains("cost") && excel.Contains("each"));
         }
-        private static bool IsIdMatch(string excel)
-        {
-            return excel.Contains("id") || excel.Contains("number") || excel.Contains('#') ||
-                excel.Contains("order") || excel.Contains("sale") || excel.Contains("purchase");
-        }
         private static bool IsNoteMatch(string excel)
         {
             return excel.Contains("note") || excel == "comment" ||
@@ -94,6 +101,43 @@ namespace Sales_Tracker.Classes
         {
             return excel.Contains("receipt") || excel.Contains("attachment") ||
                 excel.Contains("file") || excel == "receipt";
+        }
+        private static bool IsAccountantMatch(string excel)
+        {
+            return excel.Contains("accountant") || excel.Contains("cpa") ||
+                excel.Contains("bookkeeper");
+        }
+        private static bool IsShippingMatch(string excel)
+        {
+            return excel.Contains("shipping") || excel.Contains("delivery") ||
+                excel.Contains("freight") || excel.Contains("postage");
+        }
+        private static bool IsTaxMatch(string excel)
+        {
+            return excel.Contains("tax") || excel.Contains("vat") ||
+                excel.Contains("gst") || excel.Contains("sales tax");
+        }
+        private static bool IsFeeMatch(string excel)
+        {
+            return excel.Contains("fee") || excel.Contains("charge") ||
+                excel.Contains("service fee");
+        }
+        private static bool IsDiscountMatch(string excel)
+        {
+            return excel.Contains("discount") || excel.Contains("rebate") ||
+                excel.Contains("reduction") || excel.Contains("deduction");
+        }
+        private static bool IsChargedDifferenceMatch(string excel)
+        {
+            return (excel.Contains("charged") && excel.Contains("difference")) ||
+                excel.Contains("variance") || excel.Contains("adjustment") ||
+                excel.Contains("difference");
+        }
+        private static bool IsTotalMatch(string excel)
+        {
+            return excel.Contains("total") || excel.Contains("sum") ||
+                excel.Contains("amount") || excel.Contains("expense") ||
+                excel.Contains("revenue");
         }
         private static bool IsAccountantNameMatch(string excel)
         {

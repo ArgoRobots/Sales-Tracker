@@ -173,6 +173,7 @@ namespace Sales_Tracker.Classes
 
                 string itemNameLower = itemName.ToLowerInvariant();
 
+                // If the item already exists
                 if (existingItems.Contains(itemNameLower))
                 {
                     // Check if user has already made a "to all" choice for this entity type
@@ -1186,7 +1187,23 @@ namespace Sales_Tracker.Classes
                 }
 
                 string columnHeaderText = targetGridView.Columns[i].HeaderText;
-                MainMenu_Form.Column columnType = GetColumnTypeFromHeader(columnHeaderText, isPurchase);
+                MainMenu_Form.Column? columnType = GetColumnTypeFromHeader(columnHeaderText, isPurchase);
+
+                if (columnType == null)
+                {
+                    // Log the error and cancel import
+                    Log.WriteWithFormat(1, "Column mapping error in transaction import");
+
+                    CustomMessageBox.ShowWithFormat(
+                        "Column Mapping Error",
+                        "Failed to map column '{0}' in {1}. The spreadsheet may have changed after it was selected. The import operation will be cancelled.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        columnHeaderText, worksheetName);
+
+                    return ImportTransactionResult.Cancel;
+                }
+
                 string value = ExcelColumnHelper.GetCellValue(row, columnType);
 
                 // Handle monetary fields using column type detection
@@ -1294,12 +1311,13 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Gets the column type from a header text.
         /// </summary>
-        private static MainMenu_Form.Column GetColumnTypeFromHeader(string headerText, bool isPurchase)
+        private static MainMenu_Form.Column? GetColumnTypeFromHeader(string headerText, bool isPurchase)
         {
             Dictionary<MainMenu_Form.Column, string> columnHeaders = isPurchase
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
+            // First try exact match (case-insensitive) for performance
             foreach (KeyValuePair<MainMenu_Form.Column, string> kvp in columnHeaders)
             {
                 if (string.Equals(kvp.Value, headerText, StringComparison.OrdinalIgnoreCase))
@@ -1308,7 +1326,17 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            return MainMenu_Form.Column.Note;  // Default fallback
+            // Try flexible matching for each column type
+            foreach (KeyValuePair<MainMenu_Form.Column, string> kvp in columnHeaders)
+            {
+                if (ExcelColumnHelper.IsFlexibleMatch(headerText, kvp.Key))
+                {
+                    return kvp.Key;
+                }
+            }
+
+            // No match found
+            return null;
         }
 
         /// <summary>
