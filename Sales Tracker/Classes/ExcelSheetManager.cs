@@ -169,7 +169,10 @@ namespace Sales_Tracker.Classes
                 if (session.IsCancelled == true) { break; }
 
                 string itemName = ExcelColumnHelper.GetCellValue(row, column);
-                if (string.IsNullOrWhiteSpace(itemName)) { continue; }
+                if (string.IsNullOrWhiteSpace(itemName) || itemName == ReadOnlyVariables.EmptyCell)
+                {
+                    continue;
+                }
 
                 string itemNameLower = itemName.ToLowerInvariant();
 
@@ -790,14 +793,19 @@ namespace Sales_Tracker.Classes
                 switch (importResult)
                 {
                     case ImportTransactionResult.Cancel:
+                        RemoveRowFromDataGridView(targetGridView, newRowIndex);
                         session.IsCancelled = true;
                         summary.WasCancelled = true;
                         return summary;
+
                     case ImportTransactionResult.Skip:
+                        RemoveRowFromDataGridView(targetGridView, newRowIndex);
                         summary.SkippedRows++;
                         session.SkippedTransactionIds.Add(transactionNumber);
                         continue;
+
                     case ImportTransactionResult.Failed:
+                        RemoveRowFromDataGridView(targetGridView, newRowIndex);
                         summary.Errors.Add(new ImportError
                         {
                             TransactionId = transactionNumber,
@@ -807,6 +815,7 @@ namespace Sales_Tracker.Classes
                             InvalidValue = "Technical failure during import"
                         });
                         return summary;
+
                     case ImportTransactionResult.Success:
                         break;
                 }
@@ -869,6 +878,16 @@ namespace Sales_Tracker.Classes
             }
 
             return summary;
+        }
+        private static void RemoveRowFromDataGridView(DataGridView dataGridView, int rowIndex)
+        {
+            dataGridView.InvokeIfRequired(() =>
+            {
+                if (rowIndex >= 0 && rowIndex < dataGridView.Rows.Count)
+                {
+                    dataGridView.Rows.RemoveAt(rowIndex);
+                }
+            });
         }
 
         /// <summary>

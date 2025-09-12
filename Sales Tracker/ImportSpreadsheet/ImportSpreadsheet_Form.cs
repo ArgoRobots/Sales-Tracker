@@ -123,7 +123,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                             validationErrors.Add($"Accountants worksheet is missing required columns: {string.Join(", ", validation.MissingColumns)}");
                         }
                     }
-                    else if (worksheetNameLower.Contains("compan"))  // No, this is not a typo. This allows for both "company" and "companies".
+                    else if (worksheetNameLower.Contains("compan"))  // This is not a typo. This allows for both "company" and "companies".
                     {
                         ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateSimpleListColumns(
                             worksheet,
@@ -1046,7 +1046,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 string cellValue = ExcelColumnHelper.GetCellValue(row, column);
 
-                if (!string.IsNullOrWhiteSpace(cellValue))
+                if (!string.IsNullOrWhiteSpace(cellValue) && cellValue != ReadOnlyVariables.EmptyCell)
                 {
                     firstCells.Add(cellValue.Trim());
                 }
