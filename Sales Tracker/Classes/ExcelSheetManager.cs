@@ -1092,17 +1092,26 @@ namespace Sales_Tracker.Classes
                     return session.UserChoices.DuplicateItemChoice.Value;
                 }
 
-                string duplicateType = alreadyExistsInSystem ? "already exists" : "appears multiple times in this spreadsheet";
-                string message = alreadyExistsInSystem
-                    ? "The {1} #{2} already exists. Would you like to add this {3} anyways?"
-                    : "The {1} #{2} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?";
+                CustomMessageBoxResult result;
 
-                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
-                    $"{itemTypeName} # {duplicateType}",
-                    message,
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNoAll,
-                    itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber, itemTypeName.ToLowerInvariant());
+                if (alreadyExistsInSystem)
+                {
+                    result = CustomMessageBox.ShowWithFormat(
+                        "{0} # already exists",
+                        "The {1} #{2} already exists. Would you like to add this {2} anyways?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNoAll,
+                        itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber, itemTypeName.ToLowerInvariant());
+                }
+                else
+                {
+                    result = CustomMessageBox.ShowWithFormat(
+                        "{0} # appears multiple times in this spreadsheet",
+                        "The {1} #{2} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNoAll,
+                        itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber);
+                }
 
                 switch (result)
                 {
