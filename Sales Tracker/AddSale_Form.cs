@@ -247,7 +247,6 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(Fee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
             decimal totalPrice = Math.Round(quantity * pricePerUnit - discount, 2);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
@@ -330,7 +329,7 @@ namespace Sales_Tracker
                 productName,
                 categoryName,
                 country,
-                company,
+                companyName,
                 date,
                 quantity.ToString(),
                 pricePerUnit.ToString("N"),
@@ -419,8 +418,7 @@ namespace Sales_Tracker
                 string categoryName = itemsInName[1].Trim();
                 string productName = itemsInName[2].Trim();
 
-                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
-                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
+                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
 
                 if (firstCategoryName == null)
                 {
@@ -442,9 +440,9 @@ namespace Sales_Tracker
 
                 if (firstCompany == null)
                 {
-                    firstCompany = currentCompany;
+                    firstCompany = companyName;
                 }
-                else if (isCompanyConsistent && firstCompany != currentCompany)
+                else if (isCompanyConsistent && firstCompany != companyName)
                 {
                     isCompanyConsistent = false;
                 }
@@ -461,7 +459,7 @@ namespace Sales_Tracker
                     productName,
                     categoryName,
                     currentCountry,
-                    currentCompany,
+                    companyName,
                     quantity.ToString(),
                     pricePerUnit.ToString("F2"),
                     pricePerUnitUSD.ToString("F2")

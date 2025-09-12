@@ -13,6 +13,8 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static bool IsFlexibleMatch(string excelHeader, Enum columnType)
         {
+            excelHeader = excelHeader.ToLower();
+
             return columnType switch
             {
                 MainMenu_Form.Column.ID => IsIdMatch(excelHeader),
@@ -31,7 +33,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(excelHeader),
                 MainMenu_Form.Column.Total => IsTotalMatch(excelHeader),
                 MainMenu_Form.Column.Note => IsNoteMatch(excelHeader),
-                MainMenu_Form.Column.HasReceipt => IsReceiptMatch(excelHeader),
+                MainMenu_Form.Column.Receipt => IsReceiptMatch(excelHeader),
 
                 Accountants_Form.Column.AccountantName => IsAccountantNameMatch(excelHeader),
 
@@ -89,11 +91,6 @@ namespace Sales_Tracker.Classes
         {
             return excel.Contains("note") || excel == "comment" ||
                 excel.Contains("comments") || excel.Contains("remarks");
-        }
-        private static bool IsReceiptMatch(string excel)
-        {
-            return excel.Contains("receipt") || excel.Contains("attachment") ||
-                excel.Contains("file") || excel == "receipt";
         }
         private static bool IsAccountantMatch(string excel)
         {
@@ -153,6 +150,11 @@ namespace Sales_Tracker.Classes
         {
             return (excel.Contains("product") || excel.Contains("service"))
                 && !IsProductIdMatch(excel);
+        }
+        private static bool IsReceiptMatch(string excel)
+        {
+            return excel.Contains("receipt") || excel.Contains("file") ||
+                   excel.Contains("attachment") || excel.Contains("document");
         }
         private static bool HandleUnknownColumnType(Enum columnType)
         {

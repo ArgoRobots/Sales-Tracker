@@ -1006,12 +1006,11 @@ namespace Sales_Tracker
             _selectedRow.Cells[categoryColumn].Value = category;
 
             string countryColumn = isProductForm ? Products_Form.Column.CountryOfOrigin.ToString() : ReadOnlyVariables.Country_column;
-            string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName, companyName);
+            string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
             _selectedRow.Cells[countryColumn].Value = country;
 
             string companyColumn = isProductForm ? Products_Form.Column.CompanyOfOrigin.ToString() : ReadOnlyVariables.Company_column;
-            string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName, companyName);
-            _selectedRow.Cells[companyColumn].Value = company;
+            _selectedRow.Cells[companyColumn].Value = companyName;
 
             if (_selectedRow.Tag is not (List<string> itemList, TagData tagData))
             {
@@ -1033,7 +1032,7 @@ namespace Sales_Tracker
                     items[0] = productName;
                     items[1] = category;
                     items[2] = country;
-                    items[3] = company;
+                    items[3] = companyName;
 
                     itemList[i] = string.Join(",", items);
                 }

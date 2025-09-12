@@ -568,8 +568,8 @@ namespace Sales_Tracker.Classes
 
             foreach (IXLRow row in rowsToProcess)
             {
-                string transactionId = row.Cell(1).GetValue<string>();
-                string receiptFileName = row.Cell(17).GetValue<string>();
+                string transactionId = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ID);
+                string receiptFileName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Receipt);
 
                 DataGridViewRow? targetRow = FindTransactionRow(transactionId, isPurchase);
 
@@ -1201,6 +1201,14 @@ namespace Sales_Tracker.Classes
                     break;
             }
 
+            // Get country and company from product data (not from Excel sheet)
+            List<Category> categoryList = isPurchase
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
+
+            string companyFromProduct = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName);
+            string countryFromProduct = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
+
             int noteCellIndex = targetGridView.Rows[rowIndex].Cells[ReadOnlyVariables.Note_column].ColumnIndex;
 
             // Add values to each cell in the transaction row
@@ -1232,7 +1240,22 @@ namespace Sales_Tracker.Classes
                     return ImportTransactionResult.Cancel;
                 }
 
-                string value = ExcelColumnHelper.GetCellValue(row, columnType);
+                string value;
+
+                // Handle Country and Company columns - get from product data instead of Excel
+                if (columnType == MainMenu_Form.Column.Country)
+                {
+                    value = countryFromProduct;
+                }
+                else if (columnType == MainMenu_Form.Column.Company)
+                {
+                    value = companyFromProduct;
+                }
+                else
+                {
+                    // Get value from Excel for all other columns
+                    value = ExcelColumnHelper.GetCellValue(row, columnType);
+                }
 
                 // Handle monetary fields using column type detection
                 if (IsMonetaryColumn(columnHeaderText, isPurchase))
@@ -1422,6 +1445,9 @@ namespace Sales_Tracker.Classes
             }
 
             bool isPurchase = worksheetName.Equals("Purchases", StringComparison.OrdinalIgnoreCase);
+            List<Category> categoryList = isPurchase
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
 
             while (true)
             {
@@ -1445,8 +1471,24 @@ namespace Sales_Tracker.Classes
                 {
                     string productName = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Product);
                     string categoryName = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Category);
-                    string currentCountry = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Country);
-                    string currentCompany = ExcelColumnHelper.GetCellValue(nextRow, MainMenu_Form.Column.Company);
+
+                    // Get country and company from product data instead of Excel sheet
+                    string currentCountry = "";
+                    string currentCompany = "";
+
+                    // Try to find the product in the category list to get country and company
+                    Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(categoryList, categoryName);
+                    if (category != null)
+                    {
+                        Product? product = category.ProductList.FirstOrDefault(p =>
+                            p.Name.Equals(productName, StringComparison.OrdinalIgnoreCase));
+
+                        if (product != null)
+                        {
+                            currentCountry = product.CountryOfOrigin ?? "";
+                            currentCompany = product.CompanyOfOrigin ?? "";
+                        }
+                    }
 
                     // Validate product exists
                     string transactionId = transaction.Cells[0].Value?.ToString() ?? "Unknown";
