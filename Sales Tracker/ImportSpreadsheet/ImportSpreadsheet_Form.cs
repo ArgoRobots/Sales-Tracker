@@ -1173,6 +1173,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Other methods
         private void CloseAllPanels(object sender, EventArgs e)
         {
+            ImportSpreadsheet_Label.Focus();  // This deselects any TextBox
             CustomControls.CloseAllPanels();
         }
     }

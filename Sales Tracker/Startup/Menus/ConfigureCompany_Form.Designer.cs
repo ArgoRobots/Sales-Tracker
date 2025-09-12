@@ -369,7 +369,7 @@ namespace Sales_Tracker.Startup.Menus
             Name = "ConfigureCompany_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Shown += ConfigureCompany_Form_Shown;
-            Click += ConfigureCompany_Form_Click;
+            Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).EndInit();
