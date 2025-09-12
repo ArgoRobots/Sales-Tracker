@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.Classes
 {
@@ -14,41 +13,35 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static bool IsFlexibleMatch(string excelHeader, Enum columnType)
         {
-            // Remove common punctuation
-            string cleanExcel = excelHeader.Replace("/", " ").Replace("-", " ").Replace("_", " ");
-
-            // Normalize multiple spaces to single space
-            cleanExcel = CleanExcel().Replace(cleanExcel, " ").Trim().ToLowerInvariant();
-
             return columnType switch
             {
-                MainMenu_Form.Column.ID => IsIdMatch(cleanExcel),
-                MainMenu_Form.Column.Accountant => IsAccountantMatch(cleanExcel),
-                MainMenu_Form.Column.Product => IsProductMatch(cleanExcel),
-                MainMenu_Form.Column.Category => IsCategoryMatch(cleanExcel),
-                MainMenu_Form.Column.Country => IsCountryMatch(cleanExcel),
-                MainMenu_Form.Column.Company => IsCompanyMatch(cleanExcel),
-                MainMenu_Form.Column.Date => IsDateMatch(cleanExcel),
-                MainMenu_Form.Column.TotalItems => IsTotalItemsMatch(cleanExcel),
-                MainMenu_Form.Column.PricePerUnit => IsPricePerUnitMatch(cleanExcel),
-                MainMenu_Form.Column.Shipping => IsShippingMatch(cleanExcel),
-                MainMenu_Form.Column.Tax => IsTaxMatch(cleanExcel),
-                MainMenu_Form.Column.Fee => IsFeeMatch(cleanExcel),
-                MainMenu_Form.Column.Discount => IsDiscountMatch(cleanExcel),
-                MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(cleanExcel),
-                MainMenu_Form.Column.Total => IsTotalMatch(cleanExcel),
-                MainMenu_Form.Column.Note => IsNoteMatch(cleanExcel),
-                MainMenu_Form.Column.HasReceipt => IsReceiptMatch(cleanExcel),
+                MainMenu_Form.Column.ID => IsIdMatch(excelHeader),
+                MainMenu_Form.Column.Accountant => IsAccountantMatch(excelHeader),
+                MainMenu_Form.Column.Product => IsProductMatch(excelHeader),
+                MainMenu_Form.Column.Category => IsCategoryMatch(excelHeader),
+                MainMenu_Form.Column.Country => IsCountryMatch(excelHeader),
+                MainMenu_Form.Column.Company => IsCompanyMatch(excelHeader),
+                MainMenu_Form.Column.Date => IsDateMatch(excelHeader),
+                MainMenu_Form.Column.TotalItems => IsTotalItemsMatch(excelHeader),
+                MainMenu_Form.Column.PricePerUnit => IsPricePerUnitMatch(excelHeader),
+                MainMenu_Form.Column.Shipping => IsShippingMatch(excelHeader),
+                MainMenu_Form.Column.Tax => IsTaxMatch(excelHeader),
+                MainMenu_Form.Column.Fee => IsFeeMatch(excelHeader),
+                MainMenu_Form.Column.Discount => IsDiscountMatch(excelHeader),
+                MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(excelHeader),
+                MainMenu_Form.Column.Total => IsTotalMatch(excelHeader),
+                MainMenu_Form.Column.Note => IsNoteMatch(excelHeader),
+                MainMenu_Form.Column.HasReceipt => IsReceiptMatch(excelHeader),
 
-                Accountants_Form.Column.AccountantName => IsAccountantNameMatch(cleanExcel),
+                Accountants_Form.Column.AccountantName => IsAccountantNameMatch(excelHeader),
 
-                Companies_Form.Column.Company => IsCompanyNameMatch(cleanExcel),
+                Companies_Form.Column.Company => IsCompanyNameMatch(excelHeader),
 
-                Products_Form.Column.ProductID => IsProductIdMatch(cleanExcel),
-                Products_Form.Column.ProductName => IsProductNameMatch(cleanExcel),
-                Products_Form.Column.ProductCategory => IsCategoryMatch(cleanExcel),
-                Products_Form.Column.CountryOfOrigin => IsCountryMatch(cleanExcel),
-                Products_Form.Column.CompanyOfOrigin => IsCompanyMatch(cleanExcel),
+                Products_Form.Column.ProductID => IsProductIdMatch(excelHeader),
+                Products_Form.Column.ProductName => IsProductNameMatch(excelHeader),
+                Products_Form.Column.ProductCategory => IsCategoryMatch(excelHeader),
+                Products_Form.Column.CountryOfOrigin => IsCountryMatch(excelHeader),
+                Products_Form.Column.CompanyOfOrigin => IsCompanyMatch(excelHeader),
 
                 _ => HandleUnknownColumnType(columnType)
             };
@@ -383,8 +376,5 @@ namespace Sales_Tracker.Classes
             public List<string> MissingColumns { get; } = missingColumns;
             public bool IsValid { get => MissingColumns.Count == 0; }
         }
-
-        [GeneratedRegex(@"\s+")]
-        private static partial Regex CleanExcel();
     }
 }
