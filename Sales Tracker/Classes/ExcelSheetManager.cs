@@ -1014,6 +1014,12 @@ namespace Sales_Tracker.Classes
         }
 
         // Export spreadsheet methods
+        public enum ImportReturnResult
+        {
+            Success,
+            Skip,
+            Cancel
+        }
         private static ConversionResult ConvertStringToDecimalWithOptions(string value, ImportError errorContext)
         {
             if (value == ReadOnlyVariables.EmptyCell)
@@ -1341,6 +1347,18 @@ namespace Sales_Tracker.Classes
                 tagData.OriginalChargedOrCredited = Math.Round(tagData.ChargedOrCreditedUSD / exchangeRateToUSD, 2);
             }
 
+            // Process return data if return columns exist
+            ImportReturnResult returnResult = ProcessReturnDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName);
+            switch (returnResult)
+            {
+                case ImportReturnResult.Cancel:
+                    return ImportTransactionResult.Cancel;
+                case ImportReturnResult.Skip:
+                    return ImportTransactionResult.Skip;
+                case ImportReturnResult.Success:
+                    break;
+            }
+
             // Handle notes
             DataGridViewCell noteCell = transaction.Cells[noteCellIndex];
             string excelNoteCellValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Note);
@@ -1357,6 +1375,232 @@ namespace Sales_Tracker.Classes
 
             transaction.Tag = tagData;
             return ImportTransactionResult.Success;
+        }
+
+        private static ImportReturnResult ProcessReturnDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName)
+        {
+            try
+            {
+                // Check if return columns exist in the worksheet
+                bool hasReturnColumns = HasReturnColumns(row.Worksheet);
+                if (!hasReturnColumns)
+                {
+                    // No return columns found, skip return processing
+                    return ImportReturnResult.Success;
+                }
+
+                // Get return status
+                string isReturnedValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.IsReturned);
+                if (string.IsNullOrWhiteSpace(isReturnedValue) || isReturnedValue == ReadOnlyVariables.EmptyCell)
+                {
+                    // No return status specified
+                    return ImportReturnResult.Success;
+                }
+
+                // Parse return status
+                bool isReturned = false;
+                bool isPartiallyReturned = false;
+
+                switch (isReturnedValue.ToLowerInvariant().Trim())
+                {
+                    case "yes":
+                    case "true":
+                    case "1":
+                    case "returned":
+                        isReturned = true;
+                        break;
+                    case "partial":
+                    case "partially":
+                    case "partial return":
+                        isPartiallyReturned = true;
+                        break;
+                    case "no":
+                    case "false":
+                    case "0":
+                    case "":
+                        // Not returned, leave defaults
+                        break;
+                    default:
+                        // Invalid return status, show error
+                        CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                            "Invalid Return Status",
+                            "Invalid return status '{0}' found in row {1} of {2}. Expected values are: 'Yes', 'No', or 'Partial'.\n\nHow would you like to proceed?",
+                            CustomMessageBoxIcon.Exclamation,
+                            CustomMessageBoxButtons.SkipCancel,
+                            isReturnedValue, rowNumber, worksheetName);
+
+                        return result == CustomMessageBoxResult.Skip ? ImportReturnResult.Skip : ImportReturnResult.Cancel;
+                }
+
+                // If returned or partially returned, process additional return data
+                if (isReturned || isPartiallyReturned)
+                {
+                    tagData.IsReturned = isReturned;
+                    tagData.IsPartiallyReturned = isPartiallyReturned;
+
+                    // Parse return date
+                    string returnDateValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ReturnDate);
+                    if (!string.IsNullOrWhiteSpace(returnDateValue) && returnDateValue != ReadOnlyVariables.EmptyCell)
+                    {
+                        if (DateTime.TryParse(returnDateValue, out DateTime returnDate))
+                        {
+                            tagData.ReturnDate = returnDate;
+                        }
+                        else
+                        {
+                            // Invalid date format, use current date and log warning
+                            tagData.ReturnDate = DateTime.Now;
+                            Log.WriteWithFormat(1, "Invalid return date '{0}' in transaction {1}, using current date", returnDateValue, transactionId);
+                        }
+                    }
+                    else
+                    {
+                        // No return date specified, use current date
+                        tagData.ReturnDate = DateTime.Now;
+                    }
+
+                    // Get return reason
+                    string returnReason = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ReturnReason);
+                    if (!string.IsNullOrWhiteSpace(returnReason) && returnReason != ReadOnlyVariables.EmptyCell)
+                    {
+                        tagData.ReturnReason = returnReason;
+                    }
+                    else
+                    {
+                        tagData.ReturnReason = "Imported return (no reason specified)";
+                    }
+
+                    // Get returned by
+                    string returnedBy = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ReturnedBy);
+                    if (!string.IsNullOrWhiteSpace(returnedBy) && returnedBy != ReadOnlyVariables.EmptyCell)
+                    {
+                        tagData.ReturnedBy = returnedBy;
+                    }
+                    else
+                    {
+                        tagData.ReturnedBy = "Import process";
+                    }
+
+                    // For partial returns, parse returned items (this will be handled later in multi-item import)
+                    if (isPartiallyReturned)
+                    {
+                        string returnedItemsValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ReturnedItems);
+                        if (!string.IsNullOrWhiteSpace(returnedItemsValue) && returnedItemsValue != ReadOnlyVariables.EmptyCell)
+                        {
+                            // Store the returned items text to be processed later when we have the full item list
+                            tagData.ReturnedItemsText = returnedItemsValue;
+                        }
+                    }
+                }
+
+                return ImportReturnResult.Success;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error processing return data for transaction {0}: {1}", transactionId, ex.Message);
+
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Return Data Import Error",
+                    "An error occurred while processing return data for transaction {0} in row {1}:\n\n{2}\n\nHow would you like to proceed?",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.SkipCancel,
+                    transactionId, rowNumber, ex.Message);
+
+                return result == CustomMessageBoxResult.Skip ? ImportReturnResult.Skip : ImportReturnResult.Cancel;
+            }
+        }
+        private static bool HasReturnColumns(IXLWorksheet worksheet)
+        {
+            Dictionary<Enum, string> columnHeaders = new()
+            {
+                { MainMenu_Form.Column.IsReturned, "Is Returned" },
+                { MainMenu_Form.Column.ReturnDate, "Return Date" },
+                { MainMenu_Form.Column.ReturnReason, "Return Reason" },
+                { MainMenu_Form.Column.ReturnedBy, "Returned By" },
+                { MainMenu_Form.Column.ReturnedItems, "Returned Items" }
+            };
+
+            // Check if at least one return column exists
+            return columnHeaders.Any(kvp => ExcelColumnHelper.HasColumn(worksheet, kvp.Key, columnHeaders));
+        }
+        private static void ProcessReturnedItemsForMultiItemTransaction(List<string> items, TagData tagData)
+        {
+            if (string.IsNullOrWhiteSpace(tagData.ReturnedItemsText))
+            {
+                return;
+            }
+
+            tagData.ReturnedItems = [];
+
+            try
+            {
+                // Parse returned items text - could be item names or indices
+                string[] returnedItemsArray = tagData.ReturnedItemsText.Split([';', ','], StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string returnedItemText in returnedItemsArray)
+                {
+                    string trimmedItem = returnedItemText.Trim();
+
+                    // Try to parse as item index first
+                    if (int.TryParse(trimmedItem, out int itemIndex) && itemIndex >= 0 && itemIndex < items.Count)
+                    {
+                        tagData.ReturnedItems.Add(itemIndex);
+                        continue;
+                    }
+
+                    // Try to find by item name
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        if (items[i].StartsWith(ReadOnlyVariables.Receipt_text))
+                        {
+                            continue;  // Skip receipt entries
+                        }
+
+                        string[] itemDetails = items[i].Split(',');
+                        if (itemDetails.Length > 0 &&
+                            itemDetails[0].Equals(trimmedItem, StringComparison.OrdinalIgnoreCase))
+                        {
+                            tagData.ReturnedItems.Add(i);
+                            break;
+                        }
+                    }
+                }
+
+                // Validate partial return consistency
+                if (tagData.IsPartiallyReturned && tagData.ReturnedItems.Count == 0)
+                {
+                    // No valid returned items found for partial return, treat as not returned
+                    tagData.IsPartiallyReturned = false;
+                    tagData.ReturnDate = null;
+                    tagData.ReturnReason = null;
+                    tagData.ReturnedBy = null;
+
+                    Log.WriteWithFormat(1, "No valid returned items found for partial return, treating transaction as not returned");
+                }
+                else if (tagData.IsPartiallyReturned && tagData.ReturnedItems.Count >= items.Count - (items[^1].StartsWith(ReadOnlyVariables.Receipt_text) ? 1 : 0))
+                {
+                    // All items are returned, change to full return
+                    tagData.IsReturned = true;
+                    tagData.IsPartiallyReturned = false;
+                    tagData.ReturnedItems = null; // Clear since it's a full return
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error parsing returned items '{0}': {1}", tagData.ReturnedItemsText, ex.Message);
+
+                // Clear partial return data due to parsing error
+                tagData.IsPartiallyReturned = false;
+                tagData.ReturnDate = null;
+                tagData.ReturnReason = null;
+                tagData.ReturnedBy = null;
+                tagData.ReturnedItems = null;
+            }
+            finally
+            {
+                // Clean up the temporary text field
+                tagData.ReturnedItemsText = null;
+            }
         }
 
         /// <summary>
@@ -1580,7 +1824,13 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            // Save
+            // After all items are processed, handle returned items for partial returns
+            if (tagData.IsPartiallyReturned && !string.IsNullOrWhiteSpace(tagData.ReturnedItemsText))
+            {
+                ProcessReturnedItemsForMultiItemTransaction(items, tagData);
+            }
+
+            // Save updated tag data
             if (items.Count > 0)
             {
                 transaction.Tag = (items, tagData);
@@ -1765,8 +2015,28 @@ namespace Sales_Tracker.Classes
                     continue;
                 }
 
+                // Skip the country and company colums because they already exist in the product sheets
+                if (dataGridView.Columns[i].Name == ReadOnlyVariables.Country_column
+                    || dataGridView.Columns[i].Name == ReadOnlyVariables.Company_column)
+                {
+                    continue;
+                }
+
                 IXLCell cell = worksheet.Cell(1, excelColumnIndex);
                 cell.Value = dataGridView.Columns[i].HeaderText;
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
+                excelColumnIndex++;
+            }
+
+            // Add return-related headers
+            int returnColumnsStartIndex = excelColumnIndex;
+            string[] returnHeaders = ["Is Returned", "Return Date", "Return Reason", "Returned By", "Returned Items"];
+
+            foreach (string header in returnHeaders)
+            {
+                IXLCell cell = worksheet.Cell(1, excelColumnIndex);
+                cell.Value = header;
                 cell.Style.Font.Bold = true;
                 cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
                 excelColumnIndex++;
@@ -1806,7 +2076,7 @@ namespace Sales_Tracker.Classes
                             receiptFileName = Path.GetFileName(receipt);
                         }
 
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
 
                         // Add items in transaction if they exist in itemList
                         for (int i = 0; i < itemList.Count - receiptOffset; i++)
@@ -1819,7 +2089,7 @@ namespace Sales_Tracker.Classes
                         break;
 
                     case (string tagString, TagData tagData):
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
 
                         if (!string.IsNullOrEmpty(tagString))
                         {
@@ -1829,7 +2099,7 @@ namespace Sales_Tracker.Classes
 
                     case TagData tagData:
                         // Transaction with no items and no receipt
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
                         break;
                 }
 
@@ -1841,7 +2111,7 @@ namespace Sales_Tracker.Classes
 
             worksheet.Columns().AdjustToContents();
         }
-        private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData, string targetCurrency, string currencyFormatPattern)
+        private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData, string targetCurrency, string currencyFormatPattern, int returnColumnsStartIndex)
         {
             int excelColumnIndex = 1;
 
@@ -1852,11 +2122,19 @@ namespace Sales_Tracker.Classes
             // Skip the Notes column - it will be handled separately
             int notesColumnIndex = row.Cells[ReadOnlyVariables.Note_column].ColumnIndex;
 
+            // Skip country and company columns becausethey are already in the product data
+            int countryColumnIndex = row.Cells[ReadOnlyVariables.Country_column].ColumnIndex;
+            int companyColumnIndex = row.Cells[ReadOnlyVariables.Company_column].ColumnIndex;
+
             for (int i = 0; i < row.Cells.Count; i++)
             {
                 if (i == notesColumnIndex)
                 {
                     break;
+                }
+                if (i == countryColumnIndex || i == companyColumnIndex)
+                {
+                    continue;
                 }
 
                 IXLCell excelCell = worksheet.Cell(currentRow, excelColumnIndex);
@@ -1878,6 +2156,12 @@ namespace Sales_Tracker.Classes
                     if (useEmpty)
                     {
                         excelCell.Value = ReadOnlyVariables.EmptyCell;
+
+                        // Check if this is the price per unit column (index 8) for multiple items
+                        if (i == 8 && row.Cells[i].Value?.ToString() == ReadOnlyVariables.EmptyCell)
+                        {
+                            excelCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        }
                     }
                     else
                     {
@@ -1924,6 +2208,109 @@ namespace Sales_Tracker.Classes
                 : (notesCellValue == ReadOnlyVariables.Show_text && notesCell.Tag != null)
                     ? notesCell.Tag.ToString()
                     : notesCellValue;
+
+            // Add return data columns
+            AddReturnDataToWorksheet(worksheet, currentRow, returnColumnsStartIndex, tagData, row);
+        }
+        private static void AddReturnDataToWorksheet(IXLWorksheet worksheet, int currentRow, int startColumnIndex, TagData tagData, DataGridViewRow row)
+        {
+            int columnIndex = startColumnIndex;
+
+            if (tagData != null)
+            {
+                // Is Returned column
+                IXLCell isReturnedCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.IsReturned)
+                {
+                    isReturnedCell.Value = "Yes";
+                    isReturnedCell.Style.Font.FontColor = XLColor.Red;
+                    isReturnedCell.Style.Font.Bold = true;
+                }
+                else if (tagData.IsPartiallyReturned)
+                {
+                    isReturnedCell.Value = "Partial";
+                    isReturnedCell.Style.Font.FontColor = XLColor.Orange;
+                    isReturnedCell.Style.Font.Bold = true;
+                }
+                else
+                {
+                    isReturnedCell.Value = "No";
+                }
+
+                // Return Date column
+                IXLCell returnDateCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.ReturnDate.HasValue)
+                {
+                    returnDateCell.Value = tagData.ReturnDate.Value.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    returnDateCell.Value = ReadOnlyVariables.EmptyCell;
+                }
+
+                // Return Reason column
+                IXLCell returnReasonCell = worksheet.Cell(currentRow, columnIndex++);
+                returnReasonCell.Value = string.IsNullOrEmpty(tagData.ReturnReason) ? ReadOnlyVariables.EmptyCell : tagData.ReturnReason;
+
+                // Returned By column
+                IXLCell returnedByCell = worksheet.Cell(currentRow, columnIndex++);
+                returnedByCell.Value = string.IsNullOrEmpty(tagData.ReturnedBy) ? ReadOnlyVariables.EmptyCell : tagData.ReturnedBy;
+
+                // Returned Items column (for partial returns)
+                IXLCell returnedItemsCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.IsPartiallyReturned && tagData.ReturnedItems != null && tagData.ReturnedItems.Count > 0)
+                {
+                    // Get the actual item names that were returned
+                    List<string> returnedItemNames = GetReturnedItemNamesFromTransaction(row, tagData.ReturnedItems);
+                    returnedItemsCell.Value = string.Join("; ", returnedItemNames);
+                }
+                else if (tagData.IsReturned)
+                {
+                    returnedItemsCell.Value = "All items";
+                }
+                else
+                {
+                    returnedItemsCell.Value = ReadOnlyVariables.EmptyCell;
+                }
+            }
+            else
+            {
+                // No TagData, fill with empty values
+                for (int i = 0; i < 5; i++)
+                {
+                    worksheet.Cell(currentRow, columnIndex++).Value = ReadOnlyVariables.EmptyCell;
+                }
+            }
+        }
+        private static List<string> GetReturnedItemNamesFromTransaction(DataGridViewRow row, List<int> returnedItemIndices)
+        {
+            List<string> itemNames = [];
+
+            if (row.Tag is (List<string> items, TagData _))
+            {
+                foreach (int itemIndex in returnedItemIndices)
+                {
+                    if (itemIndex < items.Count && !items[itemIndex].StartsWith(ReadOnlyVariables.Receipt_text))
+                    {
+                        string[] itemDetails = items[itemIndex].Split(',');
+                        if (itemDetails.Length > 0)
+                        {
+                            itemNames.Add(itemDetails[0]);  // Product name
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Single item transaction
+                string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString();
+                if (!string.IsNullOrEmpty(productName))
+                {
+                    itemNames.Add(productName);
+                }
+            }
+
+            return itemNames;
         }
         private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow, string targetCurrency, string currencyFormatPattern)
         {
@@ -1934,8 +2321,14 @@ namespace Sales_Tracker.Classes
 
             for (int i = 0; i < row.Length - 1; i++)  // Skip the total value with - 1
             {
-                // Shift the data one column to the right after the date column
-                int columnIndex = i < 4 ? i : i + 1;
+                // Skip country and company columns because they are already in the product data
+                if (i == 2 || i == 3)
+                {
+                    continue;
+                }
+
+                // Shift the data one column to the left after the date column
+                int columnIndex = i < 4 ? i : i - 1;
                 IXLCell excelCell = worksheet.Cell(currentRow, columnIndex + 3);
 
                 string cellValue = row[i];
@@ -1954,7 +2347,7 @@ namespace Sales_Tracker.Classes
                         else  // quantity column
                         {
                             excelCell.Value = numericValue;
-                            excelCell.Style.NumberFormat.Format = _decimalFormatPattern;
+                            excelCell.Style.NumberFormat.Format = _numberFormatPattern;
                         }
                     }
                     else

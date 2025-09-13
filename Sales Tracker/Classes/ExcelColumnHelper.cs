@@ -33,6 +33,11 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(excelHeader),
                 MainMenu_Form.Column.Total => IsTotalMatch(excelHeader),
                 MainMenu_Form.Column.Note => IsNoteMatch(excelHeader),
+                MainMenu_Form.Column.IsReturned => IsReturnedMatch(excelHeader),
+                MainMenu_Form.Column.ReturnDate => IsReturnDateMatch(excelHeader),
+                MainMenu_Form.Column.ReturnReason => IsReturnReasonMatch(excelHeader),
+                MainMenu_Form.Column.ReturnedBy => IsReturnedByMatch(excelHeader),
+                MainMenu_Form.Column.ReturnedItems => IsReturnedItemsMatch(excelHeader),
                 MainMenu_Form.Column.Receipt => IsReceiptMatch(excelHeader),
 
                 Accountants_Form.Column.AccountantName => IsAccountantNameMatch(excelHeader),
@@ -151,10 +156,30 @@ namespace Sales_Tracker.Classes
             return (excel.Contains("product") || excel.Contains("service"))
                 && !IsProductIdMatch(excel);
         }
+        private static bool IsReturnedMatch(string excel)
+        {
+            return excel.Contains("return") && (excel.Contains("is") || excel.Contains("status"));
+        }
+        private static bool IsReturnDateMatch(string excel)
+        {
+            return excel.Contains("return") && excel.Contains("date");
+        }
+        private static bool IsReturnReasonMatch(string excel)
+        {
+            return excel.Contains("return") && excel.Contains("reason");
+        }
+        private static bool IsReturnedByMatch(string excel)
+        {
+            return excel.Contains("return") && (excel.Contains("by") || excel.Contains("who"));
+        }
+        private static bool IsReturnedItemsMatch(string excel)
+        {
+            return excel.Contains("return") && excel.Contains("item");
+        }
         private static bool IsReceiptMatch(string excel)
         {
             return excel.Contains("receipt") || excel.Contains("file") ||
-                   excel.Contains("attachment") || excel.Contains("document");
+                excel.Contains("attachment") || excel.Contains("document");
         }
         private static bool HandleUnknownColumnType(Enum columnType)
         {

@@ -1812,7 +1812,13 @@ namespace Sales_Tracker
             Total,
             Note,
             HasReceipt,
-            Receipt  // This is used for importing spreadsheets
+            // These are used for importing & exporting spreadsheets
+            Receipt,
+            IsReturned,
+            ReturnDate,
+            ReturnReason,
+            ReturnedBy,
+            ReturnedItems
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
