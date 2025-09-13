@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.Excel
 {
+    /// <summary>
+    /// Contains statistics and results from import operations including counts, errors, and cancellation status.
+    /// </summary>
     public class ImportSummary
     {
         public int AccountantsImported { get; set; }

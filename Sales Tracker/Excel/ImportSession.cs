@@ -2,6 +2,9 @@
 
 namespace Sales_Tracker.Excel
 {
+    /// <summary>
+    /// Tracks all changes made during an import operation to enable rollback functionality and user choice persistence.
+    /// </summary>
     public class ImportSession
     {
         public List<string> AddedAccountants { get; set; } = [];

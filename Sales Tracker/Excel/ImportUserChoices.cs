@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.Excel
 {
+    /// <summary>
+    /// Stores user decisions for handling duplicates and validation issues during import to avoid repeated prompts.
+    /// </summary>
     public class ImportUserChoices
     {
         // null = ask, true = yes to all, false = no to all

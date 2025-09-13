@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 namespace Sales_Tracker.Excel
 {
+    /// <summary>
+    /// Exports chart data and visualizations to Excel files with various chart types and formatting options.
+    /// </summary>
     internal class ExportChartToExcel
     {
         // Constants

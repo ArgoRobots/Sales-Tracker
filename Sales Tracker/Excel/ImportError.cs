@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.Excel
 {
+    /// <summary>
+    /// Data container for tracking import errors with transaction details, field names, and invalid values.
+    /// </summary>
     public class ImportError
     {
         public string TransactionId { get; set; }

@@ -3,7 +3,7 @@
 namespace Sales_Tracker.Excel
 {
     /// <summary>
-    /// Helper class for working with Excel worksheets using DataGridView column names.
+    /// Static helper for matching Excel column headers to DataGridView columns using flexible matching patterns and validation.
     /// </summary>
     public static partial class ExcelColumnHelper
     {
