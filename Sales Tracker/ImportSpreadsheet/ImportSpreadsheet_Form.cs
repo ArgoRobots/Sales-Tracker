@@ -2,6 +2,7 @@
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Excel;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -436,12 +437,12 @@ namespace Sales_Tracker.ImportSpreadsheet
             LoadingPanel.ShowLoadingScreen(this, "Importing...");
             Import_Button.Enabled = false;
 
-            ExcelSheetManager.ImportSession importSession = new();
+            ImportSession importSession = new();
             bool importSuccessful = false;
 
             try
             {
-                ExcelSheetManager.ImportSummary summary = await Task.Run(() => ImportSpreadsheetAndReceipts(importSession));
+                ImportSummary summary = await Task.Run(() => ImportSpreadsheetAndReceipts(importSession));
 
                 if (summary.WasCancelled)
                 {
@@ -506,7 +507,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             CustomMessageBox.Show("Import Cancelled", "The import was cancelled. All changes have been rolled back",
                 CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
         }
-        private static void ShowImportSuccessMessage(ExcelSheetManager.ImportSummary summary)
+        private static void ShowImportSuccessMessage(ImportSummary summary)
         {
             List<string> importedItems = [];
 
@@ -576,7 +577,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             CustomMessageBox.Show("Import Completed", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
         }
-        private static void ShowNoImportMessage(ExcelSheetManager.ImportSummary summary)
+        private static void ShowNoImportMessage(ImportSummary summary)
         {
             string message = "Nothing was imported.";
 
@@ -588,7 +589,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (summary.Errors.Count > 0)
                 {
                     message += "\nFirst error example:";
-                    ExcelSheetManager.ImportError firstError = summary.Errors.First();
+                    ImportError firstError = summary.Errors.First();
                     message += $"\nWorksheet: {firstError.WorksheetName}";
                     message += $"\nRow: {firstError.RowNumber}";
                     message += $"\nField: {firstError.FieldName}";
@@ -598,11 +599,11 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             CustomMessageBox.Show("No Data Imported", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
         }
-        private ExcelSheetManager.ImportSummary ImportSpreadsheetAndReceipts(ExcelSheetManager.ImportSession importSession)
+        private ImportSummary ImportSpreadsheetAndReceipts(ImportSession importSession)
         {
             MainMenu_Form.IsProgramLoading = true;
 
-            ExcelSheetManager.ImportSummary aggregatedSummary = new();
+            ImportSummary aggregatedSummary = new();
 
             using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
@@ -673,7 +674,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _purchasesName:
-                        ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
+                        ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
                             worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
@@ -696,7 +697,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _salesName:
-                        ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
+                        ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
                             worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results

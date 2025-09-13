@@ -1,6 +1,6 @@
 ﻿using ClosedXML.Excel;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.Excel
 {
     /// <summary>
     /// Helper class for working with Excel worksheets using DataGridView column names.
