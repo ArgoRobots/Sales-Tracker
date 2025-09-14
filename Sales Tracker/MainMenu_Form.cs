@@ -1629,14 +1629,13 @@ namespace Sales_Tracker
                 }
             }
         }
-        public static string? GetCountryProductIsFrom(List<Category> categoryList, string productName, string companyName)
+        public static string? GetCountryProductIsFrom(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
-                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
                     {
                         return product.CountryOfOrigin;
                     }
@@ -1644,14 +1643,13 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static string? GetCompanyProductIsFrom(List<Category> categoryList, string productName, string companyName)
+        public static string? GetCompanyProductIsFrom(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
-                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
                     {
                         return product.CompanyOfOrigin;
                     }
@@ -1813,7 +1811,14 @@ namespace Sales_Tracker
             ChargedDifference,
             Total,
             Note,
-            HasReceipt
+            HasReceipt,
+            // These are used for importing & exporting spreadsheets
+            Receipt,
+            IsReturned,
+            ReturnDate,
+            ReturnReason,
+            ReturnedBy,
+            ReturnedItems
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {

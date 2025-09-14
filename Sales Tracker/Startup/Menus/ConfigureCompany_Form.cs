@@ -110,11 +110,6 @@ namespace Sales_Tracker.Startup.Menus
             CompanyName_TextBox.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ConfigureCompany_Form_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
-        }
 
         // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)
@@ -340,6 +335,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
+            ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
             CustomControls.CloseAllPanels();
         }
     }

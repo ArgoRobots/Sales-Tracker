@@ -218,6 +218,12 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
+            bool isLicenseActivated = Properties.Settings.Default.LicenseActivated;
+
+            // Ensure all controls are visible so translations are generated for them
+            Properties.Settings.Default.LicenseActivated = false;
+            Properties.Settings.Default.Save();
+
             try
             {
                 // Open the new language selection form
@@ -233,6 +239,11 @@ namespace Sales_Tracker.Settings.Menus
             {
                 CustomMessageBox.ShowWithFormat("Error", "Error opening translation generator: {0}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok, ex.Message);
+            }
+            finally
+            {
+                Properties.Settings.Default.LicenseActivated = isLicenseActivated;
+                Properties.Settings.Default.Save();
             }
         }
 

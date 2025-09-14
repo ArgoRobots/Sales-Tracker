@@ -9,6 +9,7 @@ using LiveChartsCore.SkiaSharpView.WinForms;
 using OfficeOpenXml.Drawing.Chart;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Excel;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReturnProduct;
@@ -249,11 +250,11 @@ namespace Sales_Tracker.Charts
                 {
                     Dictionary<string, int> intData = data.ToDictionary(kvp => kvp.Key, kvp => Convert.ToInt32(kvp.Value));
                     Dictionary<string, int> groupedIntData = SortAndGroupCountData(intData, grouping);
-                    ExcelSheetManager.ExportCountChartToExcel(groupedIntData, filePath, eChartType.Pie, chartTitle, categoryLabel, valueLabel);
+                    ExportChartToExcel.ExportCountChart(groupedIntData, filePath, eChartType.Pie, chartTitle, categoryLabel, valueLabel);
                 }
                 else
                 {
-                    ExcelSheetManager.ExportChartToExcel(groupedData, filePath, eChartType.Pie, chartTitle, categoryLabel, valueLabel);
+                    ExportChartToExcel.ExportChart(groupedData, filePath, eChartType.Pie, chartTitle, categoryLabel, valueLabel);
                 }
             }
             else
@@ -410,7 +411,7 @@ namespace Sales_Tracker.Charts
 
             if (isPercentage)
             {
-                ExcelSheetManager.ExportMultiDataSetChartToExcel(
+                ExportChartToExcel.ExportMultiDataSetChart(
                     combinedData,
                     filePath,
                     eChartType.Line,
@@ -420,7 +421,7 @@ namespace Sales_Tracker.Charts
             }
             else
             {
-                ExcelSheetManager.ExportMultiDataSetChartToExcel(
+                ExportChartToExcel.ExportMultiDataSetChart(
                     combinedData,
                     filePath,
                     isLineChart ? eChartType.Line : eChartType.ColumnClustered,
@@ -475,7 +476,7 @@ namespace Sales_Tracker.Charts
                      : TranslatedChartTitles.TotalExpenses;
                 string date = LanguageManager.TranslateString("Date");
 
-                ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle, date, label);
+                ExportChartToExcel.ExportChart(revenueByDate, filePath, chartType, chartTitle, date, label);
             }
             else if (canUpdateChart)
             {
@@ -661,7 +662,7 @@ namespace Sales_Tracker.Charts
                 string chartTitle = TranslatedChartTitles.TotalProfits;
                 string date = LanguageManager.TranslateString("Date");
 
-                ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, chartTitle, date, label);
+                ExportChartToExcel.ExportChart(profitByDate, filePath, chartType, chartTitle, date, label);
             }
             else if (canUpdateChart)
             {
@@ -1502,13 +1503,13 @@ namespace Sales_Tracker.Charts
                 foreach (string date in sortedDates)
                 {
                     combinedData[date] = new Dictionary<string, double>
-            {
-                { purchaseReturnsLabel, purchaseReturnsDouble.TryGetValue(date, out double pValue) ? pValue : 0 },
-                { saleReturnsLabel, saleReturnsDouble.TryGetValue(date, out double sValue) ? sValue : 0 }
-            };
+                    {
+                        { purchaseReturnsLabel, purchaseReturnsDouble.TryGetValue(date, out double pValue) ? pValue : 0 },
+                        { saleReturnsLabel, saleReturnsDouble.TryGetValue(date, out double sValue) ? sValue : 0 }
+                    };
                 }
 
-                ExcelSheetManager.ExportMultiDataSetCountChartToExcel(
+                ExportChartToExcel.ExportMultiDataSetCountChart(
                     combinedData,
                     filePath,
                     isLineChart ? eChartType.Line : eChartType.ColumnClustered,

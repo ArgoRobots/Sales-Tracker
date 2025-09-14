@@ -353,14 +353,7 @@ namespace Sales_Tracker.ReturnProduct
             CharacterCount_Label.Text = $"{currentLength}/{maxLength}";
 
             // Change color to red when at max limit
-            if (currentLength >= maxLength)
-            {
-                CharacterCount_Label.ForeColor = CustomColors.AccentRed;
-            }
-            else
-            {
-                CharacterCount_Label.ForeColor = CustomColors.Text;
-            }
+            CharacterCount_Label.ForeColor = currentLength >= maxLength ? CustomColors.AccentRed : CustomColors.Text;
         }
     }
 }

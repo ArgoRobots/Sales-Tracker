@@ -23,7 +23,7 @@ namespace Sales_Tracker.GridView
         // Init.
         public static void ConstructPanel()
         {
-            Panel = new()
+            Panel = new Guna2Panel()
             {
                 BorderRadius = 4,
                 BorderThickness = 1,

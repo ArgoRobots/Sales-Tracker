@@ -33,5 +33,6 @@
         public string ReturnReason { get; set; }
         public string ReturnedBy { get; set; }
         public List<int> ReturnedItems { get; set; }
+        public string ReturnedItemsText { get; set; }
     }
 }
