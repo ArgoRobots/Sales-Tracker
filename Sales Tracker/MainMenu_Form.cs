@@ -85,23 +85,23 @@ namespace Sales_Tracker
         }
         private void ConstructMainCharts()
         {
-            PurchaseTotals_Chart = ConstructMainChart("purchaseTotals_Chart", true);
-            PurchaseDistribution_Chart = ConstructMainChart("purchaseDistribution_Chart", false);
-            SaleTotals_Chart = ConstructMainChart("saleTotals_Chart", true);
-            SaleDistribution_Chart = ConstructMainChart("saleDistribution_Chart", false);
-            Profits_Chart = ConstructMainChart("profits_Chart", true);
+            PurchaseTotals_Chart = ConstructMainChart("purchaseTotals_Chart", true) as CartesianChart;
+            PurchaseDistribution_Chart = ConstructMainChart("purchaseDistribution_Chart", false) as PieChart;
+            SaleTotals_Chart = ConstructMainChart("saleTotals_Chart", true) as CartesianChart;
+            SaleDistribution_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
+            Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
-            LoadChart.ConfigureChartForPie(PurchaseDistribution_Chart as PieChart);
-            LoadChart.ConfigureChartForPie(SaleDistribution_Chart as PieChart);
+            LoadChart.ConfigureChartForPie(PurchaseDistribution_Chart);
+            LoadChart.ConfigureChartForPie(SaleDistribution_Chart);
 
             MouseClickChartManager.InitCharts([
                 PurchaseTotals_Chart, PurchaseDistribution_Chart,
                 SaleTotals_Chart, SaleDistribution_Chart, Profits_Chart
             ]);
         }
-        private Chart ConstructMainChart(string name, bool isCartesian)
+        private Control ConstructMainChart(string name, bool isCartesian)
         {
-            Chart chart;
+            Control chart;
 
             if (isCartesian)
             {
@@ -202,13 +202,13 @@ namespace Sales_Tracker
             // Load purchase charts
             if (Selected == SelectedOption.Analytics || Purchase_DataGridView.Visible)
             {
-                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, PurchaseTotals_Chart as CartesianChart, isLine);
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, PurchaseTotals_Chart, isLine);
                 string translatedExpenses = LanguageManager.TranslateString("Total expenses");
                 SetChartTitle(PurchaseTotals_Chart, $"{translatedExpenses}: {CurrencySymbol}{totalsData.Total:N2}");
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, PurchaseDistribution_Chart as PieChart, PieChartGrouping.Top12);
+                    LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, PurchaseDistribution_Chart, PieChartGrouping.Top12);
                     SetChartTitle(PurchaseDistribution_Chart, TranslatedChartTitles.ExpensesDistribution);
                 }
             }
@@ -216,24 +216,31 @@ namespace Sales_Tracker
             // Load sale charts
             if (Selected == SelectedOption.Analytics || Sale_DataGridView.Visible)
             {
-                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, SaleTotals_Chart as CartesianChart, isLine);
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, SaleTotals_Chart, isLine);
                 string translatedRevenue = LanguageManager.TranslateString("Total revenue");
                 SetChartTitle(SaleTotals_Chart, $"{translatedRevenue}: {CurrencySymbol}{totalsData.Total:N2}");
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(Sale_DataGridView, SaleDistribution_Chart as PieChart, PieChartGrouping.Top12);
+                    LoadChart.LoadDistributionIntoChart(Sale_DataGridView, SaleDistribution_Chart, PieChartGrouping.Top12);
                     SetChartTitle(SaleDistribution_Chart, TranslatedChartTitles.RevenueDistribution);
                 }
             }
 
             // Always load profits chart
-            ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart as CartesianChart, isLine);
+            ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
             SetProfitsChartTitle(profitsData.Total);
         }
-        public static void SetChartTitle(Chart chart, string title)
+        public static void SetChartTitle(Control chart, string title)
         {
-            chart.Title = CreateChartTitle(title);
+            if (chart is CartesianChart cartesianChart)
+            {
+                cartesianChart.Title = CreateChartTitle(title);
+            }
+            else if (chart is PieChart pieChart)
+            {
+                pieChart.Title = CreateChartTitle(title);
+            }
         }
         private static LabelVisual CreateChartTitle(string text) => new()
         {
@@ -1775,7 +1782,7 @@ namespace Sales_Tracker
         public Guna2DataGridView Purchase_DataGridView { get; private set; } = new();
         public Guna2DataGridView Sale_DataGridView { get; private set; } = new();
         public Guna2DataGridView SelectedDataGridView { get; private set; }
-        public Chart Profits_Chart { get; private set; }
+        public CartesianChart Profits_Chart { get; private set; }
 
         // DataGridView enums
         public enum SelectedOption
@@ -2095,26 +2102,26 @@ namespace Sales_Tracker
             PurchasesOnly,
             SalesOnly
         }
-        public Chart CountriesOfOrigin_Chart { get; private set; }
-        public Chart CountriesOfDestination_Chart { get; private set; }
-        public Chart CompaniesOfOrigin_Chart { get; private set; }
-        public Chart Accountants_Chart { get; private set; }
-        public Chart GrowthRates_Chart { get; private set; }
-        public Chart SalesVsExpenses_Chart { get; private set; }
-        public Chart AverageTransactionValue_Chart { get; private set; }
-        public Chart TotalTransactions_Chart { get; private set; }
-        public Chart AverageShippingCosts_Chart { get; private set; }
+        public PieChart CountriesOfOrigin_Chart { get; private set; }
+        public PieChart CountriesOfDestination_Chart { get; private set; }
+        public PieChart CompaniesOfOrigin_Chart { get; private set; }
+        public PieChart Accountants_Chart { get; private set; }
+        public CartesianChart GrowthRates_Chart { get; private set; }
+        public CartesianChart SalesVsExpenses_Chart { get; private set; }
+        public CartesianChart AverageTransactionValue_Chart { get; private set; }
+        public CartesianChart TotalTransactions_Chart { get; private set; }
+        public CartesianChart AverageShippingCosts_Chart { get; private set; }
         public Guna2CustomCheckBox IncludeFreeShipping_CheckBox { get; private set; }
-        public Chart ReturnsOverTime_Chart { get; private set; }
-        public Chart ReturnReasons_Chart { get; private set; }
-        public Chart ReturnFinancialImpact_Chart { get; private set; }
-        public Chart ReturnsByCategory_Chart { get; private set; }
-        public Chart ReturnsByProduct_Chart { get; private set; }
-        public Chart PurchaseVsSaleReturns_Chart { get; private set; }
-        public Chart PurchaseTotals_Chart { get; private set; }
-        public Chart PurchaseDistribution_Chart { get; private set; }
-        public Chart SaleTotals_Chart { get; private set; }
-        public Chart SaleDistribution_Chart { get; private set; }
+        public CartesianChart ReturnsOverTime_Chart { get; private set; }
+        public PieChart ReturnReasons_Chart { get; private set; }
+        public CartesianChart ReturnFinancialImpact_Chart { get; private set; }
+        public PieChart ReturnsByCategory_Chart { get; private set; }
+        public PieChart ReturnsByProduct_Chart { get; private set; }
+        public PieChart PurchaseVsSaleReturns_Chart { get; private set; }
+        public CartesianChart PurchaseTotals_Chart { get; private set; }
+        public PieChart PurchaseDistribution_Chart { get; private set; }
+        public CartesianChart SaleTotals_Chart { get; private set; }
+        public PieChart SaleDistribution_Chart { get; private set; }
 
         // GeoMap properties
         public GeoMap WorldMap_GeoMap { get; private set; }
@@ -2188,21 +2195,21 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForAnalytics()
         {
-            CountriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart", false);
-            CompaniesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart", false);
-            CountriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart", false);
-            Accountants_Chart = ConstructAnalyticsChart("accountants_Chart", false);
-            SalesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart", true);
-            AverageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart", true);
-            TotalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart", true);
-            AverageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart", true);
-            GrowthRates_Chart = ConstructAnalyticsChart("growthRates_Chart", true);
-            ReturnsOverTime_Chart = ConstructAnalyticsChart("returnsOverTime_Chart", true);
-            ReturnReasons_Chart = ConstructAnalyticsChart("returnReasons_Chart", false);
-            ReturnFinancialImpact_Chart = ConstructAnalyticsChart("returnFinancialImpact_Chart", true);
-            ReturnsByCategory_Chart = ConstructAnalyticsChart("returnsByCategory_Chart", false);
-            ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart", false);
-            PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart", false);
+            CountriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart", false) as PieChart;
+            CompaniesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart", false) as PieChart;
+            CountriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart", false) as PieChart;
+            Accountants_Chart = ConstructAnalyticsChart("accountants_Chart", false) as PieChart;
+            SalesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart", true) as CartesianChart;
+            AverageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart", true) as CartesianChart;
+            TotalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart", true) as CartesianChart;
+            AverageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart", true) as CartesianChart;
+            GrowthRates_Chart = ConstructAnalyticsChart("growthRates_Chart", true) as CartesianChart;
+            ReturnsOverTime_Chart = ConstructAnalyticsChart("returnsOverTime_Chart", true) as CartesianChart;
+            ReturnReasons_Chart = ConstructAnalyticsChart("returnReasons_Chart", false) as PieChart;
+            ReturnFinancialImpact_Chart = ConstructAnalyticsChart("returnFinancialImpact_Chart", true) as CartesianChart;
+            ReturnsByCategory_Chart = ConstructAnalyticsChart("returnsByCategory_Chart", false) as PieChart;
+            ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart", false) as PieChart;
+            PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart", false) as PieChart;
 
             WorldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
@@ -2232,7 +2239,7 @@ namespace Sales_Tracker
             OrganizeChartsIntoTabs();
 
             Control[] chartsAndMaps = _analyticsControls
-                .Where(c => c is Chart || c is GeoMap)
+                .Where(c => c is CartesianChart || c is PieChart || c is GeoMap)
                 .ToArray();
 
             MouseClickChartManager.InitCharts(chartsAndMaps);
@@ -2441,16 +2448,16 @@ namespace Sales_Tracker
             switch (tabKey)
             {
                 case AnalyticsTab.Overview:
-                    LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart as CartesianChart, isLine);
+                    LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
                     SetChartTitle(SalesVsExpenses_Chart, TranslatedChartTitles.SalesVsExpenses);
 
-                    LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart as CartesianChart, isLine);
+                    LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                     SetChartTitle(TotalTransactions_Chart, TranslatedChartTitles.TotalTransactions);
 
-                    LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart as CartesianChart, isLine);
+                    LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                     SetChartTitle(AverageTransactionValue_Chart, TranslatedChartTitles.AverageTransactionValue);
 
-                    ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart as CartesianChart, isLine);
+                    ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                     SetProfitsChartTitle(profitsData.Total);
                     break;
 
@@ -2458,13 +2465,13 @@ namespace Sales_Tracker
                     GeoMapDataType dataType = GetSelectedGeoMapDataType();
                     LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
 
-                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
 
-                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfDestination_Chart, TranslatedChartTitles.CountriesOfDestination);
 
-                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CompaniesOfOrigin_Chart, TranslatedChartTitles.CompaniesOfOrigin);
                     break;
 
@@ -2473,46 +2480,46 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Performance:
-                    LoadChart.LoadGrowthRateChart(GrowthRates_Chart as CartesianChart);
+                    LoadChart.LoadGrowthRateChart(GrowthRates_Chart);
                     SetChartTitle(GrowthRates_Chart, TranslatedChartTitles.GrowthRates);
 
                     // Load shared charts if not already loaded
                     if (!_tabChartsLoaded[AnalyticsTab.Overview])
                     {
-                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart as CartesianChart, isLine);
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                         SetChartTitle(AverageTransactionValue_Chart, TranslatedChartTitles.AverageTransactionValue);
 
-                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart as CartesianChart, isLine);
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                         SetChartTitle(TotalTransactions_Chart, TranslatedChartTitles.TotalTransactions);
                     }
                     break;
 
                 case AnalyticsTab.Operational:
-                    LoadChart.LoadAccountantsIntoChart(Accountants_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
                     SetChartTitle(Accountants_Chart, TranslatedChartTitles.AccountantsTransactions);
 
-                    LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart as CartesianChart, isLine,
+                    LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                         includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                     SetChartTitle(AverageShippingCosts_Chart, TranslatedChartTitles.AverageShippingCosts);
                     break;
 
                 case AnalyticsTab.Returns:
-                    LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart as CartesianChart, isLine);
+                    LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
                     SetChartTitle(ReturnsOverTime_Chart, TranslatedChartTitles.ReturnsOverTime);
 
-                    LoadChart.LoadReturnReasonsChart(ReturnReasons_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadReturnReasonsChart(ReturnReasons_Chart, PieChartGrouping.Top8);
                     SetChartTitle(ReturnReasons_Chart, TranslatedChartTitles.ReturnReasons);
 
-                    LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart as CartesianChart, isLine);
+                    LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                     SetChartTitle(ReturnFinancialImpact_Chart, TranslatedChartTitles.ReturnFinancialImpact);
 
-                    LoadChart.LoadReturnsByCategoryChart(ReturnsByCategory_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadReturnsByCategoryChart(ReturnsByCategory_Chart, PieChartGrouping.Top8);
                     SetChartTitle(ReturnsByCategory_Chart, TranslatedChartTitles.ReturnsByCategory);
 
-                    LoadChart.LoadReturnsByProductChart(ReturnsByProduct_Chart as PieChart, PieChartGrouping.Top8);
+                    LoadChart.LoadReturnsByProductChart(ReturnsByProduct_Chart, PieChartGrouping.Top8);
                     SetChartTitle(ReturnsByProduct_Chart, TranslatedChartTitles.ReturnsByProduct);
 
-                    LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart as PieChart);
+                    LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart);
                     SetChartTitle(PurchaseVsSaleReturns_Chart, TranslatedChartTitles.PurchaseVsSaleReturns);
                     break;
             }
@@ -2546,11 +2553,11 @@ namespace Sales_Tracker
             UserSettings.UpdateSetting("Include free shipping in chart", Properties.Settings.Default.IncludeFreeShipping, zeroShipping,
                 value => Properties.Settings.Default.IncludeFreeShipping = value);
 
-            LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart as CartesianChart, isLineChart, includeZeroShipping: zeroShipping);
+            LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
         }
-        private Chart ConstructAnalyticsChart(string name, bool isCartesian)
+        private Control ConstructAnalyticsChart(string name, bool isCartesian)
         {
-            Chart chart;
+            Control chart;
 
             if (isCartesian)
             {
@@ -2614,11 +2621,11 @@ namespace Sales_Tracker
                 {
                     case AnalyticsTab.Overview:
                     case AnalyticsTab.Performance:
-                        LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart as CartesianChart, isLine);
-                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart as CartesianChart, isLine);
-                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart as CartesianChart, isLine);
+                        LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
 
-                        ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart as CartesianChart, isLine);
+                        ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                         SetProfitsChartTitle(profitsData.Total);
                         break;
 
@@ -2627,13 +2634,13 @@ namespace Sales_Tracker
                         break;
 
                     case AnalyticsTab.Operational:
-                        LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart as CartesianChart, isLine,
+                        LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                             includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                         break;
 
                     case AnalyticsTab.Returns:
-                        LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart as CartesianChart, isLine);
-                        LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart as CartesianChart, isLine);
+                        LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
+                        LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                         break;
                 }
             }

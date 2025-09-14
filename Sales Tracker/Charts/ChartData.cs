@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.DataClasses
+﻿namespace Sales_Tracker.Charts
 {
     /// <summary>
     /// Represents chart data containing a total value and associated data points for visualization.
