@@ -177,7 +177,7 @@ namespace Sales_Tracker.Theme
                         UpdateDataGridViewHeaderTheme(guna2DataGridView);
                         CustomizeScrollBar(guna2DataGridView);
                         guna2DataGridView.ClearSelection();
-                        DataGridViewManager.UpdateAlternatingRowColors(guna2DataGridView);
+                        DataGridViewManager.UpdateRowColors(guna2DataGridView);
                         break;
 
                     case Guna2CircleButton guna2CircleButton:
@@ -204,6 +204,10 @@ namespace Sales_Tracker.Theme
 
                     case PieChart pieChart:
                         ChartColors.ApplyTheme(pieChart);
+                        break;
+
+                    case GeoMap geoMap:
+                        ChartColors.ApplyTheme(geoMap);
                         break;
                 }
 

@@ -316,7 +316,7 @@ namespace Sales_Tracker
                 row.Visible = visible;
             }
 
-            DataGridViewManager.UpdateAlternatingRowColors(Receipts_DataGridView);
+            DataGridViewManager.UpdateRowColors(Receipts_DataGridView);
             LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
         }
         private void CloseAllPanels(object sender, EventArgs e)

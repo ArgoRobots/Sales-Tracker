@@ -16,7 +16,6 @@ using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.ComponentModel;
-using System.Reflection;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -91,8 +90,8 @@ namespace Sales_Tracker
             SaleDistribution_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
             Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
-            LoadChart.ConfigureChartForPie(PurchaseDistribution_Chart);
-            LoadChart.ConfigureChartForPie(SaleDistribution_Chart);
+            LoadChart.ConfigurePieChart(PurchaseDistribution_Chart);
+            LoadChart.ConfigurePieChart(SaleDistribution_Chart);
 
             MouseClickChartManager.InitCharts([
                 PurchaseTotals_Chart, PurchaseDistribution_Chart,
@@ -107,8 +106,7 @@ namespace Sales_Tracker
             {
                 CartesianChart cartesianChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = cartesianChart;
@@ -117,16 +115,11 @@ namespace Sales_Tracker
             {
                 PieChart pieChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = pieChart;
             }
-
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(chart, true, null);
 
             Controls.Add(chart);
             return chart;
@@ -339,7 +332,7 @@ namespace Sales_Tracker
             CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CompaniesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
-            WorldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            _worldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Accountants_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             GrowthRates_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SalesVsExpenses_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -366,7 +359,7 @@ namespace Sales_Tracker
             CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
             CompaniesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
             CountriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
-            WorldMap_GeoMap.Tag = ChartDataType.WorldMap;
+            _worldMap_GeoMap.Tag = ChartDataType.WorldMap;
             Accountants_Chart.Tag = ChartDataType.Accountants;
             GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
             SalesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
@@ -875,8 +868,8 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     // Position controls at the top
-                    WorldMapControls_Panel.Location = new Point((
-                        ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                    _worldMapControls_Panel.Location = new Point((
+                        ClientSize.Width - _worldMapControls_Panel.Width) / 2,
                         _analyticsTabButtons_Panel.Bottom + 10);
 
                     if (charts.Count >= 4)
@@ -884,8 +877,8 @@ namespace Sales_Tracker
                         Control geoMap = charts[0];
 
                         // GeoMap takes top 60% of space
-                        int geoMapY = WorldMapControls_Panel.Bottom + 10;
-                        int geoMapHeight = (int)((availableHeight - WorldMapControls_Panel.Height - 20) * 0.6);
+                        int geoMapY = _worldMapControls_Panel.Bottom + 10;
+                        int geoMapHeight = (int)((availableHeight - _worldMapControls_Panel.Height - 20) * 0.6);
                         int geoMapWidth = availableWidth;
 
                         SetChartPosition(geoMap, new Size(geoMapWidth, geoMapHeight),
@@ -896,7 +889,7 @@ namespace Sales_Tracker
                         if (pieCharts.Count == 3)
                         {
                             int smallChartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
-                            int smallChartHeight = Math.Min(maxChartHeight, availableHeight - geoMapHeight - WorldMapControls_Panel.Height - 30);
+                            int smallChartHeight = Math.Min(maxChartHeight, availableHeight - geoMapHeight - _worldMapControls_Panel.Height - 30);
                             int smallChartsY = geoMapY + geoMapHeight + spacing;
                             int smallChartsStartX = (ClientSize.Width - (smallChartWidth * 3 + spacing * 2)) / 2;
 
@@ -1497,7 +1490,7 @@ namespace Sales_Tracker
             bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
 
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
-            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
+            DataGridViewManager.UpdateRowColors(dataGridView);
             UpdateTotalLabels();
 
             dataGridView.ResumeLayout(true);
@@ -2124,11 +2117,11 @@ namespace Sales_Tracker
         public PieChart SaleDistribution_Chart { get; private set; }
 
         // GeoMap properties
-        public GeoMap WorldMap_GeoMap { get; private set; }
-        public Guna2Panel WorldMapControls_Panel { get; private set; }
-        public Guna2CustomRadioButton CombinedData_RadioButton { get; private set; }
-        public Guna2CustomRadioButton PurchasesOnly_RadioButton { get; private set; }
-        public Guna2CustomRadioButton SalesOnly_RadioButton { get; private set; }
+        private GeoMap _worldMap_GeoMap;
+        private Guna2Panel _worldMapControls_Panel;
+        private Guna2CustomRadioButton _combinedData_RadioButton;
+        private Guna2CustomRadioButton _purchasesOnly_RadioButton;
+        private Guna2CustomRadioButton _salesOnly_RadioButton;
         private Label _worldMapDataType_Label;
         private Label _combinedData_Label;
         private Label _purchasesOnly_Label;
@@ -2159,7 +2152,7 @@ namespace Sales_Tracker
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
-                WorldMap_GeoMap,
+                _worldMap_GeoMap,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2211,7 +2204,7 @@ namespace Sales_Tracker
             ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart", false) as PieChart;
             PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart", false) as PieChart;
 
-            WorldMap_GeoMap = ConstructGeoMap();
+            _worldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
 
             IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
@@ -2377,11 +2370,11 @@ namespace Sales_Tracker
 
             _tabControls[AnalyticsTab.Geographic].AddRange(
             [
-                WorldMap_GeoMap,
+                _worldMap_GeoMap,
                 CountriesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
                 CompaniesOfOrigin_Chart,
-                WorldMapControls_Panel
+                _worldMapControls_Panel
             ]);
 
             _tabControls[AnalyticsTab.Financial].AddRange(
@@ -2422,8 +2415,8 @@ namespace Sales_Tracker
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
-                WorldMap_GeoMap,
-                WorldMapControls_Panel,
+                _worldMap_GeoMap,
+                _worldMapControls_Panel,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2463,7 +2456,7 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                    LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
+                    LoadChart.LoadWorldMapChart(_worldMap_GeoMap, dataType);
 
                     LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
@@ -2538,7 +2531,10 @@ namespace Sales_Tracker
             // Show controls for the selected tab
             foreach (Control control in _tabControls[tabKey])
             {
-                control.Visible = true;
+                if (control is not GeoMap)
+                {
+                    control.Visible = true;
+                }
             }
         }
         private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
@@ -2563,8 +2559,7 @@ namespace Sales_Tracker
             {
                 CartesianChart cartesianChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = cartesianChart;
@@ -2573,17 +2568,12 @@ namespace Sales_Tracker
             {
                 PieChart pieChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
-                LoadChart.ConfigureChartForPie(pieChart);
+                LoadChart.ConfigurePieChart(pieChart);
                 chart = pieChart;
             }
-
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(chart, true, null);
 
             Controls.Add(chart);
             return chart;
@@ -2674,10 +2664,6 @@ namespace Sales_Tracker
                 Visible = false
             };
 
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(geoMap, true, null);
-
             Controls.Add(geoMap);
             return geoMap;
         }
@@ -2699,7 +2685,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             // Combined data option
-            CombinedData_RadioButton = new Guna2CustomRadioButton
+            _combinedData_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2717,13 +2703,13 @@ namespace Sales_Tracker
             };
             _combinedData_Label.Click += (s, e) =>
             {
-                CombinedData_RadioButton.Checked = true;
+                _combinedData_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
             // Purchases only option
-            PurchasesOnly_RadioButton = new Guna2CustomRadioButton
+            _purchasesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2741,13 +2727,13 @@ namespace Sales_Tracker
             };
             _purchasesOnly_Label.Click += (s, e) =>
             {
-                PurchasesOnly_RadioButton.Checked = true;
+                _purchasesOnly_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
             // Sales only option
-            SalesOnly_RadioButton = new Guna2CustomRadioButton
+            _salesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2765,38 +2751,38 @@ namespace Sales_Tracker
             };
             _salesOnly_Label.Click += (s, e) =>
             {
-                SalesOnly_RadioButton.Checked = true;
+                _salesOnly_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
             // Create panel (size will be calculated in RecalculateWorldMapControlsLayout)
-            WorldMapControls_Panel = new Guna2Panel
+            _worldMapControls_Panel = new Guna2Panel
             {
                 FillColor = Color.Transparent,
                 BorderThickness = 0,
                 Visible = false
             };
-            WorldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
+            _worldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Add all controls to panel
-            WorldMapControls_Panel.Controls.AddRange([
+            _worldMapControls_Panel.Controls.AddRange([
                 _worldMapDataType_Label,
-                CombinedData_RadioButton,
+                _combinedData_RadioButton,
                 _combinedData_Label,
-                PurchasesOnly_RadioButton,
+                _purchasesOnly_RadioButton,
                 _purchasesOnly_Label,
-                SalesOnly_RadioButton,
+                _salesOnly_RadioButton,
                 _salesOnly_Label
             ]);
 
-            Controls.Add(WorldMapControls_Panel);
-            CombinedData_RadioButton.Checked = true;  // Check it after the control is added
+            Controls.Add(_worldMapControls_Panel);
+            _combinedData_RadioButton.Checked = true;  // Check it after the control is added
 
             // Set up event handlers
-            SalesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
-            CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
-            PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _salesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _combinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _purchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
             RecalculateWorldMapControlsLayout();
         }
@@ -2807,7 +2793,7 @@ namespace Sales_Tracker
         /// </summary>
         public void RecalculateWorldMapControlsLayout()
         {
-            if (WorldMapControls_Panel == null || _worldMapDataType_Label == null)
+            if (_worldMapControls_Panel == null || _worldMapDataType_Label == null)
             {
                 return;
             }
@@ -2828,29 +2814,29 @@ namespace Sales_Tracker
             int labelY = (panelHeight - _combinedData_Label.PreferredHeight) / 2;
 
             // Reposition Combined data option
-            CombinedData_RadioButton.Location = new Point(currentX, radioButtonY);
+            _combinedData_RadioButton.Location = new Point(currentX, radioButtonY);
             _combinedData_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
             currentX += radioButtonSize + radioLabelSpacing + _combinedData_Label.PreferredWidth + optionSpacing;
 
             // Reposition Purchases only option
-            PurchasesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _purchasesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
             _purchasesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
             currentX += radioButtonSize + radioLabelSpacing + _purchasesOnly_Label.PreferredWidth + optionSpacing;
 
             // Reposition Sales only option
-            SalesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _salesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
             _salesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
 
             // Recalculate total panel width
             int totalWidth = currentX + radioButtonSize + radioLabelSpacing + _salesOnly_Label.PreferredWidth;
 
             // Update panel size
-            WorldMapControls_Panel.Size = new Size(totalWidth, panelHeight);
+            _worldMapControls_Panel.Size = new Size(totalWidth, panelHeight);
 
-            // Position the panel itself (both for initial construction and language updates)
+            // Position the panel itself
             if (_analyticsTabButtons_Panel != null)
             {
-                WorldMapControls_Panel.Location = new Point((ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                _worldMapControls_Panel.Location = new Point((ClientSize.Width - _worldMapControls_Panel.Width) / 2,
                     _analyticsTabButtons_Panel.Bottom + 10);
             }
         }
@@ -2861,16 +2847,16 @@ namespace Sales_Tracker
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {
                 GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
+                LoadChart.LoadWorldMapChart(_worldMap_GeoMap, dataType);
             }
         }
         private GeoMapDataType GetSelectedGeoMapDataType()
         {
-            if (PurchasesOnly_RadioButton.Checked)
+            if (_purchasesOnly_RadioButton.Checked)
             {
                 return GeoMapDataType.PurchasesOnly;
             }
-            else if (SalesOnly_RadioButton.Checked)
+            else if (_salesOnly_RadioButton.Checked)
             {
                 return GeoMapDataType.SalesOnly;
             }

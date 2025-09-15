@@ -312,7 +312,7 @@ namespace Sales_Tracker.GridView
                 ColumnVisibilityPanel.ShowPanel(sender as Guna2DataGridView, e);
             }
 
-            UpdateAlternatingRowColors((DataGridView)sender);
+            UpdateRowColors((DataGridView)sender);
         }
         private static void DataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
@@ -940,7 +940,7 @@ namespace Sales_Tracker.GridView
                     }
                 }
 
-                UpdateAlternatingRowColors(dataGrid);
+                UpdateRowColors(dataGrid);
             }
         }
         public static void UpdateChargedDifferenceInRowWithMultipleItems(DataGridViewRow selectedRow)
@@ -1139,7 +1139,7 @@ namespace Sales_Tracker.GridView
                 : ListSortDirection.Descending;
             dataGridView.Sort(sortedColumn, direction);
         }
-        public static void UpdateAlternatingRowColors(DataGridView dataGridView)
+        public static void UpdateRowColors(DataGridView dataGridView)
         {
             int visibleRowIndex = 0;
 
@@ -1198,7 +1198,7 @@ namespace Sales_Tracker.GridView
                 row.Visible = isVisible;
             }
 
-            UpdateAlternatingRowColors(grid);
+            UpdateRowColors(grid);
 
             return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
         }
@@ -1473,7 +1473,6 @@ namespace Sales_Tracker.GridView
                 MoveCategoryRows(selectedRows, false);
             }
 
-            // Restore selection and scroll position
             RestoreSelectionAndScroll(grid, firstSelectedIndex, scrollPosition);
         }
         private static void MoveCategoryRows(List<DataGridViewRow> rowsToMove, bool fromPurchaseToSale)

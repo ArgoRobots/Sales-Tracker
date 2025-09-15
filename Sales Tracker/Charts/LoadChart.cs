@@ -32,8 +32,8 @@ namespace Sales_Tracker.Charts
     /// </summary>
     internal class LoadChart
     {
-        // Configuration
-        public static void ConfigureChartForBar(CartesianChart chart)
+        // Configure chart methods
+        public static void ConfigureCartesianChart(CartesianChart chart)
         {
             ClearChart(chart);
             SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
@@ -63,39 +63,9 @@ namespace Sales_Tracker.Charts
             chart.LegendTextSize = 21;
             chart.ZoomMode = ZoomAndPanMode.Both;
         }
-        public static void ConfigureChartForLine(CartesianChart chart)
+        public static void ConfigurePieChart(PieChart chart)
         {
             ClearChart(chart);
-            SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
-
-            chart.XAxes =
-            [
-                new Axis
-                {
-                    TextSize = 21,
-                    LabelsPaint = new SolidColorPaint(textColor)
-                }
-            ];
-
-            chart.YAxes =
-            [
-                new Axis
-                {
-                    TextSize = 21,
-                    SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
-                    LabelsPaint = new SolidColorPaint(textColor),
-                    TicksPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f }
-                }
-            ];
-
-            chart.LegendPosition = LegendPosition.Top;
-            chart.LegendTextPaint = new SolidColorPaint(textColor);
-            chart.LegendTextSize = 21;
-            chart.ZoomMode = ZoomAndPanMode.Both;
-        }
-        public static void ConfigureChartForPie(PieChart chart)
-        {
-            ClearPieChart(chart);
             chart.Legend = new CustomLegend();
 
             SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
@@ -104,14 +74,41 @@ namespace Sales_Tracker.Charts
             chart.LegendTextPaint = new SolidColorPaint(textColor);
             chart.LegendTextSize = 21;
         }
+        private static void ConfigureGeoMap(GeoMap geoMap)
+        {
+            ClearMap(geoMap);
+            geoMap.MapProjection = MapProjection.Default;
+        }
+
+        // Clear chart methods
+        public static void ClearChart(CartesianChart chart)
+        {
+            chart.Series = [];
+            chart.XAxes = [];
+            chart.YAxes = [];
+            chart.ZoomMode = ZoomAndPanMode.None;
+        }
+        public static void ClearChart(PieChart chart)
+        {
+            chart.Series = [];
+
+            if (chart.Legend is CustomLegend customLegend)
+            {
+                customLegend.ClearLayout();
+            }
+        }
+        public static void ClearMap(GeoMap geoMap)
+        {
+            geoMap.Series = [];
+        }
+
+        // Helper methods
         public static LegendPosition GetLegendPosition(PieChart chart)
         {
             // Use a ratio to allow Bottom legend even if height is slightly less than width
             double ratio = (double)chart.Height / chart.Width;
             return ratio >= 0.8 || chart.Width < 550 ? LegendPosition.Bottom : LegendPosition.Right;
         }
-
-        // Helper methods
         private static ISeries CreateStyledDataset(string label, bool isLineChart, SKColor color)
         {
             if (isLineChart)
@@ -228,16 +225,16 @@ namespace Sales_Tracker.Charts
         }
 
         private static void ProcessPieChartData<T>(
-       Dictionary<string, T> data,
-       PieChartGrouping grouping,
-       List<PieSeries<double>> dataset,
-       bool exportToExcel,
-       string filePath,
-       string chartTitle,
-       string categoryLabel,
-       string valueLabel,
-       bool canUpdateChart,
-       PieChart chart) where T : struct, IConvertible
+            Dictionary<string, T> data,
+            PieChartGrouping grouping,
+            List<PieSeries<double>> dataset,
+            bool exportToExcel,
+            string filePath,
+            string chartTitle,
+            string categoryLabel,
+            string valueLabel,
+            bool canUpdateChart,
+            PieChart chart) where T : struct, IConvertible
         {
             double totalCount = data.Values.Sum(x => Convert.ToDouble(x));
 
@@ -275,7 +272,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    UpdatePieChart(chart, dataset);
+                    chart.Series = dataset.Cast<ISeries>().ToArray();
                 }
             }
         }
@@ -448,8 +445,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries dataset = CreateStyledDataset(label, isLineChart, GetDefaultColor());
@@ -481,7 +477,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetLabels(revenueByDate, dateFormat, dataset, isLineChart, chart);
-                UpdateChart(chart, dataset, true);
+                UpdateCartesianChart(chart, dataset, true);
             }
 
             return new ChartData(grandTotal, revenueByDate);
@@ -497,13 +493,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -617,8 +613,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries dataset = CreateStyledDataset(label, isLineChart, GetDefaultColor());
@@ -667,7 +662,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetLabels(profitByDate, dateFormat, dataset, isLineChart, chart);
-                UpdateChart(chart, dataset, true);
+                UpdateCartesianChart(chart, dataset, true);
             }
 
             return new ChartData(grandTotal, profitByDate);
@@ -683,13 +678,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -752,13 +747,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -821,13 +816,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -967,13 +962,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -1036,8 +1031,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries expensesDataset = CreateStyledDataset(expensesLabel, isLineChart, GetColorForIndex(1));
@@ -1098,8 +1092,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, GetColorForIndex(1));
@@ -1170,8 +1163,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries purchasesDataset = CreateStyledDataset(purchasesLabel, isLineChart, GetColorForIndex(1));
@@ -1230,8 +1222,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, GetColorForIndex(1));
@@ -1312,7 +1303,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForLine(chart);
+                ConfigureCartesianChart(chart);
             }
 
             // Create line datasets
@@ -1460,8 +1451,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries purchaseReturnsDataset = CreateStyledDataset(purchaseReturnsLabel, isLineChart, GetColorForIndex(1));
@@ -1541,8 +1531,7 @@ namespace Sales_Tracker.Charts
 
             if (!exportToExcel && canUpdateChart)
             {
-                if (isLineChart) { ConfigureChartForLine(chart); }
-                else { ConfigureChartForBar(chart); }
+                ConfigureCartesianChart(chart);
             }
 
             ISeries purchaseReturnValueDataset = CreateStyledDataset(purchaseReturnValueLabel, isLineChart, GetColorForIndex(1));
@@ -1629,13 +1618,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartCountData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -1691,13 +1680,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartCountData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -1768,13 +1757,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartCountData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -1845,13 +1834,13 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearPieChart(chart);
+                ClearChart(chart);
                 return ChartCountData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ConfigureChartForPie(chart);
+                ConfigurePieChart(chart);
             }
 
             List<PieSeries<double>> dataset = [];
@@ -1941,19 +1930,19 @@ namespace Sales_Tracker.Charts
         [
             CustomColors.PastelBlue,
             CustomColors.PastelGreen,
-            Color.FromArgb(204, 102, 153), // Soft pink
-            Color.FromArgb(153, 102, 204), // Soft purple
-            Color.FromArgb(204, 153, 102), // Soft orange
-            Color.FromArgb(102, 178, 178), // Sea green
-            Color.FromArgb(204, 102, 102), // Soft red
-            Color.FromArgb(153, 153, 204), // Muted lavender
-            Color.FromArgb(153, 204, 153), // Soft sage
-            Color.FromArgb(204, 204, 153), // Muted gold
-            Color.FromArgb(178, 102, 178), // Soft magenta
-            Color.FromArgb(102, 127, 204), // Ocean blue
-            Color.FromArgb(204, 153, 204), // Soft lilac
-            Color.FromArgb(153, 153, 153), // Muted gray
-            Color.FromArgb(178, 178, 102), // Olive gold
+            Color.FromArgb(204, 102, 153),  // Soft pink
+            Color.FromArgb(153, 102, 204),  // Soft purple
+            Color.FromArgb(204, 153, 102),  // Soft orange
+            Color.FromArgb(102, 178, 178),  // Sea green
+            Color.FromArgb(204, 102, 102),  // Soft red
+            Color.FromArgb(153, 153, 204),  // Muted lavender
+            Color.FromArgb(153, 204, 153),  // Soft sage
+            Color.FromArgb(204, 204, 153),  // Muted gold
+            Color.FromArgb(178, 102, 178),  // Soft magenta
+            Color.FromArgb(102, 127, 204),  // Ocean blue
+            Color.FromArgb(204, 153, 204),  // Soft lilac
+            Color.FromArgb(153, 153, 153),  // Muted gray
+            Color.FromArgb(178, 178, 102),  // Olive gold
         ];
         private static SKColor GetColorForIndex(int index)
         {
@@ -2050,33 +2039,13 @@ namespace Sales_Tracker.Charts
             }
             return (minDate, maxDate);
         }
-        private static void UpdateChart(CartesianChart chart, ISeries dataset, bool formatCurrency)
+        private static void UpdateCartesianChart(CartesianChart chart, ISeries dataset, bool formatCurrency)
         {
             chart.Series = [dataset];
 
             if (formatCurrency)
             {
                 ApplyCurrencyFormatToChart(chart);
-            }
-        }
-        private static void UpdatePieChart(PieChart chart, List<PieSeries<double>> dataset)
-        {
-            chart.Series = dataset.Cast<ISeries>().ToArray();
-        }
-        public static void ClearChart(CartesianChart chart)
-        {
-            chart.Series = [];
-            chart.XAxes = [new Axis { }];
-            chart.YAxes = [new Axis { }];
-            chart.ZoomMode = ZoomAndPanMode.None;
-        }
-        public static void ClearPieChart(PieChart chart)
-        {
-            chart.Series = [];
-
-            if (chart.Legend is CustomLegend customLegend)
-            {
-                customLegend.ClearLayout();
             }
         }
 
@@ -2102,13 +2071,6 @@ namespace Sales_Tracker.Charts
             }
 
             return country;
-        }
-        private static void ConfigureGeoMap(GeoMap geoMap)
-        {
-            ChartColors.ApplyTheme(geoMap);
-
-            // Configure map properties
-            geoMap.MapProjection = MapProjection.Default;
         }
         private static void UpdateGeoMap(GeoMap geoMap, Dictionary<string, double> countryData)
         {

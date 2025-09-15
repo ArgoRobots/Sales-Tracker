@@ -3,7 +3,7 @@
     public static class CollectionExtensions
     {
         /// <summary>
-        /// Removes multiple items from a collection in a single operation.
+        /// Removes multiple items from a collection.
         /// </summary>
         public static void RemoveRange<T>(this ICollection<T> collection, IEnumerable<T> itemsToRemove)
         {
