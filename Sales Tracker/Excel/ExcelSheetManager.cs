@@ -1754,16 +1754,10 @@ namespace Sales_Tracker.Excel
             }
 
             // Remove added accountants
-            foreach (string accountant in session.AddedAccountants)
-            {
-                MainMenu_Form.Instance.AccountantList.Remove(accountant);
-            }
+            MainMenu_Form.Instance.AccountantList.RemoveRange(session.AddedAccountants);
 
             // Remove added companies
-            foreach (string company in session.AddedCompanies)
-            {
-                MainMenu_Form.Instance.CompanyList.Remove(company);
-            }
+            MainMenu_Form.Instance.CompanyList.RemoveRange(session.AddedCompanies);
 
             // Remove added products
             foreach (KeyValuePair<string, List<Product>> categoryProducts in session.AddedProducts)
@@ -1777,47 +1771,17 @@ namespace Sales_Tracker.Excel
                 Category? saleCategory = MainMenu_Form.Instance.CategorySaleList
                     .FirstOrDefault(c => c.Name == categoryName);
 
-                if (purchaseCategory != null)
-                {
-                    foreach (Product product in productsToRemove)
-                    {
-                        purchaseCategory.ProductList.Remove(product);
-                    }
-                }
-
-                if (saleCategory != null)
-                {
-                    foreach (Product product in productsToRemove)
-                    {
-                        saleCategory.ProductList.Remove(product);
-                    }
-                }
+                purchaseCategory?.ProductList.RemoveRange(productsToRemove);
+                saleCategory?.ProductList.RemoveRange(productsToRemove);
             }
 
             // Remove added categories
-            foreach (Category category in session.AddedCategories)
-            {
-                MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
-                MainMenu_Form.Instance.CategorySaleList.Remove(category);
-            }
+            MainMenu_Form.Instance.CategoryPurchaseList.RemoveRange(session.AddedCategories);
+            MainMenu_Form.Instance.CategorySaleList.RemoveRange(session.AddedCategories);
 
-            // Remove added purchase rows
-            foreach (DataGridViewRow row in session.AddedPurchaseRows)
-            {
-                if (MainMenu_Form.Instance.Purchase_DataGridView.Rows.Contains(row))
-                {
-                    MainMenu_Form.Instance.Purchase_DataGridView.Rows.Remove(row);
-                }
-            }
-
-            // Remove added sale rows
-            foreach (DataGridViewRow row in session.AddedSaleRows)
-            {
-                if (MainMenu_Form.Instance.Sale_DataGridView.Rows.Contains(row))
-                {
-                    MainMenu_Form.Instance.Sale_DataGridView.Rows.Remove(row);
-                }
-            }
+            // Remove added rows from DataGridViews
+            MainMenu_Form.Instance.Purchase_DataGridView.Rows.RemoveRowsIfExists(session.AddedPurchaseRows);
+            MainMenu_Form.Instance.Sale_DataGridView.Rows.RemoveRowsIfExists(session.AddedSaleRows);
 
             // Save the reverted state
             MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.AccountantList, MainMenu_Form.SelectedOption.Accountants);
