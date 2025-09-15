@@ -84,7 +84,7 @@
             SelectSpreadsheet_Button.FillColor = Color.White;
             SelectSpreadsheet_Button.Font = new Font("Segoe UI", 10F);
             SelectSpreadsheet_Button.ForeColor = Color.Black;
-            SelectSpreadsheet_Button.Location = new Point(326, 84);
+            SelectSpreadsheet_Button.Location = new Point(309, 84);
             SelectSpreadsheet_Button.Margin = new Padding(6, 5, 6, 5);
             SelectSpreadsheet_Button.Name = "SelectSpreadsheet_Button";
             SelectSpreadsheet_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -126,7 +126,7 @@
             RemoveSpreadsheet_ImageButton.ImageOffset = new Point(0, 0);
             RemoveSpreadsheet_ImageButton.ImageRotate = 0F;
             RemoveSpreadsheet_ImageButton.ImageSize = new Size(30, 30);
-            RemoveSpreadsheet_ImageButton.Location = new Point(422, 137);
+            RemoveSpreadsheet_ImageButton.Location = new Point(405, 137);
             RemoveSpreadsheet_ImageButton.Name = "RemoveSpreadsheet_ImageButton";
             RemoveSpreadsheet_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveSpreadsheet_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
@@ -139,9 +139,11 @@
             // SelectedSpreadsheet_Label
             // 
             SelectedSpreadsheet_Label.Anchor = AnchorStyles.Top;
+            SelectedSpreadsheet_Label.AutoEllipsis = true;
             SelectedSpreadsheet_Label.AutoSize = true;
             SelectedSpreadsheet_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedSpreadsheet_Label.Location = new Point(328, 142);
+            SelectedSpreadsheet_Label.Location = new Point(311, 142);
+            SelectedSpreadsheet_Label.MaximumSize = new Size(250, 28);
             SelectedSpreadsheet_Label.Name = "SelectedSpreadsheet_Label";
             SelectedSpreadsheet_Label.Size = new Size(86, 28);
             SelectedSpreadsheet_Label.TabIndex = 0;
@@ -185,7 +187,7 @@
             SelectReceiptsFolder_Button.FillColor = Color.White;
             SelectReceiptsFolder_Button.Font = new Font("Segoe UI", 10F);
             SelectReceiptsFolder_Button.ForeColor = Color.Black;
-            SelectReceiptsFolder_Button.Location = new Point(583, 84);
+            SelectReceiptsFolder_Button.Location = new Point(599, 84);
             SelectReceiptsFolder_Button.Margin = new Padding(6, 5, 6, 5);
             SelectReceiptsFolder_Button.Name = "SelectReceiptsFolder_Button";
             SelectReceiptsFolder_Button.ShadowDecoration.CustomizableEdges = customizableEdges9;
@@ -197,9 +199,11 @@
             // SelectedReceiptsFolder_Label
             // 
             SelectedReceiptsFolder_Label.Anchor = AnchorStyles.Top;
+            SelectedReceiptsFolder_Label.AutoEllipsis = true;
             SelectedReceiptsFolder_Label.AutoSize = true;
             SelectedReceiptsFolder_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceiptsFolder_Label.Location = new Point(583, 142);
+            SelectedReceiptsFolder_Label.Location = new Point(599, 142);
+            SelectedReceiptsFolder_Label.MaximumSize = new Size(250, 28);
             SelectedReceiptsFolder_Label.Name = "SelectedReceiptsFolder_Label";
             SelectedReceiptsFolder_Label.Size = new Size(86, 28);
             SelectedReceiptsFolder_Label.TabIndex = 7;
@@ -215,7 +219,7 @@
             RemoveReceiptsFolder_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceiptsFolder_ImageButton.ImageRotate = 0F;
             RemoveReceiptsFolder_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceiptsFolder_ImageButton.Location = new Point(675, 140);
+            RemoveReceiptsFolder_ImageButton.Location = new Point(691, 140);
             RemoveReceiptsFolder_ImageButton.Name = "RemoveReceiptsFolder_ImageButton";
             RemoveReceiptsFolder_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveReceiptsFolder_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges10;

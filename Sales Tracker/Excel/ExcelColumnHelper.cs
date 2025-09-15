@@ -82,8 +82,8 @@ namespace Sales_Tracker.Excel
         }
         private static bool IsTotalItemsMatch(string excel)
         {
-            return excel.Contains("total") && excel.Contains("item") ||
-                excel.Contains("quantity") || excel.Contains("qty") || excel.Contains("amount");
+            return excel.Contains("item") || excel.Contains("quantity") ||
+                excel.Contains("qty") || excel.Contains("amount");
         }
         private static bool IsPricePerUnitMatch(string excel)
         {
@@ -130,9 +130,10 @@ namespace Sales_Tracker.Excel
         }
         private static bool IsTotalMatch(string excel)
         {
-            return excel.Contains("total") || excel.Contains("sum") ||
+            return (excel.Contains("total") || excel.Contains("sum") ||
                 excel.Contains("amount") || excel.Contains("expense") ||
-                excel.Contains("revenue");
+                excel.Contains("revenue"))
+                && !IsTotalItemsMatch(excel);
         }
         private static bool IsAccountantNameMatch(string excel)
         {
@@ -377,7 +378,8 @@ namespace Sales_Tracker.Excel
                 MainMenu_Form.Column.Category,
                 MainMenu_Form.Column.Date,
                 MainMenu_Form.Column.TotalItems,
-                MainMenu_Form.Column.PricePerUnit
+                MainMenu_Form.Column.PricePerUnit,
+                MainMenu_Form.Column.Total
             ];
 
             List<string> missingColumns = [];
