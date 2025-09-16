@@ -1132,8 +1132,8 @@ namespace Sales_Tracker.Excel
                     continue;
                 }
 
-                string columnHeaderText = targetGridView.Columns[i].HeaderText;
-                MainMenu_Form.Column? columnType = GetColumnTypeFromHeader(columnHeaderText, isPurchase);
+                string headerText = GetColumnHeaderText(targetGridView.Columns[i]);
+                MainMenu_Form.Column? columnType = GetColumnTypeFromHeader(headerText, isPurchase);
 
                 if (columnType == null)
                 {
@@ -1145,7 +1145,7 @@ namespace Sales_Tracker.Excel
                         "Failed to map column '{0}' in {1}. The spreadsheet may have changed after it was selected. The import operation will be cancelled.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok,
-                        columnHeaderText, worksheetName);
+                        headerText, worksheetName);
 
                     return ImportTransactionResult.Cancel;
                 }
@@ -1168,12 +1168,12 @@ namespace Sales_Tracker.Excel
                 }
 
                 // Handle monetary fields using column type detection
-                if (IsMonetaryColumn(columnHeaderText, isPurchase))
+                if (IsMonetaryColumn(headerText, isPurchase))
                 {
                     ImportError errorContext = new()
                     {
                         TransactionId = transactionId,
-                        FieldName = columnHeaderText,
+                        FieldName = headerText,
                         RowNumber = rowNumber,
                         WorksheetName = worksheetName
                     };
@@ -1229,7 +1229,7 @@ namespace Sales_Tracker.Excel
                     // Store the display value in default currency
                     transaction.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
+                        : string.Format("{0:N2}", Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero));
                 }
                 else
                 {
@@ -1830,6 +1830,21 @@ namespace Sales_Tracker.Excel
             }
         }
 
+        /// <summary>
+        /// Gets the header text from a DataGridView column, handling both regular and custom image header cells.
+        /// </summary>
+        private static string GetColumnHeaderText(DataGridViewColumn column)
+        {
+            if (column.HeaderCell is DataGridViewImageHeaderCell customHeaderCell)
+            {
+                return customHeaderCell.HeaderText;
+            }
+            else
+            {
+                return column.HeaderText;
+            }
+        }
+
         // Export spreadsheet methods
         public static void ExportSpreadsheet(string filePath, string currency)
         {
@@ -1894,16 +1909,7 @@ namespace Sales_Tracker.Excel
 
                 IXLCell cell = worksheet.Cell(1, excelColumnIndex);
 
-                // Get header text - check if it's a custom DataGridViewImageHeaderCell
-                string headerText;
-                if (dataGridView.Columns[i].HeaderCell is DataGridViewImageHeaderCell customHeaderCell)
-                {
-                    headerText = customHeaderCell.HeaderText;
-                }
-                else
-                {
-                    headerText = dataGridView.Columns[i].HeaderText;
-                }
+                string headerText = GetColumnHeaderText(dataGridView.Columns[i]);
 
                 cell.Value = headerText;
                 cell.Style.Font.Bold = true;
