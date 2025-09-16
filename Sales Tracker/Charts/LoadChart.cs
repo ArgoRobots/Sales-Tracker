@@ -85,8 +85,22 @@ namespace Sales_Tracker.Charts
         public static void ClearChart(CartesianChart chart)
         {
             chart.Series = [];
-            chart.XAxes = [];
-            chart.YAxes = [];
+
+            // Create completely clean axes with no visual elements
+            chart.XAxes = [new Axis {
+                SeparatorsPaint = null,
+                TicksPaint = null,
+                LabelsPaint = null,
+                SubseparatorsPaint = null
+            }];
+
+            chart.YAxes = [new Axis {
+                SeparatorsPaint = null,
+                TicksPaint = null,
+                LabelsPaint = null,
+                SubseparatorsPaint = null
+            }];
+
             chart.ZoomMode = ZoomAndPanMode.None;
         }
         public static void ClearChart(PieChart chart)
