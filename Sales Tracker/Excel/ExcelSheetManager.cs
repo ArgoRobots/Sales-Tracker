@@ -1229,7 +1229,7 @@ namespace Sales_Tracker.Excel
                     // Store the display value in default currency
                     transaction.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : string.Format("{0:N2}", Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero));
+                        : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero).ToString("N2");
                 }
                 else
                 {

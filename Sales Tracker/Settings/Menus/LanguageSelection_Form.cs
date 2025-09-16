@@ -289,9 +289,9 @@ namespace Sales_Tracker.Settings.Menus
                 {
                     CustomMessageBox.Show("Success",
                         $"Translation files generated successfully in:\n{_referenceFolder}\n" +
-                        $"Summary:" +
-                        $"• Total source texts: {result.TotalSourceTexts:N0}" +
-                        $"• New translations created: {result.TotalNewTranslations:N0}" +
+                        $"Summary:\n" +
+                        $"• Total source texts: {result.TotalSourceTexts:N0}\n" +
+                        $"• New translations created: {result.TotalNewTranslations:N0}\n" +
                         $"• Languages processed: {result.LanguagesProcessed}",
                         CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
@@ -312,7 +312,7 @@ namespace Sales_Tracker.Settings.Menus
             }
             catch
             {
-                CustomMessageBox.ShowWithFormat("Error", "Error generating translations",
+                CustomMessageBox.ShowWithFormat("Error", "Error generating translations.",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
             finally
