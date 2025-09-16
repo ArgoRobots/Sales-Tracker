@@ -30,9 +30,9 @@ namespace Sales_Tracker.Excel
         }
 
         // Import data with rollback and cancellation support
-        public static bool ImportAccountantsData(IXLWorksheet worksheet, ImportSession session)
+        public static int ImportAccountantsData(IXLWorksheet worksheet, ImportSession session)
         {
-            if (session.IsCancelled == true) { return false; }
+            if (session.IsCancelled == true) { return 0; }
 
             return ImportSimpleListData(
                 worksheet,
@@ -43,9 +43,9 @@ namespace Sales_Tracker.Excel
                 session.AddedAccountants,
                 session);
         }
-        public static bool ImportCompaniesData(IXLWorksheet worksheet, ImportSession session)
+        public static int ImportCompaniesData(IXLWorksheet worksheet, ImportSession session)
         {
-            if (session.IsCancelled == true) { return false; }
+            if (session.IsCancelled == true) { return 0; }
 
             return ImportSimpleListData(
                 worksheet,
@@ -60,7 +60,7 @@ namespace Sales_Tracker.Excel
         /// <summary>
         /// Helper method for importing simple list data like accountants or companies.
         /// </summary>
-        private static bool ImportSimpleListData(
+        private static int ImportSimpleListData(
             IXLWorksheet worksheet,
             List<string> existingList,
             MainMenu_Form.SelectedOption optionType,
@@ -69,19 +69,17 @@ namespace Sales_Tracker.Excel
             List<string> addedItems,
             ImportSession session)
         {
-            if (session.IsCancelled == true) { return false; }
+            if (session.IsCancelled == true) { return 0; }
 
             ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateSimpleListColumns(worksheet, column, GetColumnHeadersForType(optionType));
             if (!validation.IsValid)
             {
                 ShowColumnValidationError(itemTypeName, validation.MissingColumns);
-                return false;
+                return 0;
             }
 
             // Always skip header row (row 1) since we use it for column lookup
             IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
-
-            bool wasSomethingImported = false;
 
             HashSet<string> existingItems = new(existingList.Count);
             foreach (string item in existingList)
@@ -134,7 +132,6 @@ namespace Sales_Tracker.Excel
                         switch (result)
                         {
                             case CustomMessageBoxResult.Yes:
-                                shouldSkip = false;  // Import this one
                                 break;
                             case CustomMessageBoxResult.No:
                                 shouldSkip = true;  // Skip this one
@@ -149,7 +146,6 @@ namespace Sales_Tracker.Excel
                                 {
                                     session.UserChoices.DuplicateCompanyChoice = true;
                                 }
-                                shouldSkip = false;
                                 break;
                             case CustomMessageBoxResult.NoAll:
                                 // Skip all duplicates from now on
@@ -177,16 +173,10 @@ namespace Sales_Tracker.Excel
 
                 existingList.Add(itemName);
                 addedDuringImport.Add(itemNameLower);
-                addedItems?.Add(itemName);  // Track for rollback
-                wasSomethingImported = true;
+                addedItems.Add(itemName);
             }
 
-            if (addedItems == null)
-            {
-                MainMenu_Form.SaveListToFile(existingList, optionType);
-            }
-
-            return wasSomethingImported;
+            return addedItems.Count;
         }
         private static Dictionary<Enum, string> GetColumnHeadersForType(MainMenu_Form.SelectedOption optionType)
         {
@@ -199,9 +189,9 @@ namespace Sales_Tracker.Excel
                 _ => []
             };
         }
-        public static bool ImportProductsData(IXLWorksheet worksheet, bool isPurchase, ImportSession session)
+        public static int ImportProductsData(IXLWorksheet worksheet, bool isPurchase, ImportSession session)
         {
-            if (session.IsCancelled == true) { return false; }
+            if (session.IsCancelled == true) { return 0; }
 
             // Create column helper and validate required columns
             ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateProductColumns(worksheet);
@@ -209,13 +199,11 @@ namespace Sales_Tracker.Excel
             if (!validation.IsValid)
             {
                 ShowColumnValidationError("Products", validation.MissingColumns);
-                return false;
+                return 0;
             }
 
             // Always skip header row (row 1) since we use it for column lookup
             IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);
-
-            bool wasSomethingImported = false;
 
             List<Category> list = isPurchase
                 ? MainMenu_Form.Instance.CategoryPurchaseList
@@ -278,9 +266,7 @@ namespace Sales_Tracker.Excel
                     continue;
                 }
 
-                // Create the product and add it to the category's ProductList
-                Product newProduct = AddProductToCategory(
-                    category,
+                Product newProduct = CreateProduct(
                     productId,
                     productName,
                     productNameLower,
@@ -288,6 +274,8 @@ namespace Sales_Tracker.Excel
                     companyOfOrigin,
                     addedDuringImport,
                     categoryName);
+
+                category.ProductList.Add(newProduct);
 
                 // Track for rollback
                 if (session != null)
@@ -300,18 +288,9 @@ namespace Sales_Tracker.Excel
 
                     value.Add(newProduct);
                 }
-
-                wasSomethingImported = true;
             }
 
-            if (session == null)
-            {
-                MainMenu_Form.Instance.SaveCategoriesToFile(isPurchase
-                    ? MainMenu_Form.SelectedOption.CategoryPurchases
-                    : MainMenu_Form.SelectedOption.CategorySales);
-            }
-
-            return wasSomethingImported;
+            return session.AddedProducts.Values.Sum(list => list.Count);
         }
         private static bool ValidateCountry(string countryName, ImportSession session)
         {
@@ -440,8 +419,7 @@ namespace Sales_Tracker.Excel
 
             return false;  // Product doesn't exist, proceed with import
         }
-        private static Product AddProductToCategory(
-            Category category,
+        private static Product CreateProduct(
             string productId,
             string productName,
             string productNameLower,
@@ -457,8 +435,6 @@ namespace Sales_Tracker.Excel
                 CountryOfOrigin = countryOfOrigin,
                 CompanyOfOrigin = companyOfOrigin
             };
-
-            category.ProductList.Add(product);
 
             // Track that we've added this product
             if (!addedDuringImport.TryGetValue(categoryName, out HashSet<string> productsSet))
@@ -633,6 +609,9 @@ namespace Sales_Tracker.Excel
                 ? MainMenu_Form.Instance.Purchase_DataGridView
                 : MainMenu_Form.Instance.Sale_DataGridView;
 
+            string itemType = isPurchase ? "Purchase" : "Sale";
+            string worksheetName = isPurchase ? "Purchases" : "Sales";
+
             ExcelColumnHelper.ValidationResult validation = ExcelColumnHelper.ValidateTransactionColumns(worksheet, isPurchase);
 
             if (!validation.IsValid)
@@ -640,7 +619,7 @@ namespace Sales_Tracker.Excel
                 ShowColumnValidationError("Transactions", validation.MissingColumns);
                 summary.Errors.Add(new ImportError
                 {
-                    WorksheetName = isPurchase ? "Purchases" : "Sales",
+                    WorksheetName = worksheetName,
                     FieldName = "Column Validation",
                     InvalidValue = $"Missing columns: {string.Join(", ", validation.MissingColumns)}"
                 });
@@ -667,8 +646,6 @@ namespace Sales_Tracker.Excel
             }
 
             HashSet<string> addedDuringImport = [];
-            string itemType = isPurchase ? "Purchase" : "Sale";
-            string worksheetName = isPurchase ? "Purchases" : "Sales";
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -941,7 +918,6 @@ namespace Sales_Tracker.Excel
                 importType, missingColumnsText);
         }
 
-        // Export spreadsheet methods
         public enum ImportReturnResult
         {
             Success,
@@ -1156,8 +1132,8 @@ namespace Sales_Tracker.Excel
                     continue;
                 }
 
-                string columnHeaderText = targetGridView.Columns[i].HeaderText;
-                MainMenu_Form.Column? columnType = GetColumnTypeFromHeader(columnHeaderText, isPurchase);
+                string headerText = GetColumnHeaderText(targetGridView.Columns[i]);
+                MainMenu_Form.Column? columnType = GetColumnTypeFromHeader(headerText, isPurchase);
 
                 if (columnType == null)
                 {
@@ -1169,7 +1145,7 @@ namespace Sales_Tracker.Excel
                         "Failed to map column '{0}' in {1}. The spreadsheet may have changed after it was selected. The import operation will be cancelled.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok,
-                        columnHeaderText, worksheetName);
+                        headerText, worksheetName);
 
                     return ImportTransactionResult.Cancel;
                 }
@@ -1192,12 +1168,12 @@ namespace Sales_Tracker.Excel
                 }
 
                 // Handle monetary fields using column type detection
-                if (IsMonetaryColumn(columnHeaderText, isPurchase))
+                if (IsMonetaryColumn(headerText, isPurchase))
                 {
                     ImportError errorContext = new()
                     {
                         TransactionId = transactionId,
-                        FieldName = columnHeaderText,
+                        FieldName = headerText,
                         RowNumber = rowNumber,
                         WorksheetName = worksheetName
                     };
@@ -1253,7 +1229,7 @@ namespace Sales_Tracker.Excel
                     // Store the display value in default currency
                     transaction.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
+                        : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero).ToString("N2");
                 }
                 else
                 {
@@ -1772,22 +1748,16 @@ namespace Sales_Tracker.Excel
         /// </summary>
         public static void RollbackImportSession(ImportSession session)
         {
-            if (session == null || !session.HasChanges())
+            if (!session.HasChanges())
             {
                 return;
             }
 
             // Remove added accountants
-            foreach (string accountant in session.AddedAccountants)
-            {
-                MainMenu_Form.Instance.AccountantList.Remove(accountant);
-            }
+            MainMenu_Form.Instance.AccountantList.RemoveRange(session.AddedAccountants);
 
             // Remove added companies
-            foreach (string company in session.AddedCompanies)
-            {
-                MainMenu_Form.Instance.CompanyList.Remove(company);
-            }
+            MainMenu_Form.Instance.CompanyList.RemoveRange(session.AddedCompanies);
 
             // Remove added products
             foreach (KeyValuePair<string, List<Product>> categoryProducts in session.AddedProducts)
@@ -1801,47 +1771,17 @@ namespace Sales_Tracker.Excel
                 Category? saleCategory = MainMenu_Form.Instance.CategorySaleList
                     .FirstOrDefault(c => c.Name == categoryName);
 
-                if (purchaseCategory != null)
-                {
-                    foreach (Product product in productsToRemove)
-                    {
-                        purchaseCategory.ProductList.Remove(product);
-                    }
-                }
-
-                if (saleCategory != null)
-                {
-                    foreach (Product product in productsToRemove)
-                    {
-                        saleCategory.ProductList.Remove(product);
-                    }
-                }
+                purchaseCategory?.ProductList.RemoveRange(productsToRemove);
+                saleCategory?.ProductList.RemoveRange(productsToRemove);
             }
 
             // Remove added categories
-            foreach (Category category in session.AddedCategories)
-            {
-                MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
-                MainMenu_Form.Instance.CategorySaleList.Remove(category);
-            }
+            MainMenu_Form.Instance.CategoryPurchaseList.RemoveRange(session.AddedCategories);
+            MainMenu_Form.Instance.CategorySaleList.RemoveRange(session.AddedCategories);
 
-            // Remove added purchase rows
-            foreach (DataGridViewRow row in session.AddedPurchaseRows)
-            {
-                if (MainMenu_Form.Instance.Purchase_DataGridView.Rows.Contains(row))
-                {
-                    MainMenu_Form.Instance.Purchase_DataGridView.Rows.Remove(row);
-                }
-            }
-
-            // Remove added sale rows
-            foreach (DataGridViewRow row in session.AddedSaleRows)
-            {
-                if (MainMenu_Form.Instance.Sale_DataGridView.Rows.Contains(row))
-                {
-                    MainMenu_Form.Instance.Sale_DataGridView.Rows.Remove(row);
-                }
-            }
+            // Remove added rows from DataGridViews
+            MainMenu_Form.Instance.Purchase_DataGridView.Rows.RemoveRowsIfExists(session.AddedPurchaseRows);
+            MainMenu_Form.Instance.Sale_DataGridView.Rows.RemoveRowsIfExists(session.AddedSaleRows);
 
             // Save the reverted state
             MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.AccountantList, MainMenu_Form.SelectedOption.Accountants);
@@ -1857,7 +1797,7 @@ namespace Sales_Tracker.Excel
         /// </summary>
         public static void CommitImportSession(ImportSession session)
         {
-            if (session == null || !session.HasChanges())
+            if (!session.HasChanges())
             {
                 return;
             }
@@ -1889,6 +1829,23 @@ namespace Sales_Tracker.Excel
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }
         }
+
+        /// <summary>
+        /// Gets the header text from a DataGridView column, handling both regular and custom image header cells.
+        /// </summary>
+        private static string GetColumnHeaderText(DataGridViewColumn column)
+        {
+            if (column.HeaderCell is DataGridViewImageHeaderCell customHeaderCell)
+            {
+                return customHeaderCell.HeaderText;
+            }
+            else
+            {
+                return column.HeaderText;
+            }
+        }
+
+        // Export spreadsheet methods
         public static void ExportSpreadsheet(string filePath, string currency)
         {
             filePath = Directories.GetNewFileNameIfItAlreadyExists(filePath);
@@ -1922,7 +1879,7 @@ namespace Sales_Tracker.Excel
         }
         private static string ParseCurrencyCode(string currencySelection)
         {
-            // Extract currency code (first 3 characters)
+            // Extract currency code (first 3 characters) (e.g., "USD ($)" -> "USD")
             string[] parts = currencySelection.Split(' ');
             if (parts.Length > 0 && parts[0].Length >= 3)
             {
@@ -1943,7 +1900,7 @@ namespace Sales_Tracker.Excel
                     continue;
                 }
 
-                // Skip the country and company colums because they already exist in the product sheets
+                // Skip the country and company columns because they already exist in the product sheets
                 if (dataGridView.Columns[i].Name == ReadOnlyVariables.Country_column
                     || dataGridView.Columns[i].Name == ReadOnlyVariables.Company_column)
                 {
@@ -1951,7 +1908,10 @@ namespace Sales_Tracker.Excel
                 }
 
                 IXLCell cell = worksheet.Cell(1, excelColumnIndex);
-                cell.Value = dataGridView.Columns[i].HeaderText;
+
+                string headerText = GetColumnHeaderText(dataGridView.Columns[i]);
+
+                cell.Value = headerText;
                 cell.Style.Font.Bold = true;
                 cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
                 excelColumnIndex++;

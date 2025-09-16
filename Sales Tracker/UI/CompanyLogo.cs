@@ -332,9 +332,9 @@ namespace Sales_Tracker.UI
                 LogLogoChange(oldLogoPath, dialog.FileName);  // Log with original filename for user clarity
                 LoadCompanyLogoImage();
             }
-            catch (Exception ex)
+            catch
             {
-                ShowImageError(ex.Message);
+                ShowImageError();
             }
         }
         private static void RemoveOldLogoFile()
@@ -362,12 +362,11 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.SettingsThatHaveChangedInFile, 3, message);
             Log.Write(2, $"Company logo updated: {newLogoPath}");
         }
-        private static void ShowImageError(string errorMessage)
+        private static void ShowImageError()
         {
             CustomMessageBox.ShowWithFormat("Invalid Image",
-                "The selected file is not a valid image or cannot be loaded.\n\nError: {0}",
-                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                errorMessage);
+                "The selected file is not a valid image or cannot be loaded.",
+                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
 
             Log.Error_WriteToFile("Failed to load selected logo image");
         }

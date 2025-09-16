@@ -6,13 +6,13 @@ using SkiaSharp;
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Provides configuration for consistent theming of LiveCharts.
+    /// Provides configuration for theming of LiveCharts.
     /// Configures colors and styles to match the application's current theme.
     /// </summary>
     internal class ChartColors
     {
         /// <summary>
-        /// Applies consistent theming to a CartesianChart.
+        /// Applies theming to a CartesianChart.
         /// </summary>
         public static void ApplyTheme(CartesianChart chart)
         {
@@ -29,7 +29,7 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Applies consistent theming to a PieChart.
+        /// Applies theming to a PieChart.
         /// </summary>
         public static void ApplyTheme(PieChart chart)
         {
@@ -46,7 +46,7 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Applies consistent theming to a GeoMap.
+        /// Applies theming to a GeoMap.
         /// </summary>
         public static void ApplyTheme(GeoMap geoMap)
         {

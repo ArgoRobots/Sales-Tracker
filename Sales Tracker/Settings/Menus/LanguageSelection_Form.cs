@@ -287,14 +287,13 @@ namespace Sales_Tracker.Settings.Menus
 
                 if (result.Success && !progressForm.IsCancelled)
                 {
-                    // Build detailed success message
-                    string message = $"Translation files generated successfully in:\n{_referenceFolder}\n\n";
-                    message += $"Summary:\n";
-                    message += $"• Total source texts: {result.TotalSourceTexts:N0}\n";
-                    message += $"• New translations created: {result.TotalNewTranslations:N0}\n";
-                    message += $"• Languages processed: {result.LanguagesProcessed}\n";
-
-                    CustomMessageBox.Show("Success", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Success",
+                        $"Translation files generated successfully in:\n{_referenceFolder}\n" +
+                        $"Summary:\n" +
+                        $"• Total source texts: {result.TotalSourceTexts:N0}\n" +
+                        $"• New translations created: {result.TotalNewTranslations:N0}\n" +
+                        $"• Languages processed: {result.LanguagesProcessed}",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
                     // Refresh status after completion
                     UpdateLanguageStatus();
@@ -311,10 +310,10 @@ namespace Sales_Tracker.Settings.Menus
                         CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                CustomMessageBox.ShowWithFormat("Error", "Error generating translations: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok, ex.Message);
+                CustomMessageBox.ShowWithFormat("Error", "Error generating translations.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
             finally
             {

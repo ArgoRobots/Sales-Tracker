@@ -191,8 +191,12 @@ namespace Sales_Tracker.Startup.Menus
                             LabelManager.ManageNoDataLabelOnControl(false, cartesianChart);
                             break;
                         case PieChart pieChart:
-                            LoadChart.ClearPieChart(pieChart);
+                            LoadChart.ClearChart(pieChart);
                             LabelManager.ManageNoDataLabelOnControl(false, pieChart);
+                            break;
+                        case GeoMap geoMap:
+                            LoadChart.ClearMap(geoMap);
+                            LabelManager.ManageNoDataLabelOnControl(false, geoMap);
                             break;
                     }
                 }

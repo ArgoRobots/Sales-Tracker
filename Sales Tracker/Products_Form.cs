@@ -287,7 +287,7 @@ namespace Sales_Tracker
                 ShowingResultsFor_Label.Visible = false;
             }
 
-            DataGridViewManager.UpdateAlternatingRowColors(_selectedDataGridView);
+            DataGridViewManager.UpdateRowColors(_selectedDataGridView);
             LabelManager.ShowTotalLabel(Total_Label, _selectedDataGridView);
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)

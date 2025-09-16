@@ -24,7 +24,7 @@ namespace Sales_Tracker
 
             _selectedRow = row;
             _selectedTag = row.DataGridView.Tag.ToString();
-            _receiptFilePath = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+            _receiptFilePath = RightClickRowMenu.GetFilePathFromRowTag(row.Tag);
 
             if (_receiptFilePath != "" && !File.Exists(_receiptFilePath))
             {
@@ -600,6 +600,12 @@ namespace Sales_Tracker
                         secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
                         break;
 
+                    case nameof(MainMenu_Form.Column.Discount):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Discount], secondLeft, _secondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
+                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
                     case nameof(MainMenu_Form.Column.Total):
                         if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
                         {
@@ -795,6 +801,7 @@ namespace Sales_Tracker
                         column == ReadOnlyVariables.Shipping_column ||
                         column == ReadOnlyVariables.Tax_column ||
                         column == ReadOnlyVariables.Fee_column ||
+                        column == ReadOnlyVariables.Discount_column ||
                         column == ReadOnlyVariables.Total_column)
                     {
                         ProcessNumericColumn(textBox, column);

@@ -40,12 +40,12 @@ namespace Sales_Tracker.Classes
 
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 MainMenu_Form.Instance.InvokeIfRequired(() =>
-                    CustomMessageBox.ShowWithFormat("Service Initialization Error", "Failed to initialize Google Sheets service: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                    ex.Message)
+                    CustomMessageBox.ShowWithFormat("Service Initialization Error",
+                    "Failed to initialize Google Sheets service.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
                 );
                 return false;
             }
@@ -222,12 +222,11 @@ namespace Sales_Tracker.Classes
                 // Don't show error message for cancellation
                 throw;
             }
-            catch (Exception ex)
+            catch
             {
                 MainMenu_Form.Instance.InvokeIfRequired(() =>
-                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                    ex.Message)
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
                 );
                 throw;
             }
@@ -410,12 +409,11 @@ namespace Sales_Tracker.Classes
                 // Don't show error message for cancellation
                 throw;
             }
-            catch (Exception ex)
+            catch
             {
                 MainMenu_Form.Instance.InvokeIfRequired(() =>
-                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                    ex.Message)
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
                 );
                 throw;
             }
@@ -613,12 +611,11 @@ namespace Sales_Tracker.Classes
                 // Don't show error message for cancellation
                 throw;
             }
-            catch (Exception ex)
+            catch
             {
                 MainMenu_Form.Instance.InvokeIfRequired(() =>
-                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset chart to Google Sheets: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                    ex.Message)
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset chart to Google Sheets.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
                 );
                 throw;
             }
@@ -814,12 +811,11 @@ namespace Sales_Tracker.Classes
             {
                 throw;
             }
-            catch (Exception ex)
+            catch
             {
                 MainMenu_Form.Instance.InvokeIfRequired(() =>
-                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset count chart to Google Sheets: {0}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                    ex.Message)
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset count chart to Google Sheets.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
                 );
                 throw;
             }

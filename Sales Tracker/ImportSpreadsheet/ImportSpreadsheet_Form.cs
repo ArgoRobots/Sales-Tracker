@@ -642,35 +642,19 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, importSession);
-                        if (accountantsImported)
-                        {
-                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet);
-                        }
+                        aggregatedSummary.AccountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, importSession);
                         break;
 
                     case _companiesName:
-                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, importSession);
-                        if (companiesImported)
-                        {
-                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet);
-                        }
+                        aggregatedSummary.CompaniesImported = ExcelSheetManager.ImportCompaniesData(worksheet, importSession);
                         break;
 
                     case _purchaseProductsName:
-                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, importSession);
-                        if (purchaseProductsImported)
-                        {
-                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet);
-                        }
+                        aggregatedSummary.PurchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, importSession);
                         break;
 
                     case _saleProductsName:
-                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, importSession);
-                        if (saleProductsImported)
-                        {
-                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet);
-                        }
+                        aggregatedSummary.SaleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, importSession);
                         break;
 
                     case _purchasesName:
@@ -733,27 +717,6 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             MainMenu_Form.IsProgramLoading = false;
             return aggregatedSummary;
-        }
-
-        /// <summary>
-        /// Helper method to count rows that would be imported (for non-transaction imports).
-        /// </summary>
-        private static int CountRowsToImport(IXLWorksheet worksheet)
-        {
-            IEnumerable<IXLRow> rowsToProcess = worksheet.RowsUsed().Skip(1);  // Skip header
-
-            int count = 0;
-
-            foreach (IXLRow row in rowsToProcess)
-            {
-                string firstCell = row.Cell(1).GetValue<string>();
-                if (!string.IsNullOrWhiteSpace(firstCell))
-                {
-                    count++;
-                }
-            }
-
-            return count;
         }
 
         // Other event handlers
@@ -1098,6 +1061,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             return transactions;
         }
+
         // Spreadsheet helper methods
         private void ShowSpreadsheetLabel(string spreadsheetName)
         {
