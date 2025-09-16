@@ -28,6 +28,12 @@
     <Compile Update="Loading_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="LostProduct\MarkProductAsLost_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="LostProduct\UndoLoss_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="MainMenu_Form.cs">
       <SubType>Form</SubType>
     </Compile>

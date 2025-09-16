@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -9,21 +10,23 @@ namespace Sales_Tracker.GridView
 {
     internal class RightClickRowMenu
     {
-        // Right click row getters
+        // Getters
         public static Guna2Button RightClickDataGridView_ModifyBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_MoveBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ExportReceiptBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ShowItemsBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ReturnBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_UndoReturnBtn { get; private set; }
+        public static Guna2Button RightClickDataGridView_MarkAsLostBtn { get; private set; }
+        public static Guna2Button RightClickDataGridView_UndoLossBtn { get; private set; }
         public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
         public static Guna2Button RightClickDataGridView_DeleteBtn { get; private set; }
 
-        // Right click row methods
+        // Methods
         public static void ConstructRightClickRowMenu()
         {
             RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth, 7 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickDataGridView_Panel"
             );
 
@@ -41,11 +44,17 @@ namespace Sales_Tracker.GridView
             RightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
-            RightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Return product", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Mark as  returned", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_ReturnBtn.Click += ReturnProduct;
 
             RightClickDataGridView_UndoReturnBtn = CustomControls.ConstructBtnForMenu("Undo return", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_UndoReturnBtn.Click += UndoReturnProduct;
+
+            RightClickDataGridView_MarkAsLostBtn = CustomControls.ConstructBtnForMenu("Mark as lost", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_MarkAsLostBtn.Click += MarkAsLost;
+
+            RightClickDataGridView_UndoLossBtn = CustomControls.ConstructBtnForMenu("Undo loss", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_UndoLossBtn.Click += UndoLoss;
 
             RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
@@ -354,6 +363,77 @@ namespace Sales_Tracker.GridView
                 }
             }
         }
+        private static void MarkAsLost(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow;
+            bool isPurchase;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = DataGridViewManager.SelectedRowInMainMenu;
+                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
+            }
+
+            using MarkProductAsLost_Form lostForm = new(selectedRow, isPurchase);
+            if (lostForm.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CloseAllPanels();
+
+                // Refresh ItemsInTransaction_Form if it's open
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
+                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                {
+                    // Refresh to show loss status (similar to return status)
+                    itemsForm.RefreshItemReturnStatus(); // This method might need to be renamed or expanded
+                }
+            }
+        }
+        private static void UndoLoss(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = DataGridViewManager.SelectedRowInMainMenu;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+            }
+
+            using UndoLoss_Form undoLossForm = new(selectedRow);
+            if (undoLossForm.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CloseAllPanels();
+
+                // Refresh ItemsInTransaction_Form if it's open
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
+                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                {
+                    // Refresh to show updated loss status
+                    itemsForm.RefreshItemReturnStatus(); // This method might need to be renamed or expanded
+                }
+            }
+        }
         private static void DeleteRow(object sender, EventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
@@ -387,7 +467,7 @@ namespace Sales_Tracker.GridView
             }
         }
 
-        // Methods for right click row
+        // Helper methods
         public static string GetFilePathFromRowTag(object tag)
         {
             if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\'))

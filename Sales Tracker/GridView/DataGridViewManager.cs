@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -685,7 +686,7 @@ namespace Sales_Tracker.GridView
 
             if (isPurchasesOrSales || isTransactionView)
             {
-                // Add ReturnBtn and/or UndoReturnBtn based on current return status
+                // Add Return and Loss buttons based on current status
                 if (isSingleRowSelected)
                 {
                     DataGridViewRow selectedRow;
@@ -694,7 +695,7 @@ namespace Sales_Tracker.GridView
                     if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
                         selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
                     {
-                        // Use the main transaction row for return status checks
+                        // Use the main transaction row for status checks
                         selectedRow = SelectedRowInMainMenu;
                     }
                     else
@@ -703,9 +704,15 @@ namespace Sales_Tracker.GridView
                         selectedRow = grid.SelectedRows[0];
                     }
 
+                    // Check return status
                     bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
                     bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
 
+                    // Check loss status
+                    bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
+                    bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
+
+                    // Return buttons
                     if (isFullyReturned)
                     {
                         // Fully returned - only show undo button
@@ -724,12 +731,39 @@ namespace Sales_Tracker.GridView
                         RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
                         flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
                     }
-                    else
+                    else if (!isFullyLost && !isPartiallyLost)
                     {
-                        // Not returned - only show return button
+                        // Not returned and not lost - show return button
                         RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
                         RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
                         flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                    }
+
+                    // Loss buttons
+                    if (isFullyLost)
+                    {
+                        // Fully lost - only show undo loss button
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    }
+                    else if (isPartiallyLost)
+                    {
+                        // Partially lost - show both buttons
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
+
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    }
+                    else if (!isFullyReturned && !isPartiallyReturned)
+                    {
+                        // Not lost and not returned - show mark as lost button
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
                     }
                 }
             }
@@ -1064,13 +1098,13 @@ namespace Sales_Tracker.GridView
                 cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
             }
         }
-        public static bool HasVisibleRows(params Guna2DataGridView[] dataGridViews)
+        public static bool HasVisibleRowsExcludingLost(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (row.Visible)
+                    if (row.Visible && !LostManager.IsTransactionFullyLost(row) && !ReturnManager.IsTransactionFullyReturned(row))
                     {
                         return true;
                     }
@@ -1126,6 +1160,7 @@ namespace Sales_Tracker.GridView
                 }
             }
         }
+
         public static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)
@@ -1148,11 +1183,24 @@ namespace Sales_Tracker.GridView
             {
                 if (!row.Visible) { continue; }
 
-                // Check return status for proper color application
+                // Check return and loss status for proper color application
                 bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
                 bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+                bool isFullyLost = LostManager.IsTransactionFullyLost(row);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
 
-                if (isFullyReturned)
+                // Priority order: Lost > Returned > Normal
+                if (isFullyLost)
+                {
+                    // Fully lost - dark red/maroon background
+                    LostManager.UpdateRowAppearanceForLoss(row, true, false);
+                }
+                else if (isPartiallyLost)
+                {
+                    // Partially lost - dark orange/brown background
+                    LostManager.UpdateRowAppearanceForLoss(row, false, true);
+                }
+                else if (isFullyReturned)
                 {
                     // Fully returned - red background
                     ReturnManager.UpdateRowAppearanceForReturn(row, true, false);
@@ -1164,7 +1212,7 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Not returned - apply alternating colors
+                    // Not returned or lost - apply alternating colors
                     row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
                         ? dataGridView.DefaultCellStyle.BackColor
                         : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;

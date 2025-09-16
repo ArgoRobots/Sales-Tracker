@@ -10,6 +10,7 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Encryption;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.Properties;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Startup.Menus;
@@ -479,7 +480,7 @@ namespace Sales_Tracker
                 ProcessRow(dataGridView, rowData);
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
 
             ApplyReturnAppearancesToAllRows(dataGridView);
@@ -1487,7 +1488,7 @@ namespace Sales_Tracker
                 }
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
 
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
             DataGridViewManager.UpdateRowColors(dataGridView);
@@ -1916,7 +1917,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            Total_Panel.Visible = DataGridViewManager.HasVisibleRows(SelectedDataGridView);
+            Total_Panel.Visible = DataGridViewManager.HasVisibleRowsExcludingLost(SelectedDataGridView);
 
             int totalQuantity = 0;
 
@@ -1929,15 +1930,31 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in SelectedDataGridView.Rows)
             {
-                if (!LoadChart.IsRowValid(row)) { continue; }
+                // Skip invalid rows (includes fully returned and fully lost items)
+                if (!LoadChart.IsRowValid(row))
+                {
+                    continue;
+                }
 
-                totalQuantity += Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
-                totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
-                totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
-                fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
-                discount += Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
-                chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
-                totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
+                // For partially returned or lost items, calculate only the non-affected portion
+                int rowQuantity = Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
+                decimal rowTax = Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
+                decimal rowShipping = Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
+                decimal rowFee = Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
+                decimal rowDiscount = Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
+                decimal rowChargedDifference = Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                decimal rowTotalPrice = Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
+
+                // Calculate the percentage of items that are still valid (not returned or lost)
+                decimal validPercentage = CalculateValidItemsPercentage(row);
+
+                totalQuantity += (int)(rowQuantity * validPercentage);
+                totalTax += rowTax * validPercentage;
+                totalShipping += rowShipping * validPercentage;
+                fee += rowFee * validPercentage;
+                discount += rowDiscount * validPercentage;
+                chargedDifference += rowChargedDifference * validPercentage;
+                totalPrice += rowTotalPrice * validPercentage;
             }
 
             LabelManager.ShowTotalsWithTransactions(Total_Label, SelectedDataGridView);
@@ -1948,6 +1965,45 @@ namespace Sales_Tracker
             Discount_Label.Text = $"{CurrencySymbol}{discount:N2}";
             ChargedDifference_Label.Text = $"{CurrencySymbol}{chargedDifference:N2}";
             Price_Label.Text = $"{CurrencySymbol}{totalPrice:N2}";
+        }
+        private static decimal CalculateValidItemsPercentage(DataGridViewRow row)
+        {
+            if (row.Tag is not (List<string> items, TagData tagData))
+            {
+                // Single item transaction
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
+
+                // For single items, partial return/loss doesn't make sense, so return full value
+                return (isPartiallyReturned || isPartiallyLost) ? 0m : 1m;
+            }
+
+            // Multi-item transaction
+            int totalItems = items.Count;
+            if (items.Count > 0 && items[^1].StartsWith(ReadOnlyVariables.Receipt_text))
+            {
+                totalItems--;  // Don't count receipt
+            }
+
+            if (totalItems == 0) return 0m;
+
+            int affectedItems = 0;
+
+            // Count returned items
+            if (tagData.ReturnedItems != null)
+            {
+                affectedItems += tagData.ReturnedItems.Count;
+            }
+
+            // Count lost items
+            if (tagData.LostItems != null)
+            {
+                affectedItems += tagData.LostItems.Count;
+            }
+
+            // Calculate percentage of valid (non-affected) items
+            int validItems = Math.Max(0, totalItems - affectedItems);
+            return totalItems > 0 ? (decimal)validItems / totalItems : 0m;
         }
 
         // Save to file

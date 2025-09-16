@@ -34,5 +34,13 @@
         public string ReturnedBy { get; set; }
         public List<int> ReturnedItems { get; set; }
         public string ReturnedItemsText { get; set; }
+
+        // Loss related properties
+        public bool IsLost { get; set; } = false;
+        public bool IsPartiallyLost { get; set; } = false;
+        public DateTime? LostDate { get; set; }
+        public string LostReason { get; set; }
+        public string LostBy { get; set; }
+        public List<int> LostItems { get; set; }
     }
 }
