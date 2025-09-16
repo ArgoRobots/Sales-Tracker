@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using LiveChartsCore;
+using LiveChartsCore.Drawing;
 using LiveChartsCore.Geo;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
@@ -890,7 +891,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, geoMap))
             {
-                geoMap.Series = [];
+                ClearMap(geoMap);
                 return ChartData.Empty;
             }
 
@@ -2076,7 +2077,7 @@ namespace Sales_Tracker.Charts
         {
             if (countryData.Count == 0)
             {
-                geoMap.Series = [];
+                ClearMap(geoMap);
                 return;
             }
 
@@ -2092,7 +2093,7 @@ namespace Sales_Tracker.Charts
 
             if (mapLands.Length == 0)
             {
-                geoMap.Series = [];
+                ClearMap(geoMap);
                 return;
             }
 
@@ -2103,9 +2104,9 @@ namespace Sales_Tracker.Charts
                 Lands = mapLands,
                 HeatMap =
                 [
-                    new LiveChartsCore.Drawing.LvcColor(173, 216, 230),  // Light blue
-                    new LiveChartsCore.Drawing.LvcColor(100, 149, 237),  // Cornflower blue  
-                    new LiveChartsCore.Drawing.LvcColor(0, 0, 139)       // Dark blue
+                    new LvcColor(173, 216, 230),  // Light blue
+                    new LvcColor(100, 149, 237),  // Cornflower blue  
+                    new LvcColor(0, 0, 139)       // Dark blue
                 ]
             };
 

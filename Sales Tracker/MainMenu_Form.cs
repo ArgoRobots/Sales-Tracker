@@ -2531,10 +2531,7 @@ namespace Sales_Tracker
             // Show controls for the selected tab
             foreach (Control control in _tabControls[tabKey])
             {
-                if (control is not GeoMap)
-                {
-                    control.Visible = true;
-                }
+                control.Visible = true;
             }
         }
         private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
