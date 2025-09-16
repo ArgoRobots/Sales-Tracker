@@ -24,7 +24,7 @@ namespace Sales_Tracker
 
             _selectedRow = row;
             _selectedTag = row.DataGridView.Tag.ToString();
-            _receiptFilePath = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+            _receiptFilePath = RightClickRowMenu.GetFilePathFromRowTag(row.Tag);
 
             if (_receiptFilePath != "" && !File.Exists(_receiptFilePath))
             {

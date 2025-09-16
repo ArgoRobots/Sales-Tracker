@@ -366,7 +366,7 @@ namespace Sales_Tracker.Theme
             // Update other controls
             SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
 
-            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
+            RightClickRowMenu.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
             // Set the border to white or black, depending on the theme
             CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;

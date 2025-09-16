@@ -161,7 +161,7 @@ namespace Sales_Tracker.Classes
             {
                 if (!row.Visible) { continue; }
 
-                string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+                string receipt = RightClickRowMenu.GetFilePathFromRowTag(row.Tag);
                 if (receipt == "")
                 {
                     doAllRowsHaveReceipt = false;
