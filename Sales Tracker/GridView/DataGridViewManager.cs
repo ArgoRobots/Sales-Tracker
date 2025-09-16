@@ -218,17 +218,19 @@ namespace Sales_Tracker.GridView
                 MainMenu_Form.Instance.ClosePanels();
 
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
+                CustomMessageBoxResult result;
 
-                string message;
                 if (grid.SelectedRows.Count == 1)
                 {
-                    message = "Are you sure you want to delete this row?";
+                    result = CustomMessageBox.Show("Delete row", "Are you sure you want to delete this row?",
+                       CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
                 }
                 else
                 {
-                    message = "Are you sure you want to delete the selected rows?";
+                    result = CustomMessageBox.Show("Delete rows", "Are you sure you want to delete the selected rows?",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
                 }
-                CustomMessageBoxResult result = CustomMessageBox.Show("Delete rows", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

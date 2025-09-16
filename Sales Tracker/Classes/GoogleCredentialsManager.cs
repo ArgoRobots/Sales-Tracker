@@ -56,7 +56,7 @@ namespace Sales_Tracker.Classes
             {
                 CustomMessageBox.Show(
                     "Credentials Error",
-                    $"Failed to load Google credentials from environment: {ex.Message}",
+                    $"Failed to load Google credentials from environment",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
                 throw;
