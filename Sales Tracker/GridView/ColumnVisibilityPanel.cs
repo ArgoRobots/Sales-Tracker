@@ -5,6 +5,9 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.GridView
 {
+    /// <summary>
+    /// Provides a right-click panel for toggling column visibility in MainMenu_Form DataGridViews.
+    /// </summary>
     public static class ColumnVisibilityPanel
     {
         // Properties

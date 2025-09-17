@@ -199,7 +199,6 @@ namespace Sales_Tracker.Charts
                     break;
             }
         }
-
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
             Control chart = (Control)RightClickGunaChart_Panel.Tag;

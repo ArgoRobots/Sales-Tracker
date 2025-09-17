@@ -134,7 +134,7 @@ namespace Sales_Tracker.Excel
                             case CustomMessageBoxResult.Yes:
                                 break;
                             case CustomMessageBoxResult.No:
-                                shouldSkip = true;  // Skip this one
+                                shouldSkip = true;
                                 break;
                             case CustomMessageBoxResult.YesAll:
                                 // Import all duplicates from now on
