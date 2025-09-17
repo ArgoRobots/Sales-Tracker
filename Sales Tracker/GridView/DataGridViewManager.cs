@@ -686,7 +686,7 @@ namespace Sales_Tracker.GridView
 
             if (isPurchasesOrSales || isTransactionView)
             {
-                // Add Return and Loss buttons based on current status
+                // Add view details and action buttons based on current status
                 if (isSingleRowSelected)
                 {
                     DataGridViewRow selectedRow;
@@ -707,12 +707,27 @@ namespace Sales_Tracker.GridView
                     // Check return status
                     bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
                     bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+                    bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
 
                     // Check loss status
                     bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
                     bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
+                    bool hasAnyLoss = isFullyLost || isPartiallyLost;
 
-                    // Return buttons
+                    // View Details buttons - show when there's information to view
+                    if (hasAnyReturns)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
+                    }
+
+                    if (hasAnyLoss)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
+                    }
+
+                    // Return action buttons
                     if (isFullyReturned)
                     {
                         // Fully returned - only show undo button
@@ -739,7 +754,7 @@ namespace Sales_Tracker.GridView
                         flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
                     }
 
-                    // Loss buttons
+                    // Loss action buttons
                     if (isFullyLost)
                     {
                         // Fully lost - only show undo loss button
@@ -817,12 +832,12 @@ namespace Sales_Tracker.GridView
             int targetTop;
 
             // Handle column header clicks differently from row clicks
-            if (info.RowIndex == -1) // Column header click
+            if (info.RowIndex == -1)  // Column header click
             {
                 // Position the panel right below the column header
                 targetTop = grid.Top + grid.ColumnHeadersHeight;
             }
-            else // Regular row click
+            else  // Regular row click
             {
                 int rowHeight = grid.Rows[0].Height;
                 int headerHeight = grid.ColumnHeadersHeight;
@@ -1314,17 +1329,13 @@ namespace Sales_Tracker.GridView
         /// Determines whether a category can be moved or deleted by checking if it contains any products.
         /// Shows a message box if the action cannot be performed.
         /// </summary>
-        /// <returns>
-        /// true if the category can be moved or deleted (has no products);
-        /// false if the category contains products, in which case displays an error message.
-        /// </returns>
         private static bool CanCategoryBeMovedOrDeleted(string categoryName, List<Category> categoryList, string action)
         {
             if (MainMenu_Form.DoesCategoryHaveProducts(categoryName, categoryList))
             {
                 CustomMessageBox.ShowWithFormat(
                     "Cannot {0} category",
-                    "Cannot {0} category '{1}' because it contains products",
+                    "Cannot {1} category '{2}' because it contains products",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok,
                     action, action, categoryName);

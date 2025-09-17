@@ -15,6 +15,8 @@ namespace Sales_Tracker.GridView
         public static Guna2Button RightClickDataGridView_MoveBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ExportReceiptBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ShowItemsBtn { get; private set; }
+        public static Guna2Button RightClickDataGridView_ViewReturnDetailsBtn { get; private set; }
+        public static Guna2Button RightClickDataGridView_ViewLossDetailsBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ReturnBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_UndoReturnBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_MarkAsLostBtn { get; private set; }
@@ -26,7 +28,7 @@ namespace Sales_Tracker.GridView
         public static void ConstructRightClickRowMenu()
         {
             RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth, 7 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth, 9 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickDataGridView_Panel"
             );
 
@@ -43,6 +45,12 @@ namespace Sales_Tracker.GridView
 
             RightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_ShowItemsBtn.Click += ShowItems;
+
+            RightClickDataGridView_ViewReturnDetailsBtn = CustomControls.ConstructBtnForMenu("View return details", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_ViewReturnDetailsBtn.Click += ViewReturnDetails;
+
+            RightClickDataGridView_ViewLossDetailsBtn = CustomControls.ConstructBtnForMenu("View loss details", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_ViewLossDetailsBtn.Click += ViewLossDetails;
 
             RightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Mark as  returned", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_ReturnBtn.Click += ReturnProduct;
@@ -293,6 +301,52 @@ namespace Sales_Tracker.GridView
         {
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
+        }
+        private static void ViewReturnDetails(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = DataGridViewManager.SelectedRowInMainMenu;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+            }
+
+            using ViewTransactionDetails_Form viewForm = new(selectedRow, ViewTransactionDetails_Form.ViewType.Return);
+            viewForm.ShowDialog();
+        }
+        private static void ViewLossDetails(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = DataGridViewManager.SelectedRowInMainMenu;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+            }
+
+            using ViewTransactionDetails_Form viewForm = new(selectedRow, ViewTransactionDetails_Form.ViewType.Loss);
+            viewForm.ShowDialog();
         }
         private static void ReturnProduct(object sender, EventArgs e)
         {

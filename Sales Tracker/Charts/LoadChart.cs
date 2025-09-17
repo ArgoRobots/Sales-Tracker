@@ -1655,17 +1655,15 @@ namespace Sales_Tracker.Charts
                 {
                     if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
-                    // Get return reason from TagData
-                    (_, string returnReason, _, _) = ReturnManager.GetReturnInfo(row);
+                    // Get return reason from ReturnInfo
+                    ReturnInfo returnInfo = ReturnManager.GetReturnInfo(row);
 
-                    if (string.IsNullOrEmpty(returnReason))
-                    {
-                        returnReason = LanguageManager.TranslateString("No reason provided");
-                    }
+                    string returnReason = string.IsNullOrEmpty(returnInfo.ReturnReason)
+                        ? "No reason provided"
+                        : returnInfo.ReturnReason;
 
                     // Extract base reason if it contains additional notes (format: "reason - notes")
                     string baseReason = returnReason.Split(" - ")[0];
-
                     string translatedReason = LanguageManager.TranslateString(baseReason);
 
                     if (reasonCounts.TryGetValue(translatedReason, out int value))

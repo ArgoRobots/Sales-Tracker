@@ -121,6 +121,9 @@
     <Compile Update="Upgrade_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ViewTransactionDetails_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Welcome_Form.cs">
       <SubType>Form</SubType>
     </Compile>

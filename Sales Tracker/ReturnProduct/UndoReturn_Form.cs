@@ -29,8 +29,8 @@ namespace Sales_Tracker
             _transactionRow = transactionRow;
 
             // Get return information
-            (_, _, _, List<int> returnedItems) = ReturnManager.GetReturnInfo(_transactionRow);
-            _returnedItems = returnedItems ?? [];
+            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
+            _returnedItems = returnInfo.ReturnedItems;
 
             _hasPartialReturn = _transactionRow.Tag is (List<string>, TagData) && _returnedItems.Count > 0;
 
@@ -94,11 +94,11 @@ namespace Sales_Tracker
             }
 
             // Load return information
-            (DateTime? returnDate, string returnReason, string returnedBy, _) = ReturnManager.GetReturnInfo(_transactionRow);
+            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
 
-            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnDate?.ToString("MM/dd/yyyy HH:mm") ?? LanguageManager.TranslateString("Unknown")}\n" +
-                                    $"{LanguageManager.TranslateString("Reason")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}\n" +
-                                    $"{LanguageManager.TranslateString("Returned by")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
+            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
+                                    $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
+                                    $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
         }
         private void CreateItemSelectionControls()
         {

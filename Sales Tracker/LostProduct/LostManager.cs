@@ -336,7 +336,7 @@ namespace Sales_Tracker.LostProduct
         /// <summary>
         /// Gets loss information for a transaction.
         /// </summary>
-        public static (DateTime? lostDate, string lostReason, string lostBy, List<int> lostItems) GetLossInfo(DataGridViewRow row)
+        public static LossInfo GetLossInfo(DataGridViewRow row)
         {
             TagData tagData = null;
 
@@ -355,10 +355,17 @@ namespace Sales_Tracker.LostProduct
 
             if (tagData != null)
             {
-                return (tagData.LostDate, tagData.LostReason, tagData.LostBy, tagData.LostItems ?? []);
+                return new LossInfo
+                {
+                    LostDate = tagData.LostDate,
+                    LostReason = tagData.LostReason ?? "",
+                    LostBy = tagData.LostBy ?? "",
+                    LostItems = tagData.LostItems ?? []
+                };
             }
 
-            return (null, "error", "error", []);
+            // Return empty LossInfo for invalid data
+            return new LossInfo();
         }
 
         /// <summary>

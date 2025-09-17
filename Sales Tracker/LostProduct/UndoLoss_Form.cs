@@ -88,33 +88,29 @@ namespace Sales_Tracker.LostProduct
         }
         private void LoadLossInformation()
         {
-            (DateTime? lostDate, string lostReason, string lostBy, List<int> lostItems) = LostManager.GetLossInfo(_transactionRow);
+            LossInfo lossInfo = LostManager.GetLossInfo(_transactionRow);
 
-            string lostDateStr = lostDate?.ToString("yyyy-MM-dd HH:mm") ?? "Unknown";
-            string reasonText = string.IsNullOrEmpty(lostReason) ? "No reason provided" : lostReason;
-            string lostByText = string.IsNullOrEmpty(lostBy) ? "Unknown" : lostBy;
-
-            if (_hasMultipleItems && lostItems != null && lostItems.Count > 0)
+            if (_hasMultipleItems && lossInfo.HasAffectedItems)
             {
                 // Show information about lost items
                 List<string> lostItemNames = LostManager.GetLostItemNames(_transactionRow);
-                string itemsText = lostItemNames.Count > 0 ? string.Join(", ", lostItemNames) : "Unknown items";
+                string itemsText = lostItemNames.Count > 0 ? string.Join(", ", lostItemNames) : LanguageManager.TranslateString("Unknown items");
 
                 bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(_transactionRow);
                 string lossType = isPartiallyLost ? LanguageManager.TranslateString("Partial Loss") : LanguageManager.TranslateString("Full Loss");
 
                 LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Type")}: {lossType}\n" +
                                       $"{LanguageManager.TranslateString("Lost Items")}: {itemsText}\n" +
-                                      $"{LanguageManager.TranslateString("Loss Date")}: {lostDateStr}\n" +
-                                      $"{LanguageManager.TranslateString("Reason")}: {reasonText}\n" +
-                                      $"{LanguageManager.TranslateString("Marked by")}: {lostByText}";
+                                      $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
+                                      $"{LanguageManager.TranslateString("Reason")}: {lossInfo.DisplayReason}\n" +
+                                      $"{LanguageManager.TranslateString("Marked by")}: {lossInfo.DisplayActionBy}";
             }
             else
             {
                 // Single item or full loss
-                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Date")}: {lostDateStr}\n" +
-                                      $"{LanguageManager.TranslateString("Reason")}: {reasonText}\n" +
-                                      $"{LanguageManager.TranslateString("Marked by")}: {lostByText}";
+                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
+                                      $"{LanguageManager.TranslateString("Reason")}: {lossInfo.DisplayReason}\n" +
+                                      $"{LanguageManager.TranslateString("Marked by")}: {lossInfo.DisplayActionBy}";
             }
         }
         private void CreateItemSelectionControls()
