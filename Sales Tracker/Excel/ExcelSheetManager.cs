@@ -592,7 +592,6 @@ namespace Sales_Tracker.Excel
 
         /// <summary>
         /// Helper method for importing purchase and sales data with source currency support and immediate cancellation support.
-        /// Returns ImportSummary with actual counts instead of just boolean.
         /// </summary>
         private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool isPurchase, string sourceCurrency, ImportSession session)
         {
