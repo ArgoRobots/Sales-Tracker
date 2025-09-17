@@ -480,23 +480,8 @@ namespace Sales_Tracker
                 ProcessRow(dataGridView, rowData);
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
-
-            ApplyReturnAppearancesToAllRows(dataGridView);
-        }
-        private static void ApplyReturnAppearancesToAllRows(Guna2DataGridView dataGridView)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
-                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
-
-                if (isFullyReturned || isPartiallyReturned)
-                {
-                    ReturnManager.UpdateRowAppearanceForReturn(row, isFullyReturned, isPartiallyReturned);
-                }
-            }
         }
         private static bool ValidateFile(string filePath)
         {
@@ -1488,7 +1473,7 @@ namespace Sales_Tracker
                 }
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
 
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
             DataGridViewManager.UpdateRowColors(dataGridView);
@@ -1917,7 +1902,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            Total_Panel.Visible = DataGridViewManager.HasVisibleRowsExcludingLost(SelectedDataGridView);
+            Total_Panel.Visible = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(SelectedDataGridView);
 
             int totalQuantity = 0;
 

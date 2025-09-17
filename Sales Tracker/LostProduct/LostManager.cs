@@ -1,5 +1,4 @@
-﻿using Guna.UI2.WinForms;
-using Sales_Tracker.DataClasses;
+﻿using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.LostProduct
@@ -422,40 +421,6 @@ namespace Sales_Tracker.LostProduct
             }
 
             return lostItemNames;
-        }
-
-        /// <summary>
-        /// Updates row appearance for losses in ItemsInTransaction forms.
-        /// Individual lost items will be displayed in dark red.
-        /// </summary>
-        public static void UpdateItemRowAppearanceForLosses(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
-        {
-            if (mainTransactionRow.Tag is not (List<string>, TagData))
-            {
-                return;
-            }
-
-            // Apply loss styling to individual item rows
-            for (int i = 0; i < itemsGrid.Rows.Count; i++)
-            {
-                DataGridViewRow itemRow = itemsGrid.Rows[i];
-                bool isItemLost = IsItemLost(mainTransactionRow, i);
-
-                if (isItemLost)
-                {
-                    // Mark lost items in dark red
-                    itemRow.DefaultCellStyle.BackColor = CustomColors.LostItemBackground;
-                    itemRow.DefaultCellStyle.SelectionBackColor = CustomColors.LostItemSelection;
-                    itemRow.DefaultCellStyle.ForeColor = CustomColors.LostItemText;
-                }
-                else
-                {
-                    // Reset to default colors for non-lost items
-                    itemRow.DefaultCellStyle.BackColor = Color.Empty;
-                    itemRow.DefaultCellStyle.SelectionBackColor = Color.Empty;
-                    itemRow.DefaultCellStyle.ForeColor = Color.Empty;
-                }
-            }
         }
         private static void SaveLossChanges()
         {

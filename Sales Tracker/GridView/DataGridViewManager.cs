@@ -1098,7 +1098,7 @@ namespace Sales_Tracker.GridView
                 cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
             }
         }
-        public static bool HasVisibleRowsExcludingLost(params Guna2DataGridView[] dataGridViews)
+        public static bool HasVisibleRowsExcludingReturnedOrLost(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
             {
@@ -1128,23 +1128,32 @@ namespace Sales_Tracker.GridView
         }
 
         /// <summary>
-        /// Updates row appearance for returns in ItemsInTransaction forms.
-        /// Individual returned items will be displayed in red.
+        /// Updates row appearance for returns and losses in ItemsInTransaction forms.
+        /// Individual returned items will be displayed in red, lost items in dark red.
+        /// If an item is both returned and lost, loss styling takes priority.
         /// </summary>
-        public static void UpdateItemRowAppearanceForReturns(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
+        public static void UpdateItemRowAppearance(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
         {
             if (mainTransactionRow.Tag is not (List<string>, TagData))
             {
                 return;
             }
 
-            // Apply return styling to individual item rows
+            // Apply styling to individual item rows based on their status
             for (int i = 0; i < itemsGrid.Rows.Count; i++)
             {
                 DataGridViewRow itemRow = itemsGrid.Rows[i];
                 bool isItemReturned = ReturnManager.IsItemReturned(mainTransactionRow, i);
+                bool isItemLost = LostManager.IsItemLost(mainTransactionRow, i);
 
-                if (isItemReturned)
+                if (isItemLost)
+                {
+                    // Lost items take priority - mark in dark red
+                    itemRow.DefaultCellStyle.BackColor = CustomColors.LostItemBackground;
+                    itemRow.DefaultCellStyle.SelectionBackColor = CustomColors.LostItemSelection;
+                    itemRow.DefaultCellStyle.ForeColor = CustomColors.LostItemText;
+                }
+                else if (isItemReturned)
                 {
                     // Mark returned items in red
                     itemRow.DefaultCellStyle.BackColor = CustomColors.ReturnedItemBackground;
@@ -1153,14 +1162,13 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Reset to default colors for non-returned items
+                    // Reset to default colors for normal items
                     itemRow.DefaultCellStyle.BackColor = Color.Empty;
                     itemRow.DefaultCellStyle.SelectionBackColor = Color.Empty;
                     itemRow.DefaultCellStyle.ForeColor = Color.Empty;
                 }
             }
         }
-
         public static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)

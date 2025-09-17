@@ -448,7 +448,7 @@ namespace Sales_Tracker.Charts
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? LanguageManager.TranslateString("Revenue")
                 : LanguageManager.TranslateString("Expenses");
@@ -502,7 +502,7 @@ namespace Sales_Tracker.Charts
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? LanguageManager.TranslateString("Revenue")
                 : LanguageManager.TranslateString("Expenses");
@@ -618,7 +618,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("Profits");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -689,7 +689,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -758,7 +758,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -827,7 +827,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -902,7 +902,7 @@ namespace Sales_Tracker.Charts
                 _ => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView]
             };
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridViews);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, geoMap))
             {
@@ -973,7 +973,7 @@ namespace Sales_Tracker.Charts
                 MainMenu_Form.Instance.Purchase_DataGridView
             ];
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(dataGridViews);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
             string label = LanguageManager.TranslateString("# of transactions");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -992,7 +992,7 @@ namespace Sales_Tracker.Charts
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
             {
-                if (!DataGridViewManager.HasVisibleRowsExcludingLost(purchasesDataGridView))
+                if (!DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView))
                 {
                     continue;
                 }
@@ -1035,7 +1035,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateString("Total expenses");
             string salesLabel = LanguageManager.TranslateString("Total sales");
 
@@ -1096,7 +1096,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView, salesDataGridView);
             string purchaseLabel = LanguageManager.TranslateString("Average purchase value");
             string saleLabel = LanguageManager.TranslateString("Average sale value");
 
@@ -1167,7 +1167,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRowsExcludingLost(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string purchasesLabel = LanguageManager.TranslateString("Purchases");
             string salesLabel = LanguageManager.TranslateString("Sales");
 

@@ -395,8 +395,7 @@ namespace Sales_Tracker.GridView
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
                     Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
-                    // Refresh to show loss status (similar to return status)
-                    itemsForm.RefreshItemReturnStatus(); // This method might need to be renamed or expanded
+                    itemsForm.RefreshItemReturnStatus();
                 }
             }
         }
@@ -429,8 +428,7 @@ namespace Sales_Tracker.GridView
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
                     Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
-                    // Refresh to show updated loss status
-                    itemsForm.RefreshItemReturnStatus(); // This method might need to be renamed or expanded
+                    itemsForm.RefreshItemReturnStatus();
                 }
             }
         }
