@@ -116,13 +116,12 @@ namespace Sales_Tracker.UI
             // Close_Button
             // 
             Close_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            Close_Button.BorderRadius = 6;
             Close_Button.CustomizableEdges = customizableEdges1;
             Close_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             Close_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             Close_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(169, 169, 169);
             Close_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(141, 141, 141);
-            Close_Button.Font = new System.Drawing.Font("Segoe UI", 12F);
+            Close_Button.Font = new System.Drawing.Font("Segoe UI", 11F);
             Close_Button.ForeColor = System.Drawing.Color.White;
             Close_Button.Location = new Point(385, 630);
             Close_Button.Margin = new Padding(4, 5, 4, 5);
@@ -151,7 +150,7 @@ namespace Sales_Tracker.UI
             MinimizeBox = false;
             Name = "ViewTransactionDetails_Form";
             ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Transaction Details";
             Shown += ViewTransactionDetails_Form_Shown;
             ResumeLayout(false);

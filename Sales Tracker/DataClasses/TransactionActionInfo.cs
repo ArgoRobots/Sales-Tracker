@@ -13,11 +13,6 @@ namespace Sales_Tracker.DataClasses
         public List<int> AffectedItems { get; set; } = [];
 
         /// <summary>
-        /// Indicates whether this represents a valid action (has a date).
-        /// </summary>
-        public bool HasAction => ActionDate.HasValue;
-
-        /// <summary>
         /// Gets a formatted date string for display purposes.
         /// </summary>
         public string FormattedDate => ActionDate?.ToString("yyyy-MM-dd HH:mm") ?? LanguageManager.TranslateString("Unknown");

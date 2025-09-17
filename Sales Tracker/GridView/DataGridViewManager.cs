@@ -1141,6 +1141,20 @@ namespace Sales_Tracker.GridView
             }
             return false;
         }
+        public static bool HasVisibleRowsForLoss(params Guna2DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (row.Visible && LostManager.IsTransactionLost(row))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         /// Updates row appearance for returns and losses in ItemsInTransaction forms.

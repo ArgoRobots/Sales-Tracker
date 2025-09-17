@@ -330,16 +330,23 @@ namespace Sales_Tracker
             SaleDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
+            // Geographic Analysis Charts
             CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CompaniesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             _worldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Operational Charts
             Accountants_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Performance and Growth Charts
             GrowthRates_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SalesVsExpenses_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             AverageTransactionValue_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalTransactions_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             AverageShippingCosts_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Returns Analysis Charts
             ReturnsOverTime_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ReturnReasons_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ReturnFinancialImpact_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -356,23 +363,37 @@ namespace Sales_Tracker
             SaleDistribution_Chart.Tag = ChartDataType.DistributionOfSales;
             Profits_Chart.Tag = ChartDataType.TotalProfits;
 
-            // Analytics charts
+            // Geographic Analysis Charts
             CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
             CompaniesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
             CountriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
             _worldMap_GeoMap.Tag = ChartDataType.WorldMap;
+
+            // Operational Charts
             Accountants_Chart.Tag = ChartDataType.Accountants;
+
+            // Performance and Growth Charts
             GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
             SalesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
             TotalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
             AverageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
             AverageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
+
+            // Returns Analysis Charts
             ReturnsOverTime_Chart.Tag = ChartDataType.ReturnsOverTime;
             ReturnReasons_Chart.Tag = ChartDataType.ReturnReasons;
             ReturnFinancialImpact_Chart.Tag = ChartDataType.ReturnFinancialImpact;
             ReturnsByCategory_Chart.Tag = ChartDataType.ReturnsByCategory;
             ReturnsByProduct_Chart.Tag = ChartDataType.ReturnsByProduct;
             PurchaseVsSaleReturns_Chart.Tag = ChartDataType.PurchaseVsSaleReturns;
+
+            // Losses Analysis Charts
+            LossesOverTime_Chart.Tag = ChartDataType.LossesOverTime;
+            LossReasons_Chart.Tag = ChartDataType.LossReasons;
+            LossFinancialImpact_Chart.Tag = ChartDataType.LossFinancialImpact;
+            LossesByCategory_Chart.Tag = ChartDataType.LossesByCategory;
+            LossesByProduct_Chart.Tag = ChartDataType.LossesByProduct;
+            PurchaseVsSaleLosses_Chart.Tag = ChartDataType.PurchaseVsSaleLosses;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -948,6 +969,27 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Returns:
+                    // 2x3 grid layout
+                    if (charts.Count >= 6)
+                    {
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
+
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
+
+                        // Top row - 3 charts
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY);
+
+                        // Bottom row - 3 charts
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[4], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
+                        SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
+                    }
+                    break;
+
+                case AnalyticsTab.LostProducts:
                     // 2x3 grid layout
                     if (charts.Count >= 6)
                     {
@@ -2104,7 +2146,8 @@ namespace Sales_Tracker
             Financial,
             Performance,
             Operational,
-            Returns
+            Returns,
+            LostProducts
         }
         public enum ChartDataType
         {
@@ -2128,7 +2171,13 @@ namespace Sales_Tracker
             ReturnsByCategory,
             ReturnsByProduct,
             PurchaseVsSaleReturns,
-            WorldMap
+            WorldMap,
+            LossesOverTime,
+            LossReasons,
+            LossFinancialImpact,
+            LossesByCategory,
+            LossesByProduct,
+            PurchaseVsSaleLosses
         }
         public enum GeoMapDataType
         {
@@ -2156,6 +2205,12 @@ namespace Sales_Tracker
         public PieChart PurchaseDistribution_Chart { get; private set; }
         public CartesianChart SaleTotals_Chart { get; private set; }
         public PieChart SaleDistribution_Chart { get; private set; }
+        public CartesianChart LossesOverTime_Chart { get; private set; }
+        public PieChart LossReasons_Chart { get; private set; }
+        public CartesianChart LossFinancialImpact_Chart { get; private set; }
+        public PieChart LossesByCategory_Chart { get; private set; }
+        public PieChart LossesByProduct_Chart { get; private set; }
+        public PieChart PurchaseVsSaleLosses_Chart { get; private set; }
 
         // GeoMap properties
         private GeoMap _worldMap_GeoMap;
@@ -2244,6 +2299,12 @@ namespace Sales_Tracker
             ReturnsByCategory_Chart = ConstructAnalyticsChart("returnsByCategory_Chart", false) as PieChart;
             ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart", false) as PieChart;
             PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart", false) as PieChart;
+            LossesOverTime_Chart = ConstructAnalyticsChart("lossesOverTime_Chart", true) as CartesianChart;
+            LossReasons_Chart = ConstructAnalyticsChart("lossReasons_Chart", false) as PieChart;
+            LossFinancialImpact_Chart = ConstructAnalyticsChart("lossFinancialImpact_Chart", true) as CartesianChart;
+            LossesByCategory_Chart = ConstructAnalyticsChart("lossesByCategory_Chart", false) as PieChart;
+            LossesByProduct_Chart = ConstructAnalyticsChart("lossesByProduct_Chart", false) as PieChart;
+            PurchaseVsSaleLosses_Chart = ConstructAnalyticsChart("purchaseVsSaleLosses_Chart", false) as PieChart;
 
             _worldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
@@ -2319,6 +2380,9 @@ namespace Sales_Tracker
 
             Guna2Button returnsButton = CreateTabButton("Returns", AnalyticsTab.Returns, Resources.Return);
             tabButtons.Add(returnsButton);
+
+            Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
+            tabButtons.Add(lostProductsButton);
 
             // Position buttons
             byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
@@ -2451,6 +2515,16 @@ namespace Sales_Tracker
                 PurchaseVsSaleReturns_Chart
             ]);
 
+            _tabControls[AnalyticsTab.LostProducts].AddRange(
+            [
+                LossesOverTime_Chart,
+                LossReasons_Chart,
+                LossFinancialImpact_Chart,
+                LossesByCategory_Chart,
+                LossesByProduct_Chart,
+                PurchaseVsSaleLosses_Chart
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
@@ -2472,7 +2546,13 @@ namespace Sales_Tracker
                 PurchaseVsSaleReturns_Chart,
                 IncludeFreeShipping_CheckBox,
                 _includeFreeShipping_Label,
-                _analyticsTabButtons_Panel
+                _analyticsTabButtons_Panel,
+                LossesOverTime_Chart,
+                LossReasons_Chart,
+                LossFinancialImpact_Chart,
+                LossesByCategory_Chart,
+                LossesByProduct_Chart,
+                PurchaseVsSaleLosses_Chart,
             ];
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
@@ -2555,6 +2635,26 @@ namespace Sales_Tracker
 
                     LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart);
                     SetChartTitle(PurchaseVsSaleReturns_Chart, TranslatedChartTitles.PurchaseVsSaleReturns);
+                    break;
+
+                case AnalyticsTab.LostProducts:
+                    LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
+                    SetChartTitle(LossesOverTime_Chart, TranslatedChartTitles.LossesOverTime);
+
+                    LoadChart.LoadLossReasonsChart(LossReasons_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossReasons_Chart, TranslatedChartTitles.LossReasons);
+
+                    LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
+                    SetChartTitle(LossFinancialImpact_Chart, TranslatedChartTitles.LossFinancialImpact);
+
+                    LoadChart.LoadLossesByCategoryChart(LossesByCategory_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossesByCategory_Chart, TranslatedChartTitles.LossesByCategory);
+
+                    LoadChart.LoadLossesByProductChart(LossesByProduct_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossesByProduct_Chart, TranslatedChartTitles.LossesByProduct);
+
+                    LoadChart.LoadPurchaseVsSaleLossesChart(PurchaseVsSaleLosses_Chart);
+                    SetChartTitle(PurchaseVsSaleLosses_Chart, TranslatedChartTitles.PurchaseVsSaleLosses);
                     break;
             }
         }
@@ -2669,6 +2769,11 @@ namespace Sales_Tracker
                     case AnalyticsTab.Returns:
                         LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
                         LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
+                        break;
+
+                    case AnalyticsTab.LostProducts:
+                        LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
+                        LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
                         break;
                 }
             }
@@ -2824,11 +2929,6 @@ namespace Sales_Tracker
 
             RecalculateWorldMapControlsLayout();
         }
-
-        /// <summary>
-        /// Recalculates and repositions the world map controls.
-        /// This should be called after language changes or during initial construction.
-        /// </summary>
         public void RecalculateWorldMapControlsLayout()
         {
             if (_worldMapControls_Panel == null || _worldMapDataType_Label == null)
