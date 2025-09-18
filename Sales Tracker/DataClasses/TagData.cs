@@ -42,5 +42,6 @@
         public string LostReason { get; set; }
         public string LostBy { get; set; }
         public List<int> LostItems { get; set; }
+        public string LostItemsText { get; set; }
     }
 }

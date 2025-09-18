@@ -1846,7 +1846,13 @@ namespace Sales_Tracker
             ReturnDate,
             ReturnReason,
             ReturnedBy,
-            ReturnedItems
+            ReturnedItems,
+
+            IsLost,
+            LostDate,
+            LostReason,
+            LostBy,
+            LostItems
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
