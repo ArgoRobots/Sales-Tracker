@@ -1498,7 +1498,7 @@ namespace Sales_Tracker.Excel
                     // All items are returned, change to full return
                     tagData.IsReturned = true;
                     tagData.IsPartiallyReturned = false;
-                    tagData.ReturnedItems = null; // Clear since it's a full return
+                    tagData.ReturnedItems = null;  // Clear since it's a full return
                 }
             }
             catch (Exception ex)
@@ -2257,10 +2257,7 @@ namespace Sales_Tracker.Excel
                     ? notesCell.Tag.ToString()
                     : notesCellValue;
 
-            // Add return data columns
             AddReturnDataToWorksheet(worksheet, currentRow, returnColumnsStartIndex, tagData, row);
-
-            // Add loss data columns
             AddLossDataToWorksheet(worksheet, currentRow, lossColumnsStartIndex, tagData, row);
         }
         private static void AddReturnDataToWorksheet(IXLWorksheet worksheet, int currentRow, int startColumnIndex, TagData tagData, DataGridViewRow row)
