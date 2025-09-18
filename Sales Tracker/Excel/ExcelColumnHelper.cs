@@ -204,22 +204,18 @@ namespace Sales_Tracker.Excel
         {
             return excel.Contains("lost") && (excel.Contains("is") || excel.Contains("status"));
         }
-
         private static bool IsLostDateMatch(string excel)
         {
             return excel.Contains("lost") && excel.Contains("date");
         }
-
         private static bool IsLostReasonMatch(string excel)
         {
             return excel.Contains("lost") && excel.Contains("reason");
         }
-
         private static bool IsLostByMatch(string excel)
         {
             return excel.Contains("lost") && (excel.Contains("by") || excel.Contains("who"));
         }
-
         private static bool IsLostItemsMatch(string excel)
         {
             return excel.Contains("lost") && excel.Contains("item");
