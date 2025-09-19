@@ -13,6 +13,7 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Excel;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -447,7 +448,7 @@ namespace Sales_Tracker.Charts
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
 
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? LanguageManager.TranslateString("Revenue")
                 : LanguageManager.TranslateString("Expenses");
@@ -501,7 +502,7 @@ namespace Sales_Tracker.Charts
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
 
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? LanguageManager.TranslateString("Revenue")
                 : LanguageManager.TranslateString("Expenses");
@@ -617,7 +618,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("Profits");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -688,7 +689,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -757,7 +758,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -826,7 +827,7 @@ namespace Sales_Tracker.Charts
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -901,7 +902,7 @@ namespace Sales_Tracker.Charts
                 _ => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView]
             };
 
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, geoMap))
             {
@@ -972,7 +973,7 @@ namespace Sales_Tracker.Charts
                 MainMenu_Form.Instance.Purchase_DataGridView
             ];
 
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
             string label = LanguageManager.TranslateString("# of transactions");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -991,7 +992,7 @@ namespace Sales_Tracker.Charts
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
             {
-                if (!DataGridViewManager.HasVisibleRows(purchasesDataGridView))
+                if (!DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView))
                 {
                     continue;
                 }
@@ -1034,7 +1035,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateString("Total expenses");
             string salesLabel = LanguageManager.TranslateString("Total sales");
 
@@ -1095,7 +1096,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView, salesDataGridView);
             string purchaseLabel = LanguageManager.TranslateString("Average purchase value");
             string saleLabel = LanguageManager.TranslateString("Average sale value");
 
@@ -1166,7 +1167,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string purchasesLabel = LanguageManager.TranslateString("Purchases");
             string salesLabel = LanguageManager.TranslateString("Sales");
 
@@ -1654,17 +1655,15 @@ namespace Sales_Tracker.Charts
                 {
                     if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
-                    // Get return reason from TagData
-                    (_, string returnReason, _, _) = ReturnManager.GetReturnInfo(row);
+                    // Get return reason from ReturnInfo
+                    ReturnInfo returnInfo = ReturnManager.GetReturnInfo(row);
 
-                    if (string.IsNullOrEmpty(returnReason))
-                    {
-                        returnReason = LanguageManager.TranslateString("No reason provided");
-                    }
+                    string returnReason = string.IsNullOrEmpty(returnInfo.ReturnReason)
+                        ? "No reason provided"
+                        : returnInfo.ReturnReason;
 
                     // Extract base reason if it contains additional notes (format: "reason - notes")
                     string baseReason = returnReason.Split(" - ")[0];
-
                     string translatedReason = LanguageManager.TranslateString(baseReason);
 
                     if (reasonCounts.TryGetValue(translatedReason, out int value))
@@ -1891,11 +1890,451 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(returnCounts);
         }
+        public static SalesExpensesChartData LoadLossesOverTimeChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string purchaseLossesLabel = LanguageManager.TranslateString("Purchase losses");
+            string saleLossesLabel = LanguageManager.TranslateString("Sale losses");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            ISeries purchaseLossesDataset = CreateStyledDataset(purchaseLossesLabel, isLineChart, GetColorForIndex(1));
+            ISeries saleLossesDataset = CreateStyledDataset(saleLossesLabel, isLineChart, GetColorForIndex(0));
+
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+
+            // Count losses
+            Dictionary<string, int> purchaseLossCountsByDate = ProcessRowsForCountData(
+                purchasesDataGridView.Rows,
+                dateFormat,
+                LostManager.IsTransactionLost
+            );
+
+            Dictionary<string, int> saleLossCountsByDate = ProcessRowsForCountData(
+                salesDataGridView.Rows,
+                dateFormat,
+                LostManager.IsTransactionLost
+            );
+
+            if (purchaseLossCountsByDate.Count == 0 && saleLossCountsByDate.Count == 0)
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            // Convert to double dictionaries
+            Dictionary<string, double> purchaseLossesDouble = purchaseLossCountsByDate.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+            Dictionary<string, double> saleLossesDouble = saleLossCountsByDate.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+
+            HashSet<string> allDates = [.. purchaseLossesDouble.Keys, .. saleLossesDouble.Keys];
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
+                {
+                    combinedData[date] = new Dictionary<string, double>
+            {
+                { purchaseLossesLabel, purchaseLossesDouble.TryGetValue(date, out double pValue) ? pValue : 0 },
+                { saleLossesLabel, saleLossesDouble.TryGetValue(date, out double sValue) ? sValue : 0 }
+            };
+                }
+
+                ExportChartToExcel.ExportMultiDataSetCountChart(
+                    combinedData,
+                    filePath,
+                    isLineChart ? eChartType.Line : eChartType.ColumnClustered,
+                    TranslatedChartTitles.LossesOverTime
+                );
+            }
+            else if (canUpdateChart)
+            {
+                AddDataPointsToDatasets(sortedDates, purchaseLossesDouble, saleLossesDouble, purchaseLossesDataset, saleLossesDataset, isLineChart);
+                UpdateChartWithTwoDatasets(chart, purchaseLossesDataset, saleLossesDataset, sortedDates, ChartFormatting.None);
+            }
+
+            return new SalesExpensesChartData(purchaseLossesDouble, saleLossesDouble, sortedDates);
+        }
+        public static SalesExpensesChartData LoadLossFinancialImpactChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string purchaseLossValueLabel = LanguageManager.TranslateString("Purchase loss value");
+            string saleLossValueLabel = LanguageManager.TranslateString("Sale loss value");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            ISeries purchaseLossValueDataset = CreateStyledDataset(purchaseLossValueLabel, isLineChart, GetColorForIndex(1));
+            ISeries saleLossValueDataset = CreateStyledDataset(saleLossValueLabel, isLineChart, GetColorForIndex(0));
+
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+
+            // Create custom processing for loss values
+            Dictionary<string, double> purchaseLossValueByDate = [];
+            Dictionary<string, double> saleLossValueByDate = [];
+
+            // Process purchase losses
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+            {
+                if (!row.Visible || !LostManager.IsTransactionLost(row)) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
+                string formattedDate = date.ToString(dateFormat);
+
+                if (purchaseLossValueByDate.TryGetValue(formattedDate, out double value))
+                {
+                    purchaseLossValueByDate[formattedDate] = Math.Round(value + total, 2);
+                }
+                else
+                {
+                    purchaseLossValueByDate[formattedDate] = Math.Round(total, 2);
+                }
+            }
+
+            // Process sale losses
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible || !LostManager.IsTransactionLost(row)) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                string dateValue = row.Cells[ReadOnlyVariables.Date_column].Value?.ToString();
+                DateTime date = Tools.ParseDateOrToday(dateValue);
+                string formattedDate = date.ToString(dateFormat);
+
+                if (saleLossValueByDate.TryGetValue(formattedDate, out double value))
+                {
+                    saleLossValueByDate[formattedDate] = Math.Round(value + total, 2);
+                }
+                else
+                {
+                    saleLossValueByDate[formattedDate] = Math.Round(total, 2);
+                }
+            }
+
+            if (purchaseLossValueByDate.Count == 0 && saleLossValueByDate.Count == 0)
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            HashSet<string> allDates = [.. purchaseLossValueByDate.Keys, .. saleLossValueByDate.Keys];
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                ExportMultiDatasetToExcel(sortedDates, purchaseLossValueByDate, saleLossValueByDate, purchaseLossValueLabel, saleLossValueLabel, filePath, isLineChart, TranslatedChartTitles.LossFinancialImpact);
+            }
+            else if (canUpdateChart)
+            {
+                AddDataPointsToDatasets(sortedDates, purchaseLossValueByDate, saleLossValueByDate, purchaseLossValueDataset, saleLossValueDataset, isLineChart);
+                UpdateChartWithTwoDatasets(chart, purchaseLossValueDataset, saleLossValueDataset, sortedDates);
+            }
+
+            return new SalesExpensesChartData(purchaseLossValueByDate, saleLossValueByDate, sortedDates);
+        }
+        public static ChartCountData LoadLossReasonsChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of losses");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartCountData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            List<PieSeries<double>> dataset = [];
+            Dictionary<string, int> reasonCounts = [];
+
+            // Process both purchase and sale losses
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible || !LostManager.IsTransactionLost(row)) { continue; }
+
+                    // Get loss reason from LossInfo
+                    LossInfo lossInfo = LostManager.GetLossInfo(row);
+
+                    string lossReason = string.IsNullOrEmpty(lossInfo.LostReason)
+                        ? "No reason provided"
+                        : lossInfo.LostReason;
+
+                    // Extract base reason if it contains additional notes (format: "reason - notes")
+                    string baseReason = lossReason.Split(" - ")[0];
+                    string translatedReason = LanguageManager.TranslateString(baseReason);
+
+                    if (reasonCounts.TryGetValue(translatedReason, out int value))
+                    {
+                        reasonCounts[translatedReason] = value + 1;
+                    }
+                    else
+                    {
+                        reasonCounts[translatedReason] = 1;
+                    }
+                }
+            }
+
+            string chartTitle = TranslatedChartTitles.LossReasons;
+            string reasons = LanguageManager.TranslateString("Reasons");
+
+            ProcessPieChartData(reasonCounts, grouping, dataset, exportToExcel, filePath, chartTitle, reasons, label, canUpdateChart, chart);
+
+            return new ChartCountData(SortAndGroupCountData(reasonCounts, grouping));
+        }
+        public static ChartCountData LoadLossesByCategoryChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of losses");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartCountData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            List<PieSeries<double>> dataset = [];
+            Dictionary<string, int> categoryCounts = [];
+
+            // Process both purchase and sale losses
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible || !LostManager.IsTransactionLost(row)) { continue; }
+
+                    string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
+
+                    if (category == ReadOnlyVariables.EmptyCell)
+                    {
+                        // Extract categories from the Tag for multi-item transactions
+                        if (row.Tag is (List<string> items, TagData))
+                        {
+                            foreach (string item in items)
+                            {
+                                string[] itemDetails = item.Split(',');
+                                if (itemDetails.Length > 1)
+                                {
+                                    string itemCategory = itemDetails[1];
+                                    if (categoryCounts.TryGetValue(itemCategory, out int itemValue))
+                                    {
+                                        categoryCounts[itemCategory] = itemValue + 1;
+                                    }
+                                    else
+                                    {
+                                        categoryCounts[itemCategory] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (categoryCounts.TryGetValue(category, out int value))
+                        {
+                            categoryCounts[category] = value + 1;
+                        }
+                        else
+                        {
+                            categoryCounts[category] = 1;
+                        }
+                    }
+                }
+            }
+
+            string chartTitle = TranslatedChartTitles.LossesByCategory;
+            string categories = LanguageManager.TranslateString("Categories");
+
+            ProcessPieChartData(categoryCounts, grouping, dataset, exportToExcel, filePath, chartTitle, categories, label, canUpdateChart, chart);
+
+            return new ChartCountData(SortAndGroupCountData(categoryCounts, grouping));
+        }
+        public static ChartCountData LoadLossesByProductChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of losses");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartCountData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            List<PieSeries<double>> dataset = [];
+            Dictionary<string, int> productCounts = [];
+
+            // Process both purchase and sale losses
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible || !LostManager.IsTransactionLost(row)) { continue; }
+
+                    string product = row.Cells[ReadOnlyVariables.Product_column].Value.ToString();
+
+                    if (product == ReadOnlyVariables.EmptyCell)
+                    {
+                        // Extract products from the Tag for multi-item transactions
+                        if (row.Tag is (List<string> items, TagData))
+                        {
+                            foreach (string item in items)
+                            {
+                                string[] itemDetails = item.Split(',');
+                                if (itemDetails.Length > 0)
+                                {
+                                    string itemProduct = itemDetails[0];
+                                    if (productCounts.TryGetValue(itemProduct, out int itemValue))
+                                    {
+                                        productCounts[itemProduct] = itemValue + 1;
+                                    }
+                                    else
+                                    {
+                                        productCounts[itemProduct] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (productCounts.TryGetValue(product, out int value))
+                        {
+                            productCounts[product] = value + 1;
+                        }
+                        else
+                        {
+                            productCounts[product] = 1;
+                        }
+                    }
+                }
+            }
+
+            string chartTitle = TranslatedChartTitles.LossesByProduct;
+            string products = LanguageManager.TranslateString("Products");
+
+            ProcessPieChartData(productCounts, grouping, dataset, exportToExcel, filePath, chartTitle, products, label, canUpdateChart, chart);
+
+            return new ChartCountData(SortAndGroupCountData(productCounts, grouping));
+        }
+        public static ChartCountData LoadPurchaseVsSaleLossesChart(PieChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of losses");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartCountData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            List<PieSeries<double>> dataset = [];
+            Dictionary<string, int> lossCounts = [];
+
+            // Count losses
+            int purchaseLosses = ProcessRowsForCountData(
+                purchasesDataGridView.Rows,
+                "dummy",  // Not used for counting
+                LostManager.IsTransactionLost
+            ).Values.Sum();
+
+            int saleLosses = ProcessRowsForCountData(
+                salesDataGridView.Rows,
+                "dummy",  // Not used for counting
+                LostManager.IsTransactionLost
+            ).Values.Sum();
+
+            // Add to dictionary
+            if (purchaseLosses > 0)
+            {
+                lossCounts.Add(LanguageManager.TranslateString("Purchase Losses"), purchaseLosses);
+            }
+            if (saleLosses > 0)
+            {
+                lossCounts.Add(LanguageManager.TranslateString("Sale Losses"), saleLosses);
+            }
+
+            string chartTitle = TranslatedChartTitles.PurchaseVsSaleLosses;
+            string type = LanguageManager.TranslateString("Transaction Type");
+
+            ProcessPieChartData(lossCounts, PieChartGrouping.Unlimited, dataset, exportToExcel, filePath, chartTitle, type, label, canUpdateChart, chart);
+
+            return new ChartCountData(lossCounts);
+        }
 
         // Methods
         public static bool IsRowValid(DataGridViewRow row)
         {
-            return row.Visible && !ReturnManager.IsTransactionReturned(row);
+            return row.Visible && !ReturnManager.IsTransactionReturned(row) && !LostManager.IsTransactionFullyLost(row);
         }
 
         /// <summary>

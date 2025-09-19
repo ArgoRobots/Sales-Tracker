@@ -2,39 +2,34 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
-using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
-namespace Sales_Tracker
+namespace Sales_Tracker.LostProduct
 {
-    public partial class UndoReturn_Form : BaseForm
+    public partial class UndoLoss_Form : BaseForm
     {
         // Properties
         private readonly DataGridViewRow _transactionRow;
-        private readonly bool _hasPartialReturn;
+        private readonly bool _hasMultipleItems;
         private readonly List<string> _items;
-        private readonly List<int> _returnedItems;
         private List<Guna2CustomCheckBox> _itemCheckboxes;
         private Guna2Panel _itemsPanel;
         private Label _selectItemsLabel;
 
         // Init.
-        public UndoReturn_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
-        public UndoReturn_Form(DataGridViewRow transactionRow)
+        public UndoLoss_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
+        public UndoLoss_Form(DataGridViewRow transactionRow)
         {
             InitializeComponent();
             if (transactionRow == null) { return; }
 
             _transactionRow = transactionRow;
 
-            // Get return information
-            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
-            _returnedItems = returnInfo.ReturnedItems;
+            // Check if this transaction has multiple items
+            _hasMultipleItems = _transactionRow.Tag is (List<string>, TagData);
 
-            _hasPartialReturn = _transactionRow.Tag is (List<string>, TagData) && _returnedItems.Count > 0;
-
-            if (_hasPartialReturn && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
+            if (_hasMultipleItems && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
             {
                 _items = tuple.Item1;
             }
@@ -44,13 +39,18 @@ namespace Sales_Tracker
             }
 
             LoadTransactionData();
-            if (_hasPartialReturn)
+            LoadLossInformation();
+
+            // Only create item selection for partial losses
+            if (_hasMultipleItems && LostManager.IsTransactionPartiallyLost(_transactionRow))
             {
                 CreateItemSelectionControls();
             }
+
             UpdateTheme();
             SetAccessibleDescriptions();
             UpdateCharacterCount();
+            ValidateInputs();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -60,14 +60,10 @@ namespace Sales_Tracker
             string productName = _transactionRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
             string categoryName = _transactionRow.Cells[ReadOnlyVariables.Category_column].Value.ToString();
             string date = _transactionRow.Cells[ReadOnlyVariables.Date_column].Value.ToString();
-            bool isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
-            string transactionType = isPurchase ? LanguageManager.TranslateString("Purchase") : LanguageManager.TranslateString("Sale");
 
-            TransactionDetails_Label.Text = transactionType + LanguageManager.TranslateString(" Transaction Details:");
-
-            if (_hasPartialReturn)
+            if (_hasMultipleItems)
             {
-                // For partial returns, show transaction overview and return status
+                // For multiple items, show transaction overview
                 int totalItems = _items.Count;
 
                 // Exclude receipt from count if present
@@ -76,40 +72,57 @@ namespace Sales_Tracker
                     totalItems--;
                 }
 
-                List<string> returnedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
-
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
                                              $"{LanguageManager.TranslateString("Total Items")}: {totalItems}\n" +
-                                             $"{LanguageManager.TranslateString("Returned items")}: {string.Join(", ", returnedItemNames)}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else
             {
-                // For full returns, show standard details
+                // For single item, show standard details
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Product")}: {productName}\n" +
                                              $"{LanguageManager.TranslateString("Category")}: {categoryName}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
+        }
+        private void LoadLossInformation()
+        {
+            LossInfo lossInfo = LostManager.GetLossInfo(_transactionRow);
 
-            // Load return information
-            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
+            if (_hasMultipleItems && lossInfo.HasAffectedItems)
+            {
+                // Show information about lost items
+                List<string> lostItemNames = LostManager.GetLostItemNames(_transactionRow);
+                string itemsText = lostItemNames.Count > 0 ? string.Join(", ", lostItemNames) : LanguageManager.TranslateString("Unknown items");
 
-            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
-                                    $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
-                                    $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(_transactionRow);
+                string lossType = isPartiallyLost ? LanguageManager.TranslateString("Partial Loss") : LanguageManager.TranslateString("Full Loss");
+
+                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Type")}: {lossType}\n" +
+                                      $"{LanguageManager.TranslateString("Lost Items")}: {itemsText}\n" +
+                                      $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
+                                      $"{LanguageManager.TranslateString("Reason")}: {lossInfo.DisplayReason}\n" +
+                                      $"{LanguageManager.TranslateString("Marked by")}: {lossInfo.DisplayActionBy}";
+            }
+            else
+            {
+                // Single item or full loss
+                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
+                                      $"{LanguageManager.TranslateString("Reason")}: {lossInfo.DisplayReason}\n" +
+                                      $"{LanguageManager.TranslateString("Marked by")}: {lossInfo.DisplayActionBy}";
+            }
         }
         private void CreateItemSelectionControls()
         {
             // Create label for item selection
             _selectItemsLabel = new Label
             {
-                Text = LanguageManager.TranslateString("Select returned items to undo:"),
+                Text = LanguageManager.TranslateString("Select items to undo loss for:"),
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
-                Location = new Point(ReturnInformation_Label.Left, ReturnInfo_Label.Bottom + 10)
+                Location = new Point(LossInformation_Label.Left, LossInfo_Label.Bottom + 20)
             };
             Controls.Add(_selectItemsLabel);
 
@@ -120,33 +133,23 @@ namespace Sales_Tracker
                 itemsToShow--;
             }
 
-            // Count how many items are actually returned
-            int returnedItemsToShow = 0;
-            for (int i = 0; i < itemsToShow; i++)
-            {
-                if (_returnedItems.Contains(i))
-                {
-                    returnedItemsToShow++;
-                }
-            }
-
             const int checkBoxHeight = 20;
             const int minItemHeight = 35;
             const int itemPadding = 5;
             const int panelPadding = 20;
-            const int maxPanelHeight = 300;
+            const int maxPanelHeight = 200;
 
             // Create panel to hold item checkboxes
             _itemsPanel = new Guna2Panel
             {
-                Location = new Point(_selectItemsLabel.Left, _selectItemsLabel.Bottom + 10),
+                Location = new Point(LossInfo_Label.Left, _selectItemsLabel.Bottom + 10),
                 FillColor = CustomColors.ControlBack,
                 Width = Width - 60,
                 AutoScroll = true
             };
             Controls.Add(_itemsPanel);
 
-            // Create checkboxes for returned items only
+            // Create checkboxes for each item
             _itemCheckboxes = [];
             int yPosition = 10;
             int totalCalculatedHeight = panelPadding;
@@ -157,21 +160,19 @@ namespace Sales_Tracker
                 if (itemDetails.Length < 6) { continue; }
 
                 string productName = itemDetails[0];
-                string categoryName = itemDetails[1];
                 string companyName = itemDetails[3];
                 int quantity = int.Parse(itemDetails[4]);
                 decimal pricePerUnit = decimal.Parse(itemDetails[5]);
 
-                bool isItemReturned = _returnedItems.Contains(i);
+                // Check if this specific item is lost
+                bool isItemLost = LostManager.IsItemLost(_transactionRow, i);
 
-                // Only show returned items as they are the ones that can be undone
-                if (!isItemReturned) { continue; }
-
-                // Create custom checkbox
+                // Create custom checkbox (only for lost items)
                 Guna2CustomCheckBox itemCheckBox = new()
                 {
                     Size = new Size(20, 20),
                     Location = new Point(10, yPosition),
+                    Enabled = isItemLost,
                     Tag = i,  // Store the item index
                     Animated = true
                 };
@@ -182,11 +183,16 @@ namespace Sales_Tracker
                     Text = $"{productName} ({companyName}) - {LanguageManager.TranslateString("Quantity")}: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
                     MaximumSize = new Size(_itemsPanel.Width - 50, 0),
                     Font = new Font("Segoe UI", 10),
-                    ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
+                    ForeColor = isItemLost ? CustomColors.Text : CustomColors.AccentGray,
                     AutoSize = true,
                     AutoEllipsis = true,
                     TextAlign = ContentAlignment.MiddleLeft
                 };
+
+                if (!isItemLost)
+                {
+                    itemLabel.Text += " (" + LanguageManager.TranslateString("Not lost") + ")";
+                }
 
                 // Calculate the actual height needed for this item
                 int labelHeight = itemLabel.PreferredHeight;
@@ -200,10 +206,13 @@ namespace Sales_Tracker
                 int checkBoxYOffset = (actualItemHeight - checkBoxHeight) / 2;
                 itemCheckBox.Location = new Point(10, yPosition + checkBoxYOffset);
 
-                // Handle label click to toggle checkbox
+                // Handle label click to toggle checkbox (only if enabled)
                 itemLabel.Click += (s, e) =>
                 {
-                    itemCheckBox.Checked = !itemCheckBox.Checked;
+                    if (itemCheckBox.Enabled)
+                    {
+                        itemCheckBox.Checked = !itemCheckBox.Checked;
+                    }
                 };
 
                 itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
@@ -219,38 +228,46 @@ namespace Sales_Tracker
             _itemsPanel.Height = Math.Min(totalCalculatedHeight, maxPanelHeight);
 
             // Adjust form height to accommodate new controls
-            int additionalHeight = _itemsPanel.Bottom - ReturnInfo_Label.Bottom;
+            int additionalHeight = _itemsPanel.Bottom - LossInfo_Label.Bottom;
             Height += additionalHeight;
-            MinimumSize = Size;
+            MinimumSize = new Size(Width, Height);
 
-            // Update validation since we now need at least one item selected for partial undos
+            // Move existing controls down
+            UndoReason_Label.Top += additionalHeight;
+            UndoReason_TextBox.Top += additionalHeight;
+            CharacterCount_Label.Top += additionalHeight;
+            UndoLoss_Button.Top += additionalHeight;
+            Cancel_Button.Top += additionalHeight;
+
+            // Update validation since we now need at least one item selected
             ValidateInputs();
         }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
-
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
-            ThemeManager.MakeGButtonBluePrimary(UndoReturn_Button);
+            ThemeManager.MakeGButtonBluePrimary(UndoLoss_Button);
         }
         private void SetAccessibleDescriptions()
         {
             TransactionInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
-            ReturnInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            LossInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers
-        private void UndoReturn_Form_Shown(object sender, EventArgs e)
+        private void UndoLoss_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers
-        private void UndoReturn_Button_Click(object sender, EventArgs e)
+        private void UndoLoss_Button_Click(object sender, EventArgs e)
         {
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            string undoReason = UndoReason_TextBox.Text.Trim();
+
+            if (_hasMultipleItems && LostManager.IsTransactionPartiallyLost(_transactionRow))
             {
-                // Get selected items to undo
+                // Get selected items for partial undo
                 List<int> selectedItemIndices = [];
                 foreach (Guna2CustomCheckBox checkBox in _itemCheckboxes)
                 {
@@ -262,27 +279,18 @@ namespace Sales_Tracker
 
                 if (selectedItemIndices.Count == 0)
                 {
-                    CustomMessageBox.Show("No items selected", "Please select at least one returned item to undo.",
+                    CustomMessageBox.Show("No items selected", "Please select at least one item to undo the loss for.",
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     return;
                 }
 
-                // Check if user wants to undo all returned items
-                if (selectedItemIndices.Count == _returnedItems.Count)
-                {
-                    // Undoing all items - use full undo
-                    ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
-                }
-                else
-                {
-                    // Partial undo
-                    ReturnManager.UndoPartialReturn(_transactionRow, selectedItemIndices, UndoReason_TextBox.Text.Trim());
-                }
+                // Process partial undo loss for selected items
+                LostManager.UndoPartialLoss(_transactionRow, selectedItemIndices, undoReason);
             }
             else
             {
-                // Full undo for single item or complete transaction return
-                ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
+                // Process full undo loss
+                LostManager.UndoLoss(_transactionRow, undoReason);
             }
 
             DialogResult = DialogResult.OK;
@@ -309,13 +317,13 @@ namespace Sales_Tracker
             bool reasonProvided = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
             bool itemsSelected = true;
 
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            if (_hasMultipleItems && LostManager.IsTransactionPartiallyLost(_transactionRow))
             {
-                // For partial returns with selectable items, at least one item must be selected
-                itemsSelected = _itemCheckboxes.Any(cb => cb.Checked);
+                // For partial losses, at least one item must be selected
+                itemsSelected = _itemCheckboxes?.Any(cb => cb.Checked) ?? false;
             }
 
-            UndoReturn_Button.Enabled = reasonProvided && itemsSelected;
+            UndoLoss_Button.Enabled = reasonProvided && itemsSelected;
         }
         private void UpdateCharacterCount()
         {

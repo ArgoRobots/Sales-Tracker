@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -685,7 +686,7 @@ namespace Sales_Tracker.GridView
 
             if (isPurchasesOrSales || isTransactionView)
             {
-                // Add ReturnBtn and/or UndoReturnBtn based on current return status
+                // Add view details and action buttons based on current status
                 if (isSingleRowSelected)
                 {
                     DataGridViewRow selectedRow;
@@ -694,7 +695,7 @@ namespace Sales_Tracker.GridView
                     if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
                         selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
                     {
-                        // Use the main transaction row for return status checks
+                        // Use the main transaction row for status checks
                         selectedRow = SelectedRowInMainMenu;
                     }
                     else
@@ -703,9 +704,30 @@ namespace Sales_Tracker.GridView
                         selectedRow = grid.SelectedRows[0];
                     }
 
+                    // Check return status
                     bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
                     bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+                    bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
 
+                    // Check loss status
+                    bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
+                    bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
+                    bool hasAnyLoss = isFullyLost || isPartiallyLost;
+
+                    // View Details buttons - show when there's information to view
+                    if (hasAnyReturns)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
+                    }
+
+                    if (hasAnyLoss)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
+                    }
+
+                    // Return action buttons
                     if (isFullyReturned)
                     {
                         // Fully returned - only show undo button
@@ -724,12 +746,39 @@ namespace Sales_Tracker.GridView
                         RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
                         flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
                     }
-                    else
+                    else if (!isFullyLost && !isPartiallyLost)
                     {
-                        // Not returned - only show return button
+                        // Not returned and not lost - show return button
                         RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
                         RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
                         flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                    }
+
+                    // Loss action buttons
+                    if (isFullyLost)
+                    {
+                        // Fully lost - only show undo loss button
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    }
+                    else if (isPartiallyLost)
+                    {
+                        // Partially lost - show both buttons
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
+
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    }
+                    else if (!isFullyReturned && !isPartiallyReturned)
+                    {
+                        // Not lost and not returned - show mark as lost button
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
                     }
                 }
             }
@@ -783,12 +832,12 @@ namespace Sales_Tracker.GridView
             int targetTop;
 
             // Handle column header clicks differently from row clicks
-            if (info.RowIndex == -1) // Column header click
+            if (info.RowIndex == -1)  // Column header click
             {
                 // Position the panel right below the column header
                 targetTop = grid.Top + grid.ColumnHeadersHeight;
             }
-            else // Regular row click
+            else  // Regular row click
             {
                 int rowHeight = grid.Rows[0].Height;
                 int headerHeight = grid.ColumnHeadersHeight;
@@ -1064,13 +1113,13 @@ namespace Sales_Tracker.GridView
                 cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
             }
         }
-        public static bool HasVisibleRows(params Guna2DataGridView[] dataGridViews)
+        public static bool HasVisibleRowsExcludingReturnedOrLost(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (row.Visible)
+                    if (row.Visible && !LostManager.IsTransactionFullyLost(row) && !ReturnManager.IsTransactionFullyReturned(row))
                     {
                         return true;
                     }
@@ -1092,25 +1141,48 @@ namespace Sales_Tracker.GridView
             }
             return false;
         }
+        public static bool HasVisibleRowsForLoss(params Guna2DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (row.Visible && LostManager.IsTransactionLost(row))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
-        /// Updates row appearance for returns in ItemsInTransaction forms.
-        /// Individual returned items will be displayed in red.
+        /// Updates row appearance for returns and losses in ItemsInTransaction forms.
+        /// Individual returned items will be displayed in red, lost items in dark red.
+        /// If an item is both returned and lost, loss styling takes priority.
         /// </summary>
-        public static void UpdateItemRowAppearanceForReturns(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
+        public static void UpdateItemRowAppearance(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
         {
             if (mainTransactionRow.Tag is not (List<string>, TagData))
             {
                 return;
             }
 
-            // Apply return styling to individual item rows
+            // Apply styling to individual item rows based on their status
             for (int i = 0; i < itemsGrid.Rows.Count; i++)
             {
                 DataGridViewRow itemRow = itemsGrid.Rows[i];
                 bool isItemReturned = ReturnManager.IsItemReturned(mainTransactionRow, i);
+                bool isItemLost = LostManager.IsItemLost(mainTransactionRow, i);
 
-                if (isItemReturned)
+                if (isItemLost)
+                {
+                    // Lost items take priority - mark in dark red
+                    itemRow.DefaultCellStyle.BackColor = CustomColors.LostItemBackground;
+                    itemRow.DefaultCellStyle.SelectionBackColor = CustomColors.LostItemSelection;
+                    itemRow.DefaultCellStyle.ForeColor = CustomColors.LostItemText;
+                }
+                else if (isItemReturned)
                 {
                     // Mark returned items in red
                     itemRow.DefaultCellStyle.BackColor = CustomColors.ReturnedItemBackground;
@@ -1119,7 +1191,7 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Reset to default colors for non-returned items
+                    // Reset to default colors for normal items
                     itemRow.DefaultCellStyle.BackColor = Color.Empty;
                     itemRow.DefaultCellStyle.SelectionBackColor = Color.Empty;
                     itemRow.DefaultCellStyle.ForeColor = Color.Empty;
@@ -1148,11 +1220,24 @@ namespace Sales_Tracker.GridView
             {
                 if (!row.Visible) { continue; }
 
-                // Check return status for proper color application
+                // Check return and loss status for proper color application
                 bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
                 bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+                bool isFullyLost = LostManager.IsTransactionFullyLost(row);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
 
-                if (isFullyReturned)
+                // Priority order: Lost > Returned > Normal
+                if (isFullyLost)
+                {
+                    // Fully lost - dark red/maroon background
+                    LostManager.UpdateRowAppearanceForLoss(row, true, false);
+                }
+                else if (isPartiallyLost)
+                {
+                    // Partially lost - dark orange/brown background
+                    LostManager.UpdateRowAppearanceForLoss(row, false, true);
+                }
+                else if (isFullyReturned)
                 {
                     // Fully returned - red background
                     ReturnManager.UpdateRowAppearanceForReturn(row, true, false);
@@ -1164,7 +1249,7 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Not returned - apply alternating colors
+                    // Not returned or lost - apply alternating colors
                     row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
                         ? dataGridView.DefaultCellStyle.BackColor
                         : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
@@ -1258,17 +1343,13 @@ namespace Sales_Tracker.GridView
         /// Determines whether a category can be moved or deleted by checking if it contains any products.
         /// Shows a message box if the action cannot be performed.
         /// </summary>
-        /// <returns>
-        /// true if the category can be moved or deleted (has no products);
-        /// false if the category contains products, in which case displays an error message.
-        /// </returns>
         private static bool CanCategoryBeMovedOrDeleted(string categoryName, List<Category> categoryList, string action)
         {
             if (MainMenu_Form.DoesCategoryHaveProducts(categoryName, categoryList))
             {
                 CustomMessageBox.ShowWithFormat(
                     "Cannot {0} category",
-                    "Cannot {0} category '{1}' because it contains products",
+                    "Cannot {1} category '{2}' because it contains products",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok,
                     action, action, categoryName);

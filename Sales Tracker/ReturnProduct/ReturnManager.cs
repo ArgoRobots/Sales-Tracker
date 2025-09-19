@@ -336,7 +336,7 @@ namespace Sales_Tracker.ReturnProduct
         /// <summary>
         /// Gets return information for a transaction.
         /// </summary>
-        public static (DateTime? returnDate, string returnReason, string returnedBy, List<int> returnedItems) GetReturnInfo(DataGridViewRow row)
+        public static ReturnInfo GetReturnInfo(DataGridViewRow row)
         {
             TagData tagData = null;
 
@@ -355,10 +355,17 @@ namespace Sales_Tracker.ReturnProduct
 
             if (tagData != null)
             {
-                return (tagData.ReturnDate, tagData.ReturnReason, tagData.ReturnedBy, tagData.ReturnedItems ?? []);
+                return new ReturnInfo
+                {
+                    ReturnDate = tagData.ReturnDate,
+                    ReturnReason = tagData.ReturnReason ?? "",
+                    ReturnedBy = tagData.ReturnedBy ?? "",
+                    ReturnedItems = tagData.ReturnedItems ?? []
+                };
             }
 
-            return (null, "error", "error", []);
+            // Return empty ReturnInfo for invalid data
+            return new ReturnInfo();
         }
 
         /// <summary>

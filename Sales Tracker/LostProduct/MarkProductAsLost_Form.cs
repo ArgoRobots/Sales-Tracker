@@ -2,39 +2,36 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
-using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
-namespace Sales_Tracker
+namespace Sales_Tracker.LostProduct
 {
-    public partial class UndoReturn_Form : BaseForm
+    public partial class MarkProductAsLost_Form : BaseForm
     {
         // Properties
         private readonly DataGridViewRow _transactionRow;
-        private readonly bool _hasPartialReturn;
+        private readonly bool _isPurchase;
+        private readonly bool _hasMultipleItems;
         private readonly List<string> _items;
-        private readonly List<int> _returnedItems;
         private List<Guna2CustomCheckBox> _itemCheckboxes;
         private Guna2Panel _itemsPanel;
         private Label _selectItemsLabel;
 
         // Init.
-        public UndoReturn_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
-        public UndoReturn_Form(DataGridViewRow transactionRow)
+        public MarkProductAsLost_Form() : this(null, false) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
+        public MarkProductAsLost_Form(DataGridViewRow transactionRow, bool isPurchase)
         {
             InitializeComponent();
             if (transactionRow == null) { return; }
 
             _transactionRow = transactionRow;
+            _isPurchase = isPurchase;
 
-            // Get return information
-            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
-            _returnedItems = returnInfo.ReturnedItems;
+            // Check if this transaction has multiple items
+            _hasMultipleItems = _transactionRow.Tag is (List<string>, TagData);
 
-            _hasPartialReturn = _transactionRow.Tag is (List<string>, TagData) && _returnedItems.Count > 0;
-
-            if (_hasPartialReturn && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
+            if (_hasMultipleItems && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
             {
                 _items = tuple.Item1;
             }
@@ -43,8 +40,17 @@ namespace Sales_Tracker
                 _items = [];
             }
 
+            DpiHelper.ScaleComboBox(LostReason_ComboBox);
+
+            // Use appropriate reasons based on transaction type
+            List<string> reasons = _isPurchase ?
+                LostReasons.GetPurchaseLostReasons() :
+                LostReasons.GetSalesLostReasons();
+
+            LostReason_ComboBox.Items.AddRange(reasons.Cast<object>().ToArray());
+
             LoadTransactionData();
-            if (_hasPartialReturn)
+            if (_hasMultipleItems)
             {
                 CreateItemSelectionControls();
             }
@@ -60,14 +66,23 @@ namespace Sales_Tracker
             string productName = _transactionRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
             string categoryName = _transactionRow.Cells[ReadOnlyVariables.Category_column].Value.ToString();
             string date = _transactionRow.Cells[ReadOnlyVariables.Date_column].Value.ToString();
-            bool isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
-            string transactionType = isPurchase ? LanguageManager.TranslateString("Purchase") : LanguageManager.TranslateString("Sale");
+            string transactionType = _isPurchase ? LanguageManager.TranslateString("Purchase") : LanguageManager.TranslateString("Sale");
 
-            TransactionDetails_Label.Text = transactionType + LanguageManager.TranslateString(" Transaction Details:");
+            // Check if there are already lost items
+            bool hasLostItems = LostManager.IsTransactionPartiallyLost(_transactionRow);
 
-            if (_hasPartialReturn)
+            if (hasLostItems)
             {
-                // For partial returns, show transaction overview and return status
+                TransactionDetails_Label.Text = $"{LanguageManager.TranslateString("Mark Additional Items as Lost from")} {transactionType}:";
+            }
+            else
+            {
+                TransactionDetails_Label.Text = $"{transactionType} {LanguageManager.TranslateString("Transaction Details:")}";
+            }
+
+            if (_hasMultipleItems)
+            {
+                // For multiple items, show transaction overview
                 int totalItems = _items.Count;
 
                 // Exclude receipt from count if present
@@ -76,40 +91,46 @@ namespace Sales_Tracker
                     totalItems--;
                 }
 
-                List<string> returnedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
+                // Count already lost items
+                int lostCount = 0;
+                for (int i = 0; i < totalItems; i++)
+                {
+                    if (IsItemLost(i))
+                    {
+                        lostCount++;
+                    }
+                }
+
+                string lostInfo = hasLostItems ?
+                    $"\n{LanguageManager.TranslateString("Already Lost:")}: {lostCount} {LanguageManager.TranslateString("items")}" : "";
 
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
-                                             $"{LanguageManager.TranslateString("Total Items")}: {totalItems}\n" +
-                                             $"{LanguageManager.TranslateString("Returned items")}: {string.Join(", ", returnedItemNames)}\n" +
+                                             $"{LanguageManager.TranslateString("Total Items")}: {totalItems}{lostInfo}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else
             {
-                // For full returns, show standard details
+                // For single item, show standard details
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Product")}: {productName}\n" +
                                              $"{LanguageManager.TranslateString("Category")}: {categoryName}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
-
-            // Load return information
-            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
-
-            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
-                                    $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
-                                    $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
         }
         private void CreateItemSelectionControls()
         {
+            // Check if there are already lost items
+            bool hasLostItems = LostManager.IsTransactionPartiallyLost(_transactionRow);
+
             // Create label for item selection
             _selectItemsLabel = new Label
             {
-                Text = LanguageManager.TranslateString("Select returned items to undo:"),
+                Text = hasLostItems ? LanguageManager.TranslateString("Select additional items to mark as lost:") : LanguageManager.TranslateString("Select items to mark as lost:"),
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
-                Location = new Point(ReturnInformation_Label.Left, ReturnInfo_Label.Bottom + 10)
+                Location = new Point(TransactionDetails_Label.Left, TransactionInfo_Label.Bottom + 20)
             };
             Controls.Add(_selectItemsLabel);
 
@@ -118,16 +139,6 @@ namespace Sales_Tracker
             if (_items.Count > 0 && _items[^1].StartsWith(ReadOnlyVariables.Receipt_text))
             {
                 itemsToShow--;
-            }
-
-            // Count how many items are actually returned
-            int returnedItemsToShow = 0;
-            for (int i = 0; i < itemsToShow; i++)
-            {
-                if (_returnedItems.Contains(i))
-                {
-                    returnedItemsToShow++;
-                }
             }
 
             const int checkBoxHeight = 20;
@@ -139,14 +150,14 @@ namespace Sales_Tracker
             // Create panel to hold item checkboxes
             _itemsPanel = new Guna2Panel
             {
-                Location = new Point(_selectItemsLabel.Left, _selectItemsLabel.Bottom + 10),
+                Location = new Point(TransactionInfo_Label.Left, _selectItemsLabel.Bottom + 10),
                 FillColor = CustomColors.ControlBack,
                 Width = Width - 60,
                 AutoScroll = true
             };
             Controls.Add(_itemsPanel);
 
-            // Create checkboxes for returned items only
+            // Create checkboxes for each item
             _itemCheckboxes = [];
             int yPosition = 10;
             int totalCalculatedHeight = panelPadding;
@@ -162,16 +173,17 @@ namespace Sales_Tracker
                 int quantity = int.Parse(itemDetails[4]);
                 decimal pricePerUnit = decimal.Parse(itemDetails[5]);
 
-                bool isItemReturned = _returnedItems.Contains(i);
-
-                // Only show returned items as they are the ones that can be undone
-                if (!isItemReturned) { continue; }
+                // Check if this item is already lost or returned
+                bool isItemLost = IsItemLost(i);
+                bool isItemReturned = ReturnProduct.ReturnManager.IsItemReturned(_transactionRow, i);
+                bool isItemUnavailable = isItemLost || isItemReturned;
 
                 // Create custom checkbox
                 Guna2CustomCheckBox itemCheckBox = new()
                 {
                     Size = new Size(20, 20),
                     Location = new Point(10, yPosition),
+                    Enabled = !isItemUnavailable,
                     Tag = i,  // Store the item index
                     Animated = true
                 };
@@ -182,11 +194,20 @@ namespace Sales_Tracker
                     Text = $"{productName} ({companyName}) - {LanguageManager.TranslateString("Quantity")}: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
                     MaximumSize = new Size(_itemsPanel.Width - 50, 0),
                     Font = new Font("Segoe UI", 10),
-                    ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
+                    ForeColor = isItemUnavailable ? CustomColors.AccentRed : CustomColors.Text,
                     AutoSize = true,
                     AutoEllipsis = true,
                     TextAlign = ContentAlignment.MiddleLeft
                 };
+
+                if (isItemLost)
+                {
+                    itemLabel.Text += " (" + LanguageManager.TranslateString("Already lost") + ")";
+                }
+                else if (isItemReturned)
+                {
+                    itemLabel.Text += " (" + LanguageManager.TranslateString("Already returned") + ")";
+                }
 
                 // Calculate the actual height needed for this item
                 int labelHeight = itemLabel.PreferredHeight;
@@ -203,7 +224,10 @@ namespace Sales_Tracker
                 // Handle label click to toggle checkbox
                 itemLabel.Click += (s, e) =>
                 {
-                    itemCheckBox.Checked = !itemCheckBox.Checked;
+                    if (itemCheckBox.Enabled)
+                    {
+                        itemCheckBox.Checked = !itemCheckBox.Checked;
+                    }
                 };
 
                 itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
@@ -219,38 +243,53 @@ namespace Sales_Tracker
             _itemsPanel.Height = Math.Min(totalCalculatedHeight, maxPanelHeight);
 
             // Adjust form height to accommodate new controls
-            int additionalHeight = _itemsPanel.Bottom - ReturnInfo_Label.Bottom;
+            int additionalHeight = _itemsPanel.Bottom - TransactionInfo_Label.Bottom;
             Height += additionalHeight;
-            MinimumSize = Size;
+            MinimumSize = new Size(Width, Height);
 
-            // Update validation since we now need at least one item selected for partial undos
+            // Move existing controls down
+            LostReason_Label.Top += additionalHeight;
+            LostReason_ComboBox.Top += additionalHeight;
+            AdditionalNotes_Label.Top += additionalHeight;
+            AdditionalNotes_TextBox.Top += additionalHeight;
+            CharacterCount_Label.Top += additionalHeight;
+            MarkAsLost_Button.Top += additionalHeight;
+            Cancel_Button.Top += additionalHeight;
+
+            // Update validation since we now need at least one item selected
             ValidateInputs();
+        }
+        private bool IsItemLost(int itemIndex)
+        {
+            return LostManager.IsItemLost(_transactionRow, itemIndex);
         }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
 
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
-            ThemeManager.MakeGButtonBluePrimary(UndoReturn_Button);
+            ThemeManager.MakeGButtonBluePrimary(MarkAsLost_Button);
         }
         private void SetAccessibleDescriptions()
         {
             TransactionInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
-            ReturnInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            LostReason_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
         // Form event handlers
-        private void UndoReturn_Form_Shown(object sender, EventArgs e)
+        private void MarkProductAsLost_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers
-        private void UndoReturn_Button_Click(object sender, EventArgs e)
+        private void MarkAsLost_Button_Click(object sender, EventArgs e)
         {
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            string currentUser = MainMenu_Form.SelectedAccountant;
+
+            if (_hasMultipleItems)
             {
-                // Get selected items to undo
+                // Get selected items
                 List<int> selectedItemIndices = [];
                 foreach (Guna2CustomCheckBox checkBox in _itemCheckboxes)
                 {
@@ -262,27 +301,25 @@ namespace Sales_Tracker
 
                 if (selectedItemIndices.Count == 0)
                 {
-                    CustomMessageBox.Show("No items selected", "Please select at least one returned item to undo.",
+                    CustomMessageBox.Show("No items selected", "Please select at least one item to mark as lost.",
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     return;
                 }
 
-                // Check if user wants to undo all returned items
-                if (selectedItemIndices.Count == _returnedItems.Count)
-                {
-                    // Undoing all items - use full undo
-                    ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
-                }
-                else
-                {
-                    // Partial undo
-                    ReturnManager.UndoPartialReturn(_transactionRow, selectedItemIndices, UndoReason_TextBox.Text.Trim());
-                }
+                // Process partial loss for selected items
+                LostManager.ProcessPartialLoss(_transactionRow,
+                    selectedItemIndices,
+                    LostReason_ComboBox.SelectedItem.ToString(),
+                    AdditionalNotes_TextBox.Text.Trim(),
+                    currentUser);
             }
             else
             {
-                // Full undo for single item or complete transaction return
-                ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
+                // Process full loss for single item
+                LostManager.ProcessLoss(_transactionRow,
+                    LostReason_ComboBox.SelectedItem.ToString(),
+                    AdditionalNotes_TextBox.Text.Trim(),
+                    currentUser);
             }
 
             DialogResult = DialogResult.OK;
@@ -293,10 +330,14 @@ namespace Sales_Tracker
             DialogResult = DialogResult.Cancel;
             Close();
         }
-        private void UndoReason_TextBox_TextChanged(object sender, EventArgs e)
+        private void AdditionalNotes_TextBox_TextChanged(object sender, EventArgs e)
         {
             ValidateInputs();
             UpdateCharacterCount();
+        }
+        private void LostReason_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ValidateInputs();
         }
         private void ItemCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -306,21 +347,21 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            bool reasonProvided = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
+            bool reasonSelected = LostReason_ComboBox.SelectedIndex != -1;
             bool itemsSelected = true;
 
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            if (_hasMultipleItems)
             {
-                // For partial returns with selectable items, at least one item must be selected
-                itemsSelected = _itemCheckboxes.Any(cb => cb.Checked);
+                // For multiple items, at least one item must be selected
+                itemsSelected = _itemCheckboxes?.Any(cb => cb.Checked) ?? false;
             }
 
-            UndoReturn_Button.Enabled = reasonProvided && itemsSelected;
+            MarkAsLost_Button.Enabled = reasonSelected && itemsSelected;
         }
         private void UpdateCharacterCount()
         {
-            int currentLength = UndoReason_TextBox.Text.Length;
-            int maxLength = UndoReason_TextBox.MaxLength;
+            int currentLength = AdditionalNotes_TextBox.Text.Length;
+            int maxLength = AdditionalNotes_TextBox.MaxLength;
 
             CharacterCount_Label.Text = $"{currentLength}/{maxLength}";
 

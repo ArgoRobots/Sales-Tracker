@@ -31,12 +31,23 @@ namespace Sales_Tracker.Theme
         public static Color ContentPanelBackground { get; private set; }
         public static DataGridViewPresetThemes DataGridViewTheme { get; private set; }
         public static Color AccentGreen { get; private set; }
+        public static Color AccentGray { get; private set; }
+
+        // Return-related colors
         public static Color ReturnedItemBackground { get; private set; }
         public static Color ReturnedItemSelection { get; private set; }
         public static Color ReturnedItemText { get; private set; }
         public static Color PartiallyReturnedItemBackground { get; private set; }
         public static Color PartiallyReturnedItemSelection { get; private set; }
         public static Color PartiallyReturnedItemText { get; private set; }
+
+        // Loss-related colors
+        public static Color LostItemBackground { get; private set; }
+        public static Color LostItemSelection { get; private set; }
+        public static Color LostItemText { get; private set; }
+        public static Color PartiallyLostItemBackground { get; private set; }
+        public static Color PartiallyLostItemSelection { get; private set; }
+        public static Color PartiallyLostItemText { get; private set; }
 
         /// <summary>
         /// Sets all color values based on the current theme. These colors are used for UI controls throughout the application.
@@ -82,6 +93,8 @@ namespace Sales_Tracker.Theme
 
             // DataGridView colors
             DataGridViewTheme = DataGridViewPresetThemes.Dark;
+
+            // Return colors
             ReturnedItemBackground = Color.FromArgb(80, 45, 45);
             ReturnedItemSelection = Color.FromArgb(100, 60, 60);
             ReturnedItemText = Color.FromArgb(255, 180, 180);
@@ -89,8 +102,17 @@ namespace Sales_Tracker.Theme
             PartiallyReturnedItemSelection = Color.FromArgb(120, 70, 30);
             PartiallyReturnedItemText = Color.FromArgb(255, 200, 150);
 
+            // Loss colors - darker than return colors for better distinction
+            LostItemBackground = Color.FromArgb(70, 30, 30);
+            LostItemSelection = Color.FromArgb(90, 40, 40);
+            LostItemText = Color.FromArgb(255, 160, 160);
+            PartiallyLostItemBackground = Color.FromArgb(80, 50, 20);
+            PartiallyLostItemSelection = Color.FromArgb(100, 65, 30);
+            PartiallyLostItemText = Color.FromArgb(255, 220, 180);
+
             // Accent colors
             AccentGreen = Color.FromArgb(168, 233, 203);
+            AccentGray = Color.FromArgb(150, 150, 150);
         }
         private static void SetLightThemeColors()
         {
@@ -122,6 +144,8 @@ namespace Sales_Tracker.Theme
 
             // DataGridView colors
             DataGridViewTheme = DataGridViewPresetThemes.White;
+
+            // Return colors
             ReturnedItemBackground = Color.FromArgb(255, 215, 215);
             ReturnedItemSelection = Color.FromArgb(240, 220, 220);
             ReturnedItemText = Color.FromArgb(140, 70, 70);
@@ -129,8 +153,17 @@ namespace Sales_Tracker.Theme
             PartiallyReturnedItemSelection = Color.FromArgb(240, 220, 180);
             PartiallyReturnedItemText = Color.FromArgb(160, 90, 40);
 
+            // Loss colors - darker than return colors for better distinction
+            LostItemBackground = Color.FromArgb(139, 69, 69);
+            LostItemSelection = Color.FromArgb(160, 82, 82);
+            LostItemText = Color.White;
+            PartiallyLostItemBackground = Color.FromArgb(205, 133, 63);
+            PartiallyLostItemSelection = Color.FromArgb(222, 150, 80);
+            PartiallyLostItemText = Color.White;
+
             // Accent colors
             AccentGreen = Color.FromArgb(60, 160, 120);
+            AccentGray = Color.FromArgb(128, 128, 128);
         }
     }
 }

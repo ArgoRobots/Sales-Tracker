@@ -10,10 +10,10 @@
         // Properties
         private bool _isImageHovered = false;
         private static readonly Color _hoverBackgroundColor = Color.FromArgb(187, 187, 187);
-        private const int _padding = 3;
+        private const byte _padding = 3;
         private readonly Image _headerImage = new Bitmap(image, new Size(28, 28));
-        private readonly int _imageOffsetX = -20;
-        private readonly int _imageOffsetY = 5;
+        private readonly short _imageOffsetX = -20;
+        private readonly byte _imageOffsetY = 5;
         private readonly string _messageBoxText = messageBoxText;
 
         // Getters and setters

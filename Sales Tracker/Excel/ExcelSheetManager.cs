@@ -134,7 +134,7 @@ namespace Sales_Tracker.Excel
                             case CustomMessageBoxResult.Yes:
                                 break;
                             case CustomMessageBoxResult.No:
-                                shouldSkip = true;  // Skip this one
+                                shouldSkip = true;
                                 break;
                             case CustomMessageBoxResult.YesAll:
                                 // Import all duplicates from now on
@@ -592,7 +592,6 @@ namespace Sales_Tracker.Excel
 
         /// <summary>
         /// Helper method for importing purchase and sales data with source currency support and immediate cancellation support.
-        /// Returns ImportSummary with actual counts instead of just boolean.
         /// </summary>
         private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool isPurchase, string sourceCurrency, ImportSession session)
         {
@@ -1263,6 +1262,18 @@ namespace Sales_Tracker.Excel
                     break;
             }
 
+            // Process loss data if loss columns exist
+            ImportReturnResult lossResult = ProcessLossDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName);
+            switch (lossResult)
+            {
+                case ImportReturnResult.Cancel:
+                    return ImportTransactionResult.Cancel;
+                case ImportReturnResult.Skip:
+                    return ImportTransactionResult.Skip;
+                case ImportReturnResult.Success:
+                    break;
+            }
+
             // Handle notes
             DataGridViewCell noteCell = transaction.Cells[noteCellIndex];
             string excelNoteCellValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Note);
@@ -1281,6 +1292,7 @@ namespace Sales_Tracker.Excel
             return ImportTransactionResult.Success;
         }
 
+        // Process return data
         private static ImportReturnResult ProcessReturnDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName)
         {
             try
@@ -1486,7 +1498,7 @@ namespace Sales_Tracker.Excel
                     // All items are returned, change to full return
                     tagData.IsReturned = true;
                     tagData.IsPartiallyReturned = false;
-                    tagData.ReturnedItems = null; // Clear since it's a full return
+                    tagData.ReturnedItems = null;  // Clear since it's a full return
                 }
             }
             catch (Exception ex)
@@ -1505,6 +1517,133 @@ namespace Sales_Tracker.Excel
                 // Clean up the temporary text field
                 tagData.ReturnedItemsText = null;
             }
+        }
+
+        // Process loss data
+        private static ImportReturnResult ProcessLossDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName)
+        {
+            try
+            {
+                // Check if loss columns exist in the worksheet
+                bool hasLossColumns = HasLossColumns(row.Worksheet);
+                if (!hasLossColumns)
+                {
+                    return ImportReturnResult.Success;
+                }
+
+                // Get loss status
+                string isLostValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.IsLost);
+                if (string.IsNullOrWhiteSpace(isLostValue) || isLostValue == ReadOnlyVariables.EmptyCell)
+                {
+                    return ImportReturnResult.Success;
+                }
+
+                // Parse loss status
+                bool isLost = false;
+                bool isPartiallyLost = false;
+
+                switch (isLostValue.ToLowerInvariant().Trim())
+                {
+                    case "yes":
+                    case "true":
+                    case "1":
+                    case "lost":
+                        isLost = true;
+                        break;
+                    case "partial":
+                    case "partially":
+                    case "partial loss":
+                        isPartiallyLost = true;
+                        break;
+                    case "no":
+                    case "false":
+                    case "0":
+                    case "":
+                        break;
+                    default:
+                        // Handle invalid loss status similar to return status
+                        CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                            "Invalid Loss Status",
+                            "Invalid loss status '{0}' found in row {1} of {2}. Expected values are: 'Yes', 'No', or 'Partial'.\n\nHow would you like to proceed?",
+                            CustomMessageBoxIcon.Exclamation,
+                            CustomMessageBoxButtons.SkipCancel,
+                            isLostValue, rowNumber, worksheetName);
+                        return result == CustomMessageBoxResult.Skip ? ImportReturnResult.Skip : ImportReturnResult.Cancel;
+                }
+
+                // Process loss data similar to return data
+                if (isLost || isPartiallyLost)
+                {
+                    tagData.IsLost = isLost;
+                    tagData.IsPartiallyLost = isPartiallyLost;
+
+                    // Parse loss date
+                    string lostDateValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostDate);
+                    if (!string.IsNullOrWhiteSpace(lostDateValue) && lostDateValue != ReadOnlyVariables.EmptyCell)
+                    {
+                        if (DateTime.TryParse(lostDateValue, out DateTime lostDate))
+                        {
+                            tagData.LostDate = lostDate;
+                        }
+                        else
+                        {
+                            tagData.LostDate = DateTime.Now;
+                            Log.WriteWithFormat(1, "Invalid lost date '{0}' in transaction {1}, using current date", lostDateValue, transactionId);
+                        }
+                    }
+                    else
+                    {
+                        tagData.LostDate = DateTime.Now;
+                    }
+
+                    // Get loss reason and lost by
+                    string lostReason = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostReason);
+                    tagData.LostReason = !string.IsNullOrWhiteSpace(lostReason) && lostReason != ReadOnlyVariables.EmptyCell
+                        ? lostReason
+                        : "Imported loss (no reason specified)";
+
+                    string lostBy = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostBy);
+                    tagData.LostBy = !string.IsNullOrWhiteSpace(lostBy) && lostBy != ReadOnlyVariables.EmptyCell
+                        ? lostBy
+                        : "Import process";
+
+                    // Handle partial losses
+                    if (isPartiallyLost)
+                    {
+                        string lostItemsValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostItems);
+                        if (!string.IsNullOrWhiteSpace(lostItemsValue) && lostItemsValue != ReadOnlyVariables.EmptyCell)
+                        {
+                            tagData.LostItemsText = lostItemsValue;
+                        }
+                    }
+                }
+
+                return ImportReturnResult.Success;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error processing loss data for transaction {0}: {1}", transactionId, ex.Message);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Loss Data Import Error",
+                    "An error occurred while processing loss data for transaction {0} in row {1}:\n\n{2}\n\nHow would you like to proceed?",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.SkipCancel,
+                    transactionId, rowNumber, ex.Message);
+                return result == CustomMessageBoxResult.Skip ? ImportReturnResult.Skip : ImportReturnResult.Cancel;
+            }
+        }
+        private static bool HasLossColumns(IXLWorksheet worksheet)
+        {
+            Dictionary<Enum, string> columnHeaders = new()
+            {
+                { MainMenu_Form.Column.IsLost, "Is Lost" },
+                { MainMenu_Form.Column.LostDate, "Lost Date" },
+                { MainMenu_Form.Column.LostReason, "Lost Reason" },
+                { MainMenu_Form.Column.LostBy, "Lost By" },
+                { MainMenu_Form.Column.LostItems, "Lost Items" }
+            };
+
+            return columnHeaders.Any(kvp => ExcelColumnHelper.HasColumn(worksheet, kvp.Key, columnHeaders));
         }
 
         /// <summary>
@@ -1930,6 +2069,19 @@ namespace Sales_Tracker.Excel
                 excelColumnIndex++;
             }
 
+            // Add loss-related headers
+            int lossColumnsStartIndex = excelColumnIndex;
+            string[] lossHeaders = ["Is Lost", "Lost Date", "Lost Reason", "Lost By", "Lost Items"];
+
+            foreach (string header in lossHeaders)
+            {
+                IXLCell cell = worksheet.Cell(1, excelColumnIndex);
+                cell.Value = header;
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
+                excelColumnIndex++;
+            }
+
             int receiptCellIndex = excelColumnIndex;
 
             // Add header for the receipt column
@@ -1964,7 +2116,7 @@ namespace Sales_Tracker.Excel
                             receiptFileName = Path.GetFileName(receipt);
                         }
 
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex, lossColumnsStartIndex);
 
                         // Add items in transaction if they exist in itemList
                         for (int i = 0; i < itemList.Count - receiptOffset; i++)
@@ -1977,7 +2129,7 @@ namespace Sales_Tracker.Excel
                         break;
 
                     case (string tagString, TagData tagData):
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex, lossColumnsStartIndex);
 
                         if (!string.IsNullOrEmpty(tagString))
                         {
@@ -1987,7 +2139,7 @@ namespace Sales_Tracker.Excel
 
                     case TagData tagData:
                         // Transaction with no items and no receipt
-                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex, lossColumnsStartIndex);
                         break;
                 }
 
@@ -1999,7 +2151,15 @@ namespace Sales_Tracker.Excel
 
             worksheet.Columns().AdjustToContents();
         }
-        private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData, string targetCurrency, string currencyFormatPattern, int returnColumnsStartIndex)
+        private static void AddRowToWorksheet(
+            IXLWorksheet worksheet,
+            DataGridViewRow row,
+            int currentRow,
+            TagData tagData,
+            string targetCurrency,
+            string currencyFormatPattern,
+            int returnColumnsStartIndex,
+            int lossColumnsStartIndex)
         {
             int excelColumnIndex = 1;
 
@@ -2097,8 +2257,8 @@ namespace Sales_Tracker.Excel
                     ? notesCell.Tag.ToString()
                     : notesCellValue;
 
-            // Add return data columns
             AddReturnDataToWorksheet(worksheet, currentRow, returnColumnsStartIndex, tagData, row);
+            AddLossDataToWorksheet(worksheet, currentRow, lossColumnsStartIndex, tagData, row);
         }
         private static void AddReturnDataToWorksheet(IXLWorksheet worksheet, int currentRow, int startColumnIndex, TagData tagData, DataGridViewRow row)
         {
@@ -2169,6 +2329,101 @@ namespace Sales_Tracker.Excel
                     worksheet.Cell(currentRow, columnIndex++).Value = ReadOnlyVariables.EmptyCell;
                 }
             }
+        }
+        private static void AddLossDataToWorksheet(IXLWorksheet worksheet, int currentRow, int startColumnIndex, TagData tagData, DataGridViewRow row)
+        {
+            int columnIndex = startColumnIndex;
+
+            if (tagData != null)
+            {
+                // Is Lost column
+                IXLCell isLostCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.IsLost)
+                {
+                    isLostCell.Value = "Yes";
+                    isLostCell.Style.Font.FontColor = XLColor.DarkRed;
+                    isLostCell.Style.Font.Bold = true;
+                }
+                else if (tagData.IsPartiallyLost)
+                {
+                    isLostCell.Value = "Partial";
+                    isLostCell.Style.Font.FontColor = XLColor.DarkOrange;
+                    isLostCell.Style.Font.Bold = true;
+                }
+                else
+                {
+                    isLostCell.Value = "No";
+                }
+
+                // Lost Date column
+                IXLCell lostDateCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.LostDate.HasValue)
+                {
+                    lostDateCell.Value = tagData.LostDate.Value.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    lostDateCell.Value = ReadOnlyVariables.EmptyCell;
+                }
+
+                // Lost Reason, Lost By, and Lost Items columns
+                worksheet.Cell(currentRow, columnIndex++).Value = string.IsNullOrEmpty(tagData.LostReason) ? ReadOnlyVariables.EmptyCell : tagData.LostReason;
+                worksheet.Cell(currentRow, columnIndex++).Value = string.IsNullOrEmpty(tagData.LostBy) ? ReadOnlyVariables.EmptyCell : tagData.LostBy;
+
+                // Lost Items column (similar to returned items)
+                IXLCell lostItemsCell = worksheet.Cell(currentRow, columnIndex++);
+                if (tagData.IsPartiallyLost && tagData.LostItems != null && tagData.LostItems.Count > 0)
+                {
+                    List<string> lostItemNames = GetLostItemNamesFromTransaction(row, tagData.LostItems);
+                    lostItemsCell.Value = string.Join("; ", lostItemNames);
+                }
+                else if (tagData.IsLost)
+                {
+                    lostItemsCell.Value = "All items";
+                }
+                else
+                {
+                    lostItemsCell.Value = ReadOnlyVariables.EmptyCell;
+                }
+            }
+            else
+            {
+                // No TagData, fill with empty values
+                for (int i = 0; i < 5; i++)
+                {
+                    worksheet.Cell(currentRow, columnIndex++).Value = ReadOnlyVariables.EmptyCell;
+                }
+            }
+        }
+        private static List<string> GetLostItemNamesFromTransaction(DataGridViewRow row, List<int> lostItemIndices)
+        {
+            List<string> itemNames = [];
+
+            if (row.Tag is (List<string> items, TagData _))
+            {
+                foreach (int itemIndex in lostItemIndices)
+                {
+                    if (itemIndex < items.Count && !items[itemIndex].StartsWith(ReadOnlyVariables.Receipt_text))
+                    {
+                        string[] itemDetails = items[itemIndex].Split(',');
+                        if (itemDetails.Length > 0)
+                        {
+                            itemNames.Add(itemDetails[0]);  // Product name
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Single item transaction
+                string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString();
+                if (!string.IsNullOrEmpty(productName))
+                {
+                    itemNames.Add(productName);
+                }
+            }
+
+            return itemNames;
         }
         private static List<string> GetReturnedItemNamesFromTransaction(DataGridViewRow row, List<int> returnedItemIndices)
         {

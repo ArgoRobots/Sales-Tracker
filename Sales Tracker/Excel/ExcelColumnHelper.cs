@@ -33,12 +33,19 @@ namespace Sales_Tracker.Excel
                 MainMenu_Form.Column.ChargedDifference => IsChargedDifferenceMatch(excelHeader),
                 MainMenu_Form.Column.Total => IsTotalMatch(excelHeader),
                 MainMenu_Form.Column.Note => IsNoteMatch(excelHeader),
+
                 MainMenu_Form.Column.IsReturned => IsReturnedMatch(excelHeader),
                 MainMenu_Form.Column.ReturnDate => IsReturnDateMatch(excelHeader),
                 MainMenu_Form.Column.ReturnReason => IsReturnReasonMatch(excelHeader),
                 MainMenu_Form.Column.ReturnedBy => IsReturnedByMatch(excelHeader),
                 MainMenu_Form.Column.ReturnedItems => IsReturnedItemsMatch(excelHeader),
                 MainMenu_Form.Column.Receipt => IsReceiptMatch(excelHeader),
+
+                MainMenu_Form.Column.IsLost => IsLostMatch(excelHeader),
+                MainMenu_Form.Column.LostDate => IsLostDateMatch(excelHeader),
+                MainMenu_Form.Column.LostReason => IsLostReasonMatch(excelHeader),
+                MainMenu_Form.Column.LostBy => IsLostByMatch(excelHeader),
+                MainMenu_Form.Column.LostItems => IsLostItemsMatch(excelHeader),
 
                 Accountants_Form.Column.AccountantName => IsAccountantNameMatch(excelHeader),
 
@@ -192,6 +199,26 @@ namespace Sales_Tracker.Excel
                 columnType.ToString());
 
             return false;
+        }
+        private static bool IsLostMatch(string excel)
+        {
+            return excel.Contains("lost") && (excel.Contains("is") || excel.Contains("status"));
+        }
+        private static bool IsLostDateMatch(string excel)
+        {
+            return excel.Contains("lost") && excel.Contains("date");
+        }
+        private static bool IsLostReasonMatch(string excel)
+        {
+            return excel.Contains("lost") && excel.Contains("reason");
+        }
+        private static bool IsLostByMatch(string excel)
+        {
+            return excel.Contains("lost") && (excel.Contains("by") || excel.Contains("who"));
+        }
+        private static bool IsLostItemsMatch(string excel)
+        {
+            return excel.Contains("lost") && excel.Contains("item");
         }
 
         // Main methods

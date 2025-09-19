@@ -172,6 +172,31 @@ namespace Sales_Tracker.Charts
                 case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
                     LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, true, directory);
                     break;
+
+                // Add Lost Products export cases
+                case MainMenu_Form.ChartDataType.LossesOverTime:
+                    LoadChart.LoadLossesOverTimeChart(MainMenu_Form.Instance.LossesOverTime_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossReasons:
+                    LoadChart.LoadLossReasonsChart(MainMenu_Form.Instance.LossReasons_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                    LoadChart.LoadLossFinancialImpactChart(MainMenu_Form.Instance.LossFinancialImpact_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossesByCategory:
+                    LoadChart.LoadLossesByCategoryChart(MainMenu_Form.Instance.LossesByCategory_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossesByProduct:
+                    LoadChart.LoadLossesByProductChart(MainMenu_Form.Instance.LossesByProduct_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                    LoadChart.LoadPurchaseVsSaleLossesChart(MainMenu_Form.Instance.PurchaseVsSaleLosses_Chart, true, directory);
+                    break;
             }
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
@@ -489,6 +514,97 @@ namespace Sales_Tracker.Charts
                             string chartTitle = TranslatedChartTitles.PurchaseVsSaleReturns;
                             string first = LanguageManager.TranslateString("Transaction Type");
                             string second = LanguageManager.TranslateString("# of returns");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    // Add Lost Products Google Sheets export cases
+                    case MainMenu_Form.ChartDataType.LossesOverTime:
+                        {
+                            SalesExpensesChartData chartData = LoadChart.LoadLossesOverTimeChart(MainMenu_Form.Instance.LossesOverTime_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase losses")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale losses")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string chartTitle = TranslatedChartTitles.LossesOverTime;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportMultiDataSetCountChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossReasons:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossReasonsChart(MainMenu_Form.Instance.LossReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossReasons;
+                            string first = LanguageManager.TranslateString("Reasons");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                        {
+                            SalesExpensesChartData chartData = LoadChart.LoadLossFinancialImpactChart(MainMenu_Form.Instance.LossFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase loss value")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale loss value")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string chartTitle = TranslatedChartTitles.LossFinancialImpact;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossesByCategory:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossesByCategoryChart(MainMenu_Form.Instance.LossesByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossesByCategory;
+                            string first = LanguageManager.TranslateString("Categories");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossesByProduct:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossesByProductChart(MainMenu_Form.Instance.LossesByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossesByProduct;
+                            string first = LanguageManager.TranslateString("Products");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                        {
+                            ChartCountData chartData = LoadChart.LoadPurchaseVsSaleLossesChart(MainMenu_Form.Instance.PurchaseVsSaleLosses_Chart, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.PurchaseVsSaleLosses;
+                            string first = LanguageManager.TranslateString("Transaction Type");
+                            string second = LanguageManager.TranslateString("# of losses");
 
                             await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }

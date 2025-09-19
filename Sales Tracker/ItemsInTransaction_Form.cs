@@ -183,7 +183,7 @@ namespace Sales_Tracker
         }
         public void RefreshItemReturnStatus()
         {
-            DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
+            DataGridViewManager.UpdateItemRowAppearance(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
         }
     }
 }
