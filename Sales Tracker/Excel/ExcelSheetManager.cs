@@ -331,23 +331,6 @@ namespace Sales_Tracker.Excel
 
             return true;
         }
-        private static void EnsureCompanyExists(string companyName, ImportSession session)
-        {
-            if (string.IsNullOrWhiteSpace(companyName))
-            {
-                return;
-            }
-
-            // Check if company already exists (case-insensitive)
-            bool companyExists = MainMenu_Form.Instance.CompanyList.Any(c =>
-                c.Equals(companyName, StringComparison.OrdinalIgnoreCase));
-
-            if (!companyExists)
-            {
-                MainMenu_Form.Instance.CompanyList.Add(companyName);
-                session.AddedCompanies.Add(companyName);  // Track for rollback
-            }
-        }
         private static Category FindOrCreateCategory(
             List<Category> list,
             string categoryName,
@@ -1088,7 +1071,10 @@ namespace Sales_Tracker.Excel
             string transactionId = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.ID);
             string productName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Product);
             string categoryName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Category);
+            string accountantName = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.Accountant);
             bool isPurchase = worksheetName.Equals("Purchases", StringComparison.OrdinalIgnoreCase);
+
+            EnsureAccountantExists(accountantName, session);
 
             // Validate product exists
             InvalidValueAction productValidationResult = ValidateProductExists(
@@ -1251,7 +1237,7 @@ namespace Sales_Tracker.Excel
             }
 
             // Process return data if return columns exist
-            ImportReturnResult returnResult = ProcessReturnDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName);
+            ImportReturnResult returnResult = ProcessReturnDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName, session);
             switch (returnResult)
             {
                 case ImportReturnResult.Cancel:
@@ -1263,7 +1249,7 @@ namespace Sales_Tracker.Excel
             }
 
             // Process loss data if loss columns exist
-            ImportReturnResult lossResult = ProcessLossDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName);
+            ImportReturnResult lossResult = ProcessLossDataFromExcel(row, tagData, transactionId, rowNumber, worksheetName, session);
             switch (lossResult)
             {
                 case ImportReturnResult.Cancel:
@@ -1293,7 +1279,7 @@ namespace Sales_Tracker.Excel
         }
 
         // Process return data
-        private static ImportReturnResult ProcessReturnDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName)
+        private static ImportReturnResult ProcessReturnDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName, ImportSession session)
         {
             try
             {
@@ -1391,6 +1377,7 @@ namespace Sales_Tracker.Excel
                     if (!string.IsNullOrWhiteSpace(returnedBy) && returnedBy != ReadOnlyVariables.EmptyCell)
                     {
                         tagData.ReturnedBy = returnedBy;
+                        EnsureAccountantExists(returnedBy, session);
                     }
                     else
                     {
@@ -1520,7 +1507,7 @@ namespace Sales_Tracker.Excel
         }
 
         // Process loss data
-        private static ImportReturnResult ProcessLossDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName)
+        private static ImportReturnResult ProcessLossDataFromExcel(IXLRow row, TagData tagData, string transactionId, int rowNumber, string worksheetName, ImportSession session)
         {
             try
             {
@@ -1603,18 +1590,15 @@ namespace Sales_Tracker.Excel
                         : "Imported loss (no reason specified)";
 
                     string lostBy = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostBy);
-                    tagData.LostBy = !string.IsNullOrWhiteSpace(lostBy) && lostBy != ReadOnlyVariables.EmptyCell
-                        ? lostBy
-                        : "Import process";
-
-                    // Handle partial losses
-                    if (isPartiallyLost)
+                    if (!string.IsNullOrWhiteSpace(lostBy) && lostBy != ReadOnlyVariables.EmptyCell)
                     {
-                        string lostItemsValue = ExcelColumnHelper.GetCellValue(row, MainMenu_Form.Column.LostItems);
-                        if (!string.IsNullOrWhiteSpace(lostItemsValue) && lostItemsValue != ReadOnlyVariables.EmptyCell)
-                        {
-                            tagData.LostItemsText = lostItemsValue;
-                        }
+                        tagData.LostBy = lostBy;
+                        // Ensure the accountant exists in the system
+                        EnsureAccountantExists(lostBy, session);
+                    }
+                    else
+                    {
+                        tagData.LostBy = "Import process";
                     }
                 }
 
@@ -1646,6 +1630,7 @@ namespace Sales_Tracker.Excel
             return columnHeaders.Any(kvp => ExcelColumnHelper.HasColumn(worksheet, kvp.Key, columnHeaders));
         }
 
+        // Import spreadsheet helper methods
         /// <summary>
         /// Gets the column type from a header text.
         /// </summary>
@@ -1981,6 +1966,48 @@ namespace Sales_Tracker.Excel
             else
             {
                 return column.HeaderText;
+            }
+        }
+
+        /// <summary>
+        /// Ensures a company exists in the system, creating it silently if missing.
+        /// </summary>
+        private static void EnsureCompanyExists(string companyName, ImportSession session)
+        {
+            if (string.IsNullOrWhiteSpace(companyName))
+            {
+                return;
+            }
+
+            // Check if company already exists (case-insensitive)
+            bool companyExists = MainMenu_Form.Instance.CompanyList.Any(c =>
+                c.Equals(companyName, StringComparison.OrdinalIgnoreCase));
+
+            if (!companyExists)
+            {
+                MainMenu_Form.Instance.CompanyList.Add(companyName);
+                session.AddedCompanies.Add(companyName);  // Track for rollback
+            }
+        }
+
+        /// <summary>
+        /// Ensures an accountant exists in the system, creating it silently if missing.
+        /// </summary>
+        private static void EnsureAccountantExists(string accountantName, ImportSession session)
+        {
+            if (string.IsNullOrWhiteSpace(accountantName))
+            {
+                return;
+            }
+
+            // Check if accountant already exists (case-insensitive)
+            bool accountantExists = MainMenu_Form.Instance.AccountantList.Any(a =>
+                a.Equals(accountantName, StringComparison.OrdinalIgnoreCase));
+
+            if (!accountantExists)
+            {
+                MainMenu_Form.Instance.AccountantList.Add(accountantName);
+                session.AddedAccountants.Add(accountantName);  // Track for rollback
             }
         }
 
