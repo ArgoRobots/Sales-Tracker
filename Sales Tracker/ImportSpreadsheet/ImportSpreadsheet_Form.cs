@@ -447,7 +447,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (summary.WasCancelled)
                 {
                     // Rollback all changes
-                    ExcelSheetManager.RollbackImportSession(importSession);
+                    ImportExcelSheetManager.RollbackImportSession(importSession);
                     LoadingPanel.HideLoadingScreen(this);
                     await RefreshPanelsAsync();
                     ShowImportCancelledMessage();
@@ -455,7 +455,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 else if (summary.HasAnyImports)
                 {
                     // Commit all changes
-                    ExcelSheetManager.CommitImportSession(importSession);
+                    ImportExcelSheetManager.CommitImportSession(importSession);
                     importSuccessful = true;
 
                     MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
@@ -472,7 +472,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 else
                 {
                     // Nothing was imported, but no cancellation - still rollback to be safe
-                    ExcelSheetManager.RollbackImportSession(importSession);
+                    ImportExcelSheetManager.RollbackImportSession(importSession);
                     LoadingPanel.HideLoadingScreen(this);
                     await RefreshPanelsAsync();
                     ShowNoImportMessage(summary);
@@ -481,7 +481,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             catch (Exception ex)
             {
                 // On any exception, rollback changes
-                ExcelSheetManager.RollbackImportSession(importSession);
+                ImportExcelSheetManager.RollbackImportSession(importSession);
                 LoadingPanel.HideLoadingScreen(this);
 
                 CustomMessageBox.ShowWithFormat("Error", "An error occurred while importing the spreadsheet: {0}. All changes have been rolled back.",
@@ -642,23 +642,23 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        aggregatedSummary.AccountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, importSession);
+                        aggregatedSummary.AccountantsImported = ImportExcelSheetManager.ImportAccountantsData(worksheet, importSession);
                         break;
 
                     case _companiesName:
-                        aggregatedSummary.CompaniesImported = ExcelSheetManager.ImportCompaniesData(worksheet, importSession);
+                        aggregatedSummary.CompaniesImported = ImportExcelSheetManager.ImportCompaniesData(worksheet, importSession);
                         break;
 
                     case _purchaseProductsName:
-                        aggregatedSummary.PurchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, importSession);
+                        aggregatedSummary.PurchaseProductsImported = ImportExcelSheetManager.ImportProductsData(worksheet, true, importSession);
                         break;
 
                     case _saleProductsName:
-                        aggregatedSummary.SaleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, importSession);
+                        aggregatedSummary.SaleProductsImported = ImportExcelSheetManager.ImportProductsData(worksheet, false, importSession);
                         break;
 
                     case _purchasesName:
-                        ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
+                        ImportSummary purchaseSummary = ImportExcelSheetManager.ImportPurchaseData(
                             worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
@@ -675,13 +675,13 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, true, importSession);
+                            int importedReceiptCount = ImportExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, true, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
 
                     case _salesName:
-                        ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
+                        ImportSummary salesSummary = ImportExcelSheetManager.ImportSalesData(
                             worksheet, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
@@ -698,7 +698,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, false, importSession);
+                            int importedReceiptCount = ImportExcelSheetManager.ImportReceiptsData(worksheet, _receiptsFolderPath, false, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;

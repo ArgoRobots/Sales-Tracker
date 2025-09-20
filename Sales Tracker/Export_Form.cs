@@ -301,7 +301,7 @@ namespace Sales_Tracker
 
                     // Create xlsx file inside the export folder
                     string xlsxPath = Path.Combine(exportFolder, fileName + ArgoFiles.XlsxFileExtension);
-                    ExcelSheetManager.ExportSpreadsheet(xlsxPath, currency);
+                    ExportExcelSheetManager.ExportSpreadsheet(xlsxPath, currency);
 
                     TrackExport(stopwatch, xlsxPath, ExportType.XLSX);
 
