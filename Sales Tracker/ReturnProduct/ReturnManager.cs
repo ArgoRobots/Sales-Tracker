@@ -3,6 +3,9 @@ using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReturnProduct
 {
+    /// <summary>
+    /// Manages product return operations for transactions including processing, undoing, and tracking return status.
+    /// </summary>
     public static class ReturnManager
     {
         /// <summary>

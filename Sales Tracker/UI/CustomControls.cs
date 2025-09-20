@@ -38,7 +38,7 @@ namespace Sales_Tracker.UI
 
             // Other controls
             RightClickRowMenu.ConstructRightClickRowMenu();
-            RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
+            RightClickChartMenu.ConstructRightClickChartMenu();
             CompanyLogo.ConstructCompanyLogoRightClickMenu();
             ColumnVisibilityPanel.ConstructPanel();
 
@@ -49,7 +49,7 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(ControlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickRowMenu.RightClickDataGridView_Panel);
-            LanguageManager.UpdateLanguageForControl(RightClickGunaChartMenu.RightClickGunaChart_Panel);
+            LanguageManager.UpdateLanguageForControl(RightClickChartMenu.RightClickChart_Panel);
         }
 
         // Properties

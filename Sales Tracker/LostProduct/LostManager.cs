@@ -3,6 +3,9 @@ using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.LostProduct
 {
+    /// <summary>
+    /// Manages product loss operations for transactions including processing, undoing, and tracking loss status.
+    /// </summary>
     public static class LostManager
     {
         /// <summary>
