@@ -7,6 +7,6 @@
     {
         public decimal Value { get; set; }
         public bool IsValid { get; set; }
-        public ExcelSheetManager.InvalidValueAction Action { get; set; }
+        public ImportExcelSheetManager.InvalidValueAction Action { get; set; }
     }
 }
