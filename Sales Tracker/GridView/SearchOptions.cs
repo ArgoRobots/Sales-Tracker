@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.GridView
 {
+    /// <summary>
+    /// Configuration options for DataGridView search operations.
+    /// </summary>
     public sealed class SearchOptions
     {
         // Properties

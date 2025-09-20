@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.GridView
 {
+    /// <summary>
+    /// Represents a search term with support for exact phrases, exclusions, and required matching.
+    /// </summary>
     public sealed class SearchTerm
     {
         private readonly SearchTermType _type;

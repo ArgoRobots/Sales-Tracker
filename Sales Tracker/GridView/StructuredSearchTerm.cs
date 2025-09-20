@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.GridView
 {
+    /// <summary>
+    /// Represents a structured search term with field-specific targeting and comparison operators.
+    /// </summary>
     public class StructuredSearchTerm
     {
         public string Field { get; }
