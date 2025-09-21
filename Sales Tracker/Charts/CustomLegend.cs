@@ -18,6 +18,7 @@ namespace Sales_Tracker.Charts
     public class CustomLegend : SKDefaultLegend
     {
         private StackLayout _existingLayout;
+        private StackLayout _existingBottomLayout;
 
         protected override Layout<SkiaSharpDrawingContext> GetLayout(Chart chart)
         {
@@ -30,10 +31,10 @@ namespace Sales_Tracker.Charts
             // Determine legend position
             LegendPosition legendPosition = chart.LegendPosition;
 
-            // For bottom legends, use a wrapping layout
+            // For bottom legends, use a wrapping layout WITH CACHING
             if (legendPosition == LegendPosition.Bottom)
             {
-                return CreateWrappingLayout(chart, chartWidth, chartHeight, horizontalPadding, verticalPadding);
+                return CreateCachedWrappingLayout(chart, chartWidth, chartHeight, horizontalPadding, verticalPadding);
             }
 
             // For other positions, use vertical stack layout
@@ -55,16 +56,19 @@ namespace Sales_Tracker.Charts
 
             return _existingLayout;
         }
-        private static Layout<SkiaSharpDrawingContext> CreateWrappingLayout(Chart chart, float chartWidth, float chartHeight, float horizontalPadding, float verticalPadding)
+        private Layout<SkiaSharpDrawingContext> CreateCachedWrappingLayout(Chart chart, float chartWidth, float chartHeight, float horizontalPadding, float verticalPadding)
         {
-            // Create main vertical container for rows
-            StackLayout mainLayout = new()
+            // Create or reuse the bottom layout
+            _existingBottomLayout ??= new StackLayout
             {
                 Orientation = ContainerOrientation.Vertical,
                 HorizontalAlignment = Align.Middle,
-                VerticalAlignment = Align.Start,
-                Padding = new Padding(horizontalPadding, verticalPadding + 20, horizontalPadding, verticalPadding)
+                VerticalAlignment = Align.Start
             };
+
+            // Clear existing children to prevent duplication
+            _existingBottomLayout.Children.Clear();
+            _existingBottomLayout.Padding = new Padding(horizontalPadding, verticalPadding + 20, horizontalPadding, verticalPadding);
 
             List<CustomLegendItem> legendItems = chart.Series
                 .Where(x => x.IsVisibleAtLegend)
@@ -73,7 +77,7 @@ namespace Sales_Tracker.Charts
 
             if (legendItems.Count == 0)
             {
-                return mainLayout;
+                return _existingBottomLayout;
             }
 
             // Calculate available width for legend (leave some margin)
@@ -90,7 +94,7 @@ namespace Sales_Tracker.Charts
                 if (currentRow.Children.Count > 0 && currentRowWidth + estimatedItemWidth > availableWidth)
                 {
                     // Start new row
-                    mainLayout.Children.Add(currentRow);
+                    _existingBottomLayout.Children.Add(currentRow);
                     currentRow = CreateNewRow();
                     currentRowWidth = 0;
                 }
@@ -102,10 +106,10 @@ namespace Sales_Tracker.Charts
             // Add the last row
             if (currentRow.Children.Count > 0)
             {
-                mainLayout.Children.Add(currentRow);
+                _existingBottomLayout.Children.Add(currentRow);
             }
 
-            return mainLayout;
+            return _existingBottomLayout;
         }
         private static StackLayout CreateNewRow()
         {
@@ -133,6 +137,10 @@ namespace Sales_Tracker.Charts
         {
             _existingLayout?.Children.Clear();
             _existingLayout = null;
+
+            // IMPORTANT: Also clear the bottom layout cache
+            _existingBottomLayout?.Children.Clear();
+            _existingBottomLayout = null;
         }
 
         /// <summary>

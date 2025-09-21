@@ -121,7 +121,7 @@ namespace Sales_Tracker.Classes
             }
             else
             {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows; // Default fallback
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows;  // Default fallback
             }
 
             CustomColors.SetColors();
