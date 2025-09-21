@@ -13,7 +13,7 @@ namespace Sales_Tracker
         private Image _originalImage;
         private float _zoomFactor = 1.0f;
         private float _effectiveMaxZoom = 5.0f;
-        private const float _zoomIncrement = 0.25f;
+        private const float _zoomIncrement = 0.1f;
         private const float _minZoom = 0.1f;
         private const float _maxZoom = 5.0f;
 
