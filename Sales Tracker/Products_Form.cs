@@ -458,7 +458,6 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
             _purchase_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _purchase_DataGridView.RowsRemoved += DataGridView_RowsChanged;
-            _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _purchase_DataGridView.Location = new Point((ClientSize.Width - _purchase_DataGridView.Width) / 2, _topForDataGridView);
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
@@ -466,7 +465,6 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
             _sale_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _sale_DataGridView.RowsRemoved += DataGridView_RowsChanged;
-            _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _sale_DataGridView.Location = new Point((ClientSize.Width - _sale_DataGridView.Width) / 2, _topForDataGridView);
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             ThemeManager.CustomizeScrollBar(_sale_DataGridView);

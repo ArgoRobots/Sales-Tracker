@@ -185,15 +185,45 @@ namespace Sales_Tracker.Classes
             if (isAnyReceiptExported)
             {
                 TrackReceiptExport(stopwatch, exportedFiles);
-
-                // Show success message
-                string message = exportedCount == 1 ? "Receipt exported successfully" : "Receipts exported successfully";
-                if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
-
-                CustomMessageBox.Show(
-                    exportedCount == 1 ? "Receipt exported" : "Receipts exported",
-                    message,
-                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                ShowSuccessMessage(exportedCount, doAllRowsHaveReceipt);
+            }
+        }
+        private static void ShowSuccessMessage(int exportedCount, bool doAllRowsHaveReceipt)
+        {
+            // Show success message
+            if (exportedCount == 1)
+            {
+                if (doAllRowsHaveReceipt)
+                {
+                    CustomMessageBox.Show(
+                        "Receipt exported",
+                        "Receipt exported successfully",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.Show(
+                        "Receipt exported",
+                        "Receipt exported successfully. Note: Not all the selected rows contain a receipt.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+            }
+            else
+            {
+                if (doAllRowsHaveReceipt)
+                {
+                    CustomMessageBox.Show(
+                        "Receipts exported",
+                        "Receipts exported successfully",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.Show(
+                        "Receipts exported",
+                        "Receipts exported successfully. Note: Not all the selected rows contain a receipt.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
             }
         }
         private static void TrackReceiptExport(Stopwatch stopwatch, List<string> exportedFiles)
@@ -252,6 +282,11 @@ namespace Sales_Tracker.Classes
             {
                 // Handle single item case
                 return ProcessReceiptTextFromRowTag(tagString);
+            }
+            else if (row.Tag is string tagString1)  // This handles Receipt_Form rows
+            {
+                // Handle single string
+                return ProcessReceiptTextFromRowTag(tagString1);
             }
 
             return null;

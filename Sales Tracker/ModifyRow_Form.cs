@@ -127,18 +127,59 @@ namespace Sales_Tracker
             SaveInMainMenuRow();
             UpdateChargedDifferenceInMainMenuRow();
 
-            // If the user selected a new receipt
+            // Handle receipt changes
             if (_receiptFilePath != null)
             {
-                if (_removedReceipt)
+                // Case 1: Adding a receipt to a row that didn't have one
+                if (_addedReceipt && !_removedReceipt)
+                {
+                    (string newPath, _) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                }
+
+                // Case 2: Removing an existing receipt
+                else if (_removedReceipt && !_addedReceipt)
                 {
                     ReceiptManager.RemoveReceiptFromFile(_selectedRow);
                 }
-                if (_addedReceipt)
+
+                // Case 3: Replacing an existing receipt with a new one
+                else if (_removedReceipt && _addedReceipt)
                 {
-                    (string newPath, bool _) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                    // First save the new receipt file
+                    (string newPath, _) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+
+                    // For receipt replacement, we need to be more careful to maintain tag structure
+                    if (_selectedRow.Tag is (List<string> itemList, TagData))
+                    {
+                        // Multi-item transaction: replace the last item if it's a receipt
+                        if (itemList.Count > 0 && itemList[^1].StartsWith(ReadOnlyVariables.Receipt_text))
+                        {
+                            itemList[^1] = ReadOnlyVariables.Receipt_text + newPath;
+                        }
+                        else
+                        {
+                            // Add receipt if none existed
+                            itemList.Add(ReadOnlyVariables.Receipt_text + newPath);
+                        }
+                    }
+                    else if (_selectedRow.Tag is (string, TagData tagData1))
+                    {
+                        // Single item with receipt: replace the tag string with receipt
+                        _selectedRow.Tag = (ReadOnlyVariables.Receipt_text + newPath, tagData1);
+                    }
+                    else
+                    {
+                        // Fallback: use the standard add method
+                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                    }
                 }
+            }
+
+            // Case 4: Receipt was removed and no new one added
+            else if (_removedReceipt)
+            {
+                ReceiptManager.RemoveReceiptFromFile(_selectedRow);
             }
 
             DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);

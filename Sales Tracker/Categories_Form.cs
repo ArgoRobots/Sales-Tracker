@@ -234,13 +234,11 @@ namespace Sales_Tracker
         {
             Purchase_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
-            Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Purchase_DataGridView.Location = new Point((ClientSize.Width - Purchase_DataGridView.Width) / 2, _topForDataGridView);
             Purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             Sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
-            Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Sale_DataGridView.Location = new Point((ClientSize.Width - Sale_DataGridView.Width) / 2, _topForDataGridView);
             Sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
             ThemeManager.CustomizeScrollBar(Sale_DataGridView);

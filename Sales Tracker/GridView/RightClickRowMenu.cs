@@ -13,6 +13,7 @@ namespace Sales_Tracker.GridView
         // Getters
         public static Guna2Button RightClickDataGridView_ModifyBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_MoveBtn { get; private set; }
+        public static Guna2Button RightClickDataGridView_ViewReceiptBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ExportReceiptBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ShowItemsBtn { get; private set; }
         public static Guna2Button RightClickDataGridView_ViewReturnDetailsBtn { get; private set; }
@@ -28,7 +29,7 @@ namespace Sales_Tracker.GridView
         public static void ConstructRightClickRowMenu()
         {
             RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth, 9 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth, 10 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickDataGridView_Panel"
             );
 
@@ -39,6 +40,9 @@ namespace Sales_Tracker.GridView
 
             RightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_MoveBtn.Click += MoveRows;
+
+            RightClickDataGridView_ViewReceiptBtn = CustomControls.ConstructBtnForMenu("View receipt", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_ViewReceiptBtn.Click += ViewReceipt;
 
             RightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
@@ -94,6 +98,64 @@ namespace Sales_Tracker.GridView
             }
 
             RestoreSelectionAndScroll(grid, firstSelectedIndex, scrollPosition);
+        }
+        private static void ViewReceipt(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow = grid.SelectedRows[0];
+            string receiptPath = ReceiptManager.GetReceiptPathFromRow(selectedRow);
+
+            if (string.IsNullOrEmpty(receiptPath))
+            {
+                CustomMessageBox.Show("No Receipt", "This transaction does not have a receipt attached.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            if (!File.Exists(receiptPath))
+            {
+                CustomMessageBox.Show("Receipt Not Found", "The receipt file could not be found. It may have been moved or deleted.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            if (!ReceiptViewer_Form.IsFormatSupported(receiptPath))
+            {
+                string supportedFormats = ReceiptViewer_Form.GetSupportedFormatsDescription();
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Unsupported Format",
+                     "The receipt format is not supported for viewing.\n\nSupported formats:\n{0}\n\nWould you like to open it with the default system application instead?",
+                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo, supportedFormats);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = receiptPath,
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        CustomMessageBox.ShowWithFormat("Error", "Could not open the receipt: {0}",
+                            CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok, ex.Message);
+                    }
+                }
+                return;
+            }
+
+            try
+            {
+                Tools.OpenForm(new ReceiptViewer_Form(receiptPath));
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.ShowWithFormat("Error", "Could not open the receipt viewer: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok, ex.Message);
+            }
         }
         private static void MoveCategoryRows(List<DataGridViewRow> rowsToMove, bool fromPurchaseToSale)
         {
