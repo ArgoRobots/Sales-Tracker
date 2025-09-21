@@ -52,7 +52,7 @@ namespace Sales_Tracker.Classes
 
                 return credential;
             }
-            catch (Exception ex)
+            catch
             {
                 CustomMessageBox.Show(
                     "Credentials Error",
