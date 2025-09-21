@@ -12,8 +12,7 @@ namespace Sales_Tracker.Theme
 {
     /// <summary>
     /// Manages dark and light mode themes, and custom colors.
-    /// This class provides methods for setting theme attributes on various UI controls and forms, including custom scrollbars, button colors, and DataGridView header styling.
-    /// The class also supports Windows system theme detection and immersive dark mode integration on supported systems.
+    /// This class provides methods for setting theme attributes on various UI controls and forms.
     /// </summary>
     internal static partial class ThemeManager
     {

@@ -14,6 +14,7 @@ namespace Sales_Tracker.Excel
         // Constants
         private const string _numberFormatPattern = "0";
 
+        // Helper method
         /// <summary>
         /// Gets the header text from a DataGridView column, handling both regular and custom image header cells.
         /// </summary>

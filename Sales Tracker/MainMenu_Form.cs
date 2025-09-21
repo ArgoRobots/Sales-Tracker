@@ -3022,7 +3022,7 @@ namespace Sales_Tracker
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 RightClickRowMenu.RightClickDataGridView_Panel,
-                RightClickGunaChartMenu.RightClickGunaChart_Panel
+                RightClickChartMenu.RightClickChart_Panel
             }.Where(panel => panel != null).ToList();
         }
         public void UpdateMainMenuFormText()
@@ -3032,7 +3032,7 @@ namespace Sales_Tracker
         public void ClosePanels()
         {
             RightClickRowMenu.RightClickDataGridView_Panel.Parent?.Controls.Remove(RightClickRowMenu.RightClickDataGridView_Panel);
-            Controls.Remove(RightClickGunaChartMenu.RightClickGunaChart_Panel);
+            Controls.Remove(RightClickChartMenu.RightClickChart_Panel);
             Controls.Remove(CompanyLogo.CompanyLogoRightClick_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }

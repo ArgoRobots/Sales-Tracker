@@ -38,7 +38,7 @@ namespace Sales_Tracker.UI
 
             // Other controls
             RightClickRowMenu.ConstructRightClickRowMenu();
-            RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
+            RightClickChartMenu.ConstructRightClickChartMenu();
             CompanyLogo.ConstructCompanyLogoRightClickMenu();
             ColumnVisibilityPanel.ConstructPanel();
 
@@ -49,11 +49,11 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(ControlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickRowMenu.RightClickDataGridView_Panel);
-            LanguageManager.UpdateLanguageForControl(RightClickGunaChartMenu.RightClickGunaChart_Panel);
+            LanguageManager.UpdateLanguageForControl(RightClickChartMenu.RightClickChart_Panel);
         }
 
         // Properties
-        private static readonly byte spaceForSeparator = 11, offsetForKeyboardShortcutOrArrow = 15;
+        private static readonly byte _spaceForSeparator = 11, _offsetForKeyboardShortcutOrArrow = 15;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -217,7 +217,7 @@ namespace Sales_Tracker.UI
             // Position it after adding so AutoSize is calculated
             // Scale the offset for the larger button
             float scale = DpiHelper.GetRelativeDpiScale();
-            int scaledOffset = (int)(offsetForKeyboardShortcutOrArrow * scale);
+            int scaledOffset = (int)(_offsetForKeyboardShortcutOrArrow * scale);
 
             KeyShortcut.Left = control.Width - KeyShortcut.Width - scaledOffset;
             KeyShortcut.Top = (control.Height - KeyShortcut.Height) / 2;  // Center vertically
@@ -231,7 +231,7 @@ namespace Sales_Tracker.UI
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledButtonHeight = (int)(PanelButtonHeight * scale);
-            int scaledSeparatorSpace = (int)(spaceForSeparator * scale);
+            int scaledSeparatorSpace = (int)(_spaceForSeparator * scale);
             int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
 
             // Calculate height using scaled values: 9 buttons + 2 separators + panel padding
@@ -261,7 +261,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Open recent company", PanelBtnWidth, false, flowPanel);
             float arrowScale = DpiHelper.GetRelativeDpiScale();
             menuBtn.ImageSize = new Size((int)(11 * arrowScale), (int)(11 * arrowScale));
-            int scaledOffset = (int)(offsetForKeyboardShortcutOrArrow * arrowScale);
+            int scaledOffset = (int)(_offsetForKeyboardShortcutOrArrow * arrowScale);
             menuBtn.ImageOffset = new Point((menuBtn.Width - menuBtn.ImageSize.Width - scaledOffset) - (menuBtn.Width / 2), 0);
             menuBtn.Tag = RecentlyOpenedMenu;
             ThemeManager.SetRightArrowImageBasedOnTheme(menuBtn);
@@ -426,7 +426,7 @@ namespace Sales_Tracker.UI
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledButtonHeight = (int)(PanelButtonHeight * scale);
-            int scaledSeparatorSpace = (int)(spaceForSeparator * scale);
+            int scaledSeparatorSpace = (int)(_spaceForSeparator * scale);
             int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
 
             // Calculate height using scaled values: 8 buttons + 1 separator + panel padding
@@ -541,7 +541,7 @@ namespace Sales_Tracker.UI
             int btnHeight = (int)(50 * scale);
 
             // Calculate proper height using scaled values
-            int calculatedHeight = btnHeight * 6 + (int)(15 * scale) + (int)(spaceForSeparator * scale) * 5;
+            int calculatedHeight = btnHeight * 6 + (int)(15 * scale) + (int)(_spaceForSeparator * scale) * 5;
 
             ControlDropDown_Panel = ConstructPanelForMenu(new Size((int)(300 * scale), calculatedHeight), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
