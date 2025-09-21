@@ -97,7 +97,7 @@ namespace Sales_Tracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool PurchaseReceipts {
             get {
                 return ((bool)(this["PurchaseReceipts"]));
@@ -121,7 +121,7 @@ namespace Sales_Tracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool SaleReceipts {
             get {
                 return ((bool)(this["SaleReceipts"]));
