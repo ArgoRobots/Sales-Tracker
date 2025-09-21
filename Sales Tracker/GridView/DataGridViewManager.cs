@@ -51,7 +51,11 @@ namespace Sales_Tracker.GridView
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dataGridView.ScrollBars = ScrollBars.Vertical;
 
-            dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            if (parent == MainMenu_Form.Instance)
+            {
+                dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            }
+
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.MouseDown += DataGridView_MouseDown;
@@ -676,110 +680,120 @@ namespace Sales_Tracker.GridView
                     flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ShowItemsBtn, currentIndex++);
                 }
 
-                // Add ExportReceiptBtn
+                // Add ViewReceiptBtn and ExportReceiptBtn
                 if (AnySelectedRowHasReceipt(grid))
                 {
+                    if (isSingleRowSelected)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+                    }
+
                     RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
                     flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
                 }
             }
 
-            if (isPurchasesOrSales || isTransactionView)
+            // Add ViewReceiptBtn for Receipts view
+            if (selectedOption == MainMenu_Form.SelectedOption.Receipts && isSingleRowSelected)
             {
-                // Add view details and action buttons based on current status
-                if (isSingleRowSelected)
+                RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+            }
+
+            // Add view details and action buttons based on current status
+            if (isSingleRowSelected && (isPurchasesOrSales || isTransactionView))
+            {
+                DataGridViewRow selectedRow;
+
+                // Check if we're in the items view of a transaction
+                if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                    selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
                 {
-                    DataGridViewRow selectedRow;
+                    // Use the main transaction row for status checks
+                    selectedRow = SelectedRowInMainMenu;
+                }
+                else
+                {
+                    // Normal case - we're in the main purchases/sales view
+                    selectedRow = grid.SelectedRows[0];
+                }
 
-                    // Check if we're in the items view of a transaction
-                    if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                        selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
-                    {
-                        // Use the main transaction row for status checks
-                        selectedRow = SelectedRowInMainMenu;
-                    }
-                    else
-                    {
-                        // Normal case - we're in the main purchases/sales view
-                        selectedRow = grid.SelectedRows[0];
-                    }
+                // Check return status
+                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+                bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
 
-                    // Check return status
-                    bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
-                    bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
-                    bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
+                // Check loss status
+                bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
+                bool hasAnyLoss = isFullyLost || isPartiallyLost;
 
-                    // Check loss status
-                    bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
-                    bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
-                    bool hasAnyLoss = isFullyLost || isPartiallyLost;
+                // View Details buttons - show when there's information to view
+                if (hasAnyReturns)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
+                }
 
-                    // View Details buttons - show when there's information to view
-                    if (hasAnyReturns)
-                    {
-                        RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
-                    }
+                if (hasAnyLoss)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
+                }
 
-                    if (hasAnyLoss)
-                    {
-                        RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
-                    }
+                // Return action buttons
+                if (isFullyReturned)
+                {
+                    // Fully returned - only show undo button
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                }
+                else if (isPartiallyReturned)
+                {
+                    // Partially returned - show both buttons
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
 
-                    // Return action buttons
-                    if (isFullyReturned)
-                    {
-                        // Fully returned - only show undo button
-                        RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
-                    }
-                    else if (isPartiallyReturned)
-                    {
-                        // Partially returned - show both buttons
-                        RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                }
+                else if (!isFullyLost && !isPartiallyLost)
+                {
+                    // Not returned and not lost - show return button
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                }
 
-                        RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
-                    }
-                    else if (!isFullyLost && !isPartiallyLost)
-                    {
-                        // Not returned and not lost - show return button
-                        RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
-                    }
+                // Loss action buttons
+                if (isFullyLost)
+                {
+                    // Fully lost - only show undo loss button
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                }
+                else if (isPartiallyLost)
+                {
+                    // Partially lost - show both buttons
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
 
-                    // Loss action buttons
-                    if (isFullyLost)
-                    {
-                        // Fully lost - only show undo loss button
-                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
-                    }
-                    else if (isPartiallyLost)
-                    {
-                        // Partially lost - show both buttons
-                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
-
-                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
-                    }
-                    else if (!isFullyReturned && !isPartiallyReturned)
-                    {
-                        // Not lost and not returned - show mark as lost button
-                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
-                        RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
-                    }
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                }
+                else if (!isFullyReturned && !isPartiallyReturned)
+                {
+                    // Not lost and not returned - show mark as lost button
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
                 }
             }
 
