@@ -242,10 +242,10 @@ namespace Sales_Tracker
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
-            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
-            decimal tax = decimal.Parse(Tax_TextBox.Text);
-            decimal fee = decimal.Parse(Fee_TextBox.Text);
-            decimal discount = decimal.Parse(Discount_TextBox.Text);
+            decimal shipping = string.IsNullOrWhiteSpace(Shipping_TextBox.Text) ? 0 : decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = string.IsNullOrWhiteSpace(Tax_TextBox.Text) ? 0 : decimal.Parse(Tax_TextBox.Text);
+            decimal fee = string.IsNullOrWhiteSpace(Fee_TextBox.Text) ? 0 : decimal.Parse(Fee_TextBox.Text);
+            decimal discount = string.IsNullOrWhiteSpace(Discount_TextBox.Text) ? 0 : decimal.Parse(Discount_TextBox.Text);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
@@ -399,10 +399,10 @@ namespace Sales_Tracker
             }
 
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
-            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
-            decimal tax = decimal.Parse(Tax_TextBox.Text);
-            decimal fee = decimal.Parse(Fee_TextBox.Text);
-            decimal discount = decimal.Parse(Discount_TextBox.Text);
+            decimal shipping = string.IsNullOrWhiteSpace(Shipping_TextBox.Text) ? 0 : decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = string.IsNullOrWhiteSpace(Tax_TextBox.Text) ? 0 : decimal.Parse(Tax_TextBox.Text);
+            decimal fee = string.IsNullOrWhiteSpace(Fee_TextBox.Text) ? 0 : decimal.Parse(Fee_TextBox.Text);
+            decimal discount = string.IsNullOrWhiteSpace(Discount_TextBox.Text) ? 0 : decimal.Parse(Discount_TextBox.Text);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
@@ -1027,10 +1027,6 @@ namespace Sales_Tracker
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(Fee_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
                 !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
 
             if (Properties.Settings.Default.PurchaseReceipts)

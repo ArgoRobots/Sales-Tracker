@@ -21,13 +21,13 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PurchaseReceipts" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="EncryptFiles" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SaleReceipts" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ShowTooltips" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
