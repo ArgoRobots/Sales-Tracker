@@ -53,6 +53,8 @@ namespace Sales_Tracker.UI
             LoadTransactionData();
             LoadDetailsInformation();
             LoadAffectedItemsInformation();
+
+            PositionLabels();
             SetFormSize();
 
             UpdateTheme();
@@ -117,18 +119,14 @@ namespace Sales_Tracker.UI
 
             if (_hasMultipleItems && returnInfo.HasAffectedItems)
             {
-                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(_transactionRow);
-                string returnType = isPartiallyReturned ? LanguageManager.TranslateString("Partial Return") : LanguageManager.TranslateString("Full Return");
-
-                DetailsInfo_Label.Text = $"{LanguageManager.TranslateString("Return Type")}: {returnType}\n" +
-                                         $"{LanguageManager.TranslateString("Return Date")}: {returnInfo.FormattedDate}\n" +
+                DetailsInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
                                          $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
                                          $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
             }
             else
             {
                 // Single item or full return
-                DetailsInfo_Label.Text = $"{LanguageManager.TranslateString("Return Date")}: {returnInfo.FormattedDate}\n" +
+                DetailsInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
                                          $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
                                          $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
             }
@@ -164,25 +162,22 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            List<string> affectedItemNames;
             List<int> affectedIndices;
 
             if (_viewType == ViewType.Return)
             {
                 ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
-                affectedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
                 affectedIndices = returnInfo.ReturnedItems;
                 ItemsHeader_Label.Text = LanguageManager.TranslateString("Returned Items") + ":";
             }
             else
             {
                 LossInfo lossInfo = LostManager.GetLossInfo(_transactionRow);
-                affectedItemNames = LostManager.GetLostItemNames(_transactionRow);
                 affectedIndices = lossInfo.LostItems;
                 ItemsHeader_Label.Text = LanguageManager.TranslateString("Lost Items") + ":";
             }
 
-            if (affectedItemNames.Count > 0)
+            if (affectedIndices.Count > 0)
             {
                 ItemsHeader_Label.Visible = true;
                 ItemsInfo_Label.Visible = true;
@@ -211,10 +206,6 @@ namespace Sales_Tracker.UI
                 {
                     ItemsInfo_Label.Text = string.Join("\n", detailedItems);
                 }
-                else
-                {
-                    ItemsInfo_Label.Text = string.Join(", ", affectedItemNames);
-                }
             }
             else
             {
@@ -239,33 +230,60 @@ namespace Sales_Tracker.UI
                 ClientSize.Height - Close_Button.Height - 20
             );
         }
+        private void PositionLabels()
+        {
+            int currentY = 20;  // Starting position
+
+            // Transaction Details section
+            TransactionDetails_Label.Top = currentY;
+            currentY += TransactionDetails_Label.Height + 5;
+
+            TransactionInfo_Label.Top = currentY;
+            currentY += TransactionInfo_Label.Height + 15;
+
+            // Return/Loss Details section
+            DetailsHeader_Label.Top = currentY;
+            currentY += DetailsHeader_Label.Height + 5;
+
+            DetailsInfo_Label.Top = currentY;
+            currentY += DetailsInfo_Label.Height + 15;
+
+            // Affected Items section (if visible)
+            if (_hasMultipleItems)
+            {
+                ItemsHeader_Label.Top = currentY;
+                currentY += ItemsHeader_Label.Height + 5;
+
+                ItemsInfo_Label.Top = currentY;
+            }
+        }
         private int CalculateRequiredHeight()
         {
-            int totalHeight = FormPadding; // Top padding
+            int totalHeight = FormPadding;
 
             // Transaction details section
-            totalHeight += TransactionDetails_Label.Height + 10; // Header + spacing
-            totalHeight += GetTextHeight(TransactionInfo_Label.Text, TransactionInfo_Label.Font, TransactionInfo_Label.MaximumSize.Width) + 20; // Content + spacing
+            totalHeight += TransactionDetails_Label.Height + 10;
+            totalHeight += GetTextHeight(TransactionInfo_Label.Text, TransactionInfo_Label.Font, TransactionInfo_Label.MaximumSize.Width) + 20;
 
             // Return/Loss details section  
-            totalHeight += DetailsHeader_Label.Height + 10; // Header + spacing
-            totalHeight += GetTextHeight(DetailsInfo_Label.Text, DetailsInfo_Label.Font, DetailsInfo_Label.MaximumSize.Width) + 20; // Content + spacing
+            totalHeight += DetailsHeader_Label.Height + 10;
+            totalHeight += GetTextHeight(DetailsInfo_Label.Text, DetailsInfo_Label.Font, DetailsInfo_Label.MaximumSize.Width) + 20;
 
             // Affected items section (if visible)
-            if (ItemsHeader_Label.Visible && ItemsInfo_Label.Visible)
+            if (_hasMultipleItems)
             {
-                totalHeight += ItemsHeader_Label.Height + 10; // Header + spacing
-                totalHeight += GetTextHeight(ItemsInfo_Label.Text, ItemsInfo_Label.Font, ItemsInfo_Label.MaximumSize.Width) + 20; // Content + spacing
+                totalHeight += ItemsHeader_Label.Height + 10;
+                totalHeight += GetTextHeight(ItemsInfo_Label.Text, ItemsInfo_Label.Font, ItemsInfo_Label.MaximumSize.Width) + 20;
             }
 
             // Close button and bottom padding
-            totalHeight += Close_Button.Height + 40; // Button + bottom padding
+            totalHeight += Close_Button.Height + 40;
 
             return totalHeight;
         }
         private int GetTextHeight(string text, Font font, int maxWidth)
         {
-            if (string.IsNullOrEmpty(text)) return 20; // Default height for empty text
+            if (string.IsNullOrEmpty(text)) { return 20; }  // Default height for empty text
 
             using Graphics g = CreateGraphics();
             SizeF textSize = g.MeasureString(text, font, maxWidth);

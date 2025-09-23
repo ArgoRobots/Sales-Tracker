@@ -45,11 +45,11 @@ namespace Sales_Tracker.UI
             // TransactionDetails_Label
             // 
             TransactionDetails_Label.AutoSize = true;
-            TransactionDetails_Label.Font = new System.Drawing.Font("Segoe UI", 14F, FontStyle.Bold);
+            TransactionDetails_Label.Font = new System.Drawing.Font("Segoe UI", 13F, FontStyle.Bold);
             TransactionDetails_Label.Location = new Point(43, 50);
             TransactionDetails_Label.Margin = new Padding(4, 0, 4, 0);
             TransactionDetails_Label.Name = "TransactionDetails_Label";
-            TransactionDetails_Label.Size = new Size(273, 38);
+            TransactionDetails_Label.Size = new Size(250, 36);
             TransactionDetails_Label.TabIndex = 0;
             TransactionDetails_Label.Text = "Transaction Details:";
             // 
@@ -57,7 +57,7 @@ namespace Sales_Tracker.UI
             // 
             TransactionInfo_Label.AutoSize = true;
             TransactionInfo_Label.Font = new System.Drawing.Font("Segoe UI", 11F);
-            TransactionInfo_Label.Location = new Point(43, 108);
+            TransactionInfo_Label.Location = new Point(43, 90);
             TransactionInfo_Label.Margin = new Padding(4, 0, 4, 0);
             TransactionInfo_Label.MaximumSize = new Size(743, 0);
             TransactionInfo_Label.Name = "TransactionInfo_Label";
@@ -68,11 +68,11 @@ namespace Sales_Tracker.UI
             // DetailsHeader_Label
             // 
             DetailsHeader_Label.AutoSize = true;
-            DetailsHeader_Label.Font = new System.Drawing.Font("Segoe UI", 14F, FontStyle.Bold);
-            DetailsHeader_Label.Location = new Point(43, 233);
+            DetailsHeader_Label.Font = new System.Drawing.Font("Segoe UI", 13F, FontStyle.Bold);
+            DetailsHeader_Label.Location = new Point(43, 241);
             DetailsHeader_Label.Margin = new Padding(4, 0, 4, 0);
             DetailsHeader_Label.Name = "DetailsHeader_Label";
-            DetailsHeader_Label.Size = new Size(211, 38);
+            DetailsHeader_Label.Size = new Size(193, 36);
             DetailsHeader_Label.TabIndex = 2;
             DetailsHeader_Label.Text = "Return Details:";
             // 
@@ -80,7 +80,7 @@ namespace Sales_Tracker.UI
             // 
             DetailsInfo_Label.AutoSize = true;
             DetailsInfo_Label.Font = new System.Drawing.Font("Segoe UI", 11F);
-            DetailsInfo_Label.Location = new Point(43, 292);
+            DetailsInfo_Label.Location = new Point(43, 282);
             DetailsInfo_Label.Margin = new Padding(4, 0, 4, 0);
             DetailsInfo_Label.MaximumSize = new Size(743, 0);
             DetailsInfo_Label.Name = "DetailsInfo_Label";
@@ -91,11 +91,11 @@ namespace Sales_Tracker.UI
             // ItemsHeader_Label
             // 
             ItemsHeader_Label.AutoSize = true;
-            ItemsHeader_Label.Font = new System.Drawing.Font("Segoe UI", 14F, FontStyle.Bold);
-            ItemsHeader_Label.Location = new Point(43, 417);
+            ItemsHeader_Label.Font = new System.Drawing.Font("Segoe UI", 13F, FontStyle.Bold);
+            ItemsHeader_Label.Location = new Point(43, 432);
             ItemsHeader_Label.Margin = new Padding(4, 0, 4, 0);
             ItemsHeader_Label.Name = "ItemsHeader_Label";
-            ItemsHeader_Label.Size = new Size(219, 38);
+            ItemsHeader_Label.Size = new Size(200, 36);
             ItemsHeader_Label.TabIndex = 4;
             ItemsHeader_Label.Text = "Affected Items:";
             ItemsHeader_Label.Visible = false;
@@ -104,7 +104,7 @@ namespace Sales_Tracker.UI
             // 
             ItemsInfo_Label.AutoSize = true;
             ItemsInfo_Label.Font = new System.Drawing.Font("Segoe UI", 11F);
-            ItemsInfo_Label.Location = new Point(43, 475);
+            ItemsInfo_Label.Location = new Point(43, 472);
             ItemsInfo_Label.Margin = new Padding(4, 0, 4, 0);
             ItemsInfo_Label.MaximumSize = new Size(743, 0);
             ItemsInfo_Label.Name = "ItemsInfo_Label";
