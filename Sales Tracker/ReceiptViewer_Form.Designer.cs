@@ -66,7 +66,7 @@
             ControlsPanel.Location = new Point(0, 914);
             ControlsPanel.Margin = new Padding(4, 5, 4, 5);
             ControlsPanel.Name = "ControlsPanel";
-            ControlsPanel.Size = new Size(1138, 80);
+            ControlsPanel.Size = new Size(1128, 80);
             ControlsPanel.TabIndex = 0;
             // 
             // Zoom_Label
@@ -95,7 +95,7 @@
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 9F);
             Export_Button.ForeColor = Color.Black;
-            Export_Button.Location = new Point(925, 15);
+            Export_Button.Location = new Point(915, 15);
             Export_Button.Margin = new Padding(4, 5, 4, 5);
             Export_Button.Name = "Export_Button";
             Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -204,14 +204,14 @@
             ImagePanel.Location = new Point(0, 0);
             ImagePanel.Margin = new Padding(4, 5, 4, 5);
             ImagePanel.Name = "ImagePanel";
-            ImagePanel.Size = new Size(1138, 914);
+            ImagePanel.Size = new Size(1128, 914);
             ImagePanel.TabIndex = 1;
             // 
             // ReceiptPictureBox
             // 
             ReceiptPictureBox.Anchor = AnchorStyles.None;
             ReceiptPictureBox.BackColor = Color.Transparent;
-            ReceiptPictureBox.Location = new Point(-2, 7);
+            ReceiptPictureBox.Location = new Point(-7, 7);
             ReceiptPictureBox.Margin = new Padding(4, 5, 4, 5);
             ReceiptPictureBox.Name = "ReceiptPictureBox";
             ReceiptPictureBox.Size = new Size(143, 83);
@@ -227,7 +227,7 @@
             WebBrowser.MinimumSize = new Size(29, 33);
             WebBrowser.Name = "WebBrowser";
             WebBrowser.ScriptErrorsSuppressed = true;
-            WebBrowser.Size = new Size(1138, 914);
+            WebBrowser.Size = new Size(1128, 914);
             WebBrowser.TabIndex = 2;
             WebBrowser.Visible = false;
             // 
@@ -235,13 +235,13 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1138, 994);
+            ClientSize = new Size(1128, 994);
             Controls.Add(WebBrowser);
             Controls.Add(ImagePanel);
             Controls.Add(ControlsPanel);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 5, 4, 5);
-            MinimumSize = new Size(900, 500);
+            MinimumSize = new Size(970, 500);
             Name = "ReceiptViewer_Form";
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
