@@ -882,7 +882,7 @@ namespace Sales_Tracker.GridView
                 {
                     continue;
                 }
-
+                
                 DataGridViewTextBoxColumn column = new()
                 {
                     HeaderText = columnHeader.Value,
@@ -897,6 +897,7 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.SelectedOption.Purchases => Directories.Purchases_file,
                 MainMenu_Form.SelectedOption.Sales => Directories.Sales_file,
+                MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
                 MainMenu_Form.SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
                 MainMenu_Form.SelectedOption.CategorySales => Directories.CategorySales_file,
                 MainMenu_Form.SelectedOption.ProductPurchases => Directories.CategoryPurchases_file,

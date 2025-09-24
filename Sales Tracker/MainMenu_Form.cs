@@ -159,6 +159,9 @@ namespace Sales_Tracker
 
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
             Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+
+            DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
+            Rental_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
         }
         public void LoadData()
         {
@@ -170,6 +173,7 @@ namespace Sales_Tracker
 
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
+            //AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals); Commented out until rentals are implemented
         }
         private void LoadCustomColumnHeaders()
         {
@@ -312,6 +316,10 @@ namespace Sales_Tracker
             {
                 Sales_Button.BorderColor = CustomColors.AccentBlue;
             }
+            else if (Rentals_Button.BorderThickness == 2)
+            {
+                Rentals_Button.BorderColor = CustomColors.AccentBlue;
+            }
             else if (Analytics_Button.BorderThickness == 2)
             {
                 Analytics_Button.BorderColor = CustomColors.AccentBlue;
@@ -415,6 +423,7 @@ namespace Sales_Tracker
             [
                Purchases_Button,
                Sales_Button,
+               Rentals_Button,
                Analytics_Button,
                AddPurchase_Button,
                AddSale_Button,
@@ -1160,6 +1169,36 @@ namespace Sales_Tracker
             SelectButton(Sales_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
+
+        private void Rentals_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            if (Selected == SelectedOption.Rentals) { return; }
+
+            Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+
+            Selected = SelectedOption.Rentals;
+            ShowMainControls();
+            SelectedDataGridView = Rental_DataGridView;
+            Rental_DataGridView.Visible = true;
+            Purchase_DataGridView.Visible = false;
+            Sale_DataGridView.Visible = false;
+            
+            // TODO: Create Rentals Charts
+            SaleTotals_Chart.Visible = false;
+            SaleDistribution_Chart.Visible = false;
+            PurchaseTotals_Chart.Visible = false;
+            PurchaseDistribution_Chart.Visible = false;
+
+            CenterAndResizeControls();
+            RefreshDataGridViewAndCharts();
+
+            Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            SelectButton(Rentals_Button);
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
+        }
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
@@ -1337,9 +1376,11 @@ namespace Sales_Tracker
         {
             Purchases_Button.BorderThickness = 1;
             Sales_Button.BorderThickness = 1;
+            Rentals_Button.BorderThickness = 1;
             Analytics_Button.BorderThickness = 1;
             Purchases_Button.BorderColor = CustomColors.ControlBorder;
             Sales_Button.BorderColor = CustomColors.ControlBorder;
+            Rentals_Button.BorderColor = CustomColors.ControlBorder;
             Analytics_Button.BorderColor = CustomColors.ControlBorder;
         }
 
@@ -1781,6 +1822,7 @@ namespace Sales_Tracker
         // DataGridView getters
         public Guna2DataGridView Purchase_DataGridView { get; private set; } = new();
         public Guna2DataGridView Sale_DataGridView { get; private set; } = new();
+        public Guna2DataGridView Rental_DataGridView { get; private set; } = new();
         public Guna2DataGridView SelectedDataGridView { get; private set; }
         public CartesianChart Profits_Chart { get; private set; }
 
@@ -1789,6 +1831,7 @@ namespace Sales_Tracker
         {
             Purchases,
             Sales,
+            Rentals,
             ProductPurchases,
             ProductSales,
             CategoryPurchases,
@@ -1867,6 +1910,27 @@ namespace Sales_Tracker
             { Column.Note, "Notes" },
             { Column.HasReceipt, "Has receipt" }
         };
+
+        public readonly Dictionary<Column, string> RentalColumnHeaders = new()
+        {
+            { Column.ID, "Rental #" },
+            { Column.Accountant, "Accountant" },
+            { Column.Product, "Product / Service" },
+            { Column.Category, "Category" },
+            { Column.Country, "Country of destination" },
+            { Column.Company, "Company of origin" },
+            { Column.Date, "Date" },
+            { Column.TotalItems, "Total items" },
+            { Column.PricePerUnit, "Price per unit" },
+            { Column.Shipping, "Shipping" },
+            { Column.Tax, "Tax" },
+            { Column.Fee, "Fee" },
+            { Column.Discount, "Discount" },
+            { Column.ChargedDifference, "Charged difference" },
+            { Column.Total, "Total rental revenue" },
+            { Column.Note, "Notes" },
+            { Column.HasReceipt, "Has receipt" }
+        };
         public enum DataGridViewTag
         {
             SaleOrPurchase,
@@ -1918,7 +1982,7 @@ namespace Sales_Tracker
         }
         public void UpdateTotalLabels()
         {
-            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
+            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales && Selected != SelectedOption.Rentals)
             {
                 return;
             }
@@ -2140,6 +2204,7 @@ namespace Sales_Tracker
             return [
                 Sale_DataGridView,
                 Purchase_DataGridView,
+                Rental_DataGridView,
                 PurchaseTotals_Chart,
                 PurchaseDistribution_Chart,
                 SaleTotals_Chart,

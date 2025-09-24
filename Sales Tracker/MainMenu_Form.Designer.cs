@@ -64,6 +64,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Companies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -71,6 +73,7 @@
             Categories_Button = new Guna.UI2.WinForms.Guna2Button();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
             AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
+            Rentals_Button = new Guna.UI2.WinForms.Guna2Button();
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
             Products_Button = new Guna.UI2.WinForms.Guna2Button();
             CompanyName_Label = new Label();
@@ -532,6 +535,28 @@
             Purchases_Button.Text = "Purchases";
             Purchases_Button.Click += Purchases_Button_Click;
             // 
+            // Rentals_Button
+            // 
+            Rentals_Button.BackColor = Color.Transparent;
+            Rentals_Button.BorderColor = Color.LightGray;
+            Rentals_Button.BorderRadius = 2;
+            Rentals_Button.BorderThickness = 1;
+            Rentals_Button.CustomizableEdges = customizableEdges37;
+            Rentals_Button.DisabledState.BorderColor = Color.DarkGray;
+            Rentals_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Rentals_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Rentals_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Rentals_Button.FillColor = Color.White;
+            Rentals_Button.Font = new Font("Segoe UI", 9F);
+            Rentals_Button.ForeColor = Color.Black;
+            Rentals_Button.Location = new Point(390, 144);  
+            Rentals_Button.Name = "Rentals_Button";
+            Rentals_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Rentals_Button.Size = new Size(180, 50);
+            Rentals_Button.TabIndex = 19;
+            Rentals_Button.Text = "Rentals";
+            Rentals_Button.Click += Rentals_Button_Click;
+            // 
             // LineChart_Label
             // 
             LineChart_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -585,7 +610,7 @@
             Analytics_Button.FillColor = Color.White;
             Analytics_Button.Font = new Font("Segoe UI", 9F);
             Analytics_Button.ForeColor = Color.Black;
-            Analytics_Button.Location = new Point(390, 144);
+            Analytics_Button.Location = new Point(576, 144);
             Analytics_Button.Name = "Analytics_Button";
             Analytics_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Analytics_Button.Size = new Size(180, 50);
@@ -675,6 +700,7 @@
             Controls.Add(Total_Panel);
             Controls.Add(Purchases_Button);
             Controls.Add(Sales_Button);
+            Controls.Add(Rentals_Button);
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
@@ -723,6 +749,7 @@
         public Guna.UI2.WinForms.Guna2Button Accountants_Button;
         public Guna.UI2.WinForms.Guna2Button Companies_Button;
         public Guna.UI2.WinForms.Guna2Button Analytics_Button;
+        public Guna.UI2.WinForms.Guna2Button Rentals_Button;
         public Label ChargedDifference_Label;
         public Label Fee_Label;
         private Label ShowingResultsFor_Label;
