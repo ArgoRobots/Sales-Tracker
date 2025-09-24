@@ -76,12 +76,9 @@ namespace Sales_Tracker
                     totalItems--;
                 }
 
-                List<string> returnedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
-
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
                                              $"{LanguageManager.TranslateString("Total Items")}: {totalItems}\n" +
-                                             $"{LanguageManager.TranslateString("Returned items")}: {string.Join(", ", returnedItemNames)}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else

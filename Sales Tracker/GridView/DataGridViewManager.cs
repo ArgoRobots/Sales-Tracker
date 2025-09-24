@@ -648,6 +648,21 @@ namespace Sales_Tracker.GridView
                                      selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
             int currentIndex = 0;
 
+            // Add buttons for Receipts_Form
+            if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
+            {
+                if (isSingleRowSelected)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+
+                    RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                }
+
+                return;  // Don't add any more buttons
+            }
+
             // Add ModifyBtn
             if (isSingleRowSelected)
             {
@@ -692,13 +707,6 @@ namespace Sales_Tracker.GridView
                     RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
                     flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
                 }
-            }
-
-            // Add ViewReceiptBtn for Receipts view
-            if (selectedOption == MainMenu_Form.SelectedOption.Receipts && isSingleRowSelected)
-            {
-                RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
             }
 
             // Add view details and action buttons based on current status
@@ -818,6 +826,14 @@ namespace Sales_Tracker.GridView
         }
         private static void PositionRightClickDataGridViewMenu(Guna2DataGridView grid, MouseEventArgs e, DataGridView.HitTestInfo info)
         {
+            FlowLayoutPanel flowPanel = RightClickRowMenu.RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            bool hasVisibleButtons = flowPanel.Controls.OfType<Guna2Button>().Any(btn => btn.Visible);
+
+            if (!hasVisibleButtons)
+            {
+                return;  // Don't show the panel if no visible buttons
+            }
+
             Form parentForm = grid.FindForm();
             int formHeight = parentForm.ClientSize.Height;
             int formWidth = parentForm.ClientSize.Width;

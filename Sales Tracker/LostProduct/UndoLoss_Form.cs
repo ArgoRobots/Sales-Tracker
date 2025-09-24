@@ -93,15 +93,7 @@ namespace Sales_Tracker.LostProduct
             if (_hasMultipleItems && lossInfo.HasAffectedItems)
             {
                 // Show information about lost items
-                List<string> lostItemNames = LostManager.GetLostItemNames(_transactionRow);
-                string itemsText = lostItemNames.Count > 0 ? string.Join(", ", lostItemNames) : LanguageManager.TranslateString("Unknown items");
-
-                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(_transactionRow);
-                string lossType = isPartiallyLost ? LanguageManager.TranslateString("Partial Loss") : LanguageManager.TranslateString("Full Loss");
-
-                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Type")}: {lossType}\n" +
-                                      $"{LanguageManager.TranslateString("Lost Items")}: {itemsText}\n" +
-                                      $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
+                LossInfo_Label.Text = $"{LanguageManager.TranslateString("Loss Date")}: {lossInfo.FormattedDate}\n" +
                                       $"{LanguageManager.TranslateString("Reason")}: {lossInfo.DisplayReason}\n" +
                                       $"{LanguageManager.TranslateString("Marked by")}: {lossInfo.DisplayActionBy}";
             }
