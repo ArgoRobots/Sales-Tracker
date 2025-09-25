@@ -13,9 +13,13 @@ namespace Sales_Tracker
         private Image _originalImage;
         private float _zoomFactor = 1.0f;
         private float _effectiveMaxZoom = 5.0f;
-        private const float _zoomIncrement = 0.1f;
+        private const float _zoomIncrement = 0.05f;
         private const float _minZoom = 0.1f;
         private const float _maxZoom = 5.0f;
+
+        // Panning properties
+        private bool _isPanning = false;
+        private Point _lastPanPoint;
 
         // Supported file formats
         private static readonly HashSet<string> SupportedImageFormats = new(StringComparer.OrdinalIgnoreCase)
@@ -32,8 +36,12 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
+            // Enable double buffering for smoother rendering
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+
             _currentFilePath = filePath;
             SetupMouseWheelEvents();
+            SetupPanningEvents();
             LoadReceipt();
             UpdateTheme();
             SetAccessibleDescriptions();
@@ -63,23 +71,149 @@ namespace Sales_Tracker
             ImagePanel.MouseEnter += (s, e) => ImagePanel.Focus();
             ReceiptPictureBox.MouseEnter += (s, e) => ReceiptPictureBox.Focus();
         }
+
+        // Panning setup
+        private void SetupPanningEvents()
+        {
+            ReceiptPictureBox.MouseDown += ReceiptPictureBox_MouseDown;
+            ReceiptPictureBox.MouseMove += ReceiptPictureBox_MouseMove;
+            ReceiptPictureBox.MouseUp += ReceiptPictureBox_MouseUp;
+            ReceiptPictureBox.MouseLeave += ReceiptPictureBox_MouseLeave;
+
+            // Change cursor to indicate panning capability when image is larger than panel
+            ReceiptPictureBox.MouseEnter += (s, e) => UpdateCursor();
+        }
+        private void UpdateCursor()
+        {
+            if (_originalImage != null && ReceiptPictureBox.Visible && CanPan())
+            {
+                ReceiptPictureBox.Cursor = _isPanning ? Cursors.SizeAll : Cursors.Hand;
+            }
+            else
+            {
+                ReceiptPictureBox.Cursor = Cursors.Default;
+            }
+        }
+        private bool CanPan()
+        {
+            return _originalImage != null &&
+                   (ReceiptPictureBox.Width > ImagePanel.ClientSize.Width ||
+                    ReceiptPictureBox.Height > ImagePanel.ClientSize.Height);
+        }
+        private void ReceiptPictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && CanPan())
+            {
+                _isPanning = true;
+                // Convert mouse position to ImagePanel coordinates
+                _lastPanPoint = ImagePanel.PointToClient(ReceiptPictureBox.PointToScreen(e.Location));
+                UpdateCursor();
+            }
+        }
+        private void ReceiptPictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isPanning && e.Button == MouseButtons.Left)
+            {
+                // Convert current mouse position to ImagePanel coordinates
+                Point currentPanPoint = ImagePanel.PointToClient(ReceiptPictureBox.PointToScreen(e.Location));
+
+                int deltaX = currentPanPoint.X - _lastPanPoint.X;
+                int deltaY = currentPanPoint.Y - _lastPanPoint.Y;
+
+                Point newLocation = new(
+                    ReceiptPictureBox.Location.X + deltaX,
+                    ReceiptPictureBox.Location.Y + deltaY
+                );
+
+                // Apply bounds checking to prevent panning too far
+                newLocation = ConstrainImageLocation(newLocation);
+                ReceiptPictureBox.Location = newLocation;
+
+                // Update last pan point for next move
+                _lastPanPoint = currentPanPoint;
+            }
+        }
+        private void ReceiptPictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_isPanning)
+            {
+                _isPanning = false;
+                UpdateCursor();
+            }
+        }
+        private void ReceiptPictureBox_MouseLeave(object sender, EventArgs e)
+        {
+            if (_isPanning)
+            {
+                _isPanning = false;
+                UpdateCursor();
+            }
+        }
+        private Point ConstrainImageLocation(Point proposedLocation)
+        {
+            if (_originalImage == null) { return proposedLocation; }
+
+            int imageWidth = ReceiptPictureBox.Width;
+            int imageHeight = ReceiptPictureBox.Height;
+            int panelWidth = ImagePanel.ClientSize.Width;
+            int panelHeight = ImagePanel.ClientSize.Height;
+
+            int x = proposedLocation.X;
+            int y = proposedLocation.Y;
+
+            // If image is wider than panel, constrain horizontal movement
+            if (imageWidth > panelWidth)
+            {
+                int maxX = 0;
+                int minX = panelWidth - imageWidth;
+                x = Math.Max(minX, Math.Min(maxX, x));
+            }
+            else
+            {
+                // Center horizontally if image is smaller than panel
+                x = (panelWidth - imageWidth) / 2;
+            }
+
+            // If image is taller than panel, constrain vertical movement
+            if (imageHeight > panelHeight)
+            {
+                int maxY = 0;
+                int minY = panelHeight - imageHeight;
+                y = Math.Max(minY, Math.Min(maxY, y));
+            }
+            else
+            {
+                // Center vertically if image is smaller than panel
+                y = (panelHeight - imageHeight) / 2;
+            }
+
+            return new Point(x, y);
+        }
         private void ImagePanel_MouseWheel(object sender, MouseEventArgs e)
         {
             // Only handle mouse wheel for images, not PDFs
-            if (!ReceiptPictureBox.Visible || _originalImage == null) { return; }
+            if (!ReceiptPictureBox.Visible || _originalImage == null) return;
+
+            // Get mouse position relative to the ImagePanel
+            Point mousePos = ImagePanel.PointToClient(Cursor.Position);
 
             // Determine zoom direction based on wheel delta
             bool zoomIn = e.Delta > 0;
+            float oldZoomFactor = _zoomFactor;
 
             if (zoomIn && _zoomFactor < _effectiveMaxZoom)
             {
                 _zoomFactor += _zoomIncrement;
-                ApplyZoom();
             }
             else if (!zoomIn && _zoomFactor > _minZoom)
             {
                 _zoomFactor -= _zoomIncrement;
-                ApplyZoom();
+            }
+
+            // Only apply zoom if the factor actually changed
+            if (Math.Abs(_zoomFactor - oldZoomFactor) > 0.001f)
+            {
+                ApplyZoomToPoint(mousePos);
             }
         }
 
@@ -98,6 +232,12 @@ namespace Sales_Tracker
                     _originalImage.Height <= ImagePanel.ClientSize.Height)
                 {
                     FitToWindow();
+                }
+                else
+                {
+                    // Ensure image stays properly positioned after resize
+                    ReceiptPictureBox.Location = ConstrainImageLocation(ReceiptPictureBox.Location);
+                    UpdateCursor();
                 }
             }
         }
@@ -231,21 +371,44 @@ namespace Sales_Tracker
         }
         private void ApplyZoom()
         {
+            // Apply zoom with centering (for button clicks)
+            Point centerPoint = new(ImagePanel.ClientSize.Width / 2, ImagePanel.ClientSize.Height / 2);
+            ApplyZoomToPoint(centerPoint);
+        }
+        private void ApplyZoomToPoint(Point zoomPoint)
+        {
             if (_originalImage == null) { return; }
 
+            // Calculate old and new image dimensions
+            int oldWidth = ReceiptPictureBox.Width;
+            int oldHeight = ReceiptPictureBox.Height;
             int newWidth = (int)(_originalImage.Width * _zoomFactor);
             int newHeight = (int)(_originalImage.Height * _zoomFactor);
 
+            // Get the zoom point relative to the current image position
+            Point imageTopLeft = ReceiptPictureBox.Location;
+            float relativeX = (float)(zoomPoint.X - imageTopLeft.X) / oldWidth;
+            float relativeY = (float)(zoomPoint.Y - imageTopLeft.Y) / oldHeight;
+
+            // Clamp relative coordinates to [0, 1] range
+            relativeX = Math.Max(0, Math.Min(1, relativeX));
+            relativeY = Math.Max(0, Math.Min(1, relativeY));
+
+            // Apply new size
             ReceiptPictureBox.Size = new Size(newWidth, newHeight);
             ReceiptPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
 
-            // Center the image in the panel
-            ReceiptPictureBox.Location = new Point(
-                Math.Max(0, (ImagePanel.ClientSize.Width - newWidth) / 2),
-                Math.Max(0, (ImagePanel.ClientSize.Height - newHeight) / 2)
-            );
+            // Calculate new position to keep the zoom point in the same location
+            int newImageX = zoomPoint.X - (int)(relativeX * newWidth);
+            int newImageY = zoomPoint.Y - (int)(relativeY * newHeight);
 
+            // Apply position constraints
+            Point newLocation = ConstrainImageLocation(new Point(newImageX, newImageY));
+            ReceiptPictureBox.Location = newLocation;
+
+            // Update zoom label and cursor
             Zoom_Label.Text = $"{_zoomFactor * 100:F0}%";
+            UpdateCursor();
         }
         private void FitToWindow()
         {
