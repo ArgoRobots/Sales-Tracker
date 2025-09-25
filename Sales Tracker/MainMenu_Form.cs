@@ -80,7 +80,6 @@ namespace Sales_Tracker
             NetSparkleUpdateManager.CheckForUpdates();
 
             _chartTop = Purchases_Button.Bottom + 20;
-            _analyticChartTop = _analyticsTabButtons_Panel.Bottom + 20;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
@@ -169,7 +168,7 @@ namespace Sales_Tracker
         {
             DataGridViewColumn chargedDifferenceColumn = Purchase_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
-            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or politicy variations across countries.";
+            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or policy variations across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             DataGridViewColumn totalColumn = Sale_DataGridView.Columns[Column.Total.ToString()];
@@ -803,11 +802,6 @@ namespace Sales_Tracker
                 RemoveControlsDropDown();
             }
 
-            if (Selected == SelectedOption.Analytics)
-            {
-                PositionTabButtons();
-            }
-
             if (Search_TextBox.Text != "")
             {
                 CenterShowingResultsLabel();
@@ -815,6 +809,8 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Analytics)
             {
+                PositionTabButtons();
+                _analyticChartTop = _analyticsTabButtons_Panel.Bottom + 20;
                 LayoutChartsForTab(_selectedTabKey, spaceBetweenCharts);
             }
             else
