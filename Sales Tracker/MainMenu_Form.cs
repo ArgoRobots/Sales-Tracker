@@ -803,6 +803,11 @@ namespace Sales_Tracker
                 RemoveControlsDropDown();
             }
 
+            if (Selected == SelectedOption.Analytics)
+            {
+                PositionTabButtons();
+            }
+
             if (Search_TextBox.Text != "")
             {
                 CenterShowingResultsLabel();
@@ -844,6 +849,35 @@ namespace Sales_Tracker
                 SelectedDataGridView.Location = new Point((ClientSize.Width - SelectedDataGridView.Width) / 2,
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height + 50);
             }
+        }
+        private void PositionTabButtons()
+        {
+            if (_tabButtons == null || _analyticsTabButtons_Panel == null)
+            {
+                return;
+            }
+
+            const int startX = 10;
+            int buttonWidth = Width >= 1600 ? 200 : 180;
+            int fontSize = Width >= 1600 ? 10 : 9;
+            int buttonSpacing = Width >= 1600 ? 12 : 10;
+            int imageSize = Width >= 1600 ? 25 : 20;
+
+            // Position and size buttons
+            for (int i = 0; i < _tabButtons.Count; i++)
+            {
+                Guna2Button button = _tabButtons[i];
+
+                button.Size = new Size(buttonWidth, 45);
+                button.Location = new Point(i * (buttonWidth + buttonSpacing) + startX, 10);
+                button.Font = new Font("Segoe UI", fontSize, FontStyle.Bold);
+                button.ImageSize = new Size(imageSize, imageSize);
+            }
+
+            // Update panel size
+            int totalWidth = _tabButtons.Count * (buttonWidth + buttonSpacing) - buttonSpacing + (startX * 2);
+            _analyticsTabButtons_Panel.Size = new Size(totalWidth, 65);
+            _analyticsTabButtons_Panel.Location = new Point((ClientSize.Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
         }
         private void LayoutChartsForTab(AnalyticsTab tabKey, int spacing)
         {
@@ -2390,21 +2424,15 @@ namespace Sales_Tracker
             Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
             tabButtons.Add(lostProductsButton);
 
-            // Position buttons
-            byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
+            _tabButtons = tabButtons;
 
-            for (int i = 0; i < tabButtons.Count; i++)
+            // Add buttons to panel (positioning will be done in PositionTabButtons)
+            foreach (Guna2Button button in tabButtons)
             {
-                Guna2Button button = tabButtons[i];
-                button.Location = new Point(i * (buttonWidth + buttonSpacing) + startX, 10);
                 tabButtonsPanel.Controls.Add(button);
             }
 
             _analyticsTabButtons_Panel = tabButtonsPanel;
-            _analyticsTabButtons_Panel.Size = new Size(tabButtons.Count * (buttonWidth + buttonSpacing) + startX, 65);
-            _analyticsTabButtons_Panel.Location = new Point((Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
-
-            _tabButtons = tabButtons;
 
             ThemeManager.SetThemeForControls([tabButtonsPanel]);
 
@@ -2421,10 +2449,8 @@ namespace Sales_Tracker
                 Text = title,
                 Tag = tabKey,
                 Image = icon,
-                Size = new Size(200, 45),
                 ImageOffset = new Point(-5, 0),
                 ImageSize = new Size(25, 25),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 BorderRadius = 6,
             };
 
