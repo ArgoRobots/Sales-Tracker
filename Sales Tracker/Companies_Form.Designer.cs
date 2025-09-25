@@ -218,6 +218,7 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Companies_Form_FormClosed;
             Shown += Companies_Form_Shown;
+            Click += CloseAllPanels;
             Resize += Companies_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningCompanyName_PictureBox).EndInit();
             ResumeLayout(false);
