@@ -159,12 +159,12 @@ namespace Sales_Tracker.LostProduct
                 // Check if this specific item is lost
                 bool isItemLost = LostManager.IsItemLost(_transactionRow, i);
 
-                // Create custom checkbox (only for lost items)
+                // Create custom checkbox
                 Guna2CustomCheckBox itemCheckBox = new()
                 {
                     Size = new Size(20, 20),
                     Location = new Point(10, yPosition),
-                    Enabled = isItemLost,
+                    Enabled = isItemLost,  // Enable only lost items
                     Tag = i,  // Store the item index
                     Animated = true
                 };
@@ -224,14 +224,7 @@ namespace Sales_Tracker.LostProduct
             Height += additionalHeight;
             MinimumSize = new Size(Width, Height);
 
-            // Move existing controls down
-            UndoReason_Label.Top += additionalHeight;
-            UndoReason_TextBox.Top += additionalHeight;
-            CharacterCount_Label.Top += additionalHeight;
-            UndoLoss_Button.Top += additionalHeight;
-            Cancel_Button.Top += additionalHeight;
-
-            // Update validation since we now need at least one item selected
+            // Update validation since we now need at least one item selected for partial undos
             ValidateInputs();
         }
         private void UpdateTheme()
