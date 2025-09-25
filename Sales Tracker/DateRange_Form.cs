@@ -94,6 +94,13 @@ namespace Sales_Tracker
         {
             if (Custom_RadioButton.Checked)
             {
+                // Validate date range
+                if (From_DateTimePicker.Value > To_DateTimePicker.Value)
+                {
+                    HandleInvalidDateRange();
+                    return;
+                }
+
                 MainMenu_Form.Instance.SortTimeSpan = null;
                 MainMenu_Form.Instance.SortFromDate = From_DateTimePicker.Value;
                 MainMenu_Form.Instance.SortToDate = To_DateTimePicker.Value;
@@ -211,6 +218,27 @@ namespace Sales_Tracker
                 }
             }
             return oldestDate;
+        }
+        private void HandleInvalidDateRange()
+        {
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Invalid Date Range",
+                "The 'From' date cannot be later than the 'To' date.\n\nWould you like to swap the dates automatically?",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.YesNo);
+
+            if (result == CustomMessageBoxResult.Yes)
+            {
+                // Swap the dates
+                (To_DateTimePicker.Value, From_DateTimePicker.Value) = (From_DateTimePicker.Value, To_DateTimePicker.Value);
+
+                // Now apply with corrected dates
+                MainMenu_Form.Instance.SortTimeSpan = null;
+                MainMenu_Form.Instance.SortFromDate = From_DateTimePicker.Value;
+                MainMenu_Form.Instance.SortToDate = To_DateTimePicker.Value;
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                MainMenu_Form.Instance.CloseDateRangePanel();
+            }
         }
 
         // Methods
