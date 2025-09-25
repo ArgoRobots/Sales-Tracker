@@ -274,10 +274,10 @@ namespace Sales_Tracker.UI
         {
             if (e.Button == MouseButtons.Right)
             {
-                ShowLogoContextMenu(e.Location);
+                ShowLogoRightClickPanel(e.Location);
             }
         }
-        private static void ShowLogoContextMenu(Point location)
+        private static void ShowLogoRightClickPanel(Point location)
         {
             // Toggle Remove Logo button visibility
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)CompanyLogoRightClick_Panel.Controls[0];

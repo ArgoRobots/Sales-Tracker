@@ -731,7 +731,7 @@ namespace Sales_Tracker.UI
         {
             Rename();
             SearchBox.CloseSearchBox();
-            TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
+            TextBoxManager.RemoveRightClickPanel();
 
             if (MainMenu_Form.Instance == null) { return; }
 
