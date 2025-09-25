@@ -3022,7 +3022,8 @@ namespace Sales_Tracker
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 RightClickRowMenu.RightClickDataGridView_Panel,
-                RightClickChartMenu.RightClickChart_Panel
+                RightClickChartMenu.RightClickChart_Panel,
+                TextBoxManager.RightClickTextBox_Panel
             }.Where(panel => panel != null).ToList();
         }
         public void UpdateMainMenuFormText()
