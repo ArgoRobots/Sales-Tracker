@@ -65,13 +65,46 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Removes a receipt from a specified DataGridViewRow tag, deleting the file from the filesystem if it exists.
+        /// Removes a receipt from a specified DataGridViewRow tag and deletes the file if it exists.
         /// </summary>
-        public static void RemoveReceiptFromFile(DataGridViewRow row)
+        public static void RemoveReceiptFromTagAndFile(DataGridViewRow row)
         {
-            string filePath = row.Tag.ToString();
-            Directories.DeleteFile(filePath);
-            row.Tag = null;
+            if (row.Tag is (List<string> tagList, TagData tagData))
+            {
+                // Multiple items case - find and remove receipt, preserve other items
+                for (int i = tagList.Count - 1; i >= 0; i--)
+                {
+                    if (tagList[i].StartsWith(ReadOnlyVariables.Receipt_text))
+                    {
+                        string receiptPath = ProcessReceiptTextFromRowTag(tagList[i]);
+                        Directories.DeleteFile(receiptPath);
+                        tagList.RemoveAt(i);
+                        break;  // Only remove the first receipt found
+                    }
+                }
+                // Keep the tag structure intact
+                row.Tag = (tagList, tagData);
+            }
+            else if (row.Tag is (string tagString, TagData tagData2))
+            {
+                // Single item with receipt - remove receipt but preserve TagData
+                if (tagString.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    string receiptPath = ProcessReceiptTextFromRowTag(tagString);
+                    Directories.DeleteFile(receiptPath);
+                    row.Tag = tagData2;  // Convert back to TagData only
+                }
+            }
+            else if (row.Tag is string tagString1)  // Receipt_Form rows
+            {
+                // Single string case - delete file and set to null only if it's just a receipt
+                if (tagString1.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    string receiptPath = ProcessReceiptTextFromRowTag(tagString1);
+                    Directories.DeleteFile(receiptPath);
+                    row.Tag = null;
+                }
+            }
         }
 
         /// <summary>
