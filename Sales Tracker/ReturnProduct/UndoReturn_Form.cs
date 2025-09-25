@@ -44,13 +44,17 @@ namespace Sales_Tracker
             }
 
             LoadTransactionData();
+
+            // Only create item selection for partial returns
             if (_hasPartialReturn)
             {
                 CreateItemSelectionControls();
             }
+
             UpdateTheme();
             SetAccessibleDescriptions();
             UpdateCharacterCount();
+            ValidateInputs();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -303,7 +307,6 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            bool reasonProvided = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
             bool itemsSelected = true;
 
             if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
@@ -312,7 +315,7 @@ namespace Sales_Tracker
                 itemsSelected = _itemCheckboxes.Any(cb => cb.Checked);
             }
 
-            UndoReturn_Button.Enabled = reasonProvided && itemsSelected;
+            UndoReturn_Button.Enabled = itemsSelected;
         }
         private void UpdateCharacterCount()
         {

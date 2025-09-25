@@ -306,7 +306,6 @@ namespace Sales_Tracker.LostProduct
         // Methods
         private void ValidateInputs()
         {
-            bool reasonProvided = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
             bool itemsSelected = true;
 
             if (_hasMultipleItems && LostManager.IsTransactionPartiallyLost(_transactionRow))
@@ -315,7 +314,7 @@ namespace Sales_Tracker.LostProduct
                 itemsSelected = _itemCheckboxes?.Any(cb => cb.Checked) ?? false;
             }
 
-            UndoLoss_Button.Enabled = reasonProvided && itemsSelected;
+            UndoLoss_Button.Enabled = itemsSelected;
         }
         private void UpdateCharacterCount()
         {

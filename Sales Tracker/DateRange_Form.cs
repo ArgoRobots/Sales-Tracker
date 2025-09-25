@@ -223,7 +223,7 @@ namespace Sales_Tracker
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Invalid Date Range",
-                "The 'From' date cannot be later than the 'To' date.\n\nWould you like to swap the dates automatically?",
+                "The 'From' date cannot be later than the 'To' date.\nWould you like to swap the dates automatically?",
                 CustomMessageBoxIcon.Question,
                 CustomMessageBoxButtons.YesNo);
 
