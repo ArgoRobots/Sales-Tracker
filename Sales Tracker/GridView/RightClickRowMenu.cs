@@ -551,6 +551,40 @@ namespace Sales_Tracker.GridView
         private static void DeleteRow(object sender, EventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            int selectedCount = grid.SelectedRows.Count;
+
+            // Show confirmation dialog
+            CustomMessageBoxResult result;
+
+            if (selectedCount == 1)
+            {
+                // Get transaction number for single row deletion
+                string transactionNumber = grid.SelectedRows[0].Cells[0].Value?.ToString() ?? "Unknown";
+                result = CustomMessageBox.ShowWithFormat(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete transaction #{0}?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    transactionNumber
+                );
+            }
+            else
+            {
+                result = CustomMessageBox.ShowWithFormat(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete these {0} rows?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    selectedCount
+                );
+            }
+
+            // Only proceed if user confirms
+            if (result != CustomMessageBoxResult.Yes)
+            {
+                return;
+            }
+
             int index = grid.SelectedRows[^1].Index;
 
             // Delete all selected rows

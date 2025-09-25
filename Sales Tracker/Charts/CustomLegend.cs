@@ -138,7 +138,6 @@ namespace Sales_Tracker.Charts
             _existingLayout?.Children.Clear();
             _existingLayout = null;
 
-            // IMPORTANT: Also clear the bottom layout cache
             _existingBottomLayout?.Children.Clear();
             _existingBottomLayout = null;
         }
