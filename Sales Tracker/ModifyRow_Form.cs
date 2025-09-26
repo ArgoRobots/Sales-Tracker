@@ -937,8 +937,9 @@ namespace Sales_Tracker
         private void ProcessNoteColumn(Guna2TextBox textBox)
         {
             DataGridViewCell cell = _selectedRow.Cells[ReadOnlyVariables.Note_column];
+            string note = textBox.Text.Trim();
 
-            if (textBox.Text == "")
+            if (note == "")
             {
                 cell.Value = ReadOnlyVariables.EmptyCell;
                 DataGridViewManager.RemoveUnderlineFromCell(cell);
@@ -949,7 +950,7 @@ namespace Sales_Tracker
                 DataGridViewManager.AddUnderlineToCell(cell);
             }
 
-            cell.Tag = textBox.Text.Trim();
+            cell.Tag = note;
         }
 
         // Methods
