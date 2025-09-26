@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Passwords;
+﻿using Sales_Tracker.GridView;
+using Sales_Tracker.Passwords;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.Text;
@@ -308,6 +309,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.UpdateMainMenuFormText();
             MainMenu_Form.Instance.SetAllAnalyticTabsAsNotLoaded();
             MainMenu_Form.Instance.ReloadCurrentAnalyticTab();
+            DataGridViewManager.UpdateRowColors(MainMenu_Form.Instance.SelectedDataGridView);
 
             Tools.CloseAllOpenForms();
 
