@@ -310,6 +310,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.SetAllAnalyticTabsAsNotLoaded();
             MainMenu_Form.Instance.ReloadCurrentAnalyticTab();
             DataGridViewManager.UpdateRowColors(MainMenu_Form.Instance.SelectedDataGridView);
+            DateRange_Form.Instance.ResetControls();
 
             Tools.CloseAllOpenForms();
 

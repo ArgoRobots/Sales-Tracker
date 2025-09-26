@@ -142,7 +142,6 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
-            DateRange_Form.Instance.ResetControls();
         }
         private void InitDataGridViews()
         {
@@ -1343,9 +1342,6 @@ namespace Sales_Tracker
             else
             {
                 CloseAllPanels(null, null);
-
-                // This is really annoying, but it fixes a bug where the DateTimePickers get messed up. It's possibly a bug with Guna, but I'm not sure.
-                ConstructTimeRangePanel();
 
                 // Set the location for the panel
                 DateRangePanel.Location = new Point(
