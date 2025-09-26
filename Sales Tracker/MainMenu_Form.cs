@@ -142,8 +142,7 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
-            SortFromDate = DateTime.Now;
-            SortToDate = DateTime.Now;
+            DateRange_Form.Instance.ResetControls();
         }
         private void InitDataGridViews()
         {
@@ -1296,17 +1295,17 @@ namespace Sales_Tracker
                 CenterShowingResultsLabel();
                 await Search_TextBox.EnhanceSearchAsync();
             }
-            // Show AI search prompt for AI queries (but don't start regular search)
+            // Show AI search prompt for AI queries
             else if (isAIQuery)
             {
                 ShowingResultsFor_Label.Text = LanguageManager.TranslateString("Press enter to begin AI search");
                 CenterShowingResultsLabel();
             }
-            // Start timer for regular searches (only if not an AI query)
-            else if (!timerRunning)
+            // Start timer for regular searches
+            else if (!_timerRunning)
             {
-                timerRunning = true;
-                searchTimer.Start();
+                _timerRunning = true;
+                _search_Timer.Start();
             }
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
@@ -1316,10 +1315,10 @@ namespace Sales_Tracker
                 AISearchExtensions.ResetQuery();
 
                 // Start timer for regular searches
-                if (!timerRunning)
+                if (!_timerRunning)
                 {
-                    timerRunning = true;
-                    searchTimer.Start();
+                    _timerRunning = true;
+                    _search_Timer.Start();
                 }
             }
         }
@@ -1328,16 +1327,16 @@ namespace Sales_Tracker
             Search_TextBox.Clear();
         }
 
-        // TimeRange
-        public static Guna2Panel TimeRangePanel { get; private set; }
+        // DateRange
+        public static Guna2Panel DateRangePanel { get; private set; }
         private static void ConstructTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
-            TimeRangePanel = dateRange_Form.Main_Panel;
+            DateRangePanel = dateRange_Form.Main_Panel;
         }
         private void TimeRange_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(TimeRangePanel))
+            if (Controls.Contains(DateRangePanel))
             {
                 CloseDateRangePanel();
             }
@@ -1345,35 +1344,38 @@ namespace Sales_Tracker
             {
                 CloseAllPanels(null, null);
 
+                // This is really annoying, but it fixes a bug where the DateTimePickers get messed up. It's possibly a bug with Guna, but I'm not sure.
+                ConstructTimeRangePanel();
+
                 // Set the location for the panel
-                TimeRangePanel.Location = new Point(
-                    TimeRange_Button.Right - TimeRangePanel.Width,
+                DateRangePanel.Location = new Point(
+                    TimeRange_Button.Right - DateRangePanel.Width,
                     TimeRange_Button.Bottom);
 
-                Controls.Add(TimeRangePanel);
-                TimeRangePanel.BringToFront();
+                Controls.Add(DateRangePanel);
+                DateRangePanel.BringToFront();
             }
         }
         public void CloseDateRangePanel()
         {
-            Controls.Remove(TimeRangePanel);
+            Controls.Remove(DateRangePanel);
         }
 
         // Search timer
-        private Timer searchTimer;
-        private bool timerRunning = false;
+        private Timer _search_Timer;
+        private bool _timerRunning = false;
         private void InitiateSearchTimer()
         {
-            searchTimer = new()
+            _search_Timer = new()
             {
                 Interval = 300
             };
-            searchTimer.Tick += SearchTimer_Tick;
+            _search_Timer.Tick += SearchTimer_Tick;
         }
         private void SearchTimer_Tick(object sender, EventArgs e)
         {
-            searchTimer.Stop();
-            timerRunning = false;
+            _search_Timer.Stop();
+            _timerRunning = false;
             RefreshDataGridViewAndCharts();
         }
 

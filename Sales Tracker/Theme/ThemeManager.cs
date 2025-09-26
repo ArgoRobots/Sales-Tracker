@@ -363,7 +363,7 @@ namespace Sales_Tracker.Theme
             SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
 
             // Update other controls
-            SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
+            SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.DateRangePanel]);
 
             RightClickRowMenu.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
