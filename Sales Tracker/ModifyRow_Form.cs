@@ -127,7 +127,6 @@ namespace Sales_Tracker
             SaveInMainMenuRow();
             UpdateChargedDifferenceInMainMenuRow();
             HandleReceiptChanges();
-            MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
 
             DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);
         }
@@ -1057,37 +1056,38 @@ namespace Sales_Tracker
         }
         private void HandleReceiptChanges()
         {
-            if (_receiptFilePath != null)
+            if (_receiptFilePath == null) { return; }
+
+            // Case 1: Adding a receipt to a row that didn't have one
+            if (_addedReceipt && !_removedReceipt)
             {
-                // Case 1: Adding a receipt to a row that didn't have one
-                if (_addedReceipt && !_removedReceipt)
+                (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                if (saved)
                 {
-                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    if (saved)
-                    {
-                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                    }
-                }
-
-                // Case 2: Replacing an existing receipt with a new one
-                else if (_removedReceipt && _addedReceipt)
-                {
-                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
-
-                    // Then save and add the new receipt
-                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    if (saved)
-                    {
-                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                    }
-                }
-
-                // Case 3: Removing a receipt
-                else if (_removedReceipt && !_addedReceipt)
-                {
-                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
                 }
             }
+
+            // Case 2: Replacing an existing receipt with a new one
+            else if (_removedReceipt && _addedReceipt)
+            {
+                ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+
+                // Then save and add the new receipt
+                (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                if (saved)
+                {
+                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                }
+            }
+
+            // Case 3: Removing a receipt
+            else if (_removedReceipt && !_addedReceipt)
+            {
+                ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+            }
+
+            MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
         }
         private static void UpdateAllDataGridViewRows(string columnName, string oldValue, string newValue, bool updateItemsInTransaction = false)
         {
