@@ -142,8 +142,8 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
-            SortFromDate = default;
-            SortToDate = default;
+            SortFromDate = DateTime.Now;
+            SortToDate = DateTime.Now;
         }
         private void InitDataGridViews()
         {
