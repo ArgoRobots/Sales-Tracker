@@ -399,39 +399,6 @@ namespace Sales_Tracker.LostProduct
             }
         }
 
-        /// <summary>
-        /// Gets a list of lost item names for a transaction.
-        /// </summary>
-        public static List<string> GetLostItemNames(DataGridViewRow row)
-        {
-            List<string> lostItemNames = [];
-
-            if (row.Tag is (List<string> items, TagData tagData) && tagData.LostItems != null)
-            {
-                foreach (int itemIndex in tagData.LostItems)
-                {
-                    if (itemIndex < items.Count && !items[itemIndex].StartsWith(ReadOnlyVariables.Receipt_text))
-                    {
-                        string[] itemDetails = items[itemIndex].Split(',');
-                        if (itemDetails.Length > 0)
-                        {
-                            lostItemNames.Add(itemDetails[0]);  // Product name
-                        }
-                    }
-                }
-            }
-            else if (IsTransactionFullyLost(row))
-            {
-                // For single items or fully lost transactions
-                string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString();
-                if (!string.IsNullOrEmpty(productName))
-                {
-                    lostItemNames.Add(productName);
-                }
-            }
-
-            return lostItemNames;
-        }
         private static void SaveLossChanges()
         {
             // Save both purchase and sale data
