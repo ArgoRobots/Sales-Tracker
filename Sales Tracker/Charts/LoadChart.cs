@@ -115,7 +115,35 @@ namespace Sales_Tracker.Charts
         }
         public static void ClearMap(GeoMap geoMap)
         {
+            // Clear the series (this doesn't work properly in LiveCharts2)
+            // https://github.com/ArgoRobots/Sales-Tracker/issues/326
             geoMap.Series = [];
+
+            ShowGeoMapOverlay(geoMap);
+        }
+
+        // This is a temporary workaround for the GeoMap not being cleared. It adds an panel over the GeoMap when there's no data.
+        private static Panel _geoMapOverlay;
+        private static void ShowGeoMapOverlay(GeoMap geoMap)
+        {
+            // Create overlay panel if it doesn't exist
+            if (_geoMapOverlay == null)
+            {
+                _geoMapOverlay = new()
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = geoMap.BackColor,
+                    Visible = false
+                };
+
+                LabelManager.ManageNoDataLabelOnControl(false, _geoMapOverlay);
+
+                geoMap.Controls.Add(_geoMapOverlay);
+            }
+
+            // Show the overlay
+            _geoMapOverlay.Visible = true;
+            _geoMapOverlay.BringToFront();
         }
 
         // Helper methods
@@ -2564,6 +2592,7 @@ namespace Sales_Tracker.Charts
             };
 
             geoMap.Series = [heatSeries];
+            _geoMapOverlay.Visible = false;
         }
     }
 }
