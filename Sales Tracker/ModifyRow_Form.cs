@@ -126,39 +126,8 @@ namespace Sales_Tracker
             SaveInListsAndUpdateMainMenuForm();
             SaveInMainMenuRow();
             UpdateChargedDifferenceInMainMenuRow();
-
-            // Handle receipt changes
-            if (_receiptFilePath != null)
-            {
-                // Case 1: Adding a receipt to a row that didn't have one
-                if (_addedReceipt && !_removedReceipt)
-                {
-                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    if (saved)
-                    {
-                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                    }
-                }
-
-                // Case 2: Replacing an existing receipt with a new one
-                else if (_removedReceipt && _addedReceipt)
-                {
-                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
-
-                    // Then save and add the new receipt
-                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    if (saved)
-                    {
-                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                    }
-                }
-
-                // Case 3: Removing a receipt
-                else if (_removedReceipt && !_addedReceipt)
-                {
-                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
-                }
-            }
+            HandleReceiptChanges();
+            MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
 
             DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);
         }
@@ -1083,9 +1052,41 @@ namespace Sales_Tracker
                     DataGridViewManager.UpdateChargedDifferenceInRowWithNoItems(_selectedRow);
                 }
 
-                MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
-
                 MainMenu_Form.IsProgramLoading = false;
+            }
+        }
+        private void HandleReceiptChanges()
+        {
+            if (_receiptFilePath != null)
+            {
+                // Case 1: Adding a receipt to a row that didn't have one
+                if (_addedReceipt && !_removedReceipt)
+                {
+                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                    if (saved)
+                    {
+                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                    }
+                }
+
+                // Case 2: Replacing an existing receipt with a new one
+                else if (_removedReceipt && _addedReceipt)
+                {
+                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+
+                    // Then save and add the new receipt
+                    (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                    if (saved)
+                    {
+                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                    }
+                }
+
+                // Case 3: Removing a receipt
+                else if (_removedReceipt && !_addedReceipt)
+                {
+                    ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+                }
             }
         }
         private static void UpdateAllDataGridViewRows(string columnName, string oldValue, string newValue, bool updateItemsInTransaction = false)
