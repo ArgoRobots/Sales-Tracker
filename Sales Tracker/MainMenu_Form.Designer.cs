@@ -537,25 +537,25 @@
             // 
             // Rentals_Button
             // 
-            Rentals_Button.BackColor = Color.Transparent;
-            Rentals_Button.BorderColor = Color.LightGray;
-            Rentals_Button.BorderRadius = 2;
-            Rentals_Button.BorderThickness = 1;
-            Rentals_Button.CustomizableEdges = customizableEdges37;
-            Rentals_Button.DisabledState.BorderColor = Color.DarkGray;
-            Rentals_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            Rentals_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            Rentals_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            Rentals_Button.FillColor = Color.White;
-            Rentals_Button.Font = new Font("Segoe UI", 9F);
-            Rentals_Button.ForeColor = Color.Black;
-            Rentals_Button.Location = new Point(390, 144);  
-            Rentals_Button.Name = "Rentals_Button";
-            Rentals_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
-            Rentals_Button.Size = new Size(180, 50);
-            Rentals_Button.TabIndex = 19;
-            Rentals_Button.Text = "Rentals";
-            Rentals_Button.Click += Rentals_Button_Click;
+            //Rentals_Button.BackColor = Color.Transparent;
+            //Rentals_Button.BorderColor = Color.LightGray;
+            //Rentals_Button.BorderRadius = 2;
+            //Rentals_Button.BorderThickness = 1;
+            //Rentals_Button.CustomizableEdges = customizableEdges37;
+            //Rentals_Button.DisabledState.BorderColor = Color.DarkGray;
+            //Rentals_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            //Rentals_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            //Rentals_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            //Rentals_Button.FillColor = Color.White;
+            //Rentals_Button.Font = new Font("Segoe UI", 9F);
+            //Rentals_Button.ForeColor = Color.Black;
+            //Rentals_Button.Location = new Point(390, 144);  
+            //Rentals_Button.Name = "Rentals_Button";
+            //Rentals_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            //Rentals_Button.Size = new Size(180, 50);
+            //Rentals_Button.TabIndex = 19;
+            //Rentals_Button.Text = "Rentals";
+            //Rentals_Button.Click += Rentals_Button_Click;
             // 
             // LineChart_Label
             // 
@@ -610,7 +610,7 @@
             Analytics_Button.FillColor = Color.White;
             Analytics_Button.Font = new Font("Segoe UI", 9F);
             Analytics_Button.ForeColor = Color.Black;
-            Analytics_Button.Location = new Point(576, 144);
+            Analytics_Button.Location = new Point(390, 144);
             Analytics_Button.Name = "Analytics_Button";
             Analytics_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Analytics_Button.Size = new Size(180, 50);
