@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 
@@ -11,7 +12,7 @@ namespace Sales_Tracker.UI
         private static PictureBox _companyLogo;
         private static bool _isLogoHovered = false;
         private static Bitmap _cameraIcon;
-        private static Guna2Button _removeLogo_Button;
+        private static Guna2Button _removeLogo_Button, _changeLogo_Button;
 
         // Getters
         public static Guna2Panel CompanyLogoRightClick_Panel { get; private set; }
@@ -28,15 +29,15 @@ namespace Sales_Tracker.UI
             int btnWidth = CustomControls.PanelBtnWidth - 50;
 
             // Change Logo button
-            Guna2Button changeLogo_Button = CustomControls.ConstructBtnForMenu("Change Logo", btnWidth, true, flowPanel);
-            changeLogo_Button.Click += (sender, e) =>
+            _changeLogo_Button = CustomControls.ConstructBtnForMenu("Change logo", btnWidth, true, flowPanel);
+            _changeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
                 BrowseForCompanyLogo();
             };
 
             // Remove Logo button (will be shown/hidden based on whether there's a custom logo)
-            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove Logo", btnWidth, true, flowPanel);
+            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove logo", btnWidth, true, flowPanel);
             _removeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
@@ -272,8 +273,16 @@ namespace Sales_Tracker.UI
         }
         private static void ShowLogoRightClickPanel(Point location)
         {
+            // Update button text based on logo state
+            bool hasCustomLogo = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
+            _changeLogo_Button.Text = hasCustomLogo
+                ? LanguageManager.TranslateString("Change logo")
+                : LanguageManager.TranslateString("Add logo");
+
             // Toggle Remove Logo button visibility
             _removeLogo_Button.Visible = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
+
+            CustomControls.SetRightClickMenuHeight(CompanyLogoRightClick_Panel);
 
             // Position and show menu
             Point screenLocation = _companyLogo.PointToScreen(location);
