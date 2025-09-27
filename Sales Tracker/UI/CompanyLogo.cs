@@ -11,6 +11,7 @@ namespace Sales_Tracker.UI
         private static PictureBox _companyLogo;
         private static bool _isLogoHovered = false;
         private static Bitmap _cameraIcon;
+        private static Guna2Button _removeLogo_Button;
 
         // Getters
         public static Guna2Panel CompanyLogoRightClick_Panel { get; private set; }
@@ -27,7 +28,7 @@ namespace Sales_Tracker.UI
             int btnWidth = CustomControls.PanelBtnWidth - 50;
 
             // Change Logo button
-            Guna2Button changeLogo_Button = CustomControls.ConstructBtnForMenu("Change Logo...", btnWidth, true, flowPanel);
+            Guna2Button changeLogo_Button = CustomControls.ConstructBtnForMenu("Change Logo", btnWidth, true, flowPanel);
             changeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
@@ -35,13 +36,12 @@ namespace Sales_Tracker.UI
             };
 
             // Remove Logo button (will be shown/hidden based on whether there's a custom logo)
-            Guna2Button removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove Logo", btnWidth, true, flowPanel);
-            removeLogo_Button.Click += (sender, e) =>
+            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove Logo", btnWidth, true, flowPanel);
+            _removeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
                 RemoveCompanyLogo();
             };
-            removeLogo_Button.Name = "RemoveLogo_Button";
         }
         public static void SetCompanyLogo()
         {
@@ -55,13 +55,6 @@ namespace Sales_Tracker.UI
             {
                 RemoveLogoControl();
             }
-        }
-        public static void Cleanup()
-        {
-            _companyLogo?.Image?.Dispose();
-            _companyLogo?.Dispose();
-            _cameraIcon?.Dispose();
-            CompanyLogoRightClick_Panel?.Dispose();
         }
 
         // Private methods
@@ -280,14 +273,7 @@ namespace Sales_Tracker.UI
         private static void ShowLogoRightClickPanel(Point location)
         {
             // Toggle Remove Logo button visibility
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)CompanyLogoRightClick_Panel.Controls[0];
-            Guna2Button removeLogo_Button = flowPanel.Controls.OfType<Guna2Button>()
-                .FirstOrDefault(b => b.Name == "RemoveLogo_Button");
-
-            if (removeLogo_Button != null)
-            {
-                removeLogo_Button.Visible = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
-            }
+            _removeLogo_Button.Visible = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
 
             // Position and show menu
             Point screenLocation = _companyLogo.PointToScreen(location);
