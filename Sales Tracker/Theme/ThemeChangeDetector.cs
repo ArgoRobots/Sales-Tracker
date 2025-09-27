@@ -3,6 +3,9 @@ using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.Theme
 {
+    /// <summary>
+    /// Detects Windows system theme changes and automatically updates application theme settings.
+    /// </summary>
     internal class ThemeChangeDetector
     {
         private static bool _isListeningForThemeChanges = false;

@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -19,7 +20,6 @@ namespace Sales_Tracker.GridView
         // Properties
         private static DataGridViewRow _removedRow;
         private static readonly string _deleteAction = LanguageManager.TranslateString("deleted");
-        private static readonly string _moveAction = LanguageManager.TranslateString("moved");
         private static DataGridViewCell _currentlyHoveredNoteCell;
         private static bool _isMouseDown, _skipNextPanelClose;
         private static int RowHeight => (int)(35 * DpiHelper.GetRelativeDpiScale());
@@ -51,7 +51,11 @@ namespace Sales_Tracker.GridView
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dataGridView.ScrollBars = ScrollBars.Vertical;
 
-            dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            if (parent == MainMenu_Form.Instance)
+            {
+                dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            }
+
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.MouseDown += DataGridView_MouseDown;
@@ -218,17 +222,19 @@ namespace Sales_Tracker.GridView
                 MainMenu_Form.Instance.ClosePanels();
 
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
+                CustomMessageBoxResult result;
 
-                string message;
                 if (grid.SelectedRows.Count == 1)
                 {
-                    message = "Are you sure you want to delete this row?";
+                    result = CustomMessageBox.Show("Delete row", "Are you sure you want to delete this row?",
+                       CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
                 }
                 else
                 {
-                    message = "Are you sure you want to delete the selected rows?";
+                    result = CustomMessageBox.Show("Delete rows", "Are you sure you want to delete the selected rows?",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
                 }
-                CustomMessageBoxResult result = CustomMessageBox.Show("Delete rows", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -312,7 +318,7 @@ namespace Sales_Tracker.GridView
                 ColumnVisibilityPanel.ShowPanel(sender as Guna2DataGridView, e);
             }
 
-            UpdateAlternatingRowColors((DataGridView)sender);
+            UpdateRowColors((DataGridView)sender);
         }
         private static void DataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
@@ -625,8 +631,8 @@ namespace Sales_Tracker.GridView
         }
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
-            FlowLayoutPanel flowPanel = RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            RightClickDataGridView_Panel.Tag = grid;  // This is used in the button event handlers
+            FlowLayoutPanel flowPanel = RightClickRowMenu.RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            RightClickRowMenu.RightClickDataGridView_Panel.Tag = grid;  // This is used in the button event handlers
 
             // First, hide all buttons
             foreach (Control control in flowPanel.Controls)
@@ -642,27 +648,42 @@ namespace Sales_Tracker.GridView
                                      selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
             int currentIndex = 0;
 
+            // Add buttons for Receipts_Form
+            if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
+            {
+                if (isSingleRowSelected)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+
+                    RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                }
+
+                return;  // Don't add any more buttons
+            }
+
             // Add ModifyBtn
             if (isSingleRowSelected)
             {
-                _rightClickDataGridView_ModifyBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ModifyBtn, currentIndex++);
+                RightClickRowMenu.RightClickDataGridView_ModifyBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ModifyBtn, currentIndex++);
             }
 
             // Add MoveBtn
             if (selectedOption == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
                 string text = LanguageManager.TranslateString("Move category to sales");
-                _rightClickDataGridView_MoveBtn.Visible = true;
-                _rightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
+                RightClickRowMenu.RightClickDataGridView_MoveBtn.Visible = true;
+                RightClickRowMenu.RightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MoveBtn, currentIndex++);
             }
             else if (selectedOption == MainMenu_Form.SelectedOption.CategorySales)
             {
                 string text = LanguageManager.TranslateString("Move category to purchases");
-                _rightClickDataGridView_MoveBtn.Visible = true;
-                _rightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
+                RightClickRowMenu.RightClickDataGridView_MoveBtn.Visible = true;
+                RightClickRowMenu.RightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MoveBtn, currentIndex++);
             }
 
             if (isPurchasesOrSales)
@@ -670,72 +691,123 @@ namespace Sales_Tracker.GridView
                 // Add ShowItemsBtn
                 if (isSingleRowSelected && grid.SelectedRows[0].Tag is (List<string>, TagData))
                 {
-                    _rightClickDataGridView_ShowItemsBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ShowItemsBtn, currentIndex++);
+                    RightClickRowMenu.RightClickDataGridView_ShowItemsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ShowItemsBtn, currentIndex++);
                 }
 
-                // Add ExportReceiptBtn
+                // Add ViewReceiptBtn and ExportReceiptBtn
                 if (AnySelectedRowHasReceipt(grid))
                 {
-                    _rightClickDataGridView_ExportReceiptBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                    if (isSingleRowSelected)
+                    {
+                        RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+                    }
+
+                    RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
                 }
             }
 
-            if (isPurchasesOrSales || isTransactionView)
+            // Add view details and action buttons based on current status
+            if (isSingleRowSelected && (isPurchasesOrSales || isTransactionView))
             {
-                // Add ReturnBtn and/or UndoReturnBtn based on current return status
-                if (isSingleRowSelected)
+                DataGridViewRow selectedRow;
+
+                // Check if we're in the items view of a transaction
+                if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                    selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
                 {
-                    DataGridViewRow selectedRow;
+                    // Use the main transaction row for status checks
+                    selectedRow = SelectedRowInMainMenu;
+                }
+                else
+                {
+                    // Normal case - we're in the main purchases/sales view
+                    selectedRow = grid.SelectedRows[0];
+                }
 
-                    // Check if we're in the items view of a transaction
-                    if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                        selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
-                    {
-                        // Use the main transaction row for return status checks
-                        selectedRow = SelectedRowInMainMenu;
-                    }
-                    else
-                    {
-                        // Normal case - we're in the main purchases/sales view
-                        selectedRow = grid.SelectedRows[0];
-                    }
+                // Check return status
+                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+                bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
 
-                    bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
-                    bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+                // Check loss status
+                bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
+                bool hasAnyLoss = isFullyLost || isPartiallyLost;
 
-                    if (isFullyReturned)
-                    {
-                        // Fully returned - only show undo button
-                        _rightClickDataGridView_UndoReturnBtn.Visible = true;
-                        _rightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
-                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
-                    }
-                    else if (isPartiallyReturned)
-                    {
-                        // Partially returned - show both buttons
-                        _rightClickDataGridView_ReturnBtn.Visible = true;
-                        _rightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
-                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ReturnBtn, currentIndex++);
+                // View Details buttons - show when there's information to view
+                if (hasAnyReturns)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
+                }
 
-                        _rightClickDataGridView_UndoReturnBtn.Visible = true;
-                        _rightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
-                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
-                    }
-                    else
-                    {
-                        // Not returned - only show return button
-                        _rightClickDataGridView_ReturnBtn.Visible = true;
-                        _rightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
-                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ReturnBtn, currentIndex++);
-                    }
+                if (hasAnyLoss)
+                {
+                    RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
+                }
+
+                // Return action buttons
+                if (isFullyReturned)
+                {
+                    // Fully returned - only show undo button
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                }
+                else if (isPartiallyReturned)
+                {
+                    // Partially returned - show both buttons
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                }
+                else if (!isFullyLost && !isPartiallyLost)
+                {
+                    // Not returned and not lost - show return button
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                }
+
+                // Loss action buttons
+                if (isFullyLost)
+                {
+                    // Fully lost - only show undo loss button
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                }
+                else if (isPartiallyLost)
+                {
+                    // Partially lost - show both buttons
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
+
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                }
+                else if (!isFullyReturned && !isPartiallyReturned)
+                {
+                    // Not lost and not returned - show mark as lost button
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
+                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
                 }
             }
 
             // Add DeleteBtn
-            RightClickDataGridView_DeleteBtn.Visible = true;
-            flowPanel.Controls.SetChildIndex(RightClickDataGridView_DeleteBtn, currentIndex);
+            RightClickRowMenu.RightClickDataGridView_DeleteBtn.Visible = true;
+            flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_DeleteBtn, currentIndex);
         }
         private static bool AnySelectedRowHasReceipt(DataGridView grid)
         {
@@ -754,17 +826,25 @@ namespace Sales_Tracker.GridView
         }
         private static void PositionRightClickDataGridViewMenu(Guna2DataGridView grid, MouseEventArgs e, DataGridView.HitTestInfo info)
         {
+            FlowLayoutPanel flowPanel = RightClickRowMenu.RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            bool hasVisibleButtons = flowPanel.Controls.OfType<Guna2Button>().Any(btn => btn.Visible);
+
+            if (!hasVisibleButtons)
+            {
+                return;  // Don't show the panel if no visible buttons
+            }
+
             Form parentForm = grid.FindForm();
             int formHeight = parentForm.ClientSize.Height;
             int formWidth = parentForm.ClientSize.Width;
 
-            CustomControls.SetRightClickMenuHeight(RightClickDataGridView_Panel);
+            CustomControls.SetRightClickMenuHeight(RightClickRowMenu.RightClickDataGridView_Panel);
 
-            SetHorizontalPosition(grid, RightClickDataGridView_Panel, e, formWidth);
-            SetVerticalPosition(grid, RightClickDataGridView_Panel, info, formHeight);
+            SetHorizontalPosition(grid, RightClickRowMenu.RightClickDataGridView_Panel, e, formWidth);
+            SetVerticalPosition(grid, RightClickRowMenu.RightClickDataGridView_Panel, info, formHeight);
 
-            grid.Parent.Controls.Add(RightClickDataGridView_Panel);
-            RightClickDataGridView_Panel.BringToFront();
+            grid.Parent.Controls.Add(RightClickRowMenu.RightClickDataGridView_Panel);
+            RightClickRowMenu.RightClickDataGridView_Panel.BringToFront();
         }
         public static void SetHorizontalPosition(Guna2DataGridView grid, Control control, MouseEventArgs e, int formWidth)
         {
@@ -782,12 +862,12 @@ namespace Sales_Tracker.GridView
             int targetTop;
 
             // Handle column header clicks differently from row clicks
-            if (info.RowIndex == -1) // Column header click
+            if (info.RowIndex == -1)  // Column header click
             {
                 // Position the panel right below the column header
                 targetTop = grid.Top + grid.ColumnHeadersHeight;
             }
-            else // Regular row click
+            else  // Regular row click
             {
                 int rowHeight = grid.Rows[0].Height;
                 int headerHeight = grid.ColumnHeadersHeight;
@@ -941,7 +1021,7 @@ namespace Sales_Tracker.GridView
                     }
                 }
 
-                UpdateAlternatingRowColors(dataGrid);
+                UpdateRowColors(dataGrid);
             }
         }
         public static void UpdateChargedDifferenceInRowWithMultipleItems(DataGridViewRow selectedRow)
@@ -1054,23 +1134,15 @@ namespace Sales_Tracker.GridView
         }
         public static void RemoveUnderlineFromCell(DataGridViewCell cell)
         {
-            // Remove underline by resetting the font without FontStyle.Underline
-            if (cell.Style.Font != null)
-            {
-                cell.Style.Font = new Font(cell.Style.Font, cell.Style.Font.Style & ~FontStyle.Underline);
-            }
-            else
-            {
-                cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
-            }
+            cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Regular);
         }
-        public static bool HasVisibleRows(params Guna2DataGridView[] dataGridViews)
+        public static bool HasVisibleRowsExcludingReturnedOrLost(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (row.Visible)
+                    if (row.Visible && !LostManager.IsTransactionFullyLost(row) && !ReturnManager.IsTransactionFullyReturned(row))
                     {
                         return true;
                     }
@@ -1092,25 +1164,48 @@ namespace Sales_Tracker.GridView
             }
             return false;
         }
+        public static bool HasVisibleRowsForLoss(params Guna2DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (row.Visible && LostManager.IsTransactionLost(row))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
-        /// Updates row appearance for returns in ItemsInTransaction forms.
-        /// Individual returned items will be displayed in red.
+        /// Updates row appearance for returns and losses in ItemsInTransaction forms.
+        /// Individual returned items will be displayed in red, lost items in dark red.
+        /// If an item is both returned and lost, loss styling takes priority.
         /// </summary>
-        public static void UpdateItemRowAppearanceForReturns(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
+        public static void UpdateItemRowAppearance(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
         {
             if (mainTransactionRow.Tag is not (List<string>, TagData))
             {
                 return;
             }
 
-            // Apply return styling to individual item rows
+            // Apply styling to individual item rows based on their status
             for (int i = 0; i < itemsGrid.Rows.Count; i++)
             {
                 DataGridViewRow itemRow = itemsGrid.Rows[i];
                 bool isItemReturned = ReturnManager.IsItemReturned(mainTransactionRow, i);
+                bool isItemLost = LostManager.IsItemLost(mainTransactionRow, i);
 
-                if (isItemReturned)
+                if (isItemLost)
+                {
+                    // Lost items take priority - mark in dark red
+                    itemRow.DefaultCellStyle.BackColor = CustomColors.LostItemBackground;
+                    itemRow.DefaultCellStyle.SelectionBackColor = CustomColors.LostItemSelection;
+                    itemRow.DefaultCellStyle.ForeColor = CustomColors.LostItemText;
+                }
+                else if (isItemReturned)
                 {
                     // Mark returned items in red
                     itemRow.DefaultCellStyle.BackColor = CustomColors.ReturnedItemBackground;
@@ -1119,14 +1214,14 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Reset to default colors for non-returned items
+                    // Reset to default colors for normal items
                     itemRow.DefaultCellStyle.BackColor = Color.Empty;
                     itemRow.DefaultCellStyle.SelectionBackColor = Color.Empty;
                     itemRow.DefaultCellStyle.ForeColor = Color.Empty;
                 }
             }
         }
-        private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
+        public static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)
             {
@@ -1140,7 +1235,7 @@ namespace Sales_Tracker.GridView
                 : ListSortDirection.Descending;
             dataGridView.Sort(sortedColumn, direction);
         }
-        public static void UpdateAlternatingRowColors(DataGridView dataGridView)
+        public static void UpdateRowColors(DataGridView dataGridView)
         {
             int visibleRowIndex = 0;
 
@@ -1148,11 +1243,24 @@ namespace Sales_Tracker.GridView
             {
                 if (!row.Visible) { continue; }
 
-                // Check return status for proper color application
+                // Check return and loss status for proper color application
                 bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
                 bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+                bool isFullyLost = LostManager.IsTransactionFullyLost(row);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
 
-                if (isFullyReturned)
+                // Priority order: Lost > Returned > Normal
+                if (isFullyLost)
+                {
+                    // Fully lost - dark red/maroon background
+                    LostManager.UpdateRowAppearanceForLoss(row, true, false);
+                }
+                else if (isPartiallyLost)
+                {
+                    // Partially lost - dark orange/brown background
+                    LostManager.UpdateRowAppearanceForLoss(row, false, true);
+                }
+                else if (isFullyReturned)
                 {
                     // Fully returned - red background
                     ReturnManager.UpdateRowAppearanceForReturn(row, true, false);
@@ -1164,7 +1272,7 @@ namespace Sales_Tracker.GridView
                 }
                 else
                 {
-                    // Not returned - apply alternating colors
+                    // Not returned or lost - apply alternating colors
                     row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
                         ? dataGridView.DefaultCellStyle.BackColor
                         : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
@@ -1199,7 +1307,7 @@ namespace Sales_Tracker.GridView
                 row.Visible = isVisible;
             }
 
-            UpdateAlternatingRowColors(grid);
+            UpdateRowColors(grid);
 
             return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
         }
@@ -1244,7 +1352,7 @@ namespace Sales_Tracker.GridView
             HandleValueDeletion(type, value);
             return false;
         }
-        private static void ShowInUseMessage(string type, string action)
+        public static void ShowInUseMessage(string type, string action)
         {
             CustomMessageBox.ShowWithFormat(
                 "Cannot be {0}",
@@ -1258,17 +1366,13 @@ namespace Sales_Tracker.GridView
         /// Determines whether a category can be moved or deleted by checking if it contains any products.
         /// Shows a message box if the action cannot be performed.
         /// </summary>
-        /// <returns>
-        /// true if the category can be moved or deleted (has no products);
-        /// false if the category contains products, in which case displays an error message.
-        /// </returns>
         private static bool CanCategoryBeMovedOrDeleted(string categoryName, List<Category> categoryList, string action)
         {
             if (MainMenu_Form.DoesCategoryHaveProducts(categoryName, categoryList))
             {
                 CustomMessageBox.ShowWithFormat(
                     "Cannot {0} category",
-                    "Cannot {0} category '{1}' because it contains products",
+                    "Cannot {1} category '{2}' because it contains products",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok,
                     action, action, categoryName);
@@ -1407,414 +1511,6 @@ namespace Sales_Tracker.GridView
             {
                 textBox.Text = textBox.Text;
             }
-        }
-
-        private static Guna2Button _rightClickDataGridView_ModifyBtn, _rightClickDataGridView_MoveBtn,
-            _rightClickDataGridView_ExportReceiptBtn, _rightClickDataGridView_ShowItemsBtn,
-            _rightClickDataGridView_ReturnBtn, _rightClickDataGridView_UndoReturnBtn;
-
-        // Right click row getters
-        public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
-        public static Guna2Button RightClickDataGridView_DeleteBtn { get; private set; }
-
-        // Right click row methods
-        public static void ConstructRightClickRowMenu()
-        {
-            RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
-                "rightClickDataGridView_Panel"
-            );
-
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickDataGridView_Panel.Controls[0];
-
-            _rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_ModifyBtn.Click += ModifyRow;
-
-            _rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_MoveBtn.Click += MoveRows;
-
-            _rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
-
-            _rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
-
-            _rightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Return product", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_ReturnBtn.Click += ReturnProduct;
-
-            _rightClickDataGridView_UndoReturnBtn = CustomControls.ConstructBtnForMenu("Undo return", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_UndoReturnBtn.Click += UndoReturnProduct;
-
-            RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
-            RightClickDataGridView_DeleteBtn.Click += DeleteRow;
-        }
-        private static void ModifyRow(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            Tools.OpenForm(new ModifyRow_Form(grid.SelectedRows[0]));
-        }
-        private static void MoveRows(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            List<DataGridViewRow> selectedRows = grid.SelectedRows.Cast<DataGridViewRow>().ToList();
-            if (selectedRows.Count == 0) { return; }
-
-            // Save scroll position
-            int scrollPosition = grid.FirstDisplayedScrollingRowIndex;
-            int firstSelectedIndex = selectedRows[0].Index;
-
-            // Move rows based on current selection
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
-            {
-                MoveCategoryRows(selectedRows, true);
-            }
-            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
-            {
-                MoveCategoryRows(selectedRows, false);
-            }
-
-            // Restore selection and scroll position
-            RestoreSelectionAndScroll(grid, firstSelectedIndex, scrollPosition);
-        }
-        private static void MoveCategoryRows(List<DataGridViewRow> rowsToMove, bool fromPurchaseToSale)
-        {
-            Guna2DataGridView sourceGrid = fromPurchaseToSale
-                ? Categories_Form.Instance.Purchase_DataGridView
-                : Categories_Form.Instance.Sale_DataGridView;
-
-            Guna2DataGridView targetGrid = fromPurchaseToSale
-                ? Categories_Form.Instance.Sale_DataGridView
-                : Categories_Form.Instance.Purchase_DataGridView;
-
-            List<Category> sourceList = fromPurchaseToSale
-                ? MainMenu_Form.Instance.CategoryPurchaseList
-                : MainMenu_Form.Instance.CategorySaleList;
-
-            List<Category> targetList = fromPurchaseToSale
-                ? MainMenu_Form.Instance.CategorySaleList
-                : MainMenu_Form.Instance.CategoryPurchaseList;
-
-            MainMenu_Form.IsProgramLoading = true;
-            int successfulMoves = 0;
-
-            foreach (DataGridViewRow row in rowsToMove)
-            {
-                string categoryName = row.Cells[0].Value.ToString();
-                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
-
-                // Check if category is being used in transactions
-                if (IsCategoryBeingUsedInTransactions(categoryName))
-                {
-                    ShowInUseMessage("category", _moveAction);
-                    continue;
-                }
-
-                // Check if category has products
-                if (category != null && category.ProductList.Count > 0)
-                {
-
-                    // Prepare products list for message box
-                    string allProductsList = string.Join("\n", category.ProductList.Select(p => $"• {p.Name} ({p.CompanyOfOrigin})"));
-
-                    // Ask user if they want to move products
-                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
-                        "Move category with {0} products",
-                        "The category '{1}' contains the following products:\n\n{2}\n\nDo you want to move all these products to the {3} category?",
-                        CustomMessageBoxIcon.Question,
-                        CustomMessageBoxButtons.OkCancel,
-                        category.ProductList.Count, categoryName, allProductsList, fromPurchaseToSale ? "Sales" : "Purchases");
-
-                    if (result != CustomMessageBoxResult.Ok)
-                    {
-                        continue;
-                    }
-
-                    // Move all products to the target list
-                    List<Category> targetCategories = fromPurchaseToSale
-                        ? MainMenu_Form.Instance.CategorySaleList
-                        : MainMenu_Form.Instance.CategoryPurchaseList;
-
-                    // Find or create a category in the target list
-                    Category targetCategory = targetCategories.FirstOrDefault(c => c.Name == categoryName);
-                    if (targetCategory == null)
-                    {
-                        targetCategory = new Category { Name = categoryName };
-                        targetCategories.Add(targetCategory);
-                    }
-
-                    // Open Products_Form if it exists
-                    Products_Form? productsForm = Tools.IsFormOpen<Products_Form>()
-                        ? (Products_Form)Application.OpenForms[nameof(Products_Form)]
-                        : null;
-
-                    // Determine which grids to update based on current view
-                    Guna2DataGridView sourceProductGrid = fromPurchaseToSale
-                        ? productsForm?.Purchase_DataGridView
-                        : productsForm?.Sale_DataGridView;
-
-                    Guna2DataGridView targetProductGrid = fromPurchaseToSale
-                        ? productsForm?.Sale_DataGridView
-                        : productsForm?.Purchase_DataGridView;
-
-                    // Move products
-                    foreach (Product product in category.ProductList.ToList())
-                    {
-                        category.ProductList.Remove(product);
-                        targetCategory.AddProduct(product);
-
-                        // Update Products_Form if open
-                        if (productsForm != null && sourceProductGrid != null && targetProductGrid != null)
-                        {
-                            // Find and remove the product row from source grid
-                            DataGridViewRow? productRowToRemove = sourceProductGrid.Rows
-                                .Cast<DataGridViewRow>()
-                                .FirstOrDefault(r =>
-                                    r.Cells[Products_Form.Column.ProductName.ToString()].Value.ToString() == product.Name &&
-                                    r.Cells[Products_Form.Column.CompanyOfOrigin.ToString()].Value.ToString() == product.CompanyOfOrigin
-                                );
-
-                            if (productRowToRemove != null)
-                            {
-                                sourceProductGrid.Rows.Remove(productRowToRemove);
-                            }
-
-                            // Add product to the target grid
-                            targetProductGrid.Rows.Add(
-                                product.ProductID,
-                                product.Name,
-                                targetCategory.Name,
-                                product.CountryOfOrigin,
-                                product.CompanyOfOrigin
-                            );
-                        }
-                    }
-                }
-
-                // Move the category row
-                sourceGrid.Rows.Remove(row);
-                targetGrid.Rows.Add(row);
-
-                // Update category lists
-                sourceList.Remove(category);
-                targetList.Add(category);
-
-                successfulMoves++;
-            }
-
-            if (successfulMoves > 0)
-            {
-                string direction = fromPurchaseToSale ? "Sales" : "Purchases";
-                string message = successfulMoves == 1
-                    ? $"Moved {successfulMoves} category to {direction}"
-                    : $"Moved {successfulMoves} categories to {direction}";
-                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
-            }
-
-            // Update UI
-            LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, sourceGrid);
-            SortDataGridViewByCurrentDirection(targetGrid);
-
-            // Save changes to file
-            MainMenu_Form.Instance.SaveCategoriesToFile(
-                fromPurchaseToSale ? MainMenu_Form.SelectedOption.CategoryPurchases : MainMenu_Form.SelectedOption.CategorySales
-            );
-            MainMenu_Form.Instance.SaveCategoriesToFile(
-                fromPurchaseToSale ? MainMenu_Form.SelectedOption.CategorySales : MainMenu_Form.SelectedOption.CategoryPurchases
-            );
-
-            MainMenu_Form.IsProgramLoading = false;
-        }
-        private static bool IsCategoryBeingUsedInTransactions(string categoryName)
-        {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
-            {
-                if (row.Cells[ReadOnlyVariables.Category_column].Value?.ToString() == categoryName)
-                {
-                    return true;
-                }
-
-                // Check if transaction has multiple items
-                if (row.Tag is not (List<string> items, TagData))
-                {
-                    continue;
-                }
-
-                // Do not check receipt if present
-                int itemsToCheck = items[^1].StartsWith(ReadOnlyVariables.Receipt_text)
-                    ? items.Count - 1
-                    : items.Count;
-
-                // Check each item's category
-                for (int i = 0; i < itemsToCheck; i++)
-                {
-                    string[] itemDetails = items[i].Split(',');
-                    if (itemDetails.Length > 1 && itemDetails[1] == categoryName)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        private static void RestoreSelectionAndScroll(DataGridView gridView, int previousIndex, int scrollPosition)
-        {
-            gridView.ClearSelection();
-
-            // Select the row at the previous index or the last row if the previous index is now out of bounds
-            int newRowIndex = previousIndex < gridView.Rows.Count - 1 ? previousIndex : gridView.Rows.Count - 1;
-            if (newRowIndex >= 0 && newRowIndex < gridView.Rows.Count)
-            {
-                gridView.Rows[newRowIndex].Selected = true;
-            }
-
-            // Restore scroll position
-            if (scrollPosition != 0 && scrollPosition < gridView.Rows.Count)
-            {
-                gridView.FirstDisplayedScrollingRowIndex = scrollPosition;
-            }
-        }
-        private static void ExportReceipt(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            ReceiptManager.ExportSelectedReceipts(grid);
-        }
-        private static void ShowItems(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
-        }
-        private static void ReturnProduct(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            if (grid.SelectedRows.Count != 1) { return; }
-
-            DataGridViewRow selectedRow;
-            bool isPurchase;
-
-            // Check if we're in the items view of a transaction
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
-            {
-                // Use the main transaction row, not the individual item row
-                selectedRow = SelectedRowInMainMenu;
-                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase;
-            }
-            else
-            {
-                // Normal case - we're in the main purchases/sales view
-                selectedRow = grid.SelectedRows[0];
-                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
-            }
-
-            using ReturnProduct_Form returnForm = new(selectedRow, isPurchase);
-            if (returnForm.ShowDialog() == DialogResult.OK)
-            {
-                CustomControls.CloseAllPanels();
-
-                // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
-                {
-                    itemsForm.RefreshItemReturnStatus();
-                }
-            }
-        }
-        private static void UndoReturnProduct(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            if (grid.SelectedRows.Count != 1) { return; }
-
-            DataGridViewRow selectedRow;
-
-            // Check if we're in the items view of a transaction
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
-            {
-                // Use the main transaction row, not the individual item row
-                selectedRow = SelectedRowInMainMenu;
-            }
-            else
-            {
-                // Normal case - we're in the main purchases/sales view
-                selectedRow = grid.SelectedRows[0];
-            }
-
-            using UndoReturn_Form undoForm = new(selectedRow);
-            if (undoForm.ShowDialog() == DialogResult.OK)
-            {
-                CustomControls.CloseAllPanels();
-
-                // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
-                {
-                    itemsForm.RefreshItemReturnStatus();
-                }
-            }
-        }
-        private static void DeleteRow(object sender, EventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
-            int index = grid.SelectedRows[^1].Index;
-
-            // Delete all selected rows
-            foreach (DataGridViewRow item in grid.SelectedRows)
-            {
-                DataGridViewRowCancelEventArgs eventArgs = new(item);
-                DataGridView_UserDeletingRow(grid, eventArgs);
-                if (item.Index == -1) { continue; }  // This can happen if ItemsInTransaction_Form is closed in DataGridView_UserDeletingRow()
-
-                if (!eventArgs.Cancel)
-                {
-                    grid.Rows.Remove(item);
-                }
-            }
-
-            // Select the row under the row that was just deleted
-            if (grid.Rows.Count != 0)
-            {
-                // If the deleted row was not the last one, select the next row
-                if (index < grid.Rows.Count)
-                {
-                    grid.Rows[index].Selected = true;
-                }
-                else  // If the deleted row was the last one, select the new last row
-                {
-                    grid.Rows[^1].Selected = true;
-                }
-            }
-        }
-
-        // Methods for right click row
-        public static string GetFilePathFromRowTag(object tag)
-        {
-            if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\'))
-            {
-                return ProcessDirectoryFromString(tagList[^1]);
-            }
-            else if (tag is (string tagString, TagData))
-            {
-                return ProcessDirectoryFromString(tagString);
-            }
-            else if (tag is string tagString2)
-            {
-                return ProcessDirectoryFromString(tagString2);
-            }
-            return "";
-        }
-        private static string ProcessDirectoryFromString(string path)
-        {
-            string[] pathParts = path.Split(Path.DirectorySeparatorChar);
-            if (pathParts[7] == ReadOnlyVariables.CompanyName_text)
-            {
-                pathParts[7] = Directories.CompanyName;
-            }
-            string newPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
-
-            newPath = newPath.Replace(ReadOnlyVariables.Receipt_text, "");
-
-            return File.Exists(newPath) ? newPath : "";
         }
     }
 }

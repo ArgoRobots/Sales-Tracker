@@ -157,8 +157,7 @@ namespace Sales_Tracker.Settings.Menus
 
                 CustomMessageBox.Show(
                     "Update Error",
-                    $"Failed to install update: {e.Error ?? "Unknown error"}\n\n" +
-                    $"Please try again later or contact support if the problem persists.",
+                    $"Failed to install update. Please try again later or contact support if the problem persists.",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok);
             }

@@ -108,14 +108,11 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static CustomMessageBoxResult ShowNoInternetMessage(string operationName = "this operation", bool showRetryOption = true)
         {
-            string title = "No Internet Connection";
-            string message = "An internet connection is required for {0}. Please check your connection and try again.";
-
-            CustomMessageBoxButtons buttons = showRetryOption
-                ? CustomMessageBoxButtons.RetryCancel
-                : CustomMessageBoxButtons.Ok;
-
-            return CustomMessageBox.ShowWithFormat(title, message, CustomMessageBoxIcon.Exclamation, buttons, operationName);
+            return CustomMessageBox.ShowWithFormat("No Internet Connection",
+                "An internet connection is required for {0}. Please check your connection and try again.",
+                CustomMessageBoxIcon.Exclamation,
+                showRetryOption ? CustomMessageBoxButtons.RetryCancel : CustomMessageBoxButtons.Ok,
+                operationName);
         }
 
         /// <summary>

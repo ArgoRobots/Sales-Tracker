@@ -4,7 +4,7 @@ using Sales_Tracker.Classes;
 namespace Sales_Tracker.Theme
 {
     /// <summary>
-    /// Detect Windows theme changes.
+    /// Monitors Windows theme registry keys and raises events when modifications are detected.
     /// </summary>
     internal class RegistryWatcher(RegistryHive hive, string keyPath)
     {

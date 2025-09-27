@@ -125,7 +125,6 @@ namespace Sales_Tracker
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
             DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", columnHeaders, _columnsToLoad, this);
-            Items_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Items_DataGridView.RowsRemoved -= DataGridViewManager.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= DataGridViewManager.DataGridView_UserDeletingRow;
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
@@ -183,7 +182,7 @@ namespace Sales_Tracker
         }
         public void RefreshItemReturnStatus()
         {
-            DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
+            DataGridViewManager.UpdateItemRowAppearance(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 
@@ -11,6 +12,7 @@ namespace Sales_Tracker.UI
         private static PictureBox _companyLogo;
         private static bool _isLogoHovered = false;
         private static Bitmap _cameraIcon;
+        private static Guna2Button _removeLogo_Button, _changeLogo_Button;
 
         // Getters
         public static Guna2Panel CompanyLogoRightClick_Panel { get; private set; }
@@ -27,21 +29,20 @@ namespace Sales_Tracker.UI
             int btnWidth = CustomControls.PanelBtnWidth - 50;
 
             // Change Logo button
-            Guna2Button changeLogo_Button = CustomControls.ConstructBtnForMenu("Change Logo...", btnWidth, true, flowPanel);
-            changeLogo_Button.Click += (sender, e) =>
+            _changeLogo_Button = CustomControls.ConstructBtnForMenu("Change logo", btnWidth, true, flowPanel);
+            _changeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
                 BrowseForCompanyLogo();
             };
 
             // Remove Logo button (will be shown/hidden based on whether there's a custom logo)
-            Guna2Button removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove Logo", btnWidth, true, flowPanel);
-            removeLogo_Button.Click += (sender, e) =>
+            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove logo", btnWidth, true, flowPanel);
+            _removeLogo_Button.Click += (sender, e) =>
             {
                 CustomControls.CloseAllPanels();
                 RemoveCompanyLogo();
             };
-            removeLogo_Button.Name = "RemoveLogo_Button";
         }
         public static void SetCompanyLogo()
         {
@@ -55,13 +56,6 @@ namespace Sales_Tracker.UI
             {
                 RemoveLogoControl();
             }
-        }
-        public static void Cleanup()
-        {
-            _companyLogo?.Image?.Dispose();
-            _companyLogo?.Dispose();
-            _cameraIcon?.Dispose();
-            CompanyLogoRightClick_Panel?.Dispose();
         }
 
         // Private methods
@@ -274,20 +268,21 @@ namespace Sales_Tracker.UI
         {
             if (e.Button == MouseButtons.Right)
             {
-                ShowLogoContextMenu(e.Location);
+                ShowLogoRightClickPanel(e.Location);
             }
         }
-        private static void ShowLogoContextMenu(Point location)
+        private static void ShowLogoRightClickPanel(Point location)
         {
-            // Toggle Remove Logo button visibility
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)CompanyLogoRightClick_Panel.Controls[0];
-            Guna2Button removeLogo_Button = flowPanel.Controls.OfType<Guna2Button>()
-                .FirstOrDefault(b => b.Name == "RemoveLogo_Button");
+            // Update button text based on logo state
+            bool hasCustomLogo = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
+            _changeLogo_Button.Text = hasCustomLogo
+                ? LanguageManager.TranslateString("Change logo")
+                : LanguageManager.TranslateString("Add logo");
 
-            if (removeLogo_Button != null)
-            {
-                removeLogo_Button.Visible = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
-            }
+            // Toggle Remove Logo button visibility
+            _removeLogo_Button.Visible = !string.IsNullOrEmpty(Properties.Settings.Default.CompanyLogoPath);
+
+            CustomControls.SetRightClickMenuHeight(CompanyLogoRightClick_Panel);
 
             // Position and show menu
             Point screenLocation = _companyLogo.PointToScreen(location);
@@ -314,6 +309,13 @@ namespace Sales_Tracker.UI
 
             try
             {
+                // Dispose current image first to release file lock
+                if (_companyLogo?.Image != null)
+                {
+                    _companyLogo.Image.Dispose();
+                    _companyLogo.Image = null;
+                }
+
                 // Copy the logo file to application data directory
                 string logoFileName = $"company_logo{Path.GetExtension(dialog.FileName)}";
                 string logoDestinationPath = Path.Combine(Directories.TempCompany_dir, logoFileName);
@@ -332,9 +334,9 @@ namespace Sales_Tracker.UI
                 LogLogoChange(oldLogoPath, dialog.FileName);  // Log with original filename for user clarity
                 LoadCompanyLogoImage();
             }
-            catch (Exception ex)
+            catch
             {
-                ShowImageError(ex.Message);
+                ShowImageError();
             }
         }
         private static void RemoveOldLogoFile()
@@ -362,12 +364,11 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.SettingsThatHaveChangedInFile, 3, message);
             Log.Write(2, $"Company logo updated: {newLogoPath}");
         }
-        private static void ShowImageError(string errorMessage)
+        private static void ShowImageError()
         {
             CustomMessageBox.ShowWithFormat("Invalid Image",
-                "The selected file is not a valid image or cannot be loaded.\n\nError: {0}",
-                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
-                errorMessage);
+                "The selected file is not a valid image or cannot be loaded.",
+                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
 
             Log.Error_WriteToFile("Failed to load selected logo image");
         }

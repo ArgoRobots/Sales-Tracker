@@ -65,13 +65,46 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Removes a receipt from a specified DataGridViewRow tag, deleting the file from the filesystem if it exists.
+        /// Removes a receipt from a specified DataGridViewRow tag and deletes the file if it exists.
         /// </summary>
-        public static void RemoveReceiptFromFile(DataGridViewRow row)
+        public static void RemoveReceiptFromTagAndFile(DataGridViewRow row)
         {
-            string filePath = row.Tag.ToString();
-            Directories.DeleteFile(filePath);
-            row.Tag = null;
+            if (row.Tag is (List<string> tagList, TagData tagData))
+            {
+                // Multiple items case - find and remove receipt, preserve other items
+                for (int i = tagList.Count - 1; i >= 0; i--)
+                {
+                    if (tagList[i].StartsWith(ReadOnlyVariables.Receipt_text))
+                    {
+                        string receiptPath = ProcessReceiptTextFromRowTag(tagList[i]);
+                        Directories.DeleteFile(receiptPath);
+                        tagList.RemoveAt(i);
+                        break;  // Only remove the first receipt found
+                    }
+                }
+                // Keep the tag structure intact
+                row.Tag = (tagList, tagData);
+            }
+            else if (row.Tag is (string tagString, TagData tagData2))
+            {
+                // Single item with receipt - remove receipt but preserve TagData
+                if (tagString.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    string receiptPath = ProcessReceiptTextFromRowTag(tagString);
+                    Directories.DeleteFile(receiptPath);
+                    row.Tag = tagData2;  // Convert back to TagData only
+                }
+            }
+            else if (row.Tag is string tagString1)  // Receipt_Form rows
+            {
+                // Single string case - delete file and set to null only if it's just a receipt
+                if (tagString1.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    string receiptPath = ProcessReceiptTextFromRowTag(tagString1);
+                    Directories.DeleteFile(receiptPath);
+                    row.Tag = null;
+                }
+            }
         }
 
         /// <summary>
@@ -161,7 +194,7 @@ namespace Sales_Tracker.Classes
             {
                 if (!row.Visible) { continue; }
 
-                string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+                string receipt = RightClickRowMenu.GetFilePathFromRowTag(row.Tag);
                 if (receipt == "")
                 {
                     doAllRowsHaveReceipt = false;
@@ -185,15 +218,45 @@ namespace Sales_Tracker.Classes
             if (isAnyReceiptExported)
             {
                 TrackReceiptExport(stopwatch, exportedFiles);
-
-                // Show success message
-                string message = exportedCount == 1 ? "Receipt exported successfully" : "Receipts exported successfully";
-                if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
-
-                CustomMessageBox.Show(
-                    exportedCount == 1 ? "Receipt exported" : "Receipts exported",
-                    message,
-                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                ShowSuccessMessage(exportedCount, doAllRowsHaveReceipt);
+            }
+        }
+        private static void ShowSuccessMessage(int exportedCount, bool doAllRowsHaveReceipt)
+        {
+            // Show success message
+            if (exportedCount == 1)
+            {
+                if (doAllRowsHaveReceipt)
+                {
+                    CustomMessageBox.Show(
+                        "Receipt exported",
+                        "Receipt exported successfully",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.Show(
+                        "Receipt exported",
+                        "Receipt exported successfully. Note: Not all the selected rows contain a receipt.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+            }
+            else
+            {
+                if (doAllRowsHaveReceipt)
+                {
+                    CustomMessageBox.Show(
+                        "Receipts exported",
+                        "Receipts exported successfully",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.Show(
+                        "Receipts exported",
+                        "Receipts exported successfully. Note: Not all the selected rows contain a receipt.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
             }
         }
         private static void TrackReceiptExport(Stopwatch stopwatch, List<string> exportedFiles)
@@ -252,6 +315,11 @@ namespace Sales_Tracker.Classes
             {
                 // Handle single item case
                 return ProcessReceiptTextFromRowTag(tagString);
+            }
+            else if (row.Tag is string tagString1)  // This handles Receipt_Form rows
+            {
+                // Handle single string
+                return ProcessReceiptTextFromRowTag(tagString1);
             }
 
             return null;

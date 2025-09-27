@@ -241,7 +241,8 @@ namespace Sales_Tracker.Classes
         public static void CloseAllOpenForms()
         {
             List<Form> formsToClose = Application.OpenForms.OfType<Form>()
-               .Where(form => form != MainMenu_Form.Instance)
+               .Where(form => form != MainMenu_Form.Instance &&
+                              !form.Text.Contains("DateTimeDialog"))  // Exclude these because Guna2DateTimePickers use Forms
                .ToList();
 
             foreach (Form form in formsToClose)

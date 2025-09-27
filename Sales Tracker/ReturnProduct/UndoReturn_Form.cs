@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -12,9 +13,8 @@ namespace Sales_Tracker
     {
         // Properties
         private readonly DataGridViewRow _transactionRow;
-        private readonly bool _hasPartialReturn;
+        private readonly bool _hasMultipleItems;
         private readonly List<string> _items;
-        private readonly List<int> _returnedItems;
         private List<Guna2CustomCheckBox> _itemCheckboxes;
         private Guna2Panel _itemsPanel;
         private Label _selectItemsLabel;
@@ -27,14 +27,9 @@ namespace Sales_Tracker
             if (transactionRow == null) { return; }
 
             _transactionRow = transactionRow;
+            _hasMultipleItems = _transactionRow.Tag is (List<string>, TagData);
 
-            // Get return information
-            (_, _, _, List<int> returnedItems) = ReturnManager.GetReturnInfo(_transactionRow);
-            _returnedItems = returnedItems ?? [];
-
-            _hasPartialReturn = _transactionRow.Tag is (List<string>, TagData) && _returnedItems.Count > 0;
-
-            if (_hasPartialReturn && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
+            if (_hasMultipleItems && _transactionRow.Tag is ValueTuple<List<string>, TagData> tuple)
             {
                 _items = tuple.Item1;
             }
@@ -44,13 +39,12 @@ namespace Sales_Tracker
             }
 
             LoadTransactionData();
-            if (_hasPartialReturn)
-            {
-                CreateItemSelectionControls();
-            }
+            LoadLossInformation();
+
             UpdateTheme();
             SetAccessibleDescriptions();
             UpdateCharacterCount();
+            ValidateInputs();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -65,7 +59,7 @@ namespace Sales_Tracker
 
             TransactionDetails_Label.Text = transactionType + LanguageManager.TranslateString(" Transaction Details:");
 
-            if (_hasPartialReturn)
+            if (_hasMultipleItems)
             {
                 // For partial returns, show transaction overview and return status
                 int totalItems = _items.Count;
@@ -76,12 +70,9 @@ namespace Sales_Tracker
                     totalItems--;
                 }
 
-                List<string> returnedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
-
                 TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
                                              $"{LanguageManager.TranslateString("Total Items")}: {totalItems}\n" +
-                                             $"{LanguageManager.TranslateString("Returned items")}: {string.Join(", ", returnedItemNames)}\n" +
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else
@@ -93,12 +84,19 @@ namespace Sales_Tracker
                                              $"{LanguageManager.TranslateString("Date")}: {date}";
             }
 
-            // Load return information
-            (DateTime? returnDate, string returnReason, string returnedBy, _) = ReturnManager.GetReturnInfo(_transactionRow);
+            // Only create item selection for partial returns
+            if (_hasMultipleItems)
+            {
+                CreateItemSelectionControls();
+            }
+        }
+        private void LoadLossInformation()
+        {
+            ReturnInfo returnInfo = ReturnManager.GetReturnInfo(_transactionRow);
 
-            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnDate?.ToString("MM/dd/yyyy HH:mm") ?? LanguageManager.TranslateString("Unknown")}\n" +
-                                    $"{LanguageManager.TranslateString("Reason")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}\n" +
-                                    $"{LanguageManager.TranslateString("Returned by")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
+            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnInfo.FormattedDate}\n" +
+                                    $"{LanguageManager.TranslateString("Reason")}: {returnInfo.DisplayReason}\n" +
+                                    $"{LanguageManager.TranslateString("Returned by")}: {returnInfo.DisplayActionBy}";
         }
         private void CreateItemSelectionControls()
         {
@@ -120,16 +118,6 @@ namespace Sales_Tracker
                 itemsToShow--;
             }
 
-            // Count how many items are actually returned
-            int returnedItemsToShow = 0;
-            for (int i = 0; i < itemsToShow; i++)
-            {
-                if (_returnedItems.Contains(i))
-                {
-                    returnedItemsToShow++;
-                }
-            }
-
             const int checkBoxHeight = 20;
             const int minItemHeight = 35;
             const int itemPadding = 5;
@@ -146,7 +134,7 @@ namespace Sales_Tracker
             };
             Controls.Add(_itemsPanel);
 
-            // Create checkboxes for returned items only
+            // Create checkboxes for each item
             _itemCheckboxes = [];
             int yPosition = 10;
             int totalCalculatedHeight = panelPadding;
@@ -162,16 +150,14 @@ namespace Sales_Tracker
                 int quantity = int.Parse(itemDetails[4]);
                 decimal pricePerUnit = decimal.Parse(itemDetails[5]);
 
-                bool isItemReturned = _returnedItems.Contains(i);
-
-                // Only show returned items as they are the ones that can be undone
-                if (!isItemReturned) { continue; }
+                bool isItemReturned = ReturnManager.IsItemReturned(_transactionRow, i);
 
                 // Create custom checkbox
                 Guna2CustomCheckBox itemCheckBox = new()
                 {
                     Size = new Size(20, 20),
                     Location = new Point(10, yPosition),
+                    Enabled = isItemReturned,  // Enable only returned items
                     Tag = i,  // Store the item index
                     Animated = true
                 };
@@ -182,11 +168,16 @@ namespace Sales_Tracker
                     Text = $"{productName} ({companyName}) - {LanguageManager.TranslateString("Quantity")}: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
                     MaximumSize = new Size(_itemsPanel.Width - 50, 0),
                     Font = new Font("Segoe UI", 10),
-                    ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
+                    ForeColor = isItemReturned ? CustomColors.Text : CustomColors.AccentGray,
                     AutoSize = true,
                     AutoEllipsis = true,
                     TextAlign = ContentAlignment.MiddleLeft
                 };
+
+                if (!isItemReturned)
+                {
+                    itemLabel.Text += " (" + LanguageManager.TranslateString("Not returned") + ")";
+                }
 
                 // Calculate the actual height needed for this item
                 int labelHeight = itemLabel.PreferredHeight;
@@ -248,9 +239,11 @@ namespace Sales_Tracker
         // Event handlers
         private void UndoReturn_Button_Click(object sender, EventArgs e)
         {
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            string undoReason = UndoReason_TextBox.Text.Trim();
+
+            if (_hasMultipleItems)
             {
-                // Get selected items to undo
+                // Get selected items partial undo
                 List<int> selectedItemIndices = [];
                 foreach (Guna2CustomCheckBox checkBox in _itemCheckboxes)
                 {
@@ -267,22 +260,13 @@ namespace Sales_Tracker
                     return;
                 }
 
-                // Check if user wants to undo all returned items
-                if (selectedItemIndices.Count == _returnedItems.Count)
-                {
-                    // Undoing all items - use full undo
-                    ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
-                }
-                else
-                {
-                    // Partial undo
-                    ReturnManager.UndoPartialReturn(_transactionRow, selectedItemIndices, UndoReason_TextBox.Text.Trim());
-                }
+                // Process partial undo loss for selected items
+                LostManager.UndoPartialLoss(_transactionRow, selectedItemIndices, undoReason);
             }
             else
             {
                 // Full undo for single item or complete transaction return
-                ReturnManager.UndoReturn(_transactionRow, UndoReason_TextBox.Text.Trim());
+                ReturnManager.UndoReturn(_transactionRow, undoReason);
             }
 
             DialogResult = DialogResult.OK;
@@ -306,16 +290,15 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            bool reasonProvided = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
             bool itemsSelected = true;
 
-            if (_hasPartialReturn && _itemCheckboxes?.Count > 0)
+            if (_hasMultipleItems)
             {
                 // For partial returns with selectable items, at least one item must be selected
                 itemsSelected = _itemCheckboxes.Any(cb => cb.Checked);
             }
 
-            UndoReturn_Button.Enabled = reasonProvided && itemsSelected;
+            UndoReturn_Button.Enabled = itemsSelected;
         }
         private void UpdateCharacterCount()
         {

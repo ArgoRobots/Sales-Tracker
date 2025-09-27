@@ -10,13 +10,13 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Encryption;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
+using Sales_Tracker.LostProduct;
 using Sales_Tracker.Properties;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.ComponentModel;
-using System.Reflection;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -80,7 +80,6 @@ namespace Sales_Tracker
             NetSparkleUpdateManager.CheckForUpdates();
 
             _chartTop = Purchases_Button.Bottom + 20;
-            _analyticChartTop = _analyticsTabButtons_Panel.Bottom + 20;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
@@ -91,8 +90,8 @@ namespace Sales_Tracker
             SaleDistribution_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
             Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
-            LoadChart.ConfigureChartForPie(PurchaseDistribution_Chart);
-            LoadChart.ConfigureChartForPie(SaleDistribution_Chart);
+            LoadChart.ConfigurePieChart(PurchaseDistribution_Chart);
+            LoadChart.ConfigurePieChart(SaleDistribution_Chart);
 
             MouseClickChartManager.InitCharts([
                 PurchaseTotals_Chart, PurchaseDistribution_Chart,
@@ -107,8 +106,7 @@ namespace Sales_Tracker
             {
                 CartesianChart cartesianChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = cartesianChart;
@@ -117,16 +115,11 @@ namespace Sales_Tracker
             {
                 PieChart pieChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = pieChart;
             }
-
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(chart, true, null);
 
             Controls.Add(chart);
             return chart;
@@ -149,8 +142,6 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
-            SortFromDate = default;
-            SortToDate = default;
         }
         private void InitDataGridViews()
         {
@@ -179,7 +170,7 @@ namespace Sales_Tracker
         {
             DataGridViewColumn chargedDifferenceColumn = Purchase_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
-            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or politicy variations across countries.";
+            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or policy variations across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             DataGridViewColumn totalColumn = Sale_DataGridView.Columns[Column.Total.ToString()];
@@ -344,16 +335,23 @@ namespace Sales_Tracker
             SaleDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
+            // Geographic Analysis Charts
             CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CompaniesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
-            WorldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            _worldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Operational Charts
             Accountants_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Performance and Growth Charts
             GrowthRates_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SalesVsExpenses_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             AverageTransactionValue_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalTransactions_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             AverageShippingCosts_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            // Returns Analysis Charts
             ReturnsOverTime_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ReturnReasons_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ReturnFinancialImpact_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -370,23 +368,37 @@ namespace Sales_Tracker
             SaleDistribution_Chart.Tag = ChartDataType.DistributionOfSales;
             Profits_Chart.Tag = ChartDataType.TotalProfits;
 
-            // Analytics charts
+            // Geographic Analysis Charts
             CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
             CompaniesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
             CountriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
-            WorldMap_GeoMap.Tag = ChartDataType.WorldMap;
+            _worldMap_GeoMap.Tag = ChartDataType.WorldMap;
+
+            // Operational Charts
             Accountants_Chart.Tag = ChartDataType.Accountants;
+
+            // Performance and Growth Charts
             GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
             SalesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
             TotalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
             AverageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
             AverageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
+
+            // Returns Analysis Charts
             ReturnsOverTime_Chart.Tag = ChartDataType.ReturnsOverTime;
             ReturnReasons_Chart.Tag = ChartDataType.ReturnReasons;
             ReturnFinancialImpact_Chart.Tag = ChartDataType.ReturnFinancialImpact;
             ReturnsByCategory_Chart.Tag = ChartDataType.ReturnsByCategory;
             ReturnsByProduct_Chart.Tag = ChartDataType.ReturnsByProduct;
             PurchaseVsSaleReturns_Chart.Tag = ChartDataType.PurchaseVsSaleReturns;
+
+            // Losses Analysis Charts
+            LossesOverTime_Chart.Tag = ChartDataType.LossesOverTime;
+            LossReasons_Chart.Tag = ChartDataType.LossReasons;
+            LossFinancialImpact_Chart.Tag = ChartDataType.LossFinancialImpact;
+            LossesByCategory_Chart.Tag = ChartDataType.LossesByCategory;
+            LossesByProduct_Chart.Tag = ChartDataType.LossesByProduct;
+            PurchaseVsSaleLosses_Chart.Tag = ChartDataType.PurchaseVsSaleLosses;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -495,23 +507,8 @@ namespace Sales_Tracker
                 ProcessRow(dataGridView, rowData);
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
-
-            ApplyReturnAppearancesToAllRows(dataGridView);
-        }
-        private static void ApplyReturnAppearancesToAllRows(Guna2DataGridView dataGridView)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
-                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
-
-                if (isFullyReturned || isPartiallyReturned)
-                {
-                    ReturnManager.UpdateRowAppearanceForReturn(row, isFullyReturned, isPartiallyReturned);
-                }
-            }
         }
         private static bool ValidateFile(string filePath)
         {
@@ -787,7 +784,6 @@ namespace Sales_Tracker
                 return;
             }
 
-            CompanyLogo.Cleanup();
             AnonymousDataManager.TrackSessionEnd();
             ThemeChangeDetector.StopListeningForThemeChanges();
             Log.SaveLogs();
@@ -819,6 +815,8 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Analytics)
             {
+                PositionTabButtons();
+                _analyticChartTop = _analyticsTabButtons_Panel.Bottom + 20;
                 LayoutChartsForTab(_selectedTabKey, spaceBetweenCharts);
             }
             else
@@ -854,6 +852,35 @@ namespace Sales_Tracker
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height + 50);
             }
         }
+        private void PositionTabButtons()
+        {
+            if (_tabButtons == null || _analyticsTabButtons_Panel == null)
+            {
+                return;
+            }
+
+            const int startX = 10;
+            int buttonWidth = Width >= 1600 ? 200 : 180;
+            int fontSize = Width >= 1600 ? 10 : 9;
+            int buttonSpacing = Width >= 1600 ? 12 : 10;
+            int imageSize = Width >= 1600 ? 25 : 20;
+
+            // Position and size buttons
+            for (int i = 0; i < _tabButtons.Count; i++)
+            {
+                Guna2Button button = _tabButtons[i];
+
+                button.Size = new Size(buttonWidth, 45);
+                button.Location = new Point(i * (buttonWidth + buttonSpacing) + startX, 10);
+                button.Font = new Font("Segoe UI", fontSize, FontStyle.Bold);
+                button.ImageSize = new Size(imageSize, imageSize);
+            }
+
+            // Update panel size
+            int totalWidth = _tabButtons.Count * (buttonWidth + buttonSpacing) - buttonSpacing + (startX * 2);
+            _analyticsTabButtons_Panel.Size = new Size(totalWidth, 65);
+            _analyticsTabButtons_Panel.Location = new Point((ClientSize.Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
+        }
         private void LayoutChartsForTab(AnalyticsTab tabKey, int spacing)
         {
             int startY = _analyticChartTop;
@@ -884,8 +911,8 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     // Position controls at the top
-                    WorldMapControls_Panel.Location = new Point((
-                        ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                    _worldMapControls_Panel.Location = new Point((
+                        ClientSize.Width - _worldMapControls_Panel.Width) / 2,
                         _analyticsTabButtons_Panel.Bottom + 10);
 
                     if (charts.Count >= 4)
@@ -893,8 +920,8 @@ namespace Sales_Tracker
                         Control geoMap = charts[0];
 
                         // GeoMap takes top 60% of space
-                        int geoMapY = WorldMapControls_Panel.Bottom + 10;
-                        int geoMapHeight = (int)((availableHeight - WorldMapControls_Panel.Height - 20) * 0.6);
+                        int geoMapY = _worldMapControls_Panel.Bottom + 10;
+                        int geoMapHeight = (int)((availableHeight - _worldMapControls_Panel.Height - 20) * 0.6);
                         int geoMapWidth = availableWidth;
 
                         SetChartPosition(geoMap, new Size(geoMapWidth, geoMapHeight),
@@ -905,7 +932,7 @@ namespace Sales_Tracker
                         if (pieCharts.Count == 3)
                         {
                             int smallChartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
-                            int smallChartHeight = Math.Min(maxChartHeight, availableHeight - geoMapHeight - WorldMapControls_Panel.Height - 30);
+                            int smallChartHeight = Math.Min(maxChartHeight, availableHeight - geoMapHeight - _worldMapControls_Panel.Height - 30);
                             int smallChartsY = geoMapY + geoMapHeight + spacing;
                             int smallChartsStartX = (ClientSize.Width - (smallChartWidth * 3 + spacing * 2)) / 2;
 
@@ -978,6 +1005,27 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Returns:
+                    // 2x3 grid layout
+                    if (charts.Count >= 6)
+                    {
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
+
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
+
+                        // Top row - 3 charts
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY);
+
+                        // Bottom row - 3 charts
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[4], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
+                        SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
+                    }
+                    break;
+
+                case AnalyticsTab.LostProducts:
                     // 2x3 grid layout
                     if (charts.Count >= 6)
                     {
@@ -1284,17 +1332,17 @@ namespace Sales_Tracker
                 CenterShowingResultsLabel();
                 await Search_TextBox.EnhanceSearchAsync();
             }
-            // Show AI search prompt for AI queries (but don't start regular search)
+            // Show AI search prompt for AI queries
             else if (isAIQuery)
             {
                 ShowingResultsFor_Label.Text = LanguageManager.TranslateString("Press enter to begin AI search");
                 CenterShowingResultsLabel();
             }
-            // Start timer for regular searches (only if not an AI query)
-            else if (!timerRunning)
+            // Start timer for regular searches
+            else if (!_timerRunning)
             {
-                timerRunning = true;
-                searchTimer.Start();
+                _timerRunning = true;
+                _search_Timer.Start();
             }
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
@@ -1304,10 +1352,10 @@ namespace Sales_Tracker
                 AISearchExtensions.ResetQuery();
 
                 // Start timer for regular searches
-                if (!timerRunning)
+                if (!_timerRunning)
                 {
-                    timerRunning = true;
-                    searchTimer.Start();
+                    _timerRunning = true;
+                    _search_Timer.Start();
                 }
             }
         }
@@ -1316,16 +1364,16 @@ namespace Sales_Tracker
             Search_TextBox.Clear();
         }
 
-        // TimeRange
-        public static Guna2Panel TimeRangePanel { get; private set; }
+        // DateRange
+        public static Guna2Panel DateRangePanel { get; private set; }
         private static void ConstructTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
-            TimeRangePanel = dateRange_Form.Main_Panel;
+            DateRangePanel = dateRange_Form.Main_Panel;
         }
         private void TimeRange_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(TimeRangePanel))
+            if (Controls.Contains(DateRangePanel))
             {
                 CloseDateRangePanel();
             }
@@ -1334,34 +1382,34 @@ namespace Sales_Tracker
                 CloseAllPanels(null, null);
 
                 // Set the location for the panel
-                TimeRangePanel.Location = new Point(
-                    TimeRange_Button.Right - TimeRangePanel.Width,
+                DateRangePanel.Location = new Point(
+                    TimeRange_Button.Right - DateRangePanel.Width,
                     TimeRange_Button.Bottom);
 
-                Controls.Add(TimeRangePanel);
-                TimeRangePanel.BringToFront();
+                Controls.Add(DateRangePanel);
+                DateRangePanel.BringToFront();
             }
         }
         public void CloseDateRangePanel()
         {
-            Controls.Remove(TimeRangePanel);
+            Controls.Remove(DateRangePanel);
         }
 
         // Search timer
-        private Timer searchTimer;
-        private bool timerRunning = false;
+        private Timer _search_Timer;
+        private bool _timerRunning = false;
         private void InitiateSearchTimer()
         {
-            searchTimer = new()
+            _search_Timer = new()
             {
                 Interval = 300
             };
-            searchTimer.Tick += SearchTimer_Tick;
+            _search_Timer.Tick += SearchTimer_Tick;
         }
         private void SearchTimer_Tick(object sender, EventArgs e)
         {
-            searchTimer.Stop();
-            timerRunning = false;
+            _search_Timer.Stop();
+            _timerRunning = false;
             RefreshDataGridViewAndCharts();
         }
 
@@ -1535,10 +1583,10 @@ namespace Sales_Tracker
                 }
             }
 
-            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView);
 
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
-            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
+            DataGridViewManager.UpdateRowColors(dataGridView);
             UpdateTotalLabels();
 
             dataGridView.ResumeLayout(true);
@@ -1868,7 +1916,13 @@ namespace Sales_Tracker
             ReturnDate,
             ReturnReason,
             ReturnedBy,
-            ReturnedItems
+            ReturnedItems,
+
+            IsLost,
+            LostDate,
+            LostReason,
+            LostBy,
+            LostItems
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
@@ -1987,7 +2041,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            Total_Panel.Visible = DataGridViewManager.HasVisibleRows(SelectedDataGridView);
+            Total_Panel.Visible = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(SelectedDataGridView);
 
             int totalQuantity = 0;
 
@@ -2000,15 +2054,31 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in SelectedDataGridView.Rows)
             {
-                if (!LoadChart.IsRowValid(row)) { continue; }
+                // Skip invalid rows (includes fully returned and fully lost items)
+                if (!LoadChart.IsRowValid(row))
+                {
+                    continue;
+                }
 
-                totalQuantity += Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
-                totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
-                totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
-                fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
-                discount += Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
-                chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
-                totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
+                // For partially returned or lost items, calculate only the non-affected portion
+                int rowQuantity = Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
+                decimal rowTax = Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
+                decimal rowShipping = Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
+                decimal rowFee = Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
+                decimal rowDiscount = Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
+                decimal rowChargedDifference = Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                decimal rowTotalPrice = Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
+
+                // Calculate the percentage of items that are still valid (not returned or lost)
+                decimal validPercentage = CalculateValidItemsPercentage(row);
+
+                totalQuantity += (int)(rowQuantity * validPercentage);
+                totalTax += rowTax * validPercentage;
+                totalShipping += rowShipping * validPercentage;
+                fee += rowFee * validPercentage;
+                discount += rowDiscount * validPercentage;
+                chargedDifference += rowChargedDifference * validPercentage;
+                totalPrice += rowTotalPrice * validPercentage;
             }
 
             LabelManager.ShowTotalsWithTransactions(Total_Label, SelectedDataGridView);
@@ -2019,6 +2089,45 @@ namespace Sales_Tracker
             Discount_Label.Text = $"{CurrencySymbol}{discount:N2}";
             ChargedDifference_Label.Text = $"{CurrencySymbol}{chargedDifference:N2}";
             Price_Label.Text = $"{CurrencySymbol}{totalPrice:N2}";
+        }
+        private static decimal CalculateValidItemsPercentage(DataGridViewRow row)
+        {
+            if (row.Tag is not (List<string> items, TagData tagData))
+            {
+                // Single item transaction
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
+
+                // For single items, partial return/loss doesn't make sense, so return full value
+                return (isPartiallyReturned || isPartiallyLost) ? 0m : 1m;
+            }
+
+            // Multi-item transaction
+            int totalItems = items.Count;
+            if (items.Count > 0 && items[^1].StartsWith(ReadOnlyVariables.Receipt_text))
+            {
+                totalItems--;  // Don't count receipt
+            }
+
+            if (totalItems == 0) return 0m;
+
+            int affectedItems = 0;
+
+            // Count returned items
+            if (tagData.ReturnedItems != null)
+            {
+                affectedItems += tagData.ReturnedItems.Count;
+            }
+
+            // Count lost items
+            if (tagData.LostItems != null)
+            {
+                affectedItems += tagData.LostItems.Count;
+            }
+
+            // Calculate percentage of valid (non-affected) items
+            int validItems = Math.Max(0, totalItems - affectedItems);
+            return totalItems > 0 ? (decimal)validItems / totalItems : 0m;
         }
 
         // Save to file
@@ -2134,7 +2243,8 @@ namespace Sales_Tracker
             Financial,
             Performance,
             Operational,
-            Returns
+            Returns,
+            LostProducts
         }
         public enum ChartDataType
         {
@@ -2158,7 +2268,13 @@ namespace Sales_Tracker
             ReturnsByCategory,
             ReturnsByProduct,
             PurchaseVsSaleReturns,
-            WorldMap
+            WorldMap,
+            LossesOverTime,
+            LossReasons,
+            LossFinancialImpact,
+            LossesByCategory,
+            LossesByProduct,
+            PurchaseVsSaleLosses
         }
         public enum GeoMapDataType
         {
@@ -2186,13 +2302,19 @@ namespace Sales_Tracker
         public PieChart PurchaseDistribution_Chart { get; private set; }
         public CartesianChart SaleTotals_Chart { get; private set; }
         public PieChart SaleDistribution_Chart { get; private set; }
+        public CartesianChart LossesOverTime_Chart { get; private set; }
+        public PieChart LossReasons_Chart { get; private set; }
+        public CartesianChart LossFinancialImpact_Chart { get; private set; }
+        public PieChart LossesByCategory_Chart { get; private set; }
+        public PieChart LossesByProduct_Chart { get; private set; }
+        public PieChart PurchaseVsSaleLosses_Chart { get; private set; }
 
         // GeoMap properties
-        public GeoMap WorldMap_GeoMap { get; private set; }
-        public Guna2Panel WorldMapControls_Panel { get; private set; }
-        public Guna2CustomRadioButton CombinedData_RadioButton { get; private set; }
-        public Guna2CustomRadioButton PurchasesOnly_RadioButton { get; private set; }
-        public Guna2CustomRadioButton SalesOnly_RadioButton { get; private set; }
+        private GeoMap _worldMap_GeoMap;
+        private Guna2Panel _worldMapControls_Panel;
+        private Guna2CustomRadioButton _combinedData_RadioButton;
+        private Guna2CustomRadioButton _purchasesOnly_RadioButton;
+        private Guna2CustomRadioButton _salesOnly_RadioButton;
         private Label _worldMapDataType_Label;
         private Label _combinedData_Label;
         private Label _purchasesOnly_Label;
@@ -2224,7 +2346,7 @@ namespace Sales_Tracker
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
-                WorldMap_GeoMap,
+                _worldMap_GeoMap,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2275,8 +2397,14 @@ namespace Sales_Tracker
             ReturnsByCategory_Chart = ConstructAnalyticsChart("returnsByCategory_Chart", false) as PieChart;
             ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart", false) as PieChart;
             PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart", false) as PieChart;
+            LossesOverTime_Chart = ConstructAnalyticsChart("lossesOverTime_Chart", true) as CartesianChart;
+            LossReasons_Chart = ConstructAnalyticsChart("lossReasons_Chart", false) as PieChart;
+            LossFinancialImpact_Chart = ConstructAnalyticsChart("lossFinancialImpact_Chart", true) as CartesianChart;
+            LossesByCategory_Chart = ConstructAnalyticsChart("lossesByCategory_Chart", false) as PieChart;
+            LossesByProduct_Chart = ConstructAnalyticsChart("lossesByProduct_Chart", false) as PieChart;
+            PurchaseVsSaleLosses_Chart = ConstructAnalyticsChart("purchaseVsSaleLosses_Chart", false) as PieChart;
 
-            WorldMap_GeoMap = ConstructGeoMap();
+            _worldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
 
             IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
@@ -2351,21 +2479,18 @@ namespace Sales_Tracker
             Guna2Button returnsButton = CreateTabButton("Returns", AnalyticsTab.Returns, Resources.Return);
             tabButtons.Add(returnsButton);
 
-            // Position buttons
-            byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
+            Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
+            tabButtons.Add(lostProductsButton);
 
-            for (int i = 0; i < tabButtons.Count; i++)
+            _tabButtons = tabButtons;
+
+            // Add buttons to panel (positioning will be done in PositionTabButtons)
+            foreach (Guna2Button button in tabButtons)
             {
-                Guna2Button button = tabButtons[i];
-                button.Location = new Point(i * (buttonWidth + buttonSpacing) + startX, 10);
                 tabButtonsPanel.Controls.Add(button);
             }
 
             _analyticsTabButtons_Panel = tabButtonsPanel;
-            _analyticsTabButtons_Panel.Size = new Size(tabButtons.Count * (buttonWidth + buttonSpacing) + startX, 65);
-            _analyticsTabButtons_Panel.Location = new Point((Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
-
-            _tabButtons = tabButtons;
 
             ThemeManager.SetThemeForControls([tabButtonsPanel]);
 
@@ -2382,10 +2507,8 @@ namespace Sales_Tracker
                 Text = title,
                 Tag = tabKey,
                 Image = icon,
-                Size = new Size(200, 45),
                 ImageOffset = new Point(-5, 0),
                 ImageSize = new Size(25, 25),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 BorderRadius = 6,
             };
 
@@ -2442,11 +2565,11 @@ namespace Sales_Tracker
 
             _tabControls[AnalyticsTab.Geographic].AddRange(
             [
-                WorldMap_GeoMap,
+                _worldMap_GeoMap,
                 CountriesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
                 CompaniesOfOrigin_Chart,
-                WorldMapControls_Panel
+                _worldMapControls_Panel
             ]);
 
             _tabControls[AnalyticsTab.Financial].AddRange(
@@ -2482,13 +2605,23 @@ namespace Sales_Tracker
                 PurchaseVsSaleReturns_Chart
             ]);
 
+            _tabControls[AnalyticsTab.LostProducts].AddRange(
+            [
+                LossesOverTime_Chart,
+                LossReasons_Chart,
+                LossFinancialImpact_Chart,
+                LossesByCategory_Chart,
+                LossesByProduct_Chart,
+                PurchaseVsSaleLosses_Chart
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
-                WorldMap_GeoMap,
-                WorldMapControls_Panel,
+                _worldMap_GeoMap,
+                _worldMapControls_Panel,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2503,7 +2636,13 @@ namespace Sales_Tracker
                 PurchaseVsSaleReturns_Chart,
                 IncludeFreeShipping_CheckBox,
                 _includeFreeShipping_Label,
-                _analyticsTabButtons_Panel
+                _analyticsTabButtons_Panel,
+                LossesOverTime_Chart,
+                LossReasons_Chart,
+                LossFinancialImpact_Chart,
+                LossesByCategory_Chart,
+                LossesByProduct_Chart,
+                PurchaseVsSaleLosses_Chart,
             ];
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
@@ -2528,7 +2667,7 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                    LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
+                    LoadChart.LoadWorldMapChart(_worldMap_GeoMap, dataType);
 
                     LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
@@ -2587,6 +2726,26 @@ namespace Sales_Tracker
                     LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart);
                     SetChartTitle(PurchaseVsSaleReturns_Chart, TranslatedChartTitles.PurchaseVsSaleReturns);
                     break;
+
+                case AnalyticsTab.LostProducts:
+                    LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
+                    SetChartTitle(LossesOverTime_Chart, TranslatedChartTitles.LossesOverTime);
+
+                    LoadChart.LoadLossReasonsChart(LossReasons_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossReasons_Chart, TranslatedChartTitles.LossReasons);
+
+                    LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
+                    SetChartTitle(LossFinancialImpact_Chart, TranslatedChartTitles.LossFinancialImpact);
+
+                    LoadChart.LoadLossesByCategoryChart(LossesByCategory_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossesByCategory_Chart, TranslatedChartTitles.LossesByCategory);
+
+                    LoadChart.LoadLossesByProductChart(LossesByProduct_Chart, PieChartGrouping.Top8);
+                    SetChartTitle(LossesByProduct_Chart, TranslatedChartTitles.LossesByProduct);
+
+                    LoadChart.LoadPurchaseVsSaleLossesChart(PurchaseVsSaleLosses_Chart);
+                    SetChartTitle(PurchaseVsSaleLosses_Chart, TranslatedChartTitles.PurchaseVsSaleLosses);
+                    break;
             }
         }
         private void ShowControlsForTab(AnalyticsTab tabKey)
@@ -2628,8 +2787,7 @@ namespace Sales_Tracker
             {
                 CartesianChart cartesianChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
                 chart = cartesianChart;
@@ -2638,17 +2796,12 @@ namespace Sales_Tracker
             {
                 PieChart pieChart = new()
                 {
-                    Name = name,
-                    Title = CreateChartTitle("")
+                    Name = name
                 };
 
-                LoadChart.ConfigureChartForPie(pieChart);
+                LoadChart.ConfigurePieChart(pieChart);
                 chart = pieChart;
             }
-
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(chart, true, null);
 
             Controls.Add(chart);
             return chart;
@@ -2707,6 +2860,11 @@ namespace Sales_Tracker
                         LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
                         LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                         break;
+
+                    case AnalyticsTab.LostProducts:
+                        LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
+                        LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
+                        break;
                 }
             }
             else
@@ -2739,10 +2897,6 @@ namespace Sales_Tracker
                 Visible = false
             };
 
-            // Enable double buffering
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(geoMap, true, null);
-
             Controls.Add(geoMap);
             return geoMap;
         }
@@ -2764,7 +2918,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             // Combined data option
-            CombinedData_RadioButton = new Guna2CustomRadioButton
+            _combinedData_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2782,13 +2936,13 @@ namespace Sales_Tracker
             };
             _combinedData_Label.Click += (s, e) =>
             {
-                CombinedData_RadioButton.Checked = true;
+                _combinedData_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
             // Purchases only option
-            PurchasesOnly_RadioButton = new Guna2CustomRadioButton
+            _purchasesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2806,13 +2960,13 @@ namespace Sales_Tracker
             };
             _purchasesOnly_Label.Click += (s, e) =>
             {
-                PurchasesOnly_RadioButton.Checked = true;
+                _purchasesOnly_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
             // Sales only option
-            SalesOnly_RadioButton = new Guna2CustomRadioButton
+            _salesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Animated = true
@@ -2830,49 +2984,44 @@ namespace Sales_Tracker
             };
             _salesOnly_Label.Click += (s, e) =>
             {
-                SalesOnly_RadioButton.Checked = true;
+                _salesOnly_RadioButton.Checked = true;
                 CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
             // Create panel (size will be calculated in RecalculateWorldMapControlsLayout)
-            WorldMapControls_Panel = new Guna2Panel
+            _worldMapControls_Panel = new Guna2Panel
             {
                 FillColor = Color.Transparent,
                 BorderThickness = 0,
                 Visible = false
             };
-            WorldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
+            _worldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Add all controls to panel
-            WorldMapControls_Panel.Controls.AddRange([
+            _worldMapControls_Panel.Controls.AddRange([
                 _worldMapDataType_Label,
-                CombinedData_RadioButton,
+                _combinedData_RadioButton,
                 _combinedData_Label,
-                PurchasesOnly_RadioButton,
+                _purchasesOnly_RadioButton,
                 _purchasesOnly_Label,
-                SalesOnly_RadioButton,
+                _salesOnly_RadioButton,
                 _salesOnly_Label
             ]);
 
-            Controls.Add(WorldMapControls_Panel);
-            CombinedData_RadioButton.Checked = true;  // Check it after the control is added
+            Controls.Add(_worldMapControls_Panel);
+            _combinedData_RadioButton.Checked = true;  // Check it after the control is added
 
             // Set up event handlers
-            SalesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
-            CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
-            PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _salesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _combinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            _purchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
             RecalculateWorldMapControlsLayout();
         }
-
-        /// <summary>
-        /// Recalculates and repositions the world map controls.
-        /// This should be called after language changes or during initial construction.
-        /// </summary>
         public void RecalculateWorldMapControlsLayout()
         {
-            if (WorldMapControls_Panel == null || _worldMapDataType_Label == null)
+            if (_worldMapControls_Panel == null || _worldMapDataType_Label == null)
             {
                 return;
             }
@@ -2893,29 +3042,29 @@ namespace Sales_Tracker
             int labelY = (panelHeight - _combinedData_Label.PreferredHeight) / 2;
 
             // Reposition Combined data option
-            CombinedData_RadioButton.Location = new Point(currentX, radioButtonY);
+            _combinedData_RadioButton.Location = new Point(currentX, radioButtonY);
             _combinedData_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
             currentX += radioButtonSize + radioLabelSpacing + _combinedData_Label.PreferredWidth + optionSpacing;
 
             // Reposition Purchases only option
-            PurchasesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _purchasesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
             _purchasesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
             currentX += radioButtonSize + radioLabelSpacing + _purchasesOnly_Label.PreferredWidth + optionSpacing;
 
             // Reposition Sales only option
-            SalesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _salesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
             _salesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
 
             // Recalculate total panel width
             int totalWidth = currentX + radioButtonSize + radioLabelSpacing + _salesOnly_Label.PreferredWidth;
 
             // Update panel size
-            WorldMapControls_Panel.Size = new Size(totalWidth, panelHeight);
+            _worldMapControls_Panel.Size = new Size(totalWidth, panelHeight);
 
-            // Position the panel itself (both for initial construction and language updates)
+            // Position the panel itself
             if (_analyticsTabButtons_Panel != null)
             {
-                WorldMapControls_Panel.Location = new Point((ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                _worldMapControls_Panel.Location = new Point((ClientSize.Width - _worldMapControls_Panel.Width) / 2,
                     _analyticsTabButtons_Panel.Bottom + 10);
             }
         }
@@ -2926,16 +3075,16 @@ namespace Sales_Tracker
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {
                 GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
+                LoadChart.LoadWorldMapChart(_worldMap_GeoMap, dataType);
             }
         }
         private GeoMapDataType GetSelectedGeoMapDataType()
         {
-            if (PurchasesOnly_RadioButton.Checked)
+            if (_purchasesOnly_RadioButton.Checked)
             {
                 return GeoMapDataType.PurchasesOnly;
             }
-            else if (SalesOnly_RadioButton.Checked)
+            else if (_salesOnly_RadioButton.Checked)
             {
                 return GeoMapDataType.SalesOnly;
             }
@@ -2956,8 +3105,9 @@ namespace Sales_Tracker
                 CustomControls.ControlDropDown_Panel,
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
-                DataGridViewManager.RightClickDataGridView_Panel,
-                RightClickGunaChartMenu.RightClickGunaChart_Panel
+                RightClickRowMenu.RightClickDataGridView_Panel,
+                RightClickChartMenu.RightClickChart_Panel,
+                TextBoxManager.RightClickTextBox_Panel
             }.Where(panel => panel != null).ToList();
         }
         public void UpdateMainMenuFormText()
@@ -2966,8 +3116,8 @@ namespace Sales_Tracker
         }
         public void ClosePanels()
         {
-            DataGridViewManager.RightClickDataGridView_Panel.Parent?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
-            Controls.Remove(RightClickGunaChartMenu.RightClickGunaChart_Panel);
+            RightClickRowMenu.RightClickDataGridView_Panel.Parent?.Controls.Remove(RightClickRowMenu.RightClickDataGridView_Panel);
+            Controls.Remove(RightClickChartMenu.RightClickChart_Panel);
             Controls.Remove(CompanyLogo.CompanyLogoRightClick_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }

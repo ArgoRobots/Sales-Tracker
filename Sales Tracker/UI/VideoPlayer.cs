@@ -9,9 +9,9 @@ namespace Sales_Tracker.UI
     internal class VideoPlayer
     {
         // Properties
-        private static Label loadingLabel;
-        private static Panel loadingPanel;
-        private static Timer failureTimer;
+        private static Label _loadingLabel;
+        private static Panel _loadingPanel;
+        private static Timer _failureTimer;
 
         // Loading panel
         /// <summary>
@@ -59,10 +59,10 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static Panel CreateLoadingPanel(WebBrowser webBrowser)
         {
-            if (loadingPanel != null) { return loadingPanel; }
+            if (_loadingPanel != null) { return _loadingPanel; }
 
             // Create the loading panel
-            loadingPanel = new()
+            _loadingPanel = new()
             {
                 Size = webBrowser.Size,
                 Location = webBrowser.Location,
@@ -71,7 +71,7 @@ namespace Sales_Tracker.UI
             };
 
             // Create the loading label
-            loadingLabel = new()
+            _loadingLabel = new()
             {
                 ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 11),
@@ -79,39 +79,39 @@ namespace Sales_Tracker.UI
                 TextAlign = ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.None
             };
-            loadingPanel.Controls.Add(loadingLabel);
+            _loadingPanel.Controls.Add(_loadingLabel);
 
-            return loadingPanel;
+            return _loadingPanel;
         }
         private static void SetLabelText(string text)
         {
-            loadingLabel.Text = text;
+            _loadingLabel.Text = text;
 
             // Center the label in the panel
-            loadingLabel.Location = new Point(
-                (loadingPanel.Width - loadingLabel.Width) / 2,
-                (loadingPanel.Height - loadingLabel.Height) / 2
+            _loadingLabel.Location = new Point(
+                (_loadingPanel.Width - _loadingLabel.Width) / 2,
+                (_loadingPanel.Height - _loadingLabel.Height) / 2
             );
         }
 
         // Time out
         private static void StartFailureTimer()
         {
-            failureTimer = new Timer { Interval = 5000 };  // 5 second timeout for failure
-            failureTimer.Tick += (s, e) =>
+            _failureTimer = new Timer { Interval = 5000 };  // 5 second timeout for failure
+            _failureTimer.Tick += (s, e) =>
             {
                 StopFailureTimer();
                 SetLabelText("Video failed to load. Please check your internet connection");
             };
-            failureTimer.Start();
+            _failureTimer.Start();
         }
         private static void StopFailureTimer()
         {
-            if (failureTimer != null)
+            if (_failureTimer != null)
             {
-                failureTimer.Stop();
-                failureTimer.Dispose();
-                failureTimer = null;
+                _failureTimer.Stop();
+                _failureTimer.Dispose();
+                _failureTimer = null;
             }
         }
     }

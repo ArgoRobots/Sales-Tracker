@@ -5,6 +5,9 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.GridView
 {
+    /// <summary>
+    /// Provides a right-click panel for toggling column visibility in MainMenu_Form DataGridViews.
+    /// </summary>
     public static class ColumnVisibilityPanel
     {
         // Properties
@@ -107,6 +110,10 @@ namespace Sales_Tracker.GridView
             parentForm.Controls.Add(Panel);
             Panel.BringToFront();
         }
+        public static void HidePanel()
+        {
+            Panel?.Parent?.Controls.Remove(Panel);
+        }
         private static MainMenu_Form.Column[] GetColumnHeadersForDataGridView()
         {
             return
@@ -205,10 +212,6 @@ namespace Sales_Tracker.GridView
         private static void CancelButton_Click(object sender, EventArgs e)
         {
             HidePanel();
-        }
-        public static void HidePanel()
-        {
-            Panel?.Parent?.Controls.Remove(Panel);
         }
     }
 }

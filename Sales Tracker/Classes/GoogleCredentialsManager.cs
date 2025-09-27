@@ -52,11 +52,11 @@ namespace Sales_Tracker.Classes
 
                 return credential;
             }
-            catch (Exception ex)
+            catch
             {
                 CustomMessageBox.Show(
                     "Credentials Error",
-                    $"Failed to load Google credentials from environment: {ex.Message}",
+                    $"Failed to load Google credentials from environment",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
                 throw;

@@ -3,6 +3,9 @@ using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReturnProduct
 {
+    /// <summary>
+    /// Manages product return operations for transactions including processing, undoing, and tracking return status.
+    /// </summary>
     public static class ReturnManager
     {
         /// <summary>
@@ -336,7 +339,7 @@ namespace Sales_Tracker.ReturnProduct
         /// <summary>
         /// Gets return information for a transaction.
         /// </summary>
-        public static (DateTime? returnDate, string returnReason, string returnedBy, List<int> returnedItems) GetReturnInfo(DataGridViewRow row)
+        public static ReturnInfo GetReturnInfo(DataGridViewRow row)
         {
             TagData tagData = null;
 
@@ -355,10 +358,17 @@ namespace Sales_Tracker.ReturnProduct
 
             if (tagData != null)
             {
-                return (tagData.ReturnDate, tagData.ReturnReason, tagData.ReturnedBy, tagData.ReturnedItems ?? []);
+                return new ReturnInfo
+                {
+                    ReturnDate = tagData.ReturnDate,
+                    ReturnReason = tagData.ReturnReason ?? "",
+                    ReturnedBy = tagData.ReturnedBy ?? "",
+                    ReturnedItems = tagData.ReturnedItems ?? []
+                };
             }
 
-            return (null, "error", "error", []);
+            // Return empty ReturnInfo for invalid data
+            return new ReturnInfo();
         }
 
         /// <summary>
@@ -389,39 +399,6 @@ namespace Sales_Tracker.ReturnProduct
             }
         }
 
-        /// <summary>
-        /// Gets a list of returned item names for a transaction.
-        /// </summary>
-        public static List<string> GetReturnedItemNames(DataGridViewRow row)
-        {
-            List<string> returnedItemNames = [];
-
-            if (row.Tag is (List<string> items, TagData tagData) && tagData.ReturnedItems != null)
-            {
-                foreach (int itemIndex in tagData.ReturnedItems)
-                {
-                    if (itemIndex < items.Count && !items[itemIndex].StartsWith(ReadOnlyVariables.Receipt_text))
-                    {
-                        string[] itemDetails = items[itemIndex].Split(',');
-                        if (itemDetails.Length > 0)
-                        {
-                            returnedItemNames.Add(itemDetails[0]);  // Product name
-                        }
-                    }
-                }
-            }
-            else if (IsTransactionFullyReturned(row))
-            {
-                // For single items or fully returned transactions
-                string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString();
-                if (!string.IsNullOrEmpty(productName))
-                {
-                    returnedItemNames.Add(productName);
-                }
-            }
-
-            return returnedItemNames;
-        }
         private static void SaveReturnChanges()
         {
             // Save both purchase and sale data

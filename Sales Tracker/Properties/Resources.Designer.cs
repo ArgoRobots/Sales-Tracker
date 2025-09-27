@@ -303,6 +303,16 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Loss {
+            get {
+                object obj = ResourceManager.GetObject("Loss", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MinusBlack {
             get {
                 object obj = ResourceManager.GetObject("MinusBlack", resourceCulture);

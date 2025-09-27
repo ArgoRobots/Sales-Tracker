@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.DataClasses;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -75,7 +76,7 @@ namespace Sales_Tracker.GridView
 
                 return searchableContent.Any(content =>
                 {
-                    return IsFuzzyMatch(content, term.Text, options.GetMaxLevenshteinDistance());
+                    return LevenshteinDistance.IsFuzzyMatch(content, term.Text, options.GetMaxLevenshteinDistance());
                 });
             });
         }
@@ -188,131 +189,6 @@ namespace Sales_Tracker.GridView
             }
 
             return content;
-        }
-        private static bool IsFuzzyMatch(string source, string target, int maxDistance)
-        {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                return false;
-            }
-
-            // Normalize strings
-            string normalizedSource = source.ToLowerInvariant().Trim();
-            string normalizedTarget = target.ToLowerInvariant().Trim();
-
-            // Exact match check
-            if (normalizedSource.Contains(normalizedTarget))
-            {
-                return true;
-            }
-
-            // If target is longer than source, no need to check
-            if (normalizedTarget.Length > normalizedSource.Length + maxDistance)
-            {
-                return false;
-            }
-
-            // Check each word in source
-            string[] sourceWords = normalizedSource.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            string[] targetWords = normalizedTarget.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string targetWord in targetWords)
-            {
-                bool wordMatched = false;
-                foreach (string sourceWord in sourceWords)
-                {
-                    // Skip words with too much length difference
-                    if (Math.Abs(sourceWord.Length - targetWord.Length) > maxDistance)
-                    {
-                        continue;
-                    }
-
-                    double similarity = CalculateNormalizedSimilarity(sourceWord, targetWord);
-                    if (similarity >= 0.6)  // Using the threshold of 0.6
-                    {
-                        wordMatched = true;
-                        break;
-                    }
-                }
-
-                if (!wordMatched)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        private static double CalculateNormalizedSimilarity(string source, string target)
-        {
-            // Handle empty strings
-            if (string.IsNullOrEmpty(source))
-            {
-                return string.IsNullOrEmpty(target) ? 1.0 : 0.0;
-            }
-
-            if (string.IsNullOrEmpty(target))
-            {
-                return 0.0;
-            }
-
-            int distance = CalculateLevenshteinDistance(source, target);
-            int maxDistance = Math.Max(source.Length, target.Length);
-
-            // Normalize to similarity (1.0 means identical, 0.0 means completely different)
-            return 1.0 - ((double)distance / maxDistance);
-        }
-        private static int CalculateLevenshteinDistance(string source, string target)
-        {
-            if (string.IsNullOrEmpty(source))
-            {
-                return string.IsNullOrEmpty(target) ? 0 : target.Length;
-            }
-
-            if (string.IsNullOrEmpty(target))
-            {
-                return source.Length;
-            }
-
-            // Create matrix
-            int[,] matrix = new int[source.Length + 1, target.Length + 1];
-
-            // Initialize first row and column
-            for (int i = 0; i <= source.Length; i++)
-            {
-                matrix[i, 0] = i;
-            }
-
-            for (int j = 0; j <= target.Length; j++)
-            {
-                matrix[0, j] = j;
-            }
-
-            // Fill matrix
-            for (int i = 1; i <= source.Length; i++)
-            {
-                for (int j = 1; j <= target.Length; j++)
-                {
-                    int substitutionCost = (source[i - 1] == target[j - 1]) ? 0 : 1;
-
-                    matrix[i, j] = Math.Min(
-                        Math.Min(
-                            matrix[i - 1, j] + 1,     // Deletion
-                            matrix[i, j - 1] + 1),    // Insertion
-                        matrix[i - 1, j - 1] + substitutionCost  // Substitution
-                    );
-
-                    // Transposition check (for swapped characters)
-                    if (i > 1 && j > 1 &&
-                        source[i - 1] == target[j - 2] &&
-                        source[i - 2] == target[j - 1])
-                    {
-                        matrix[i, j] = Math.Min(matrix[i, j], matrix[i - 2, j - 2] + 1);
-                    }
-                }
-            }
-
-            return matrix[source.Length, target.Length];
         }
 
         // AI search
@@ -442,7 +318,7 @@ namespace Sales_Tracker.GridView
 
                 // Fuzzy match for normal terms
                 return searchableContent.Any(content =>
-                    IsFuzzyMatch(content, term.Text, searchOptions?.GetMaxLevenshteinDistance() ?? 2));
+                    LevenshteinDistance.IsFuzzyMatch(content, term.Text, searchOptions?.GetMaxLevenshteinDistance() ?? 2));
             });
 
             // Both structured and free-text terms must match
@@ -587,111 +463,6 @@ namespace Sales_Tracker.GridView
             }
 
             return terms;
-        }
-
-        private class StructuredSearchTerm
-        {
-            public string Field { get; }
-            public string Value { get; }
-            public bool IsRequired { get; }
-            public bool IsExclusion { get; }
-            public string ComparisonOperator { get; }
-            public bool HasOrCondition { get; }
-            public List<string> OrValues { get; }
-
-            public StructuredSearchTerm(string field, string value, bool isRequired, bool isExclusion, string comparisonOperator)
-            {
-                Field = field;
-                Value = value;
-                IsRequired = isRequired;
-                IsExclusion = isExclusion;
-                ComparisonOperator = comparisonOperator;
-
-                // Check if this is an OR condition (contains pipe character)
-                HasOrCondition = value.Contains('|');
-                if (HasOrCondition)
-                {
-                    // Split the value by pipe character to get individual values
-                    OrValues = value.Split('|').Select(v => v.Trim()).Where(v => !string.IsNullOrEmpty(v)).ToList();
-                }
-                else
-                {
-                    OrValues = [];
-                }
-            }
-        }
-
-        public sealed class SearchOptions
-        {
-            // Properties
-            private readonly StringComparison _stringComparison;
-            private readonly byte _maxLevenshteinDistance;
-
-            public SearchOptions()
-            {
-                _stringComparison = StringComparison.OrdinalIgnoreCase;
-                _maxLevenshteinDistance = 2;
-            }
-            public StringComparison GetStringComparison() => _stringComparison;
-            public int GetMaxLevenshteinDistance() => _maxLevenshteinDistance;
-        }
-
-        private sealed class SearchTerm
-        {
-            private readonly SearchTermType _type;
-
-            private SearchTerm(string text, SearchTermType type)
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    throw new ArgumentException("Search term cannot be empty or whitespace.", nameof(text));
-                }
-
-                if (type.HasFlag(SearchTermType.Exclusion) && type.HasFlag(SearchTermType.Required))
-                {
-                    throw new ArgumentException("Search term cannot be both excluded and required.");
-                }
-
-                Text = text.Trim();
-                _type = type;
-            }
-
-            // Getters
-            public string Text { get; }
-            public bool IsExactPhrase => _type.HasFlag(SearchTermType.ExactPhrase);
-            public bool IsExclusion => _type.HasFlag(SearchTermType.Exclusion);
-            public bool IsRequired => _type.HasFlag(SearchTermType.Required);
-
-            public static SearchTerm Create(string text, bool isExactPhrase = false, bool isExclusion = false, bool isRequired = false)
-            {
-                SearchTermType type = SearchTermType.Normal;
-
-                if (isExactPhrase)
-                {
-                    type |= SearchTermType.ExactPhrase;
-                }
-
-                if (isExclusion)
-                {
-                    type |= SearchTermType.Exclusion;
-                }
-
-                if (isRequired)
-                {
-                    type |= SearchTermType.Required;
-                }
-
-                return new SearchTerm(text, type);
-            }
-
-            [Flags]
-            private enum SearchTermType
-            {
-                Normal,
-                ExactPhrase,
-                Exclusion,
-                Required
-            }
         }
     }
 }

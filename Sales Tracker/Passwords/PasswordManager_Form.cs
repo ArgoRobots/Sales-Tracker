@@ -76,11 +76,12 @@ namespace Sales_Tracker.Passwords
                 CustomMessageBox.Show("Password updated", "Password updated successfully.", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 Close();
             }
-            else
+            else  // Remove_RadioButton.Checked
             {
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
                     CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CurrentPassword_TextBox.Focus();
                     return;
                 }
 

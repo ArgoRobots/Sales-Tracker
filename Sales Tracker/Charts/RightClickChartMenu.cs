@@ -9,23 +9,26 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Charts
 {
-    public static class RightClickGunaChartMenu
+    /// <summary>
+    /// Manages the right-click menu for chart controls with options for saving, exporting, and zoom reset.
+    /// </summary>
+    public static class RightClickChartMenu
     {
         // Properties
         private static Guna2Button _resetZoomButton, _exportExcel, _exportSheets;
 
         // Getter
-        public static Guna2Panel RightClickGunaChart_Panel { get; private set; }
+        public static Guna2Panel RightClickChart_Panel { get; private set; }
 
         // Right click menu methods
-        public static void ConstructRightClickGunaChartMenu()
+        public static void ConstructRightClickChartMenu()
         {
-            RightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(
+            RightClickChart_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
-                "rightClickGunaChart_Panel"
+                "rightClickChart_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickChart_Panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
@@ -42,7 +45,7 @@ namespace Sales_Tracker.Charts
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickChart_Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -72,7 +75,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ExportToMicrosoftExcel(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickChart_Panel.Tag;
             string directory = "";
 
             using SaveFileDialog dialog = new();
@@ -172,11 +175,36 @@ namespace Sales_Tracker.Charts
                 case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
                     LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, true, directory);
                     break;
+
+                // Add Lost Products export cases
+                case MainMenu_Form.ChartDataType.LossesOverTime:
+                    LoadChart.LoadLossesOverTimeChart(MainMenu_Form.Instance.LossesOverTime_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossReasons:
+                    LoadChart.LoadLossReasonsChart(MainMenu_Form.Instance.LossReasons_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                    LoadChart.LoadLossFinancialImpactChart(MainMenu_Form.Instance.LossFinancialImpact_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossesByCategory:
+                    LoadChart.LoadLossesByCategoryChart(MainMenu_Form.Instance.LossesByCategory_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.LossesByProduct:
+                    LoadChart.LoadLossesByProductChart(MainMenu_Form.Instance.LossesByProduct_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                    LoadChart.LoadPurchaseVsSaleLossesChart(MainMenu_Form.Instance.PurchaseVsSaleLosses_Chart, true, directory);
+                    break;
             }
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickChart_Panel.Tag;
             bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             try
@@ -493,6 +521,97 @@ namespace Sales_Tracker.Charts
                             await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
+
+                    // Add Lost Products Google Sheets export cases
+                    case MainMenu_Form.ChartDataType.LossesOverTime:
+                        {
+                            SalesExpensesChartData chartData = LoadChart.LoadLossesOverTimeChart(MainMenu_Form.Instance.LossesOverTime_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase losses")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale losses")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string chartTitle = TranslatedChartTitles.LossesOverTime;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportMultiDataSetCountChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossReasons:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossReasonsChart(MainMenu_Form.Instance.LossReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossReasons;
+                            string first = LanguageManager.TranslateString("Reasons");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                        {
+                            SalesExpensesChartData chartData = LoadChart.LoadLossFinancialImpactChart(MainMenu_Form.Instance.LossFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase loss value")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale loss value")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string chartTitle = TranslatedChartTitles.LossFinancialImpact;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossesByCategory:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossesByCategoryChart(MainMenu_Form.Instance.LossesByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossesByCategory;
+                            string first = LanguageManager.TranslateString("Categories");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.LossesByProduct:
+                        {
+                            ChartCountData chartData = LoadChart.LoadLossesByProductChart(MainMenu_Form.Instance.LossesByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.LossesByProduct;
+                            string first = LanguageManager.TranslateString("Products");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                        {
+                            ChartCountData chartData = LoadChart.LoadPurchaseVsSaleLossesChart(MainMenu_Form.Instance.PurchaseVsSaleLosses_Chart, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.PurchaseVsSaleLosses;
+                            string first = LanguageManager.TranslateString("Transaction Type");
+                            string second = LanguageManager.TranslateString("# of losses");
+
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
                 }
             }
             catch (OperationCanceledException)
@@ -507,7 +626,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickChart_Panel.Tag;
 
             if (chart is CartesianChart cartesianChart)
             {
@@ -535,14 +654,14 @@ namespace Sales_Tracker.Charts
             if (!ChartHasData(chart)) { return; }
 
             Form form = chart.FindForm();
-            RightClickGunaChart_Panel.Tag = chart;
+            RightClickChart_Panel.Tag = chart;
             Point localMousePosition = form.PointToClient(mousePosition);
             int formWidth = form.ClientSize.Width;
             int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickChart_Panel.Controls[0];
 
             if (IsPieChart(chart))
             {
@@ -563,36 +682,36 @@ namespace Sales_Tracker.Charts
                 flowPanel.Controls.Add(_resetZoomButton);
             }
 
-            CustomControls.SetRightClickMenuHeight(RightClickGunaChart_Panel);
+            CustomControls.SetRightClickMenuHeight(RightClickChart_Panel);
 
             // Calculate the horizontal position
             bool tooFarRight = false;
-            if (RightClickGunaChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
+            if (RightClickChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
             {
-                RightClickGunaChart_Panel.Left = formWidth - RightClickGunaChart_Panel.Width - padding;
+                RightClickChart_Panel.Left = formWidth - RightClickChart_Panel.Width - padding;
                 tooFarRight = true;
             }
             else
             {
-                RightClickGunaChart_Panel.Left = localMousePosition.X - offset;
+                RightClickChart_Panel.Left = localMousePosition.X - offset;
             }
 
             // Calculate the vertical position
-            if (localMousePosition.Y + RightClickGunaChart_Panel.Height + padding > formHeight)
+            if (localMousePosition.Y + RightClickChart_Panel.Height + padding > formHeight)
             {
-                RightClickGunaChart_Panel.Top = formHeight - RightClickGunaChart_Panel.Height - padding;
+                RightClickChart_Panel.Top = formHeight - RightClickChart_Panel.Height - padding;
                 if (!tooFarRight)
                 {
-                    RightClickGunaChart_Panel.Left += offset;
+                    RightClickChart_Panel.Left += offset;
                 }
             }
             else
             {
-                RightClickGunaChart_Panel.Top = localMousePosition.Y;
+                RightClickChart_Panel.Top = localMousePosition.Y;
             }
 
-            form.Controls.Add(RightClickGunaChart_Panel);
-            RightClickGunaChart_Panel.BringToFront();
+            form.Controls.Add(RightClickChart_Panel);
+            RightClickChart_Panel.BringToFront();
         }
 
         // Helper methods

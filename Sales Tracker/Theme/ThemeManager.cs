@@ -12,8 +12,7 @@ namespace Sales_Tracker.Theme
 {
     /// <summary>
     /// Manages dark and light mode themes, and custom colors.
-    /// This class provides methods for setting theme attributes on various UI controls and forms, including custom scrollbars, button colors, and DataGridView header styling.
-    /// The class also supports Windows system theme detection and immersive dark mode integration on supported systems.
+    /// This class provides methods for setting theme attributes on various UI controls and forms.
     /// </summary>
     internal static partial class ThemeManager
     {
@@ -177,7 +176,7 @@ namespace Sales_Tracker.Theme
                         UpdateDataGridViewHeaderTheme(guna2DataGridView);
                         CustomizeScrollBar(guna2DataGridView);
                         guna2DataGridView.ClearSelection();
-                        DataGridViewManager.UpdateAlternatingRowColors(guna2DataGridView);
+                        DataGridViewManager.UpdateRowColors(guna2DataGridView);
                         break;
 
                     case Guna2CircleButton guna2CircleButton:
@@ -204,6 +203,10 @@ namespace Sales_Tracker.Theme
 
                     case PieChart pieChart:
                         ChartColors.ApplyTheme(pieChart);
+                        break;
+
+                    case GeoMap geoMap:
+                        ChartColors.ApplyTheme(geoMap);
                         break;
                 }
 
@@ -360,9 +363,9 @@ namespace Sales_Tracker.Theme
             SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
 
             // Update other controls
-            SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
+            SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.DateRangePanel]);
 
-            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
+            RightClickRowMenu.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
             // Set the border to white or black, depending on the theme
             CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;

@@ -66,7 +66,8 @@ namespace Sales_Tracker.Passwords
                 Size = new Size(Password_TextBox.Width, (int)(50 * scale)),  // Match Password_TextBox width
                 Font = new Font("Segoe UI", 10),
                 PlaceholderText = LanguageManager.TranslateString("Accountant"),
-                Name = "Accountant_TextBox"
+                Name = "Accountant_TextBox",
+                ShortcutsEnabled = false
             };
 
             Controls.Add(_accountant_TextBox);
@@ -152,13 +153,13 @@ namespace Sales_Tracker.Passwords
         {
             if (_requiresPassword)
             {
-                TextBoxManager.Attach(Password_TextBox);
+                TextBoxManager.Attach(false, Password_TextBox);
             }
 
             if (_requiresAccountantSelection)
             {
                 TextBoxValidation.OnlyAllowLetters(_accountant_TextBox);
-                TextBoxManager.Attach(_accountant_TextBox);
+                TextBoxManager.Attach(false, _accountant_TextBox);
                 _accountant_TextBox.TextChanged += ValidateInputs;
                 _accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;
             }
@@ -192,6 +193,40 @@ namespace Sales_Tracker.Passwords
         }
         private void Password_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            // Windows Forms by default prevents copying from password textboxes for security,
+            // showing a "cannot copy password" popup. We override this behavior to allow
+            // clipboard operations while maintaining password masking.
+
+            // Handle copy operation for password textbox
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+                if (!string.IsNullOrEmpty(textBox.SelectedText))
+                {
+                    Clipboard.SetText(textBox.SelectedText);
+                }
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                return;
+            }
+
+            // Handle cut operation for password textbox
+            if (e.Control && e.KeyCode == Keys.X)
+            {
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+                if (!string.IsNullOrEmpty(textBox.SelectedText))
+                {
+                    Clipboard.SetText(textBox.SelectedText);
+                    int selectionStart = textBox.SelectionStart;
+                    textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+                    textBox.SelectionStart = selectionStart;
+                }
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                return;
+            }
+
+            // Handle Enter key
             if (e.KeyCode == Keys.Enter)
             {
                 ProcessEntry();
@@ -368,7 +403,7 @@ namespace Sales_Tracker.Passwords
             // Validate password if required
             if (_requiresPassword && valid)
             {
-                if (PasswordManager.HasPassword)
+                if (PasswordManager.Password == Password_TextBox.Text)
                 {
                     PasswordManager.IsPasswordValid = true;
                 }

@@ -257,8 +257,9 @@ namespace Sales_Tracker.Classes
             {
                 if (showErrorMessage)
                 {
-                    string message = "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates.";
-                    CustomMessageBox.Show("No connection", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("No connection",
+                        "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates.",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 }
                 return -1;
             }

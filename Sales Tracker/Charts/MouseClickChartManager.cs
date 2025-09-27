@@ -18,7 +18,7 @@ namespace Sales_Tracker.Charts
         public static void InitCharts(Control[] charts)
         {
             static void leftClickAction(Control chartControl) => CustomControls.CloseAllPanels();
-            Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
+            Initialize(charts, leftClickAction, RightClickChartMenu.ShowMenu);
         }
         private static void Initialize(Control[] charts, Action<Control> onLeftClick, Action<Control, Point> onRightClick)
         {
@@ -73,7 +73,7 @@ namespace Sales_Tracker.Charts
                     CustomControls.RecentlyOpenedMenu,
                     CustomControls.HelpMenu,
                     CustomControls.ControlDropDown_Panel,
-                    RightClickGunaChartMenu.RightClickGunaChart_Panel,
+                    RightClickChartMenu.RightClickChart_Panel,
                     TextBoxManager.RightClickTextBox_Panel
                 ];
                 Control mainPanel = DateRange_Form.Instance?.Main_Panel;

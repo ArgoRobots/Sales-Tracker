@@ -24,13 +24,11 @@ namespace Sales_Tracker.Charts
         // Operational Charts
         public static string AccountantsTransactions => Translate("Transactions managed by accountants");
 
-        // Comparative Analysis Charts
+        // Performance and Growth Charts
         public static string SalesVsExpenses => Translate("Total expenses vs. total revenue");
         public static string AverageTransactionValue => Translate("Average transaction value");
         public static string TotalTransactions => Translate("Total transactions");
         public static string AverageShippingCosts => Translate("Average shipping costs");
-
-        // Performance and Growth Charts
         public static string GrowthRates => Translate("Expenses and revenue growth rates");
 
         // Returns Analysis Charts
@@ -40,5 +38,13 @@ namespace Sales_Tracker.Charts
         public static string ReturnsByCategory => Translate("Returns by category");
         public static string ReturnsByProduct => Translate("Returns by product");
         public static string PurchaseVsSaleReturns => Translate("Purchase vs. sale returns");
+
+        // Losses Analysis Charts
+        public static string LossesOverTime => LanguageManager.TranslateString("Losses Over Time");
+        public static string LossReasons => LanguageManager.TranslateString("Loss Reasons");
+        public static string LossFinancialImpact => LanguageManager.TranslateString("Loss Financial Impact");
+        public static string LossesByCategory => LanguageManager.TranslateString("Losses by Category");
+        public static string LossesByProduct => LanguageManager.TranslateString("Losses by Product");
+        public static string PurchaseVsSaleLosses => LanguageManager.TranslateString("Purchase vs Sale Losses");
     }
 }

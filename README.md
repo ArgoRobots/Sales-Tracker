@@ -6,8 +6,9 @@
 ## Features
 - **Import data from spreadsheets**: Import your existing transactions, products, and other data from spreadsheets.
 - **Track Purchases and Sales**: Track your purchases and sales using a simple GUI.
-- **Return products**: Track returned products and the reasons they were returned.
 - **Product management**: Add, edit, and organize your products with ease.
+- **Return products**: Track returned products and the reasons they were returned.
+- **Mark products as lost**: Track lost or damaged products with detailed loss reasons and analytics.
 - **Receipts**: Attach receipts to your transactions and keep them organized.
 - **Custom date ranges**: Filter transactions using custom date ranges.
 - **Analytics dashboard**: Visualize your data using charts to gain insights into sales trends and performance.

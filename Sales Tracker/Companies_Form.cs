@@ -151,7 +151,6 @@ namespace Sales_Tracker
         {
             _company_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_company_DataGridView, "company_DataGridView", ColumnHeaders, null, this);
-            _company_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _company_DataGridView.Location = new Point((ClientSize.Width - _company_DataGridView.Width) / 2, _topForDataGridView);
             _company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
