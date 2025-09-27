@@ -132,8 +132,7 @@ namespace Sales_Tracker.Charts
                 _geoMapOverlay = new()
                 {
                     Dock = DockStyle.Fill,
-                    BackColor = geoMap.BackColor,
-                    Visible = false
+                    BackColor = geoMap.BackColor
                 };
 
                 LabelManager.ManageNoDataLabelOnControl(false, _geoMapOverlay);
