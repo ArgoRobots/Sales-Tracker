@@ -476,7 +476,6 @@ namespace Sales_Tracker
                         {
                             Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
                             Text = "Change receipt",
-                            BackColor = CustomColors.ControlBack,
                             FillColor = CustomColors.ControlBack,
                             Size = new Size(buttonWidth, _controlHeight),
                             BorderRadius = 2,
@@ -1489,7 +1488,6 @@ namespace Sales_Tracker
                 Name = name,
                 Text = text,
                 ForeColor = CustomColors.Text,
-                BackColor = CustomColors.ControlBack,
                 Font = new Font("Segoe UI", 10),
                 MaxLength = maxLength,
                 FillColor = CustomColors.ControlBack,
