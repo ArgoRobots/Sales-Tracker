@@ -13,6 +13,7 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<Guna2TextBox, Stack<TextState>> _undoStacks = [];
         private static readonly Dictionary<Guna2TextBox, Stack<TextState>> _redoStacks = [];
         private static readonly Dictionary<Guna2TextBox, bool> _isTextChangedByUserFlags = [];
+        private static readonly Dictionary<Guna2TextBox, bool> _showRightClickPanelFlags = [];
         private const byte _maxStackSize = 250;
         private static Point _mouseDownLocation;
 
@@ -28,15 +29,24 @@ namespace Sales_Tracker.UI
         // Main methods
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
+        /// Shows the right-click context menu panel by default.
         /// </summary>
         public static void Attach(params Guna2TextBox[] textBoxes)
+        {
+            Attach(true, textBoxes);
+        }
+
+        /// <summary>
+        /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
+        /// </summary>
+        public static void Attach(bool showRightClickPanel = true, params Guna2TextBox[] textBoxes)
         {
             foreach (Guna2TextBox textBox in textBoxes)
             {
                 if (IsAttached(textBox)) { continue; }
 
-                InitializeTextBox(textBox);
-                AttachEventHandlers(textBox);
+                InitializeTextBox(textBox, showRightClickPanel);
+                AttachEventHandlers(textBox, showRightClickPanel);
                 TextBoxTooltip.SetOverflowTooltip(textBox);
             }
         }
@@ -44,22 +54,32 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Initializes the undo/redo stacks and flags for a TextBox.
         /// </summary>
-        private static void InitializeTextBox(Guna2TextBox textBox)
+        private static void InitializeTextBox(Guna2TextBox textBox, bool showRightClickPanel)
         {
             _undoStacks[textBox] = new Stack<TextState>();
             _redoStacks[textBox] = new Stack<TextState>();
             _isTextChangedByUserFlags[textBox] = true;
+            _showRightClickPanelFlags[textBox] = showRightClickPanel;
             _undoStacks[textBox].Push(new TextState(textBox.Text, textBox.SelectionStart));
         }
-        private static void AttachEventHandlers(Guna2TextBox textBox)
+        private static void AttachEventHandlers(Guna2TextBox textBox, bool showRightClickPanel)
         {
             textBox.TextChanged += TextBox_TextChanged;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
             textBox.KeyDown += TextBox_KeyDown;
-            textBox.MouseDown += TextBox_MouseDown;
-            textBox.MouseUp += TextBox_MouseUp;
+
+            // Only attach mouse events if right-click panel should be shown
+            if (showRightClickPanel)
+            {
+                textBox.MouseDown += TextBox_MouseDown;
+                textBox.MouseUp += TextBox_MouseUp;
+            }
         }
         private static bool IsAttached(Guna2TextBox textBox) => _undoStacks.ContainsKey(textBox);
+        public static void RemoveRightClickPanel()
+        {
+            RightClickTextBox_Panel.Parent?.Controls.Remove(RightClickTextBox_Panel);
+        }
 
         // TextBox event handlers
         /// <summary>
@@ -148,6 +168,14 @@ namespace Sales_Tracker.UI
         {
             if (e.Button == MouseButtons.Right)
             {
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+
+                // Check if right-click panel should be shown for this textbox
+                if (!_showRightClickPanelFlags.TryGetValue(textBox, out bool showPanel) || !showPanel)
+                {
+                    return;
+                }
+
                 CustomControls.CloseAllPanels();
 
                 // Check if mouse hasn't moved too far from the down location
@@ -155,7 +183,6 @@ namespace Sales_Tracker.UI
                 if (Math.Abs(e.Location.X - _mouseDownLocation.X) <= threshold &&
                     Math.Abs(e.Location.Y - _mouseDownLocation.Y) <= threshold)
                 {
-                    Guna2TextBox textBox = (Guna2TextBox)sender;
                     ShowRightClickMenu(textBox, e.Location);
                 }
             }
@@ -363,29 +390,49 @@ namespace Sales_Tracker.UI
         // Methods for right click menu
         private static void ShowRightClickMenu(Guna2TextBox textBox, Point mouseLocation)
         {
-            // Convert mouse coordinates to screen coordinates
-            Point screenPoint = textBox.PointToScreen(mouseLocation);
-            screenPoint.X -= ReadOnlyVariables.OffsetRightClickPanel;
+            Form parentForm = textBox.FindForm();
+            if (parentForm == null) { return; }
 
-            // Position at the bottom of the textbox in screen coordinates
-            Point bottomLeft = textBox.PointToScreen(new Point(0, textBox.Height));
-            screenPoint.Y = bottomLeft.Y;
+            // Convert textbox location to form coordinates
+            Point textBoxInForm = parentForm.PointToClient(textBox.PointToScreen(Point.Empty));
 
-            // Ensure the panel doesn't go off screen
-            Rectangle screenBounds = Screen.FromControl(textBox).Bounds;
-            if (screenPoint.X + RightClickTextBox_Panel.Width > screenBounds.Right)
+            // Calculate initial position
+            Point initialPosition = new(
+                textBoxInForm.X + mouseLocation.X - ReadOnlyVariables.OffsetRightClickPanel,
+                textBoxInForm.Y + textBox.Height
+            );
+
+            // Get form's client rectangle for boundary checking
+            Rectangle formBounds = parentForm.ClientRectangle;
+
+            // Adjust X position if panel would overflow horizontally
+            int panelRight = initialPosition.X + RightClickTextBox_Panel.Width;
+            if (panelRight > formBounds.Right)
             {
-                screenPoint.X = screenBounds.Right - RightClickTextBox_Panel.Width - ReadOnlyVariables.OffsetRightClickPanel;
+                initialPosition.X = formBounds.Right - RightClickTextBox_Panel.Width;
             }
-            if (screenPoint.Y + RightClickTextBox_Panel.Height > screenBounds.Bottom)
+
+            // Adjust Y position if panel would overflow vertically
+            int panelBottom = initialPosition.Y + RightClickTextBox_Panel.Height;
+            if (panelBottom > formBounds.Bottom)
             {
-                screenPoint.Y = screenBounds.Bottom - RightClickTextBox_Panel.Height;
+                // Try to show above the textbox instead
+                int alternateY = textBoxInForm.Y - RightClickTextBox_Panel.Height;
+                if (alternateY >= formBounds.Top)
+                {
+                    initialPosition.Y = alternateY;
+                }
+                else
+                {
+                    // If it doesn't fit above either, place it at the bottom of the form
+                    initialPosition.Y = formBounds.Bottom - RightClickTextBox_Panel.Height;
+                }
             }
 
             // Show the panel at the calculated position
             RightClickTextBox_Panel.Tag = textBox;
-            textBox.FindForm().Controls.Add(RightClickTextBox_Panel);
-            RightClickTextBox_Panel.Location = textBox.Parent.PointToClient(screenPoint);
+            parentForm.Controls.Add(RightClickTextBox_Panel);
+            RightClickTextBox_Panel.Location = initialPosition;
             RightClickTextBox_Panel.BringToFront();
         }
     }

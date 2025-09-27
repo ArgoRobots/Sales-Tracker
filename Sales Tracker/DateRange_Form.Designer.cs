@@ -52,7 +52,7 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            DateRange_Label = new Label();
+            TimeRange_Label = new Label();
             From_DateTimePicker = new Guna2DateTimePicker();
             From_Label = new Label();
             To_DateTimePicker = new Guna2DateTimePicker();
@@ -88,15 +88,15 @@ namespace Sales_Tracker
             Main_Panel.SuspendLayout();
             SuspendLayout();
             // 
-            // DateRange_Label
+            // TimeRange_Label
             // 
-            DateRange_Label.AutoSize = true;
-            DateRange_Label.Font = new Font("Segoe UI", 12F);
-            DateRange_Label.Location = new Point(12, 9);
-            DateRange_Label.Name = "DateRange_Label";
-            DateRange_Label.Size = new Size(135, 32);
-            DateRange_Label.TabIndex = 1;
-            DateRange_Label.Text = "Time range";
+            TimeRange_Label.AutoSize = true;
+            TimeRange_Label.Font = new Font("Segoe UI", 12F);
+            TimeRange_Label.Location = new Point(12, 9);
+            TimeRange_Label.Name = "TimeRange_Label";
+            TimeRange_Label.Size = new Size(135, 32);
+            TimeRange_Label.TabIndex = 1;
+            TimeRange_Label.Text = "Time range";
             // 
             // From_DateTimePicker
             // 
@@ -562,7 +562,7 @@ namespace Sales_Tracker
             Main_Panel.Controls.Add(Last10Days_RadioButton);
             Main_Panel.Controls.Add(Last3Days_RadioButton);
             Main_Panel.Controls.Add(Last5Days_RadioButton);
-            Main_Panel.Controls.Add(DateRange_Label);
+            Main_Panel.Controls.Add(TimeRange_Label);
             Main_Panel.Controls.Add(Bottom_Separator);
             Main_Panel.Controls.Add(From_Label);
             Main_Panel.Controls.Add(From_DateTimePicker);
@@ -605,7 +605,7 @@ namespace Sales_Tracker
 
         #endregion
 
-        private Label DateRange_Label;
+        private Label TimeRange_Label;
         private Label From_Label;
         private Label To_Label;
         private Guna.UI2.WinForms.Guna2Button Apply_Button;

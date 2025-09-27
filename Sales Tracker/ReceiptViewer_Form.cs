@@ -24,7 +24,7 @@ namespace Sales_Tracker
         // Supported file formats
         private static readonly HashSet<string> SupportedImageFormats = new(StringComparer.OrdinalIgnoreCase)
         {
-            ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tiff", ".tif", ".ico", ".webp"
+            ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tiff", ".tif", ".webp"
         };
         private static readonly HashSet<string> SupportedDocumentFormats = new(StringComparer.OrdinalIgnoreCase)
         {

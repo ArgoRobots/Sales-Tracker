@@ -235,7 +235,7 @@ namespace Sales_Tracker.Language
 
             // Add other controls
             controlsList.Add(CustomControls.ControlsDropDown_Button);
-            controlsList.AddRange(MainMenu_Form.TimeRangePanel);
+            controlsList.AddRange(MainMenu_Form.DateRangePanel);
             controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
             controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
 

@@ -126,61 +126,7 @@ namespace Sales_Tracker
             SaveInListsAndUpdateMainMenuForm();
             SaveInMainMenuRow();
             UpdateChargedDifferenceInMainMenuRow();
-
-            // Handle receipt changes
-            if (_receiptFilePath != null)
-            {
-                // Case 1: Adding a receipt to a row that didn't have one
-                if (_addedReceipt && !_removedReceipt)
-                {
-                    (string newPath, _) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                }
-
-                // Case 2: Removing an existing receipt
-                else if (_removedReceipt && !_addedReceipt)
-                {
-                    ReceiptManager.RemoveReceiptFromFile(_selectedRow);
-                }
-
-                // Case 3: Replacing an existing receipt with a new one
-                else if (_removedReceipt && _addedReceipt)
-                {
-                    // First save the new receipt file
-                    (string newPath, _) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
-
-                    // For receipt replacement, we need to be more careful to maintain tag structure
-                    if (_selectedRow.Tag is (List<string> itemList, TagData))
-                    {
-                        // Multi-item transaction: replace the last item if it's a receipt
-                        if (itemList.Count > 0 && itemList[^1].StartsWith(ReadOnlyVariables.Receipt_text))
-                        {
-                            itemList[^1] = ReadOnlyVariables.Receipt_text + newPath;
-                        }
-                        else
-                        {
-                            // Add receipt if none existed
-                            itemList.Add(ReadOnlyVariables.Receipt_text + newPath);
-                        }
-                    }
-                    else if (_selectedRow.Tag is (string, TagData tagData1))
-                    {
-                        // Single item with receipt: replace the tag string with receipt
-                        _selectedRow.Tag = (ReadOnlyVariables.Receipt_text + newPath, tagData1);
-                    }
-                    else
-                    {
-                        // Fallback: use the standard add method
-                        ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
-                    }
-                }
-            }
-
-            // Case 4: Receipt was removed and no new one added
-            else if (_removedReceipt)
-            {
-                ReceiptManager.RemoveReceiptFromFile(_selectedRow);
-            }
+            HandleReceiptChanges();
 
             DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);
         }
@@ -991,8 +937,9 @@ namespace Sales_Tracker
         private void ProcessNoteColumn(Guna2TextBox textBox)
         {
             DataGridViewCell cell = _selectedRow.Cells[ReadOnlyVariables.Note_column];
+            string note = textBox.Text.Trim();
 
-            if (textBox.Text == "")
+            if (note == "")
             {
                 cell.Value = ReadOnlyVariables.EmptyCell;
                 DataGridViewManager.RemoveUnderlineFromCell(cell);
@@ -1003,7 +950,7 @@ namespace Sales_Tracker
                 DataGridViewManager.AddUnderlineToCell(cell);
             }
 
-            cell.Tag = textBox.Text.Trim();
+            cell.Tag = note;
         }
 
         // Methods
@@ -1105,10 +1052,43 @@ namespace Sales_Tracker
                     DataGridViewManager.UpdateChargedDifferenceInRowWithNoItems(_selectedRow);
                 }
 
-                MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
-
                 MainMenu_Form.IsProgramLoading = false;
             }
+        }
+        private void HandleReceiptChanges()
+        {
+            if (_receiptFilePath == null) { return; }
+
+            // Case 1: Adding a receipt to a row that didn't have one
+            if (_addedReceipt && !_removedReceipt)
+            {
+                (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                if (saved)
+                {
+                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                }
+            }
+
+            // Case 2: Replacing an existing receipt with a new one
+            else if (_removedReceipt && _addedReceipt)
+            {
+                ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+
+                // Then save and add the new receipt
+                (string newPath, bool saved) = ReceiptManager.SaveReceiptInFile(_receiptFilePath);
+                if (saved)
+                {
+                    ReceiptManager.AddReceiptToTag(_selectedRow, newPath);
+                }
+            }
+
+            // Case 3: Removing a receipt
+            else if (_removedReceipt && !_addedReceipt)
+            {
+                ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
+            }
+
+            MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
         }
         private static void UpdateAllDataGridViewRows(string columnName, string oldValue, string newValue, bool updateItemsInTransaction = false)
         {

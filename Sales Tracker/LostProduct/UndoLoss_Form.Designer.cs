@@ -94,9 +94,9 @@ namespace Sales_Tracker.LostProduct
             UndoReason_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
             UndoReason_Label.Location = new Point(42, 438);
             UndoReason_Label.Name = "UndoReason_Label";
-            UndoReason_Label.Size = new Size(249, 30);
+            UndoReason_Label.Size = new Size(348, 30);
             UndoReason_Label.TabIndex = 4;
-            UndoReason_Label.Text = "Reason for undoing loss:";
+            UndoReason_Label.Text = "Reason for undoing loss (optional):";
             // 
             // UndoReason_TextBox
             // 

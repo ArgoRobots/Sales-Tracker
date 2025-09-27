@@ -94,9 +94,9 @@ namespace Sales_Tracker
             UndoReason_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
             UndoReason_Label.Location = new Point(42, 438);
             UndoReason_Label.Name = "UndoReason_Label";
-            UndoReason_Label.Size = new Size(272, 30);
+            UndoReason_Label.Size = new Size(371, 30);
             UndoReason_Label.TabIndex = 4;
-            UndoReason_Label.Text = "Reason for undoing return:";
+            UndoReason_Label.Text = "Reason for undoing return (optional):";
             // 
             // UndoReason_TextBox
             // 

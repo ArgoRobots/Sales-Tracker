@@ -10,13 +10,13 @@ namespace Sales_Tracker.Classes
 
         protected override void WndProc(ref Message m)
         {
+            // If Form is being deactivated 
             if (m.Msg == WM_ACTIVATE)
             {
                 if (m.WParam.ToInt32() == WA_INACTIVE)
                 {
-                    // Form is being deactivated (and TimeRangePanel is not open)
                     if (MainMenu_Form.Instance != null &&
-                        !MainMenu_Form.Instance.Controls.Contains(MainMenu_Form.TimeRangePanel))
+                        !MainMenu_Form.Instance.Controls.Contains(MainMenu_Form.DateRangePanel))
                     {
                         CustomControls.CloseAllPanels();
                     }

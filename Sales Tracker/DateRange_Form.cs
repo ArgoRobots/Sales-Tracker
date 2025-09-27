@@ -31,21 +31,11 @@ namespace Sales_Tracker
             SetCustomRangeControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        private void ResetControls()
+        public void ResetControls()
         {
-            // Uncheck all radio buttons first
-            foreach (Guna2CustomRadioButton radioButton in _timeSpanOptions.Values)
-            {
-                radioButton.Checked = false;
-            }
-
-            Custom_RadioButton.Checked = false;
-
-            InitializeDatePickers();
-
             AllTime_RadioButton.Checked = true;
-
-            SetCustomRangeControls();
+            From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? GetOldestDate();
+            To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
         }
         private void UpdateTheme()
         {
@@ -62,7 +52,7 @@ namespace Sales_Tracker
         }
         private void InitializeTimeSpanOptions()
         {
-            _timeSpanOptions = new Dictionary<TimeSpan, Guna2CustomRadioButton>
+            _timeSpanOptions = new()
             {
                 { TimeSpan.MaxValue, AllTime_RadioButton },
                 { TimeSpan.FromDays(1), Last24Hours_RadioButton },
@@ -94,6 +84,13 @@ namespace Sales_Tracker
         {
             if (Custom_RadioButton.Checked)
             {
+                // Validate date range
+                if (From_DateTimePicker.Value > To_DateTimePicker.Value)
+                {
+                    HandleInvalidDateRange();
+                    return;
+                }
+
                 MainMenu_Form.Instance.SortTimeSpan = null;
                 MainMenu_Form.Instance.SortFromDate = From_DateTimePicker.Value;
                 MainMenu_Form.Instance.SortToDate = To_DateTimePicker.Value;
@@ -163,29 +160,13 @@ namespace Sales_Tracker
         }
 
         // DateTimePicker methods
-        private void InitializeDatePickers()
-        {
-            if (MainMenu_Form.Instance.SortFromDate == null)
-            {
-                SetDatePickers();
-            }
-            else
-            {
-                From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? DateTime.Now;
-                To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
-            }
-        }
-        private void SetDatePickers()
-        {
-            From_DateTimePicker.Value = GetOldestDate();
-            To_DateTimePicker.Value = DateTime.Now;
-        }
         private static DateTime GetOldestDate()
         {
-            DateTime oldestDate = DateTime.Now;  // Default to today if no rows are found
+            DateTime oldestDate = DateTime.Now;  // Default to today if there are no rows
 
             // Check if there are rows in both DataGridViews
-            if (MainMenu_Form.Instance.Sale_DataGridView.Rows.Count > 0 || MainMenu_Form.Instance.Purchase_DataGridView.Rows.Count > 0)
+            if (MainMenu_Form.Instance.Sale_DataGridView.Rows.Count > 0
+                || MainMenu_Form.Instance.Purchase_DataGridView.Rows.Count > 0)
             {
                 oldestDate = new[]
                 {
@@ -211,6 +192,27 @@ namespace Sales_Tracker
                 }
             }
             return oldestDate;
+        }
+        private void HandleInvalidDateRange()
+        {
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Invalid Date Range",
+                "The 'From' date cannot be later than the 'To' date.\nWould you like to swap the dates automatically?",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.YesNo);
+
+            if (result == CustomMessageBoxResult.Yes)
+            {
+                // Swap the dates
+                (To_DateTimePicker.Value, From_DateTimePicker.Value) = (From_DateTimePicker.Value, To_DateTimePicker.Value);
+
+                // Now apply with corrected dates
+                MainMenu_Form.Instance.SortTimeSpan = null;
+                MainMenu_Form.Instance.SortFromDate = From_DateTimePicker.Value;
+                MainMenu_Form.Instance.SortToDate = To_DateTimePicker.Value;
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                MainMenu_Form.Instance.CloseDateRangePanel();
+            }
         }
 
         // Methods

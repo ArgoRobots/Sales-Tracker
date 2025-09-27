@@ -399,39 +399,6 @@ namespace Sales_Tracker.ReturnProduct
             }
         }
 
-        /// <summary>
-        /// Gets a list of returned item names for a transaction.
-        /// </summary>
-        public static List<string> GetReturnedItemNames(DataGridViewRow row)
-        {
-            List<string> returnedItemNames = [];
-
-            if (row.Tag is (List<string> items, TagData tagData) && tagData.ReturnedItems != null)
-            {
-                foreach (int itemIndex in tagData.ReturnedItems)
-                {
-                    if (itemIndex < items.Count && !items[itemIndex].StartsWith(ReadOnlyVariables.Receipt_text))
-                    {
-                        string[] itemDetails = items[itemIndex].Split(',');
-                        if (itemDetails.Length > 0)
-                        {
-                            returnedItemNames.Add(itemDetails[0]);  // Product name
-                        }
-                    }
-                }
-            }
-            else if (IsTransactionFullyReturned(row))
-            {
-                // For single items or fully returned transactions
-                string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString();
-                if (!string.IsNullOrEmpty(productName))
-                {
-                    returnedItemNames.Add(productName);
-                }
-            }
-
-            return returnedItemNames;
-        }
         private static void SaveReturnChanges()
         {
             // Save both purchase and sale data
