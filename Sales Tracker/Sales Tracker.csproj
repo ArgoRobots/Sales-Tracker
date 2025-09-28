@@ -86,4 +86,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ReportBuilder\" />
+  </ItemGroup>
+
 </Project>

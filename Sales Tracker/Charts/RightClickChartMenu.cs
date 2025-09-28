@@ -6,6 +6,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.UI;
+using System.Drawing.Imaging;
 
 namespace Sales_Tracker.Charts
 {
@@ -66,7 +67,7 @@ namespace Sales_Tracker.Charts
                 // Capture the chart as a bitmap
                 using Bitmap bitmap = new(chart.Width, chart.Height);
                 chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
-                bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                bitmap.Save(fileName, ImageFormat.Png);
             }
             catch (Exception ex)
             {
