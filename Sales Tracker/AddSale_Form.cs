@@ -36,6 +36,8 @@ namespace Sales_Tracker
             RemoveReceiptLabel();
             string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";
+
+            this.Activated += AddSale_Form_Activated;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -105,6 +107,10 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
+        private void AddSale_Form_Activated(object sender, EventArgs e)
+        {
+            CheckIfProductsExist();
+        }
         private void AddSale_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
