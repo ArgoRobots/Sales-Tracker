@@ -8,7 +8,17 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public partial class ReportPreviewExport_Form : Form
     {
-        // Properties
+        // Properties  private int _initialFormWidth;
+        private int _initialFormWidth;
+        private int _initialFormHeight;
+        private int _initialLeftPanelWidth;
+        private int _initialRightPanelWidth;
+        private ExportSettings _exportSettings;
+        private float _currentZoom = 1.0f;
+        private const float _zoomIncrement = 0.25f;
+        private const float _minZoom = 0.25f;
+        private const float _maxZoom = 4.0f;
+
         /// <summary>
         /// Gets the parent report generator form.
         /// </summary>
@@ -17,29 +27,24 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        protected ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
         /// <summary>
         /// Indicates if the form is currently being loaded/updated programmatically.
         /// </summary>
-        protected bool IsUpdating { get; private set; }
-
-        private ExportSettings _exportSettings;
-        private float _currentZoom = 1.0f;
-        private const float _zoomIncrement = 0.25f;
-        private const float _minZoom = 0.25f;
-        private const float _maxZoom = 4.0f;
+        private bool _isUpdating;
 
         // Init.
         public ReportPreviewExport_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
-            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
+            ParentReportForm = parentForm;
 
             InitializeExportSettings();
             SetupPageSettings();
             SetupExportSettings();
             SetupPreviewControls();
+            StoreInitialSizes();
         }
         private void InitializeExportSettings()
         {
@@ -94,18 +99,25 @@ namespace Sales_Tracker.ReportGenerator
             Preview_PictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             Preview_PictureBox.BackColor = Color.White;
         }
+        private void StoreInitialSizes()
+        {
+            _initialFormWidth = Width;
+            _initialFormHeight = Height;
+            _initialLeftPanelWidth = LeftPreviewPanel.Width;
+            _initialRightPanelWidth = RightSettingsPanel.Width;
+        }
 
         // Form event handlers
         private void ReportPreviewExport_Form_Shown(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 OnStepActivated();
             }
         }
         private void ReportPreviewExport_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 if (Visible)
                 {
@@ -116,6 +128,20 @@ namespace Sales_Tracker.ReportGenerator
                     OnStepDeactivated();
                 }
             }
+        }
+        private void ReportPreviewExport_Form_Resize(object sender, EventArgs e)
+        {
+            if (_initialFormWidth == 0) { return; }
+
+            // Calculate the form's width change ratio
+            float widthRatio = (float)Width / _initialFormWidth;
+
+            // Calculate new panel widths while maintaining proportion
+            LeftPreviewPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            RightSettingsPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+
+            // Position the right panel
+            RightSettingsPanel.Left = Width - RightSettingsPanel.Width;
         }
 
         // Event handlers
@@ -195,14 +221,14 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void PageSettings_Changed(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 GeneratePreview();
             }
         }
         private void ExportSettings_Changed(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 UpdateExportSettingsFromUI();
             }
@@ -486,7 +512,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Notifies the parent form that validation state has changed.
         /// </summary>
-        protected void NotifyParentValidationChanged()
+        private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
         }
@@ -494,11 +520,11 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Safely updates UI controls without triggering events
         /// </summary>
-        protected void PerformUpdate(Action updateAction)
+        private void PerformUpdate(Action updateAction)
         {
             if (updateAction == null) { return; }
 
-            IsUpdating = true;
+            _isUpdating = true;
 
             try
             {
@@ -506,7 +532,7 @@ namespace Sales_Tracker.ReportGenerator
             }
             finally
             {
-                IsUpdating = false;
+                _isUpdating = false;
             }
         }
     }

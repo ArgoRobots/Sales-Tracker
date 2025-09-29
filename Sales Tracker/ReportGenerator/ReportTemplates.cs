@@ -36,7 +36,6 @@
                 MainMenu_Form.ChartDataType.AverageOrderValue
             ]);
 
-            // Add report elements with specific positioning
             AddSalesReportElements(config);
 
             return config;

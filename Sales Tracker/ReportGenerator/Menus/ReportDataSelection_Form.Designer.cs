@@ -91,21 +91,22 @@
             // 
             // RightPanel
             // 
+            RightPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RightPanel.Controls.Add(Filters_GroupBox);
             RightPanel.Controls.Add(ReportSettings_GroupBox);
             RightPanel.CustomizableEdges = customizableEdges17;
-            RightPanel.Dock = DockStyle.Right;
             RightPanel.FillColor = Color.Transparent;
-            RightPanel.Location = new Point(904, 0);
+            RightPanel.Location = new Point(900, 0);
             RightPanel.Margin = new Padding(4, 5, 4, 5);
             RightPanel.Name = "RightPanel";
-            RightPanel.Padding = new Padding(29, 33, 29, 33);
+            RightPanel.Padding = new Padding(14, 28, 28, 14);
             RightPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            RightPanel.Size = new Size(596, 900);
+            RightPanel.Size = new Size(600, 900);
             RightPanel.TabIndex = 1;
             // 
             // Filters_GroupBox
             // 
+            Filters_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Filters_GroupBox.BackColor = Color.Transparent;
             Filters_GroupBox.BorderRadius = 8;
             Filters_GroupBox.BorderThickness = 0;
@@ -124,12 +125,12 @@
             Filters_GroupBox.CustomizableEdges = customizableEdges11;
             Filters_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Filters_GroupBox.ForeColor = Color.White;
-            Filters_GroupBox.Location = new Point(29, 194);
+            Filters_GroupBox.Location = new Point(14, 192);
             Filters_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Filters_GroupBox.Name = "Filters_GroupBox";
             Filters_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Filters_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Filters_GroupBox.Size = new Size(538, 673);
+            Filters_GroupBox.Size = new Size(558, 697);
             Filters_GroupBox.TabIndex = 1;
             Filters_GroupBox.Text = "Data Filters";
             // 
@@ -318,6 +319,7 @@
             // 
             // ReportSettings_GroupBox
             // 
+            ReportSettings_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ReportSettings_GroupBox.BackColor = Color.Transparent;
             ReportSettings_GroupBox.BorderRadius = 8;
             ReportSettings_GroupBox.BorderThickness = 0;
@@ -325,15 +327,14 @@
             ReportSettings_GroupBox.Controls.Add(ReportTitle_TextBox);
             ReportSettings_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             ReportSettings_GroupBox.CustomizableEdges = customizableEdges15;
-            ReportSettings_GroupBox.Dock = DockStyle.Top;
             ReportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ReportSettings_GroupBox.ForeColor = Color.White;
-            ReportSettings_GroupBox.Location = new Point(29, 33);
+            ReportSettings_GroupBox.Location = new Point(14, 28);
             ReportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ReportSettings_GroupBox.Name = "ReportSettings_GroupBox";
             ReportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ReportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            ReportSettings_GroupBox.Size = new Size(538, 151);
+            ReportSettings_GroupBox.Size = new Size(558, 150);
             ReportSettings_GroupBox.TabIndex = 0;
             ReportSettings_GroupBox.Text = "Report Settings";
             // 
@@ -365,27 +366,28 @@
             ReportTitle_TextBox.PlaceholderText = "Enter report title";
             ReportTitle_TextBox.SelectedText = "";
             ReportTitle_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ReportTitle_TextBox.Size = new Size(280, 50);
+            ReportTitle_TextBox.Size = new Size(300, 50);
             ReportTitle_TextBox.TabIndex = 1;
             ReportTitle_TextBox.TextChanged += ReportTitle_TextBox_TextChanged;
             // 
             // LeftPanel
             // 
+            LeftPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftPanel.Controls.Add(ChartSelection_GroupBox);
             LeftPanel.Controls.Add(Template_GroupBox);
             LeftPanel.CustomizableEdges = customizableEdges29;
-            LeftPanel.Dock = DockStyle.Left;
             LeftPanel.FillColor = Color.Transparent;
             LeftPanel.Location = new Point(0, 0);
             LeftPanel.Margin = new Padding(4, 5, 4, 5);
             LeftPanel.Name = "LeftPanel";
-            LeftPanel.Padding = new Padding(29, 33, 29, 33);
+            LeftPanel.Padding = new Padding(28, 28, 14, 14);
             LeftPanel.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            LeftPanel.Size = new Size(896, 900);
+            LeftPanel.Size = new Size(900, 900);
             LeftPanel.TabIndex = 0;
             // 
             // ChartSelection_GroupBox
             // 
+            ChartSelection_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ChartSelection_GroupBox.BackColor = Color.Transparent;
             ChartSelection_GroupBox.BorderRadius = 8;
             ChartSelection_GroupBox.BorderThickness = 0;
@@ -393,20 +395,20 @@
             ChartSelection_GroupBox.Controls.Add(SelectNone_Button);
             ChartSelection_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             ChartSelection_GroupBox.CustomizableEdges = customizableEdges23;
-            ChartSelection_GroupBox.Dock = DockStyle.Top;
             ChartSelection_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ChartSelection_GroupBox.ForeColor = Color.White;
-            ChartSelection_GroupBox.Location = new Point(29, 33);
+            ChartSelection_GroupBox.Location = new Point(28, 28);
             ChartSelection_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            ChartSelection_GroupBox.Size = new Size(838, 657);
+            ChartSelection_GroupBox.Size = new Size(858, 675);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
             // 
             // SelectAll_Button
             // 
+            SelectAll_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             SelectAll_Button.BackColor = Color.Transparent;
             SelectAll_Button.BorderColor = Color.LightGray;
             SelectAll_Button.BorderRadius = 2;
@@ -415,7 +417,7 @@
             SelectAll_Button.FillColor = Color.White;
             SelectAll_Button.Font = new Font("Segoe UI", 9F);
             SelectAll_Button.ForeColor = Color.Black;
-            SelectAll_Button.Location = new Point(18, 595);
+            SelectAll_Button.Location = new Point(18, 613);
             SelectAll_Button.Margin = new Padding(4, 5, 4, 5);
             SelectAll_Button.Name = "SelectAll_Button";
             SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -426,6 +428,7 @@
             // 
             // SelectNone_Button
             // 
+            SelectNone_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             SelectNone_Button.BackColor = Color.Transparent;
             SelectNone_Button.BorderColor = Color.LightGray;
             SelectNone_Button.BorderRadius = 2;
@@ -434,7 +437,7 @@
             SelectNone_Button.FillColor = Color.White;
             SelectNone_Button.Font = new Font("Segoe UI", 9F);
             SelectNone_Button.ForeColor = Color.Black;
-            SelectNone_Button.Location = new Point(176, 595);
+            SelectNone_Button.Location = new Point(176, 613);
             SelectNone_Button.Margin = new Padding(4, 5, 4, 5);
             SelectNone_Button.Name = "SelectNone_Button";
             SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
@@ -445,6 +448,7 @@
             // 
             // Template_GroupBox
             // 
+            Template_GroupBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Template_GroupBox.BackColor = Color.Transparent;
             Template_GroupBox.BorderRadius = 8;
             Template_GroupBox.BorderThickness = 0;
@@ -452,15 +456,14 @@
             Template_GroupBox.Controls.Add(Template_ComboBox);
             Template_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             Template_GroupBox.CustomizableEdges = customizableEdges27;
-            Template_GroupBox.Dock = DockStyle.Bottom;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Template_GroupBox.ForeColor = Color.White;
-            Template_GroupBox.Location = new Point(29, 700);
+            Template_GroupBox.Location = new Point(28, 717);
             Template_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Template_GroupBox.Size = new Size(838, 167);
+            Template_GroupBox.Size = new Size(858, 167);
             Template_GroupBox.TabIndex = 1;
             Template_GroupBox.Text = "Report Templates";
             // 
@@ -479,7 +482,6 @@
             // 
             // Template_ComboBox
             // 
-            Template_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Template_ComboBox.BackColor = Color.Transparent;
             Template_ComboBox.BorderRadius = 2;
             Template_ComboBox.CustomizableEdges = customizableEdges25;
@@ -509,6 +511,7 @@
             Name = "ReportDataSelection_Form";
             Shown += ReportDataSelection_Form_Shown;
             VisibleChanged += ReportDataSelection_Form_VisibleChanged;
+            Resize += ReportDataSelection_Form_Resize;
             RightPanel.ResumeLayout(false);
             Filters_GroupBox.ResumeLayout(false);
             Filters_GroupBox.PerformLayout();

@@ -11,6 +11,11 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportDataSelection_Form : Form
     {
         // Properties
+        private int _initialFormWidth;
+        private int _initialLeftPanelWidth;
+        private int _initialRightPanelWidth;
+        private CustomCheckListBox ChartSelection_CheckedListBox;
+
         /// <summary>
         /// Gets the parent report generator form.
         /// </summary>
@@ -19,25 +24,25 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        protected ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
         /// <summary>
         /// Indicates if the form is currently being loaded/updated programmatically.
         /// </summary>
-        protected bool IsUpdating { get; private set; }
-        private CustomCheckListBox ChartSelection_CheckedListBox;
+        private bool _isUpdating;
 
         // Init.
         public ReportDataSelection_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
-            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
+            ParentReportForm = parentForm;
 
             InitChartSelectionControl();
             SetupChartSelection();
             SetupFilterControls();
             SetupTemplates();
             LoadDefaultValues();
+            StoreInitialSizes();
         }
         private void InitChartSelectionControl()
         {
@@ -88,13 +93,17 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupTemplates()
         {
-            // Add predefined templates
             Template_ComboBox.Items.Clear();
-            Template_ComboBox.Items.Add(LanguageManager.TranslateString("Custom Report"));
-            Template_ComboBox.Items.Add(LanguageManager.TranslateString("Monthly Sales Report"));
-            Template_ComboBox.Items.Add(LanguageManager.TranslateString("Financial Overview"));
-            Template_ComboBox.Items.Add(LanguageManager.TranslateString("Performance Analysis"));
-            Template_ComboBox.SelectedIndex = 0;  // Custom by default
+
+            // Add templates from ReportTemplates class
+            List<string> templates = ReportTemplates.GetAvailableTemplates();
+            foreach (string templateName in templates)
+            {
+                Template_ComboBox.Items.Add(LanguageManager.TranslateString(templateName));
+            }
+
+            // Select "Custom Report" by default
+            Template_ComboBox.SelectedIndex = 0;
         }
         private void LoadDefaultValues()
         {
@@ -114,6 +123,12 @@ namespace Sales_Tracker.ReportGenerator
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
             }
+        }
+        private void StoreInitialSizes()
+        {
+            _initialFormWidth = Width;
+            _initialLeftPanelWidth = LeftPanel.Width;
+            _initialRightPanelWidth = RightPanel.Width;
         }
 
         // Helper methods
@@ -148,14 +163,14 @@ namespace Sales_Tracker.ReportGenerator
         // Form event handlers
         private void ReportDataSelection_Form_Shown(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 OnStepActivated();
             }
         }
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 if (Visible)
                 {
@@ -167,11 +182,25 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
+        private void ReportDataSelection_Form_Resize(object sender, EventArgs e)
+        {
+            if (_initialFormWidth == 0) { return; }
+
+            // Calculate the form's width change ratio
+            float widthRatio = (float)Width / _initialFormWidth;
+
+            // Calculate new panel widths while maintaining proportion
+            LeftPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            RightPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+
+            // Position the right panel
+            RightPanel.Left = Width - RightPanel.Width;
+        }
 
         // Event handlers
         private void SelectAll_Button_Click(object sender, EventArgs e)
         {
-            if (IsUpdating) { return; }
+            if (_isUpdating) { return; }
 
             PerformUpdate(() =>
             {
@@ -184,7 +213,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SelectNone_Button_Click(object sender, EventArgs e)
         {
-            if (IsUpdating) { return; }
+            if (_isUpdating) { return; }
 
             PerformUpdate(() =>
             {
@@ -198,7 +227,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 // Check if the window handle has been created before using BeginInvoke
                 if (IsHandleCreated && Visible)
@@ -213,14 +242,14 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!IsUpdating && Template_ComboBox.SelectedIndex > 0)
+            if (!_isUpdating && Template_ComboBox.SelectedIndex > 0)
             {
                 ApplyTemplate(Template_ComboBox.SelectedItem?.ToString());
             }
         }
         private void DateRange_Changed(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 ValidateDateRange();
                 NotifyParentValidationChanged();
@@ -228,14 +257,14 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void FilterChanged(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 NotifyParentValidationChanged();
             }
         }
         private void ReportTitle_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!IsUpdating)
+            if (!_isUpdating)
             {
                 NotifyParentValidationChanged();
             }
@@ -267,101 +296,39 @@ namespace Sales_Tracker.ReportGenerator
         // Template application
         private void ApplyTemplate(string templateName)
         {
-            // Apply predefined template settings
-            switch (templateName)
-            {
-                case "Monthly Sales Report":
-                    ApplyMonthlySalesTemplate();
-                    break;
-                case "Financial Overview":
-                    ApplyFinancialOverviewTemplate();
-                    break;
-                case "Performance Analysis":
-                    ApplyPerformanceAnalysisTemplate();
-                    break;
-            }
-        }
-        private void ApplyMonthlySalesTemplate()
-        {
+            if (string.IsNullOrEmpty(templateName)) return;
+
+            // Create a new report configuration from the template
+            ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
+
+            // Apply the template settings to the form controls
             PerformUpdate(() =>
             {
-                MainMenu_Form.ChartDataType[] templateCharts =
-                [
-                    MainMenu_Form.ChartDataType.TotalSales,
-                    MainMenu_Form.ChartDataType.DistributionOfSales,
-                    MainMenu_Form.ChartDataType.GrowthRates,
-                    MainMenu_Form.ChartDataType.AverageOrderValue
-                ];
-
-                ApplyChartTemplate(templateCharts);
-                ReportTitle_TextBox.Text = "Monthly Sales Report";
-                TransactionType_ComboBox.SelectedIndex = 0;  // Sales only
-
-                // Set date range to last month
-                DateTime now = DateTime.Now;
-                StartDate_DateTimePicker.Value = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
-                EndDate_DateTimePicker.Value = new DateTime(now.Year, now.Month, 1).AddDays(-1);
-            });
-        }
-        private void ApplyFinancialOverviewTemplate()
-        {
-            PerformUpdate(() =>
-            {
-                MainMenu_Form.ChartDataType[] templateCharts =
-                [
-                    MainMenu_Form.ChartDataType.TotalSales,
-                    MainMenu_Form.ChartDataType.TotalPurchases,
-                    MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                    MainMenu_Form.ChartDataType.TotalProfits
-                ];
-
-                ApplyChartTemplate(templateCharts);
-                ReportTitle_TextBox.Text = "Financial Overview";
-                TransactionType_ComboBox.SelectedIndex = 2;  // Both
-
-                // Set date range to last quarter
-                StartDate_DateTimePicker.Value = DateTime.Now.AddMonths(-3);
-                EndDate_DateTimePicker.Value = DateTime.Now;
-            });
-        }
-        private void ApplyPerformanceAnalysisTemplate()
-        {
-            PerformUpdate(() =>
-            {
-                MainMenu_Form.ChartDataType[] templateCharts =
-                [
-                    MainMenu_Form.ChartDataType.GrowthRates,
-                    MainMenu_Form.ChartDataType.AverageOrderValue,
-                    MainMenu_Form.ChartDataType.TotalTransactions,
-                    MainMenu_Form.ChartDataType.ReturnsOverTime
-                ];
-
-                ApplyChartTemplate(templateCharts);
-                ReportTitle_TextBox.Text = "Performance Analysis";
-                TransactionType_ComboBox.SelectedIndex = 2;  // Both
-
-                // Set date range to last 6 months
-                StartDate_DateTimePicker.Value = DateTime.Now.AddMonths(-6);
-                EndDate_DateTimePicker.Value = DateTime.Now;
-            });
-        }
-        private void ApplyChartTemplate(MainMenu_Form.ChartDataType[] templateCharts)
-        {
-            // Uncheck all first
-            for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
-            {
-                ChartSelection_CheckedListBox.SetItemChecked(i, false);
-            }
-
-            // Check template charts
-            for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
-            {
-                MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
-                if (templateCharts.Contains(chartType))
+                // Update chart selection
+                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
                 {
-                    ChartSelection_CheckedListBox.SetItemChecked(i, true);
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                    bool isSelected = template.Filters.SelectedChartTypes.Contains(chartType);
+                    ChartSelection_CheckedListBox.SetItemChecked(i, isSelected);
                 }
-            }
+
+                // Update report title
+                ReportTitle_TextBox.Text = template.Title;
+
+                // Update transaction type
+                TransactionType_ComboBox.SelectedIndex = (int)template.Filters.TransactionType;
+
+                // Update date range
+                if (template.Filters.StartDate.HasValue)
+                    StartDate_DateTimePicker.Value = template.Filters.StartDate.Value;
+
+                if (template.Filters.EndDate.HasValue)
+                    EndDate_DateTimePicker.Value = template.Filters.EndDate.Value;
+
+                // Update includes
+                IncludeReturns_CheckBox.Checked = template.Filters.IncludeReturns;
+                IncludeLosses_CheckBox.Checked = template.Filters.IncludeLosses;
+            });
         }
 
         // Form implementation methods
@@ -377,11 +344,11 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (ChartSelection_CheckedListBox.CheckedItems.Count == 0)
             {
-                MessageBox.Show(
-                    LanguageManager.TranslateString("Please select at least one chart to include in your report."),
-                    LanguageManager.TranslateString("No Charts Selected"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                CustomMessageBox.Show(
+                    "Please select at least one chart to include in your report.",
+                    "No Charts Selected",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok
                 );
                 return false;
             }
@@ -389,11 +356,11 @@ namespace Sales_Tracker.ReportGenerator
             // Validate date range
             if (StartDate_DateTimePicker.Value >= EndDate_DateTimePicker.Value)
             {
-                MessageBox.Show(
-                    LanguageManager.TranslateString("Start date must be before end date."),
-                    LanguageManager.TranslateString("Invalid Date Range"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                CustomMessageBox.Show(
+                    "Invalid Date Range",
+                    "Start date must be before end date.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok
                 );
                 return false;
             }
@@ -401,11 +368,11 @@ namespace Sales_Tracker.ReportGenerator
             // Validate report title
             if (string.IsNullOrWhiteSpace(ReportTitle_TextBox.Text))
             {
-                MessageBox.Show(
-                    LanguageManager.TranslateString("Please enter a report title."),
-                    LanguageManager.TranslateString("Missing Report Title"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                CustomMessageBox.Show(
+                    "Missing Report Title",
+                    "Please enter a report title.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok
                 );
                 ReportTitle_TextBox.Focus();
                 return false;
@@ -489,6 +456,18 @@ namespace Sales_Tracker.ReportGenerator
         public void OnStepActivated()
         {
             LoadFromReportConfiguration();
+
+            // If template name is set in the configuration, select it in the combobox
+            if (ReportConfig != null && !string.IsNullOrEmpty(ReportConfig.TemplateName))
+            {
+                int index = Template_ComboBox.Items.IndexOf(
+                    LanguageManager.TranslateString(ReportConfig.TemplateName));
+                if (index >= 0)
+                {
+                    Template_ComboBox.SelectedIndex = index;
+                }
+            }
+
             NotifyParentValidationChanged();
         }
 
@@ -504,7 +483,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Notifies the parent form that validation state has changed
         /// </summary>
-        protected void NotifyParentValidationChanged()
+        private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
         }
@@ -513,18 +492,18 @@ namespace Sales_Tracker.ReportGenerator
         /// Safely updates UI controls without triggering events.
         /// </summary>
         /// <param name="updateAction">Action to perform during update</param>
-        protected void PerformUpdate(Action updateAction)
+        private void PerformUpdate(Action updateAction)
         {
             if (updateAction == null) { return; }
 
-            IsUpdating = true;
+            _isUpdating = true;
             try
             {
                 updateAction();
             }
             finally
             {
-                IsUpdating = false;
+                _isUpdating = false;
             }
         }
     }

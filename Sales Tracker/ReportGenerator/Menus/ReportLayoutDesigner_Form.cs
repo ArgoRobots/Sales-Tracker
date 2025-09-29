@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReportGenerator
@@ -10,6 +9,13 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportLayoutDesigner_Form : Form
     {
         // Properties
+        private int _initialFormWidth;
+        private int _initialLeftPanelWidth;
+        private int _initialRightPanelWidth;
+        private bool _isDragging = false;
+        private Point _dragStartPoint;
+        private ReportElement _selectedElement;
+
         /// <summary>
         /// Gets the parent report generator form.
         /// </summary>
@@ -18,25 +24,22 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        protected ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
         /// <summary>
         /// Indicates if the form is currently being loaded/updated programmatically.
         /// </summary>
-        protected bool IsUpdating { get; private set; }
-
-        private bool _isDragging = false;
-        private Point _dragStartPoint;
-        private ReportElement _selectedElement;
+        private bool _isUpdating;
 
         // Init.
         public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
-            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
+            ParentReportForm = parentForm;
 
             SetupCanvas();
             SetupToolsPanel();
+            StoreInitialSizes();
         }
         private void SetupCanvas()
         {
@@ -49,14 +52,11 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.MouseMove += Canvas_Panel_MouseMove;
             Canvas_Panel.MouseUp += Canvas_Panel_MouseUp;
 
-            // Set canvas background
+            // Set canvas backgrounds
             Canvas_Panel.BackColor = Color.White;
         }
         private void SetupToolsPanel()
         {
-            // Clear existing controls
-            ToolsContainer_Panel.Controls.Clear();
-
             int yPosition = 20;
             const int buttonHeight = 40;
             const int spacing = 10;
@@ -114,6 +114,49 @@ namespace Sales_Tracker.ReportGenerator
 
             ToolTip toolTip = new();
             toolTip.SetToolTip(button, tooltip);
+        }
+        private void StoreInitialSizes()
+        {
+            _initialFormWidth = Width;
+            _initialLeftPanelWidth = LeftToolsPanel.Width;
+            _initialRightPanelWidth = RightCanvasPanel.Width;
+        }
+
+        // Form event handlers
+        private void ReportLayoutDesigner_Form_Shown(object sender, EventArgs e)
+        {
+            if (!_isUpdating)
+            {
+                OnStepActivated();
+            }
+        }
+        private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
+        {
+            if (!_isUpdating)
+            {
+                if (Visible)
+                {
+                    OnStepActivated();
+                }
+                else
+                {
+                    OnStepDeactivated();
+                }
+            }
+        }
+        private void ReportLayoutDesigner_Form_Resize(object sender, EventArgs e)
+        {
+            if (_initialFormWidth == 0) { return; }
+
+            // Calculate the form's width change ratio
+            float widthRatio = (float)Width / _initialFormWidth;
+
+            // Calculate new panel widths while maintaining proportion
+            LeftToolsPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            RightCanvasPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+
+            // Adjust the position of the right panel
+            RightCanvasPanel.Left = LeftToolsPanel.Width;
         }
 
         // Canvas event handlers
@@ -378,29 +421,6 @@ namespace Sales_Tracker.ReportGenerator
             }
         }
 
-        // Form event handlers
-        private void ReportLayoutDesigner_Form_Shown(object sender, EventArgs e)
-        {
-            if (!IsUpdating)
-            {
-                OnStepActivated();
-            }
-        }
-        private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
-        {
-            if (!IsUpdating)
-            {
-                if (Visible)
-                {
-                    OnStepActivated();
-                }
-                else
-                {
-                    OnStepDeactivated();
-                }
-            }
-        }
-
         // Tool event handlers
         private void AddChartElement(object sender, EventArgs e)
         {
@@ -459,11 +479,11 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!IsValidForNextStep())
             {
-                MessageBox.Show(
-                    LanguageManager.TranslateString("Please add at least one element to your report layout."),
-                    LanguageManager.TranslateString("Empty Layout"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                CustomMessageBox.Show(
+                    "Empty Layout",
+                    "Please add at least one element to your report layout.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok
                 );
                 return false;
             }
@@ -483,8 +503,18 @@ namespace Sales_Tracker.ReportGenerator
 
             PerformUpdate(() =>
             {
-                // Auto-generate elements from selected chart types if no elements exist
-                if (ReportConfig.Elements.Count == 0 && ReportConfig.Filters.SelectedChartTypes.Count > 0)
+                // Auto-generate elements from template if no elements exist
+                if (ReportConfig.Elements.Count == 0 && !string.IsNullOrEmpty(ReportConfig.TemplateName))
+                {
+                    ReportConfiguration template = ReportTemplates.CreateFromTemplate(ReportConfig.TemplateName);
+
+                    // Copy elements from template to current configuration
+                    foreach (ReportElement element in template.Elements)
+                    {
+                        ReportConfig.AddElement(element.Clone());
+                    }
+                }
+                else if (ReportConfig.Elements.Count == 0 && ReportConfig.Filters.SelectedChartTypes.Count > 0)
                 {
                     GenerateElementsFromTemplate();
                 }
@@ -559,7 +589,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Notifies the parent form that validation state has changed.
         /// </summary>
-        protected void NotifyParentValidationChanged()
+        private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
         }
@@ -567,11 +597,11 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Safely updates UI controls without triggering events.
         /// </summary>
-        protected void PerformUpdate(Action updateAction)
+        private void PerformUpdate(Action updateAction)
         {
             if (updateAction == null) { return; }
 
-            IsUpdating = true;
+            _isUpdating = true;
 
             try
             {
@@ -579,7 +609,7 @@ namespace Sales_Tracker.ReportGenerator
             }
             finally
             {
-                IsUpdating = false;
+                _isUpdating = false;
             }
         }
     }

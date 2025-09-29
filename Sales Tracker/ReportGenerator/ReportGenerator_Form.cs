@@ -40,7 +40,7 @@ namespace Sales_Tracker.ReportGenerator
             UpdateNavigationButtons();
             UpdateProgressIndicator();
 
-            ThemeManager.SetThemeForForm(this);
+            UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
             SetAccessibleDescriptions();
 
@@ -66,6 +66,14 @@ namespace Sales_Tracker.ReportGenerator
 
             // Add to main content panel
             MainContent_Panel.Controls.Add(childForm);
+        }
+        private void UpdateTheme()
+        {
+            ThemeManager.SetThemeForForm(this);
+
+            ThemeManager.MakeGButtonBluePrimary(Previous_Button);
+            ThemeManager.MakeGButtonBluePrimary(Next_Button);
+            ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
         }
         private void SetAccessibleDescriptions()
         {
