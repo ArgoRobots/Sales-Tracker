@@ -58,7 +58,6 @@ namespace Sales_Tracker.ReportGenerator
 
             ChartSelection_GroupBox.Controls.Add(ChartSelection_CheckedListBox);
         }
-
         private void SetupChartSelection()
         {
             // Populate chart selection with all available chart types
@@ -116,6 +115,7 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
+
         // Helper methods
         private static MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)
         {

@@ -17,7 +17,7 @@ namespace Sales_Tracker.ReportGenerator
         private ReportLayoutDesigner_Form _layoutDesignerForm;
         private ReportPreviewExport_Form _previewExportForm;
         private int _currentStep = 0;
-        private const byte TotalSteps = 3;
+        private const byte _totalSteps = 3;
 
         public ReportConfiguration CurrentReportConfiguration { get; private set; }
 
@@ -118,9 +118,9 @@ namespace Sales_Tracker.ReportGenerator
             Previous_Button.Enabled = _currentStep > 0;
 
             bool canProceed = CanProceedToNextStep();
-            Next_Button.Enabled = _currentStep < TotalSteps - 1 && canProceed;
+            Next_Button.Enabled = _currentStep < _totalSteps - 1 && canProceed;
 
-            if (_currentStep == TotalSteps - 1)
+            if (_currentStep == _totalSteps - 1)
             {
                 Next_Button.Text = LanguageManager.TranslateString("Finish");
                 Next_Button.Enabled = canProceed;
@@ -142,9 +142,9 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void UpdateProgressIndicator()
         {
-            int progressPercentage = (int)((_currentStep + 1.0) / TotalSteps * 100);
+            int progressPercentage = (int)((_currentStep + 1.0) / _totalSteps * 100);
             Progress_ProgressBar.Value = progressPercentage;
-            ProgressValue_Label.Text = $"{_currentStep + 1} / {TotalSteps}";
+            ProgressValue_Label.Text = $"{_currentStep + 1} / {_totalSteps}";
         }
 
         // Event handlers
@@ -157,7 +157,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Next_Button_Click(object sender, EventArgs e)
         {
-            if (_currentStep < TotalSteps - 1)
+            if (_currentStep < _totalSteps - 1)
             {
                 if (ValidateCurrentStep())
                 {

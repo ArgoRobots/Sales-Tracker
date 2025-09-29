@@ -9,7 +9,6 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportPreviewExport_Form : Form
     {
         // Properties
-
         /// <summary>
         /// Gets the parent report generator form.
         /// </summary>
@@ -27,9 +26,9 @@ namespace Sales_Tracker.ReportGenerator
 
         private ExportSettings _exportSettings;
         private float _currentZoom = 1.0f;
-        private const float ZoomIncrement = 0.25f;
-        private const float MinZoom = 0.25f;
-        private const float MaxZoom = 4.0f;
+        private const float _zoomIncrement = 0.25f;
+        private const float _minZoom = 0.25f;
+        private const float _maxZoom = 4.0f;
 
         // Init.
         public ReportPreviewExport_Form(ReportGenerator_Form parentForm)
@@ -126,17 +125,17 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ZoomIn_Button_Click(object sender, EventArgs e)
         {
-            if (_currentZoom < MaxZoom)
+            if (_currentZoom < _maxZoom)
             {
-                _currentZoom += ZoomIncrement;
+                _currentZoom += _zoomIncrement;
                 GeneratePreview();
             }
         }
         private void ZoomOut_Button_Click(object sender, EventArgs e)
         {
-            if (_currentZoom > MinZoom)
+            if (_currentZoom > _minZoom)
             {
-                _currentZoom -= ZoomIncrement;
+                _currentZoom -= _zoomIncrement;
                 GeneratePreview();
             }
         }
