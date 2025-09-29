@@ -122,7 +122,8 @@ namespace Sales_Tracker.UI
             {
                 try
                 {
-                    _companyLogo.Image = Image.FromFile(logoPath);
+                    using MemoryStream ms = new(File.ReadAllBytes(logoPath));
+                    _companyLogo.Image = Image.FromStream(ms);
                 }
                 catch (Exception ex)
                 {
@@ -309,13 +310,6 @@ namespace Sales_Tracker.UI
 
             try
             {
-                // Dispose current image first to release file lock
-                if (_companyLogo?.Image != null)
-                {
-                    _companyLogo.Image.Dispose();
-                    _companyLogo.Image = null;
-                }
-
                 // Copy the logo file to application data directory
                 string logoFileName = $"company_logo{Path.GetExtension(dialog.FileName)}";
                 string logoDestinationPath = Path.Combine(Directories.TempCompany_dir, logoFileName);
