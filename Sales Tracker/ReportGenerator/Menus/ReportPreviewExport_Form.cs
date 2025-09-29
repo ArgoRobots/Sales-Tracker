@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Language;
+using System.Diagnostics;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -59,17 +60,13 @@ namespace Sales_Tracker.ReportGenerator
             PageSize_ComboBox.Items.Add("Letter (8.5 × 11 in)");
             PageSize_ComboBox.Items.Add("Legal (8.5 × 14 in)");
             PageSize_ComboBox.Items.Add("Tabloid (11 × 17 in)");
-            PageSize_ComboBox.SelectedIndex = 0; // A4 default
+            PageSize_ComboBox.SelectedIndex = 0;  // A4 default
 
             // Setup orientation combo box
             Orientation_ComboBox.Items.Clear();
             Orientation_ComboBox.Items.Add(LanguageManager.TranslateString("Portrait"));
             Orientation_ComboBox.Items.Add(LanguageManager.TranslateString("Landscape"));
-            Orientation_ComboBox.SelectedIndex = 0; // Portrait default
-
-            // Wire up events
-            PageSize_ComboBox.SelectedIndexChanged += PageSettings_Changed;
-            Orientation_ComboBox.SelectedIndexChanged += PageSettings_Changed;
+            Orientation_ComboBox.SelectedIndex = 0;  // Portrait default
         }
         private void SetupExportSettings()
         {
@@ -95,12 +92,6 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupPreviewControls()
         {
-            // Setup zoom buttons
-            ZoomIn_Button.Click += ZoomIn_Button_Click;
-            ZoomOut_Button.Click += ZoomOut_Button_Click;
-            ZoomFit_Button.Click += ZoomFit_Button_Click;
-
-            // Setup preview picture box
             Preview_PictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             Preview_PictureBox.BackColor = Color.White;
         }
@@ -207,7 +198,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!IsUpdating)
             {
-                // Regenerate preview when page settings change
                 GeneratePreview();
             }
         }
@@ -215,7 +205,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!IsUpdating)
             {
-                // Update export settings when controls change
                 UpdateExportSettingsFromUI();
             }
         }
@@ -334,9 +323,10 @@ namespace Sales_Tracker.ReportGenerator
                         CustomMessageBoxButtons.Ok
                     );
 
+                    // Open file if option is set
                     if (_exportSettings.OpenAfterExport && File.Exists(_exportSettings.FilePath))
                     {
-                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        Process.Start(new ProcessStartInfo
                         {
                             FileName = _exportSettings.FilePath,
                             UseShellExecute = true
@@ -397,7 +387,7 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
-        public virtual bool ValidateStep()
+        public bool ValidateStep()
         {
             // Validate export path is set
             if (string.IsNullOrEmpty(ExportPath_TextBox.Text))
@@ -444,7 +434,7 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public virtual void UpdateReportConfiguration()
+        public void UpdateReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
@@ -452,7 +442,7 @@ namespace Sales_Tracker.ReportGenerator
             UpdateReportConfigFromPageSettings();
             ReportConfig.LastModified = DateTime.Now;
         }
-        public virtual void LoadFromReportConfiguration()
+        public void LoadFromReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
@@ -479,7 +469,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
         /// </summary>
-        public virtual void OnStepActivated()
+        public void OnStepActivated()
         {
             LoadFromReportConfiguration();
             NotifyParentValidationChanged();
@@ -488,7 +478,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes inactive (user navigates away from this step).
         /// </summary>
-        public virtual void OnStepDeactivated()
+        public void OnStepDeactivated()
         {
             UpdateReportConfiguration();
         }

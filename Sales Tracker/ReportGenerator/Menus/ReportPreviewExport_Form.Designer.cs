@@ -164,6 +164,7 @@
             PageSize_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             PageSize_ComboBox.Size = new Size(280, 50);
             PageSize_ComboBox.TabIndex = 1;
+            PageSize_ComboBox.SelectedIndexChanged += PageSettings_Changed;
             // 
             // Orientation_Label
             // 
@@ -196,6 +197,7 @@
             Orientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Orientation_ComboBox.Size = new Size(280, 50);
             Orientation_ComboBox.TabIndex = 3;
+            Orientation_ComboBox.SelectedIndexChanged += PageSettings_Changed;
             // 
             // ExportSettings_GroupBox
             // 
@@ -509,6 +511,7 @@
             ZoomIn_Button.Size = new Size(150, 50);
             ZoomIn_Button.TabIndex = 1;
             ZoomIn_Button.Text = "Zoom +";
+            ZoomIn_Button.Click += ZoomIn_Button_Click;
             // 
             // ZoomOut_Button
             // 
@@ -528,6 +531,7 @@
             ZoomOut_Button.Size = new Size(150, 50);
             ZoomOut_Button.TabIndex = 2;
             ZoomOut_Button.Text = "Zoom -";
+            ZoomOut_Button.Click += ZoomOut_Button_Click;
             // 
             // ZoomFit_Button
             // 
@@ -547,6 +551,7 @@
             ZoomFit_Button.Size = new Size(150, 50);
             ZoomFit_Button.TabIndex = 3;
             ZoomFit_Button.Text = "Fit to size";
+            ZoomFit_Button.Click += ZoomFit_Button_Click;
             // 
             // ReportPreviewExport_Form
             // 

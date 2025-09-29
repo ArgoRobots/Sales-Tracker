@@ -24,8 +24,7 @@ namespace Tests
             _dataGridView = new Guna2DataGridView
             {
                 Dock = DockStyle.Fill,
-                AllowUserToAddRows = false,  // Prevent "new row" placeholder
-                VirtualMode = false
+                AllowUserToAddRows = false  // Prevent "new row" placeholder
             };
 
             // Add columns

@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
-using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -317,10 +316,10 @@ namespace Sales_Tracker.ReportGenerator
                 _ => null
             };
         }
-        private ChartDataType GetDefaultChartType()
+        private MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
-            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? ChartDataType.TotalSales;
+            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
         }
         private ReportElement? GetElementAtPoint(Point point)
         {
@@ -451,12 +450,12 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
-        public virtual bool IsValidForNextStep()
+        public bool IsValidForNextStep()
         {
             // Must have at least one element positioned on the canvas
             return ReportConfig?.Elements?.Count > 0;
         }
-        public virtual bool ValidateStep()
+        public bool ValidateStep()
         {
             if (!IsValidForNextStep())
             {
@@ -471,14 +470,14 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public virtual void UpdateReportConfiguration()
+        public void UpdateReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
             // Configuration is updated in real-time as elements are moved
             ReportConfig.LastModified = DateTime.Now;
         }
-        public virtual void LoadFromReportConfiguration()
+        public void LoadFromReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
@@ -497,7 +496,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
         /// </summary>
-        public virtual void OnStepActivated()
+        public void OnStepActivated()
         {
             LoadFromReportConfiguration();
             NotifyParentValidationChanged();
@@ -506,7 +505,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes inactive (user navigates away from this step).
         /// </summary>
-        public virtual void OnStepDeactivated()
+        public void OnStepDeactivated()
         {
             UpdateReportConfiguration();
         }
@@ -521,7 +520,7 @@ namespace Sales_Tracker.ReportGenerator
             const int spacing = 20;
             const int maxWidth = 800;
 
-            foreach (ChartDataType chartType in ReportConfig.Filters.SelectedChartTypes)
+            foreach (MainMenu_Form.ChartDataType chartType in ReportConfig.Filters.SelectedChartTypes)
             {
                 ReportElement element = new()
                 {
@@ -542,16 +541,16 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
-        private static string GetChartDisplayName(ChartDataType chartType)
+        private static string GetChartDisplayName(MainMenu_Form.ChartDataType chartType)
         {
             return chartType switch
             {
-                ChartDataType.TotalSales => "Total Sales",
-                ChartDataType.TotalPurchases => "Total Purchases",
-                ChartDataType.DistributionOfSales => "Sales Distribution",
-                ChartDataType.TotalExpensesVsSales => "Sales vs Expenses",
-                ChartDataType.GrowthRates => "Growth Rates",
-                ChartDataType.AverageOrderValue => "Average Order Value",
+                MainMenu_Form.ChartDataType.TotalSales => "Total Sales",
+                MainMenu_Form.ChartDataType.TotalPurchases => "Total Purchases",
+                MainMenu_Form.ChartDataType.DistributionOfSales => "Sales Distribution",
+                MainMenu_Form.ChartDataType.TotalExpensesVsSales => "Sales vs Expenses",
+                MainMenu_Form.ChartDataType.GrowthRates => "Growth Rates",
+                MainMenu_Form.ChartDataType.AverageOrderValue => "Average Order Value",
                 _ => chartType.ToString()
             };
         }

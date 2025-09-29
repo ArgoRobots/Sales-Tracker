@@ -249,27 +249,5 @@ namespace Sales_Tracker.ReportGenerator
         {
             UpdateNavigationButtons();
         }
-
-        /// <summary>
-        /// Called by child forms to request navigation to a specific step.
-        /// </summary>
-        public void NavigateToStep(ReportStep step)
-        {
-            SetCurrentStep(step);
-        }
-
-        /// <summary>
-        /// Gets the current active child form.
-        /// </summary>
-        public Form? GetCurrentChildForm()
-        {
-            return (ReportStep)_currentStep switch
-            {
-                ReportStep.DataSelection => _dataSelectionForm,
-                ReportStep.LayoutDesigner => _layoutDesignerForm,
-                ReportStep.PreviewExport => _previewExportForm,
-                _ => null
-            };
-        }
     }
 }

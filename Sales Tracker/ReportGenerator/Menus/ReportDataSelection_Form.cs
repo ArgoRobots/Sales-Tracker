@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using Sales_Tracker.Charts;
+﻿using Sales_Tracker.Charts;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -366,7 +365,7 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
-        public virtual bool IsValidForNextStep()
+        public bool IsValidForNextStep()
         {
             bool hasChartsSelected = ChartSelection_CheckedListBox.CheckedItems.Count > 0;
             bool hasValidDateRange = StartDate_DateTimePicker.Value < EndDate_DateTimePicker.Value;
@@ -374,7 +373,7 @@ namespace Sales_Tracker.ReportGenerator
 
             return hasChartsSelected && hasValidDateRange && hasTitle;
         }
-        public virtual bool ValidateStep()
+        public bool ValidateStep()
         {
             if (ChartSelection_CheckedListBox.CheckedItems.Count == 0)
             {
@@ -414,7 +413,7 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public virtual void UpdateReportConfiguration()
+        public void UpdateReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
@@ -440,7 +439,7 @@ namespace Sales_Tracker.ReportGenerator
 
             ReportConfig.LastModified = DateTime.Now;
         }
-        public virtual void LoadFromReportConfiguration()
+        public void LoadFromReportConfiguration()
         {
             if (ReportConfig == null) { return; }
 
@@ -487,7 +486,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
         /// </summary>
-        public virtual void OnStepActivated()
+        public void OnStepActivated()
         {
             LoadFromReportConfiguration();
             NotifyParentValidationChanged();
@@ -496,7 +495,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Called when the form becomes inactive (user navigates away from this step).
         /// </summary>
-        public virtual void OnStepDeactivated()
+        public void OnStepDeactivated()
         {
             UpdateReportConfiguration();
         }
