@@ -397,11 +397,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
-        public virtual bool IsValidForNextStep()
-        {
-            // Always valid - this is the final step
-            return !string.IsNullOrEmpty(ExportPath_TextBox.Text);
-        }
         public virtual bool ValidateStep()
         {
             // Validate export path is set
@@ -478,19 +473,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
 
                 GeneratePreview();
-            });
-        }
-        public virtual void ResetForm()
-        {
-            PerformUpdate(() =>
-            {
-                CleanupPreviewImage();
-
-                // Reset controls
-                ExportPath_TextBox.Text = "";
-                _currentZoom = 1.0f;
-                InitializeExportSettings();
-                SetupExportSettings();
             });
         }
 

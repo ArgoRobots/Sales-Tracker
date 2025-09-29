@@ -160,7 +160,6 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
-                UpdateSelectedChartsDisplay();
                 NotifyParentValidationChanged();
             });
         }
@@ -467,24 +466,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
             });
         }
-        public virtual void ResetForm()
-        {
-            PerformUpdate(() =>
-            {
-                // Uncheck all charts
-                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
-                {
-                    ChartSelection_CheckedListBox.SetItemChecked(i, false);
-                }
-
-                // Reset to defaults
-                LoadDefaultValues();
-                SetupFilterControls();
-
-                ReportTitle_TextBox.Text = "Sales Report";
-                Template_ComboBox.SelectedIndex = 0;
-            });
-        }
 
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
@@ -504,7 +485,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Helper Methods for Base Functionality
-
         /// <summary>
         /// Notifies the parent form that validation state has changed
         /// </summary>

@@ -497,15 +497,6 @@ namespace Sales_Tracker.ReportGenerator
                 Canvas_Panel.Invalidate();
             });
         }
-        public virtual void ResetForm()
-        {
-            PerformUpdate(() =>
-            {
-                ClearSelection();
-                ReportConfig?.Elements.Clear();
-                Canvas_Panel.Invalidate();
-            });
-        }
 
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
