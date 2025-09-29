@@ -95,8 +95,6 @@ namespace Sales_Tracker.ReportGenerator
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
             }
-
-            UpdateSelectedChartsDisplay();
         }
 
         // Helper methods
@@ -126,24 +124,6 @@ namespace Sales_Tracker.ReportGenerator
                 2 => TransactionType.Both,
                 _ => TransactionType.Both
             };
-        }
-        private void UpdateSelectedChartsDisplay()
-        {
-            if (IsUpdating) { return; }
-
-            SelectedCharts_ListBox.Items.Clear();
-
-            foreach (int checkedIndex in ChartSelection_CheckedListBox.CheckedIndices)
-            {
-                if (checkedIndex < ChartSelection_CheckedListBox.Items.Count)
-                {
-                    string chartName = ChartSelection_CheckedListBox.Items[checkedIndex].ToString();
-                    SelectedCharts_ListBox.Items.Add(chartName);
-                }
-            }
-
-            // Update the label to show count
-            SelectedItems_Label.Text = $"Selected Charts ({SelectedCharts_ListBox.Items.Count}):";
         }
 
         // Form event handlers
@@ -195,7 +175,6 @@ namespace Sales_Tracker.ReportGenerator
                     ChartSelection_CheckedListBox.SetItemChecked(i, false);
                 }
 
-                UpdateSelectedChartsDisplay();
                 NotifyParentValidationChanged();
             });
         }
@@ -209,14 +188,8 @@ namespace Sales_Tracker.ReportGenerator
                     // Use BeginInvoke to ensure the checked state is updated before validation
                     BeginInvoke(new Action(() =>
                     {
-                        UpdateSelectedChartsDisplay();
                         NotifyParentValidationChanged();
                     }));
-                }
-                else
-                {
-                    // If handle not created yet, update directly but defer validation
-                    UpdateSelectedChartsDisplay();
                 }
             }
         }
@@ -371,8 +344,6 @@ namespace Sales_Tracker.ReportGenerator
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
             }
-
-            UpdateSelectedChartsDisplay();
         }
 
         // Form implementation methods
@@ -494,8 +465,6 @@ namespace Sales_Tracker.ReportGenerator
                     if (templateIndex >= 0)
                         Template_ComboBox.SelectedIndex = templateIndex;
                 }
-
-                UpdateSelectedChartsDisplay();
             });
         }
         public virtual void ResetForm()
@@ -514,8 +483,6 @@ namespace Sales_Tracker.ReportGenerator
 
                 ReportTitle_TextBox.Text = "Sales Report";
                 Template_ComboBox.SelectedIndex = 0;
-
-                UpdateSelectedChartsDisplay();
             });
         }
 

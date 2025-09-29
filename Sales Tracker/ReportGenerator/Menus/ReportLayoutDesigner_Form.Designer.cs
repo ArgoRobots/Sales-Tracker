@@ -61,17 +61,19 @@
             RightCanvasPanel.CustomizableEdges = customizableEdges3;
             RightCanvasPanel.Dock = DockStyle.Right;
             RightCanvasPanel.FillColor = Color.Transparent;
-            RightCanvasPanel.Location = new Point(408, 0);
+            RightCanvasPanel.Location = new Point(383, 0);
             RightCanvasPanel.Margin = new Padding(4, 5, 4, 5);
             RightCanvasPanel.Name = "RightCanvasPanel";
             RightCanvasPanel.Padding = new Padding(29, 33, 29, 33);
             RightCanvasPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            RightCanvasPanel.Size = new Size(1292, 950);
+            RightCanvasPanel.Size = new Size(1117, 900);
             RightCanvasPanel.TabIndex = 1;
             // 
             // Canvas_GroupBox
             // 
+            Canvas_GroupBox.BackColor = Color.Transparent;
             Canvas_GroupBox.BorderRadius = 8;
+            Canvas_GroupBox.BorderThickness = 0;
             Canvas_GroupBox.Controls.Add(Canvas_Panel);
             Canvas_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             Canvas_GroupBox.CustomizableEdges = customizableEdges1;
@@ -83,7 +85,7 @@
             Canvas_GroupBox.Name = "Canvas_GroupBox";
             Canvas_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Canvas_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Canvas_GroupBox.Size = new Size(1234, 884);
+            Canvas_GroupBox.Size = new Size(1059, 834);
             Canvas_GroupBox.TabIndex = 0;
             Canvas_GroupBox.Text = "Report Canvas - Drag elements to arrange layout";
             // 
@@ -95,7 +97,7 @@
             Canvas_Panel.Location = new Point(21, 83);
             Canvas_Panel.Margin = new Padding(4, 5, 4, 5);
             Canvas_Panel.Name = "Canvas_Panel";
-            Canvas_Panel.Size = new Size(1190, 775);
+            Canvas_Panel.Size = new Size(1015, 725);
             Canvas_Panel.TabIndex = 0;
             // 
             // LeftToolsPanel
@@ -110,12 +112,14 @@
             LeftToolsPanel.Name = "LeftToolsPanel";
             LeftToolsPanel.Padding = new Padding(29, 33, 29, 33);
             LeftToolsPanel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            LeftToolsPanel.Size = new Size(400, 950);
+            LeftToolsPanel.Size = new Size(375, 900);
             LeftToolsPanel.TabIndex = 0;
             // 
             // Properties_GroupBox
             // 
+            Properties_GroupBox.BackColor = Color.Transparent;
             Properties_GroupBox.BorderRadius = 8;
+            Properties_GroupBox.BorderThickness = 0;
             Properties_GroupBox.Controls.Add(ElementProperties_Label);
             Properties_GroupBox.Controls.Add(PropertiesContainer_Panel);
             Properties_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
@@ -123,12 +127,12 @@
             Properties_GroupBox.Dock = DockStyle.Bottom;
             Properties_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Properties_GroupBox.ForeColor = Color.White;
-            Properties_GroupBox.Location = new Point(29, 626);
+            Properties_GroupBox.Location = new Point(29, 576);
             Properties_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Properties_GroupBox.Name = "Properties_GroupBox";
             Properties_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Properties_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Properties_GroupBox.Size = new Size(342, 291);
+            Properties_GroupBox.Size = new Size(317, 291);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
             // 
@@ -138,7 +142,7 @@
             ElementProperties_Label.BackColor = Color.Transparent;
             ElementProperties_Label.Font = new Font("Segoe UI", 9F);
             ElementProperties_Label.ForeColor = SystemColors.ControlText;
-            ElementProperties_Label.Location = new Point(21, 83);
+            ElementProperties_Label.Location = new Point(18, 57);
             ElementProperties_Label.Margin = new Padding(4, 0, 4, 0);
             ElementProperties_Label.Name = "ElementProperties_Label";
             ElementProperties_Label.Size = new Size(173, 25);
@@ -149,15 +153,17 @@
             // 
             PropertiesContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PropertiesContainer_Panel.BackColor = Color.Transparent;
-            PropertiesContainer_Panel.Location = new Point(14, 125);
+            PropertiesContainer_Panel.Location = new Point(14, 87);
             PropertiesContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             PropertiesContainer_Panel.Name = "PropertiesContainer_Panel";
-            PropertiesContainer_Panel.Size = new Size(313, 149);
+            PropertiesContainer_Panel.Size = new Size(288, 187);
             PropertiesContainer_Panel.TabIndex = 1;
             // 
             // Tools_GroupBox
             // 
+            Tools_GroupBox.BackColor = Color.Transparent;
             Tools_GroupBox.BorderRadius = 8;
+            Tools_GroupBox.BorderThickness = 0;
             Tools_GroupBox.Controls.Add(ElementsTitle_Label);
             Tools_GroupBox.Controls.Add(ToolsContainer_Panel);
             Tools_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
@@ -170,7 +176,7 @@
             Tools_GroupBox.Name = "Tools_GroupBox";
             Tools_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Tools_GroupBox.Size = new Size(342, 583);
+            Tools_GroupBox.Size = new Size(317, 533);
             Tools_GroupBox.TabIndex = 0;
             Tools_GroupBox.Text = "Report Elements";
             // 
@@ -180,7 +186,7 @@
             ElementsTitle_Label.BackColor = Color.Transparent;
             ElementsTitle_Label.Font = new Font("Segoe UI", 9F);
             ElementsTitle_Label.ForeColor = SystemColors.ControlText;
-            ElementsTitle_Label.Location = new Point(21, 83);
+            ElementsTitle_Label.Location = new Point(18, 57);
             ElementsTitle_Label.Margin = new Padding(4, 0, 4, 0);
             ElementsTitle_Label.Name = "ElementsTitle_Label";
             ElementsTitle_Label.Size = new Size(266, 25);
@@ -191,17 +197,17 @@
             // 
             ToolsContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ToolsContainer_Panel.BackColor = Color.Transparent;
-            ToolsContainer_Panel.Location = new Point(14, 125);
+            ToolsContainer_Panel.Location = new Point(14, 87);
             ToolsContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             ToolsContainer_Panel.Name = "ToolsContainer_Panel";
-            ToolsContainer_Panel.Size = new Size(313, 442);
+            ToolsContainer_Panel.Size = new Size(288, 430);
             ToolsContainer_Panel.TabIndex = 1;
             // 
             // ReportLayoutDesigner_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1700, 950);
+            ClientSize = new Size(1500, 900);
             Controls.Add(LeftToolsPanel);
             Controls.Add(RightCanvasPanel);
             FormBorderStyle = FormBorderStyle.None;

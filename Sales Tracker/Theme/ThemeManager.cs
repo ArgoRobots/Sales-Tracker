@@ -64,6 +64,10 @@ namespace Sales_Tracker.Theme
 
                 switch (control)
                 {
+                    case Form form:
+                        form.BackColor = CustomColors.MainBackground;
+                        break;
+
                     case LinkLabel linkLabel:
                         linkLabel.LinkColor = CustomColors.AccentBlue;
                         linkLabel.VisitedLinkColor = CustomColors.AccentBlue;
@@ -88,6 +92,11 @@ namespace Sales_Tracker.Theme
                     case FlowLayoutPanel flowLayoutPanel:
                         flowLayoutPanel.BackColor = CustomColors.MainBackground;
                         CustomizeScrollBar(flowLayoutPanel);
+                        break;
+
+                    case ListBox listBox:
+                        listBox.BackColor = CustomColors.ControlBack;
+                        listBox.ForeColor = CustomColors.Text;
                         break;
 
                     case Guna2Button guna2Button:
@@ -148,7 +157,6 @@ namespace Sales_Tracker.Theme
 
                     case Guna2TrackBar guna2TrackBar:
                         guna2TrackBar.ThumbColor = CustomColors.AccentBlue;
-                        guna2TrackBar.BackColor = CustomColors.MainBackground;
                         break;
 
                     case Guna2NumericUpDown guna2NumericUpDown:
@@ -195,6 +203,17 @@ namespace Sales_Tracker.Theme
                         guna2DateTimePicker.ForeColor = CustomColors.Text;
                         guna2DateTimePicker.BorderColor = CustomColors.ControlBorder;
                         guna2DateTimePicker.HoverState.BorderColor = CustomColors.AccentBlue;
+                        break;
+
+                    case Guna2GroupBox guna2GroupBox:
+                        guna2GroupBox.ForeColor = CustomColors.Text;
+                        guna2GroupBox.FillColor = CustomColors.ControlBack;
+                        guna2GroupBox.CustomBorderColor = CustomColors.AccentBlue;
+                        break;
+
+                    case Guna2ProgressBar guna2ProgressBar:
+                        guna2ProgressBar.FillColor = CustomColors.ControlBack;
+                        guna2ProgressBar.ProgressColor = CustomColors.AccentBlue;
                         break;
 
                     case CartesianChart cartesianChart:

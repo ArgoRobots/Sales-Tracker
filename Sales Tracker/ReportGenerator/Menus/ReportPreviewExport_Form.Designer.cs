@@ -102,17 +102,19 @@
             RightSettingsPanel.CustomizableEdges = customizableEdges19;
             RightSettingsPanel.Dock = DockStyle.Right;
             RightSettingsPanel.FillColor = Color.Transparent;
-            RightSettingsPanel.Location = new Point(1071, 0);
+            RightSettingsPanel.Location = new Point(961, 0);
             RightSettingsPanel.Margin = new Padding(4, 5, 4, 5);
             RightSettingsPanel.Name = "RightSettingsPanel";
             RightSettingsPanel.Padding = new Padding(29, 33, 29, 33);
             RightSettingsPanel.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            RightSettingsPanel.Size = new Size(629, 950);
+            RightSettingsPanel.Size = new Size(539, 900);
             RightSettingsPanel.TabIndex = 1;
             // 
             // PageSettings_GroupBox
             // 
+            PageSettings_GroupBox.BackColor = Color.Transparent;
             PageSettings_GroupBox.BorderRadius = 8;
+            PageSettings_GroupBox.BorderThickness = 0;
             PageSettings_GroupBox.Controls.Add(PageSize_Label);
             PageSettings_GroupBox.Controls.Add(PageSize_ComboBox);
             PageSettings_GroupBox.Controls.Add(Orientation_Label);
@@ -127,7 +129,7 @@
             PageSettings_GroupBox.Name = "PageSettings_GroupBox";
             PageSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             PageSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            PageSettings_GroupBox.Size = new Size(571, 223);
+            PageSettings_GroupBox.Size = new Size(481, 223);
             PageSettings_GroupBox.TabIndex = 0;
             PageSettings_GroupBox.Text = "Page Settings";
             // 
@@ -160,7 +162,7 @@
             PageSize_ComboBox.Margin = new Padding(4, 5, 4, 5);
             PageSize_ComboBox.Name = "PageSize_ComboBox";
             PageSize_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            PageSize_ComboBox.Size = new Size(300, 50);
+            PageSize_ComboBox.Size = new Size(280, 50);
             PageSize_ComboBox.TabIndex = 1;
             // 
             // Orientation_Label
@@ -192,12 +194,14 @@
             Orientation_ComboBox.Margin = new Padding(4, 5, 4, 5);
             Orientation_ComboBox.Name = "Orientation_ComboBox";
             Orientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Orientation_ComboBox.Size = new Size(300, 50);
+            Orientation_ComboBox.Size = new Size(280, 50);
             Orientation_ComboBox.TabIndex = 3;
             // 
             // ExportSettings_GroupBox
             // 
+            ExportSettings_GroupBox.BackColor = Color.Transparent;
             ExportSettings_GroupBox.BorderRadius = 8;
+            ExportSettings_GroupBox.BorderThickness = 0;
             ExportSettings_GroupBox.Controls.Add(OpenAfterExport_CheckBox);
             ExportSettings_GroupBox.Controls.Add(OpenAfterExport_Label);
             ExportSettings_GroupBox.Controls.Add(ExportPath_Label);
@@ -215,25 +219,25 @@
             ExportSettings_GroupBox.Dock = DockStyle.Bottom;
             ExportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ExportSettings_GroupBox.ForeColor = Color.White;
-            ExportSettings_GroupBox.Location = new Point(29, 283);
+            ExportSettings_GroupBox.Location = new Point(29, 266);
             ExportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ExportSettings_GroupBox.Name = "ExportSettings_GroupBox";
             ExportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ExportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            ExportSettings_GroupBox.Size = new Size(571, 634);
+            ExportSettings_GroupBox.Size = new Size(481, 601);
             ExportSettings_GroupBox.TabIndex = 1;
             ExportSettings_GroupBox.Text = "Export Settings";
             // 
             // OpenAfterExport_CheckBox
             // 
-            OpenAfterExport_CheckBox.Anchor = AnchorStyles.Top;
             OpenAfterExport_CheckBox.Animated = true;
+            OpenAfterExport_CheckBox.BackColor = Color.Transparent;
             OpenAfterExport_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             OpenAfterExport_CheckBox.CheckedState.BorderRadius = 2;
             OpenAfterExport_CheckBox.CheckedState.BorderThickness = 0;
             OpenAfterExport_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             OpenAfterExport_CheckBox.CustomizableEdges = customizableEdges7;
-            OpenAfterExport_CheckBox.Location = new Point(23, 552);
+            OpenAfterExport_CheckBox.Location = new Point(25, 507);
             OpenAfterExport_CheckBox.Name = "OpenAfterExport_CheckBox";
             OpenAfterExport_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             OpenAfterExport_CheckBox.Size = new Size(20, 20);
@@ -247,12 +251,11 @@
             // 
             // OpenAfterExport_Label
             // 
-            OpenAfterExport_Label.Anchor = AnchorStyles.Top;
             OpenAfterExport_Label.AutoSize = true;
             OpenAfterExport_Label.BackColor = Color.Transparent;
             OpenAfterExport_Label.Font = new Font("Segoe UI", 9.5F);
             OpenAfterExport_Label.ForeColor = Color.Black;
-            OpenAfterExport_Label.Location = new Point(41, 542);
+            OpenAfterExport_Label.Location = new Point(43, 497);
             OpenAfterExport_Label.Name = "OpenAfterExport_Label";
             OpenAfterExport_Label.Padding = new Padding(5);
             OpenAfterExport_Label.Size = new Size(171, 35);
@@ -266,7 +269,7 @@
             ExportPath_Label.BackColor = Color.Transparent;
             ExportPath_Label.Font = new Font("Segoe UI", 9.5F);
             ExportPath_Label.ForeColor = SystemColors.ControlText;
-            ExportPath_Label.Location = new Point(21, 83);
+            ExportPath_Label.Location = new Point(23, 57);
             ExportPath_Label.Margin = new Padding(4, 0, 4, 0);
             ExportPath_Label.Name = "ExportPath_Label";
             ExportPath_Label.Size = new Size(112, 25);
@@ -283,14 +286,14 @@
             ExportPath_TextBox.DefaultText = "";
             ExportPath_TextBox.Font = new Font("Segoe UI", 9F);
             ExportPath_TextBox.ForeColor = Color.Black;
-            ExportPath_TextBox.Location = new Point(21, 117);
+            ExportPath_TextBox.Location = new Point(23, 91);
             ExportPath_TextBox.Margin = new Padding(6, 8, 6, 8);
             ExportPath_TextBox.Name = "ExportPath_TextBox";
             ExportPath_TextBox.PlaceholderText = "Select export location";
             ExportPath_TextBox.ReadOnly = true;
             ExportPath_TextBox.SelectedText = "";
             ExportPath_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            ExportPath_TextBox.Size = new Size(350, 50);
+            ExportPath_TextBox.Size = new Size(280, 50);
             ExportPath_TextBox.TabIndex = 1;
             // 
             // BrowseExportPath_Button
@@ -304,11 +307,11 @@
             BrowseExportPath_Button.FillColor = Color.White;
             BrowseExportPath_Button.Font = new Font("Segoe UI", 9F);
             BrowseExportPath_Button.ForeColor = Color.Black;
-            BrowseExportPath_Button.Location = new Point(380, 117);
+            BrowseExportPath_Button.Location = new Point(313, 91);
             BrowseExportPath_Button.Margin = new Padding(4, 5, 4, 5);
             BrowseExportPath_Button.Name = "BrowseExportPath_Button";
             BrowseExportPath_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            BrowseExportPath_Button.Size = new Size(173, 50);
+            BrowseExportPath_Button.Size = new Size(152, 50);
             BrowseExportPath_Button.TabIndex = 2;
             BrowseExportPath_Button.Text = "Browse";
             BrowseExportPath_Button.Click += BrowseExportPath_Button_Click;
@@ -319,7 +322,7 @@
             ExportFormat_Label.BackColor = Color.Transparent;
             ExportFormat_Label.Font = new Font("Segoe UI", 9.5F);
             ExportFormat_Label.ForeColor = SystemColors.ControlText;
-            ExportFormat_Label.Location = new Point(21, 200);
+            ExportFormat_Label.Location = new Point(23, 174);
             ExportFormat_Label.Margin = new Padding(4, 0, 4, 0);
             ExportFormat_Label.Name = "ExportFormat_Label";
             ExportFormat_Label.Size = new Size(134, 25);
@@ -337,11 +340,11 @@
             ExportFormat_ComboBox.Font = new Font("Segoe UI", 9F);
             ExportFormat_ComboBox.ForeColor = Color.Black;
             ExportFormat_ComboBox.ItemHeight = 44;
-            ExportFormat_ComboBox.Location = new Point(21, 233);
+            ExportFormat_ComboBox.Location = new Point(23, 207);
             ExportFormat_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ExportFormat_ComboBox.Name = "ExportFormat_ComboBox";
             ExportFormat_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ExportFormat_ComboBox.Size = new Size(300, 50);
+            ExportFormat_ComboBox.Size = new Size(280, 50);
             ExportFormat_ComboBox.TabIndex = 4;
             ExportFormat_ComboBox.SelectedIndexChanged += ExportSettings_Changed;
             // 
@@ -351,7 +354,7 @@
             DPI_Label.BackColor = Color.Transparent;
             DPI_Label.Font = new Font("Segoe UI", 9.5F);
             DPI_Label.ForeColor = SystemColors.ControlText;
-            DPI_Label.Location = new Point(21, 317);
+            DPI_Label.Location = new Point(23, 291);
             DPI_Label.Margin = new Padding(4, 0, 4, 0);
             DPI_Label.Name = "DPI_Label";
             DPI_Label.Size = new Size(104, 25);
@@ -365,7 +368,7 @@
             DPI_NumericUpDown.Cursor = Cursors.IBeam;
             DPI_NumericUpDown.CustomizableEdges = customizableEdges15;
             DPI_NumericUpDown.Font = new Font("Segoe UI", 9F);
-            DPI_NumericUpDown.Location = new Point(21, 350);
+            DPI_NumericUpDown.Location = new Point(23, 324);
             DPI_NumericUpDown.Margin = new Padding(6, 8, 6, 8);
             DPI_NumericUpDown.Maximum = new decimal(new int[] { 600, 0, 0, 0 });
             DPI_NumericUpDown.Minimum = new decimal(new int[] { 96, 0, 0, 0 });
@@ -382,7 +385,7 @@
             Quality_Label.BackColor = Color.Transparent;
             Quality_Label.Font = new Font("Segoe UI", 9.5F);
             Quality_Label.ForeColor = SystemColors.ControlText;
-            Quality_Label.Location = new Point(21, 433);
+            Quality_Label.Location = new Point(23, 407);
             Quality_Label.Margin = new Padding(4, 0, 4, 0);
             Quality_Label.Name = "Quality_Label";
             Quality_Label.Size = new Size(76, 25);
@@ -393,11 +396,11 @@
             // 
             Quality_TrackBar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Quality_TrackBar.BackColor = Color.Transparent;
-            Quality_TrackBar.Location = new Point(21, 467);
+            Quality_TrackBar.Location = new Point(23, 441);
             Quality_TrackBar.Margin = new Padding(4, 5, 4, 5);
             Quality_TrackBar.Minimum = 1;
             Quality_TrackBar.Name = "Quality_TrackBar";
-            Quality_TrackBar.Size = new Size(528, 38);
+            Quality_TrackBar.Size = new Size(438, 38);
             Quality_TrackBar.TabIndex = 9;
             Quality_TrackBar.ThumbColor = Color.FromArgb(94, 148, 255);
             Quality_TrackBar.Value = 95;
@@ -410,7 +413,7 @@
             Quality_ValueLabel.BackColor = Color.Transparent;
             Quality_ValueLabel.Font = new Font("Segoe UI", 9.5F);
             Quality_ValueLabel.ForeColor = SystemColors.ControlText;
-            Quality_ValueLabel.Location = new Point(506, 433);
+            Quality_ValueLabel.Location = new Point(418, 407);
             Quality_ValueLabel.Margin = new Padding(4, 0, 4, 0);
             Quality_ValueLabel.Name = "Quality_ValueLabel";
             Quality_ValueLabel.Size = new Size(48, 25);
@@ -428,12 +431,14 @@
             LeftPreviewPanel.Name = "LeftPreviewPanel";
             LeftPreviewPanel.Padding = new Padding(29, 33, 29, 33);
             LeftPreviewPanel.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            LeftPreviewPanel.Size = new Size(1071, 950);
+            LeftPreviewPanel.Size = new Size(953, 900);
             LeftPreviewPanel.TabIndex = 0;
             // 
             // Preview_GroupBox
             // 
+            Preview_GroupBox.BackColor = Color.Transparent;
             Preview_GroupBox.BorderRadius = 8;
+            Preview_GroupBox.BorderThickness = 0;
             Preview_GroupBox.Controls.Add(RefreshPreview_Button);
             Preview_GroupBox.Controls.Add(Preview_PictureBox);
             Preview_GroupBox.Controls.Add(ZoomIn_Button);
@@ -449,7 +454,7 @@
             Preview_GroupBox.Name = "Preview_GroupBox";
             Preview_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            Preview_GroupBox.Size = new Size(1013, 884);
+            Preview_GroupBox.Size = new Size(895, 834);
             Preview_GroupBox.TabIndex = 0;
             Preview_GroupBox.Text = "Report Preview";
             // 
@@ -464,11 +469,11 @@
             RefreshPreview_Button.FillColor = Color.White;
             RefreshPreview_Button.Font = new Font("Segoe UI", 9F);
             RefreshPreview_Button.ForeColor = Color.Black;
-            RefreshPreview_Button.Location = new Point(848, 815);
+            RefreshPreview_Button.Location = new Point(723, 765);
             RefreshPreview_Button.Margin = new Padding(4, 5, 4, 5);
             RefreshPreview_Button.Name = "RefreshPreview_Button";
             RefreshPreview_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            RefreshPreview_Button.Size = new Size(143, 50);
+            RefreshPreview_Button.Size = new Size(150, 50);
             RefreshPreview_Button.TabIndex = 0;
             RefreshPreview_Button.Text = "Refresh";
             RefreshPreview_Button.Click += RefreshPreview_Button_Click;
@@ -481,13 +486,14 @@
             Preview_PictureBox.Location = new Point(21, 83);
             Preview_PictureBox.Margin = new Padding(4, 5, 4, 5);
             Preview_PictureBox.Name = "Preview_PictureBox";
-            Preview_PictureBox.Size = new Size(970, 720);
+            Preview_PictureBox.Size = new Size(852, 670);
             Preview_PictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             Preview_PictureBox.TabIndex = 0;
             Preview_PictureBox.TabStop = false;
             // 
             // ZoomIn_Button
             // 
+            ZoomIn_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ZoomIn_Button.BackColor = Color.Transparent;
             ZoomIn_Button.BorderColor = Color.LightGray;
             ZoomIn_Button.BorderRadius = 2;
@@ -496,7 +502,7 @@
             ZoomIn_Button.FillColor = Color.White;
             ZoomIn_Button.Font = new Font("Segoe UI", 9F);
             ZoomIn_Button.ForeColor = Color.Black;
-            ZoomIn_Button.Location = new Point(21, 815);
+            ZoomIn_Button.Location = new Point(21, 765);
             ZoomIn_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomIn_Button.Name = "ZoomIn_Button";
             ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
@@ -506,6 +512,7 @@
             // 
             // ZoomOut_Button
             // 
+            ZoomOut_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ZoomOut_Button.BackColor = Color.Transparent;
             ZoomOut_Button.BorderColor = Color.LightGray;
             ZoomOut_Button.BorderRadius = 2;
@@ -514,7 +521,7 @@
             ZoomOut_Button.FillColor = Color.White;
             ZoomOut_Button.Font = new Font("Segoe UI", 9F);
             ZoomOut_Button.ForeColor = Color.Black;
-            ZoomOut_Button.Location = new Point(179, 815);
+            ZoomOut_Button.Location = new Point(179, 765);
             ZoomOut_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomOut_Button.Name = "ZoomOut_Button";
             ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
@@ -524,6 +531,7 @@
             // 
             // ZoomFit_Button
             // 
+            ZoomFit_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ZoomFit_Button.BackColor = Color.Transparent;
             ZoomFit_Button.BorderColor = Color.LightGray;
             ZoomFit_Button.BorderRadius = 2;
@@ -532,7 +540,7 @@
             ZoomFit_Button.FillColor = Color.White;
             ZoomFit_Button.Font = new Font("Segoe UI", 9F);
             ZoomFit_Button.ForeColor = Color.Black;
-            ZoomFit_Button.Location = new Point(337, 815);
+            ZoomFit_Button.Location = new Point(337, 765);
             ZoomFit_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomFit_Button.Name = "ZoomFit_Button";
             ZoomFit_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
@@ -544,7 +552,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1700, 950);
+            ClientSize = new Size(1500, 900);
             Controls.Add(RightSettingsPanel);
             Controls.Add(LeftPreviewPanel);
             FormBorderStyle = FormBorderStyle.None;
