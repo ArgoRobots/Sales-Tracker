@@ -17,9 +17,9 @@ namespace Sales_Tracker.ReportGenerator
         public ReportGenerator_Form ParentReportForm { get; private set; }
 
         /// <summary>
-        /// Gets the current report configuration
+        /// Gets the current report configuration.
         /// </summary>
-        protected ReportConfiguration ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        protected ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
         /// <summary>
         /// Indicates if the form is currently being loaded/updated programmatically.
@@ -36,10 +36,6 @@ namespace Sales_Tracker.ReportGenerator
             InitializeComponent();
             ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
 
-            InitializeChildForm();
-        }
-        protected virtual void InitializeChildForm()
-        {
             SetupCanvas();
             SetupToolsPanel();
         }
@@ -85,7 +81,7 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Text = "Layout Tools",
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = Color.White,
+                ForeColor = CustomColors.Text,
                 Location = new Point(15, yPosition),
                 Size = new Size(200, 20)
             };
@@ -111,13 +107,12 @@ namespace Sales_Tracker.ReportGenerator
                 BorderRadius = 6,
                 FillColor = CustomColors.AccentBlue,
                 Font = new Font("Segoe UI", 9),
-                ForeColor = Color.White
+                ForeColor = CustomColors.Text
             };
 
             button.Click += clickHandler;
             ToolsContainer_Panel.Controls.Add(button);
 
-            // Add tooltip
             ToolTip toolTip = new();
             toolTip.SetToolTip(button, tooltip);
         }
@@ -154,7 +149,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
                 else
                 {
-                    // Clear selection
                     ClearSelection();
                 }
             }
@@ -196,7 +190,7 @@ namespace Sales_Tracker.ReportGenerator
         private void DrawGrid(Graphics g)
         {
             const int gridSize = 20;
-            using Pen pen = new(Color.LightGray, 1);
+            using Pen pen = new(CustomColors.ControlBorder, 1);
             pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
             // Draw vertical lines
@@ -574,7 +568,6 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Safely updates UI controls without triggering events.
         /// </summary>
-        /// <param name="updateAction">Action to perform during update</param>
         protected void PerformUpdate(Action updateAction)
         {
             if (updateAction == null) { return; }

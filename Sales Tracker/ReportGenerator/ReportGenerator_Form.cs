@@ -48,12 +48,10 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void InitializeChildForms()
         {
-            // Create child forms but don't show them yet
             _dataSelectionForm = new(this);
             _layoutDesignerForm = new(this);
             _previewExportForm = new(this);
 
-            // Set up child forms
             SetupChildForm(_dataSelectionForm);
             SetupChildForm(_layoutDesignerForm);
             SetupChildForm(_previewExportForm);
@@ -71,9 +69,6 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetAccessibleDescriptions()
         {
-            Previous_Button.AccessibleDescription = "Navigate to previous step";
-            Next_Button.AccessibleDescription = "Navigate to next step";
-            Cancel_Button.AccessibleDescription = "Cancel report generation";
             StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             ProgressValue_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
@@ -83,7 +78,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             _currentStep = (int)step;
 
-            // Hide all child forms
             HideAllChildForms();
 
             // Show the appropriate child form
@@ -116,18 +110,13 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static void ShowChildForm(Form childForm)
         {
-            if (childForm != null)
-            {
-                childForm.Show();
-                childForm.BringToFront();
-            }
+            childForm?.Show();
+            childForm?.BringToFront();
         }
         private void UpdateNavigationButtons()
         {
-            // Previous button
             Previous_Button.Enabled = _currentStep > 0;
 
-            // Next button
             bool canProceed = CanProceedToNextStep();
             Next_Button.Enabled = _currentStep < TotalSteps - 1 && canProceed;
 
@@ -170,7 +159,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (_currentStep < TotalSteps - 1)
             {
-                // Validate current step before proceeding
                 if (ValidateCurrentStep())
                 {
                     SetCurrentStep((ReportStep)(_currentStep + 1));
@@ -178,7 +166,6 @@ namespace Sales_Tracker.ReportGenerator
             }
             else
             {
-                // Finish button clicked
                 FinishReportGeneration();
             }
         }

@@ -69,11 +69,9 @@ namespace Sales_Tracker.UI
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
                 BackColor = Color.Transparent,
-                Padding = new Padding(5, 5, 5, 5),
-                BorderStyle = BorderStyle.None
+                Padding = new Padding(5, 5, 5, 5)
             };
 
-            // Add it to the control
             Controls.Add(_containerPanel);
 
             // Set default properties on the control itself
@@ -82,15 +80,13 @@ namespace Sales_Tracker.UI
             Font = new Font("Segoe UI", 9);
             Margin = new Padding(4, 5, 4, 5);
             CheckOnClick = true;
-            base.BorderStyle = BorderStyle.None;  // Use base to avoid the property setter
+            BorderStyle = BorderStyle.None;
+            MinimumSize = new Size(100, 100);
 
             // Initialize collections
             CheckedIndices = new CheckedIndexCollection(this);
             CheckedItems = new CheckedItemCollection(this);
             Items = new ItemCollection(this);
-
-            // Set minimum size
-            MinimumSize = new Size(100, 100);
         }
 
         // Public methods

@@ -17,7 +17,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        protected ReportConfiguration ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        protected ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
         /// <summary>
         /// Indicates if the form is currently being loaded/updated programmatically.

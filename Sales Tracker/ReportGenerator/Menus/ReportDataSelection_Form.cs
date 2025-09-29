@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Charts;
+﻿using DocumentFormat.OpenXml.Drawing;
+using Sales_Tracker.Charts;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -251,8 +252,8 @@ namespace Sales_Tracker.ReportGenerator
             else
             {
                 // Reset to normal colors
-                StartDate_DateTimePicker.BorderColor = Color.FromArgb(213, 218, 223);
-                EndDate_DateTimePicker.BorderColor = Color.FromArgb(213, 218, 223);
+                StartDate_DateTimePicker.BorderColor = CustomColors.ControlBorder;
+                EndDate_DateTimePicker.BorderColor = CustomColors.ControlBorder;
             }
         }
         private void IncludeLosses_Label_Click(object sender, EventArgs e)
@@ -367,13 +368,8 @@ namespace Sales_Tracker.ReportGenerator
         // Form implementation methods
         public virtual bool IsValidForNextStep()
         {
-            // Must have at least one chart selected
             bool hasChartsSelected = ChartSelection_CheckedListBox.CheckedItems.Count > 0;
-
-            // Must have valid date range
             bool hasValidDateRange = StartDate_DateTimePicker.Value < EndDate_DateTimePicker.Value;
-
-            // Must have report title
             bool hasTitle = !string.IsNullOrWhiteSpace(ReportTitle_TextBox.Text);
 
             return hasChartsSelected && hasValidDateRange && hasTitle;
@@ -481,7 +477,9 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     int templateIndex = Template_ComboBox.Items.IndexOf(ReportConfig.TemplateName);
                     if (templateIndex >= 0)
+                    {
                         Template_ComboBox.SelectedIndex = templateIndex;
+                    }
                 }
             });
         }
