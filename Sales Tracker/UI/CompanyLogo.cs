@@ -169,10 +169,26 @@ namespace Sales_Tracker.UI
         private static string GetCompanyInitials(string companyName)
         {
             string[] words = companyName.Split([' ', '.', '-'], StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length == 0) { return "AC"; }  // Default initials if name is empty "Argo Company"
-            if (words.Length == 1) { return char.ToUpperInvariant(words[0][0]).ToString(); }
 
-            return char.ToUpperInvariant(words[0][0]).ToString() + char.ToUpperInvariant(words[1][0]).ToString();
+            if (words.Length == 0) { return "AC"; }  // Default initials if name is empty
+
+            // Find first alphanumeric character in first word
+            char? firstInitial = words[0].FirstOrDefault(char.IsLetterOrDigit);
+
+            if (words.Length == 1)
+            {
+                return firstInitial.HasValue ? char.ToUpperInvariant(firstInitial.Value).ToString() : "AC";
+            }
+
+            // Find first alphanumeric character in second word
+            char? secondInitial = words[1].FirstOrDefault(char.IsLetterOrDigit);
+
+            // Build result with only valid alphanumeric characters
+            string result = "";
+            if (firstInitial.HasValue) { result += char.ToUpperInvariant(firstInitial.Value); }
+            if (secondInitial.HasValue) { result += char.ToUpperInvariant(secondInitial.Value); }
+
+            return !string.IsNullOrEmpty(result) ? result : "AC";
         }
         private static void CompanyLogo_MouseEnter(object sender, EventArgs e)
         {
