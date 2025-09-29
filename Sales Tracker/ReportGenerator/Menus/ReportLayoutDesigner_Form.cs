@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Language;
+using Sales_Tracker.Theme;
 using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.ReportGenerator
@@ -32,8 +33,9 @@ namespace Sales_Tracker.ReportGenerator
         // Init.
         public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
         {
-            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
             InitializeComponent();
+            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
+
             InitializeChildForm();
         }
         protected virtual void InitializeChildForm()
@@ -82,7 +84,7 @@ namespace Sales_Tracker.ReportGenerator
             Label separator = new()
             {
                 Text = "Layout Tools",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 ForeColor = Color.White,
                 Location = new Point(15, yPosition),
                 Size = new Size(200, 20)
@@ -107,8 +109,8 @@ namespace Sales_Tracker.ReportGenerator
                 Size = new Size(200, 35),
                 Location = new Point(15, yPosition),
                 BorderRadius = 6,
-                FillColor = Color.FromArgb(94, 148, 255), // CustomColors.AccentBlue equivalent
-                Font = new Font("Segoe UI", 9F),
+                FillColor = CustomColors.AccentBlue,
+                Font = new Font("Segoe UI", 9),
                 ForeColor = Color.White
             };
 
@@ -243,7 +245,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (_selectedElement != null)
             {
-                using Pen pen = new(Color.FromArgb(94, 148, 255), 2);  // CustomColors.AccentBlue equivalent
+                using Pen pen = new(CustomColors.AccentBlue);
                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 g.DrawRectangle(pen, _selectedElement.Bounds);
 
@@ -254,7 +256,7 @@ namespace Sales_Tracker.ReportGenerator
         private static void DrawResizeHandles(Graphics g, Rectangle bounds)
         {
             const int handleSize = 8;
-            using SolidBrush brush = new(Color.FromArgb(94, 148, 255));  // CustomColors.AccentBlue equivalent
+            using SolidBrush brush = new(CustomColors.AccentBlue);
 
             // Corner handles
             g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize);

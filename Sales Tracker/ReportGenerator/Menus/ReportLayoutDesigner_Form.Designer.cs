@@ -195,7 +195,7 @@
             // 
             // ToolsContainer_Panel
             // 
-            ToolsContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ToolsContainer_Panel.AutoScroll = true;
             ToolsContainer_Panel.BackColor = Color.Transparent;
             ToolsContainer_Panel.Location = new Point(14, 87);
             ToolsContainer_Panel.Margin = new Padding(4, 5, 4, 5);

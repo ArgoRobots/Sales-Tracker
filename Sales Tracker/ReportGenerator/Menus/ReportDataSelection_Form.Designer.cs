@@ -76,7 +76,6 @@
             ReportTitle_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             LeftPanel = new Guna.UI2.WinForms.Guna2Panel();
             ChartSelection_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
-            ChartSelection_CheckedListBox = new CheckedListBox();
             SelectAll_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectNone_Button = new Guna.UI2.WinForms.Guna2Button();
             Template_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
@@ -390,7 +389,6 @@
             ChartSelection_GroupBox.BackColor = Color.Transparent;
             ChartSelection_GroupBox.BorderRadius = 8;
             ChartSelection_GroupBox.BorderThickness = 0;
-            ChartSelection_GroupBox.Controls.Add(ChartSelection_CheckedListBox);
             ChartSelection_GroupBox.Controls.Add(SelectAll_Button);
             ChartSelection_GroupBox.Controls.Add(SelectNone_Button);
             ChartSelection_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
@@ -406,20 +404,6 @@
             ChartSelection_GroupBox.Size = new Size(838, 657);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
-            // 
-            // ChartSelection_CheckedListBox
-            // 
-            ChartSelection_CheckedListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ChartSelection_CheckedListBox.BorderStyle = BorderStyle.None;
-            ChartSelection_CheckedListBox.CheckOnClick = true;
-            ChartSelection_CheckedListBox.Font = new Font("Segoe UI", 9F);
-            ChartSelection_CheckedListBox.ForeColor = Color.Black;
-            ChartSelection_CheckedListBox.Location = new Point(21, 74);
-            ChartSelection_CheckedListBox.Margin = new Padding(4, 5, 4, 5);
-            ChartSelection_CheckedListBox.Name = "ChartSelection_CheckedListBox";
-            ChartSelection_CheckedListBox.Size = new Size(795, 504);
-            ChartSelection_CheckedListBox.TabIndex = 0;
-            ChartSelection_CheckedListBox.ItemCheck += ChartSelection_CheckedListBox_ItemCheck;
             // 
             // SelectAll_Button
             // 
@@ -552,7 +536,6 @@
         private Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;
         private Guna.UI2.WinForms.Guna2Panel LeftPanel;
         private Guna.UI2.WinForms.Guna2GroupBox ChartSelection_GroupBox;
-        private CheckedListBox ChartSelection_CheckedListBox;
         private Guna.UI2.WinForms.Guna2Button SelectAll_Button;
         private Guna.UI2.WinForms.Guna2Button SelectNone_Button;
         private Guna.UI2.WinForms.Guna2GroupBox Template_GroupBox;

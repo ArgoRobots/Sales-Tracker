@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.Charts;
 using Sales_Tracker.Language;
-using static Sales_Tracker.MainMenu_Form;
+using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -24,27 +25,46 @@ namespace Sales_Tracker.ReportGenerator
         /// Indicates if the form is currently being loaded/updated programmatically.
         /// </summary>
         protected bool IsUpdating { get; private set; }
+        private CustomCheckListBox ChartSelection_CheckedListBox;
 
         // Init.
         public ReportDataSelection_Form(ReportGenerator_Form parentForm)
         {
-            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
             InitializeComponent();
-            InitializeChildForm();
-        }
-        protected virtual void InitializeChildForm()
-        {
+            ParentReportForm = parentForm ?? throw new ArgumentNullException(nameof(parentForm));
+
+            InitChartSelectionControl();
             SetupChartSelection();
             SetupFilterControls();
             SetupTemplates();
             LoadDefaultValues();
         }
+        private void InitChartSelectionControl()
+        {
+            ChartSelection_CheckedListBox = new()
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            };
+
+            ChartSelection_CheckedListBox.SetBounds(
+                ChartSelection_GroupBox.Padding.Left + 10,  // Left
+                ChartSelection_GroupBox.Padding.Top + ChartSelection_GroupBox.CustomBorderThickness.Top + 10,  // Top (allowing for group box title)
+                ChartSelection_GroupBox.ClientSize.Width - (ChartSelection_GroupBox.Padding.Horizontal + 20),  // Width
+                ChartSelection_GroupBox.ClientSize.Height - (ChartSelection_GroupBox.Padding.Vertical + 120)   // Height
+            );
+
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox);
+            ChartSelection_CheckedListBox.ItemCheck += new ItemCheckEventHandler(ChartSelection_CheckedListBox_ItemCheck);
+
+            ChartSelection_GroupBox.Controls.Add(ChartSelection_CheckedListBox);
+        }
+
         private void SetupChartSelection()
         {
             // Populate chart selection with all available chart types
             ChartSelection_CheckedListBox.Items.Clear();
 
-            foreach (ChartDataType chartType in Enum.GetValues<ChartDataType>())
+            foreach (MainMenu_Form.ChartDataType chartType in Enum.GetValues<MainMenu_Form.ChartDataType>())
             {
                 string displayName = TranslatedChartTitles.GetChartDisplayName(chartType);
                 ChartSelection_CheckedListBox.Items.Add(displayName, false);
@@ -80,32 +100,31 @@ namespace Sales_Tracker.ReportGenerator
         private void LoadDefaultValues()
         {
             // Select some commonly used charts by default
-            ChartDataType[] defaultCharts =
+            MainMenu_Form.ChartDataType[] defaultCharts =
             [
-                ChartDataType.TotalSales,
-                ChartDataType.DistributionOfSales,
-                ChartDataType.TotalExpensesVsSales
+                MainMenu_Form.ChartDataType.TotalSales,
+                MainMenu_Form.ChartDataType.DistributionOfSales,
+                MainMenu_Form.ChartDataType.TotalExpensesVsSales
             ];
 
             for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
             {
-                ChartDataType chartType = GetChartTypeFromIndex(i);
+                MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
                 if (defaultCharts.Contains(chartType))
                 {
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
             }
         }
-
         // Helper methods
-        private static ChartDataType GetChartTypeFromIndex(int index)
+        private static MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)
         {
-            ChartDataType[] chartTypes = Enum.GetValues<ChartDataType>();
-            return index >= 0 && index < chartTypes.Length ? chartTypes[index] : ChartDataType.TotalSales;
+            MainMenu_Form.ChartDataType[] chartTypes = Enum.GetValues<MainMenu_Form.ChartDataType>();
+            return index >= 0 && index < chartTypes.Length ? chartTypes[index] : MainMenu_Form.ChartDataType.TotalSales;
         }
-        private List<ChartDataType> GetSelectedChartTypes()
+        private List<MainMenu_Form.ChartDataType> GetSelectedChartTypes()
         {
-            List<ChartDataType> selectedCharts = [];
+            List<MainMenu_Form.ChartDataType> selectedCharts = [];
 
             for (int i = 0; i < ChartSelection_CheckedListBox.CheckedIndices.Count; i++)
             {
@@ -266,12 +285,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             PerformUpdate(() =>
             {
-                ChartDataType[] templateCharts =
+                MainMenu_Form.ChartDataType[] templateCharts =
                 [
-                    ChartDataType.TotalSales,
-                    ChartDataType.DistributionOfSales,
-                    ChartDataType.GrowthRates,
-                    ChartDataType.AverageOrderValue
+                    MainMenu_Form.ChartDataType.TotalSales,
+                    MainMenu_Form.ChartDataType.DistributionOfSales,
+                    MainMenu_Form.ChartDataType.GrowthRates,
+                    MainMenu_Form.ChartDataType.AverageOrderValue
                 ];
 
                 ApplyChartTemplate(templateCharts);
@@ -288,12 +307,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             PerformUpdate(() =>
             {
-                ChartDataType[] templateCharts =
+                MainMenu_Form.ChartDataType[] templateCharts =
                 [
-                    ChartDataType.TotalSales,
-                    ChartDataType.TotalPurchases,
-                    ChartDataType.TotalExpensesVsSales,
-                    ChartDataType.TotalProfits
+                    MainMenu_Form.ChartDataType.TotalSales,
+                    MainMenu_Form.ChartDataType.TotalPurchases,
+                    MainMenu_Form.ChartDataType.TotalExpensesVsSales,
+                    MainMenu_Form.ChartDataType.TotalProfits
                 ];
 
                 ApplyChartTemplate(templateCharts);
@@ -309,12 +328,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             PerformUpdate(() =>
             {
-                ChartDataType[] templateCharts =
+                MainMenu_Form.ChartDataType[] templateCharts =
                 [
-                    ChartDataType.GrowthRates,
-                    ChartDataType.AverageOrderValue,
-                    ChartDataType.TotalTransactions,
-                    ChartDataType.ReturnsOverTime
+                    MainMenu_Form.ChartDataType.GrowthRates,
+                    MainMenu_Form.ChartDataType.AverageOrderValue,
+                    MainMenu_Form.ChartDataType.TotalTransactions,
+                    MainMenu_Form.ChartDataType.ReturnsOverTime
                 ];
 
                 ApplyChartTemplate(templateCharts);
@@ -326,7 +345,7 @@ namespace Sales_Tracker.ReportGenerator
                 EndDate_DateTimePicker.Value = DateTime.Now;
             });
         }
-        private void ApplyChartTemplate(ChartDataType[] templateCharts)
+        private void ApplyChartTemplate(MainMenu_Form.ChartDataType[] templateCharts)
         {
             // Uncheck all first
             for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
@@ -337,7 +356,7 @@ namespace Sales_Tracker.ReportGenerator
             // Check template charts
             for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
             {
-                ChartDataType chartType = GetChartTypeFromIndex(i);
+                MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
                 if (templateCharts.Contains(chartType))
                 {
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
@@ -449,7 +468,7 @@ namespace Sales_Tracker.ReportGenerator
                 // Load selected charts
                 for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
                 {
-                    ChartDataType chartType = GetChartTypeFromIndex(i);
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
                     bool isSelected = ReportConfig.Filters.SelectedChartTypes.Contains(chartType);
                     ChartSelection_CheckedListBox.SetItemChecked(i, isSelected);
                 }

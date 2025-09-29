@@ -520,15 +520,5 @@ namespace Sales_Tracker.ReportGenerator
                 IsUpdating = false;
             }
         }
-
-        // Cleanup
-        private void CleanupPreviewImage()
-        {
-            if (Preview_PictureBox?.Image != null)
-            {
-                Preview_PictureBox.Image.Dispose();
-                Preview_PictureBox.Image = null;
-            }
-        }
     }
 }
