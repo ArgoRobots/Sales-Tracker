@@ -445,6 +445,16 @@
         }
 
         // Template management
+        public static class TemplateNames
+        {
+            public const string Custom = "Custom Report";
+            public const string MonthlySales = "Monthly Sales Report";
+            public const string FinancialOverview = "Financial Overview";
+            public const string PerformanceAnalysis = "Performance Analysis";
+            public const string ReturnsAnalysis = "Returns Analysis";
+            public const string GeographicAnalysis = "Geographic Analysis";
+        }
+
         /// <summary>
         /// Gets all available template names.
         /// </summary>
@@ -452,12 +462,12 @@
         {
             return
             [
-                "Custom Report",
-                "Monthly Sales Report",
-                "Financial Overview",
-                "Performance Analysis",
-                "Returns Analysis",
-                "Geographic Analysis"
+                TemplateNames.Custom,
+                TemplateNames.MonthlySales,
+                TemplateNames.FinancialOverview,
+                TemplateNames.PerformanceAnalysis,
+                TemplateNames.ReturnsAnalysis,
+                TemplateNames.GeographicAnalysis
             ];
         }
 
@@ -468,11 +478,11 @@
         {
             return templateName switch
             {
-                "Monthly Sales Report" => CreateMonthlySalesTemplate(),
-                "Financial Overview" => CreateFinancialOverviewTemplate(),
-                "Performance Analysis" => CreatePerformanceAnalysisTemplate(),
-                "Returns Analysis" => CreateReturnsAnalysisTemplate(),
-                "Geographic Analysis" => CreateGeographicAnalysisTemplate(),
+                TemplateNames.MonthlySales => CreateMonthlySalesTemplate(),
+                TemplateNames.FinancialOverview => CreateFinancialOverviewTemplate(),
+                TemplateNames.PerformanceAnalysis => CreatePerformanceAnalysisTemplate(),
+                TemplateNames.ReturnsAnalysis => CreateReturnsAnalysisTemplate(),
+                TemplateNames.GeographicAnalysis => CreateGeographicAnalysisTemplate(),
                 _ => new ReportConfiguration()  // Custom report
             };
         }
@@ -484,11 +494,11 @@
         {
             return templateName switch
             {
-                "Monthly Sales Report" => "Comprehensive monthly sales performance with charts for total sales, distribution, growth, and average order value.",
-                "Financial Overview" => "Complete financial summary including sales vs expenses, profits, and transaction totals in landscape format.",
-                "Performance Analysis" => "Detailed business performance metrics showing growth rates, order values, and return trends.",
-                "Returns Analysis" => "Analysis of product returns and losses with detailed breakdowns by reasons and financial impact.",
-                "Geographic Analysis" => "Geographic distribution analysis with world map and country-based charts.",
+                TemplateNames.MonthlySales => "Comprehensive monthly sales performance with charts for total sales, distribution, growth, and average order value.",
+                TemplateNames.FinancialOverview => "Complete financial summary including sales vs expenses, profits, and transaction totals in landscape format.",
+                TemplateNames.PerformanceAnalysis => "Detailed business performance metrics showing growth rates, order values, and return trends.",
+                TemplateNames.ReturnsAnalysis => "Analysis of product returns and losses with detailed breakdowns by reasons and financial impact.",
+                TemplateNames.GeographicAnalysis => "Geographic distribution analysis with world map and country-based charts.",
                 _ => "Create a custom report with your own selection of charts and layout."
             };
         }

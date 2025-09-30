@@ -137,14 +137,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             GeneratePreview();
         }
-        private void ZoomIn_Button_Click(object sender, EventArgs e)
-        {
-            if (_currentZoom < _maxZoom)
-            {
-                _currentZoom += _zoomIncrement;
-                GeneratePreview();
-            }
-        }
         private void ZoomOut_Button_Click(object sender, EventArgs e)
         {
             if (_currentZoom > _minZoom)
@@ -153,7 +145,15 @@ namespace Sales_Tracker.ReportGenerator
                 GeneratePreview();
             }
         }
-        private void ZoomFit_Button_Click(object sender, EventArgs e)
+        private void ZoomIn_Button_Click(object sender, EventArgs e)
+        {
+            if (_currentZoom < _maxZoom)
+            {
+                _currentZoom += _zoomIncrement;
+                GeneratePreview();
+            }
+        }
+        private void FitToWindow_Button_Click(object sender, EventArgs e)
         {
             _currentZoom = 1.0f;
             GeneratePreview();

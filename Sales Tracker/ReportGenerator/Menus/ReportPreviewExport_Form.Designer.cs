@@ -85,7 +85,7 @@
             Preview_PictureBox = new PictureBox();
             ZoomIn_Button = new Guna.UI2.WinForms.Guna2Button();
             ZoomOut_Button = new Guna.UI2.WinForms.Guna2Button();
-            ZoomFit_Button = new Guna.UI2.WinForms.Guna2Button();
+            FitToWindow_Button = new Guna.UI2.WinForms.Guna2Button();
             RightSettingsPanel.SuspendLayout();
             PageSettings_GroupBox.SuspendLayout();
             ExportSettings_GroupBox.SuspendLayout();
@@ -444,7 +444,7 @@
             Preview_GroupBox.Controls.Add(Preview_PictureBox);
             Preview_GroupBox.Controls.Add(ZoomIn_Button);
             Preview_GroupBox.Controls.Add(ZoomOut_Button);
-            Preview_GroupBox.Controls.Add(ZoomFit_Button);
+            Preview_GroupBox.Controls.Add(FitToWindow_Button);
             Preview_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             Preview_GroupBox.CustomizableEdges = customizableEdges29;
             Preview_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
@@ -500,15 +500,15 @@
             ZoomIn_Button.BorderThickness = 1;
             ZoomIn_Button.CustomizableEdges = customizableEdges23;
             ZoomIn_Button.FillColor = Color.White;
-            ZoomIn_Button.Font = new Font("Segoe UI", 9F);
+            ZoomIn_Button.Font = new Font("Segoe UI", 18F);
             ZoomIn_Button.ForeColor = Color.Black;
-            ZoomIn_Button.Location = new Point(21, 789);
+            ZoomIn_Button.Location = new Point(144, 789);
             ZoomIn_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomIn_Button.Name = "ZoomIn_Button";
             ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            ZoomIn_Button.Size = new Size(150, 50);
+            ZoomIn_Button.Size = new Size(115, 50);
             ZoomIn_Button.TabIndex = 1;
-            ZoomIn_Button.Text = "Zoom +";
+            ZoomIn_Button.Text = "+";
             ZoomIn_Button.Click += ZoomIn_Button_Click;
             // 
             // ZoomOut_Button
@@ -520,36 +520,36 @@
             ZoomOut_Button.BorderThickness = 1;
             ZoomOut_Button.CustomizableEdges = customizableEdges25;
             ZoomOut_Button.FillColor = Color.White;
-            ZoomOut_Button.Font = new Font("Segoe UI", 9F);
+            ZoomOut_Button.Font = new Font("Segoe UI", 18F);
             ZoomOut_Button.ForeColor = Color.Black;
-            ZoomOut_Button.Location = new Point(179, 789);
+            ZoomOut_Button.Location = new Point(21, 789);
             ZoomOut_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomOut_Button.Name = "ZoomOut_Button";
             ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
-            ZoomOut_Button.Size = new Size(150, 50);
+            ZoomOut_Button.Size = new Size(115, 50);
             ZoomOut_Button.TabIndex = 2;
-            ZoomOut_Button.Text = "Zoom -";
+            ZoomOut_Button.Text = "-";
             ZoomOut_Button.Click += ZoomOut_Button_Click;
             // 
-            // ZoomFit_Button
+            // FitToWindow_Button
             // 
-            ZoomFit_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            ZoomFit_Button.BackColor = Color.Transparent;
-            ZoomFit_Button.BorderColor = Color.LightGray;
-            ZoomFit_Button.BorderRadius = 2;
-            ZoomFit_Button.BorderThickness = 1;
-            ZoomFit_Button.CustomizableEdges = customizableEdges27;
-            ZoomFit_Button.FillColor = Color.White;
-            ZoomFit_Button.Font = new Font("Segoe UI", 9F);
-            ZoomFit_Button.ForeColor = Color.Black;
-            ZoomFit_Button.Location = new Point(337, 789);
-            ZoomFit_Button.Margin = new Padding(4, 5, 4, 5);
-            ZoomFit_Button.Name = "ZoomFit_Button";
-            ZoomFit_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            ZoomFit_Button.Size = new Size(150, 50);
-            ZoomFit_Button.TabIndex = 3;
-            ZoomFit_Button.Text = "Fit to size";
-            ZoomFit_Button.Click += ZoomFit_Button_Click;
+            FitToWindow_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            FitToWindow_Button.BackColor = Color.Transparent;
+            FitToWindow_Button.BorderColor = Color.LightGray;
+            FitToWindow_Button.BorderRadius = 2;
+            FitToWindow_Button.BorderThickness = 1;
+            FitToWindow_Button.CustomizableEdges = customizableEdges27;
+            FitToWindow_Button.FillColor = Color.White;
+            FitToWindow_Button.Font = new Font("Segoe UI", 9F);
+            FitToWindow_Button.ForeColor = Color.Black;
+            FitToWindow_Button.Location = new Point(267, 789);
+            FitToWindow_Button.Margin = new Padding(4, 5, 4, 5);
+            FitToWindow_Button.Name = "FitToWindow_Button";
+            FitToWindow_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            FitToWindow_Button.Size = new Size(200, 50);
+            FitToWindow_Button.TabIndex = 3;
+            FitToWindow_Button.Text = "Fit to window";
+            FitToWindow_Button.Click += FitToWindow_Button_Click;
             // 
             // ReportPreviewExport_Form
             // 
@@ -583,7 +583,7 @@
         private Guna.UI2.WinForms.Guna2Button RefreshPreview_Button;
         private Guna.UI2.WinForms.Guna2Button ZoomIn_Button;
         private Guna.UI2.WinForms.Guna2Button ZoomOut_Button;
-        private Guna.UI2.WinForms.Guna2Button ZoomFit_Button;
+        private Guna.UI2.WinForms.Guna2Button FitToWindow_Button;
         private Guna.UI2.WinForms.Guna2GroupBox PageSettings_GroupBox;
         private System.Windows.Forms.Label PageSize_Label;
         private Guna.UI2.WinForms.Guna2ComboBox PageSize_ComboBox;

@@ -110,7 +110,7 @@ namespace Sales_Tracker.Charts
                     break;
 
                 case MainMenu_Form.ChartDataType.DistributionOfPurchases:
-                    LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.PurchaseDistribution_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.DistributionOfPurchases_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.Profits:
@@ -253,7 +253,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.DistributionOfPurchases:
                         {
-                            ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.PurchaseDistribution_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.DistributionOfPurchases_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ExpensesDistribution;
                             string first = LanguageManager.TranslateString("Category");
                             string second = LanguageManager.TranslateString("Expenses");

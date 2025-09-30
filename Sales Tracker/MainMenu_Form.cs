@@ -85,16 +85,16 @@ namespace Sales_Tracker
         private void ConstructMainCharts()
         {
             TotalPurchases_Chart = ConstructMainChart("purchaseTotals_Chart", true) as CartesianChart;
-            PurchaseDistribution_Chart = ConstructMainChart("purchaseDistribution_Chart", false) as PieChart;
+            DistributionOfPurchases_Chart = ConstructMainChart("purchaseDistribution_Chart", false) as PieChart;
             TotalSales_Chart = ConstructMainChart("saleTotals_Chart", true) as CartesianChart;
             DistributionOfSales_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
             Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
-            LoadChart.ConfigurePieChart(PurchaseDistribution_Chart);
+            LoadChart.ConfigurePieChart(DistributionOfPurchases_Chart);
             LoadChart.ConfigurePieChart(DistributionOfSales_Chart);
 
             MouseClickChartManager.InitCharts([
-                TotalPurchases_Chart, PurchaseDistribution_Chart,
+                TotalPurchases_Chart, DistributionOfPurchases_Chart,
                 TotalSales_Chart, DistributionOfSales_Chart, Profits_Chart
             ]);
         }
@@ -199,8 +199,8 @@ namespace Sales_Tracker
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, PurchaseDistribution_Chart, PieChartGrouping.Top12);
-                    SetChartTitle(PurchaseDistribution_Chart, TranslatedChartTitles.ExpensesDistribution);
+                    LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, DistributionOfPurchases_Chart, PieChartGrouping.Top12);
+                    SetChartTitle(DistributionOfPurchases_Chart, TranslatedChartTitles.ExpensesDistribution);
                 }
             }
 
@@ -322,7 +322,7 @@ namespace Sales_Tracker
 
             // Chart titles are saved in cache using a string, not the control
             TotalPurchases_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
-            PurchaseDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            DistributionOfPurchases_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             DistributionOfSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -355,7 +355,7 @@ namespace Sales_Tracker
         {
             // Main charts
             TotalPurchases_Chart.Tag = ChartDataType.TotalPurchases;
-            PurchaseDistribution_Chart.Tag = ChartDataType.DistributionOfPurchases;
+            DistributionOfPurchases_Chart.Tag = ChartDataType.DistributionOfPurchases;
             TotalSales_Chart.Tag = ChartDataType.TotalSales;
             DistributionOfSales_Chart.Tag = ChartDataType.DistributionOfSales;
             Profits_Chart.Tag = ChartDataType.Profits;
@@ -830,7 +830,7 @@ namespace Sales_Tracker
 
                 // Position the currently visible charts
                 Control totalsChart = Sale_DataGridView.Visible ? TotalSales_Chart : TotalPurchases_Chart;
-                Control distributionChart = Sale_DataGridView.Visible ? DistributionOfSales_Chart : PurchaseDistribution_Chart;
+                Control distributionChart = Sale_DataGridView.Visible ? DistributionOfSales_Chart : DistributionOfPurchases_Chart;
 
                 SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, _chartTop);
                 SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, _chartTop);
@@ -1041,7 +1041,7 @@ namespace Sales_Tracker
         private void SetMainChartsHeight(int height)
         {
             TotalPurchases_Chart.Height = height;
-            PurchaseDistribution_Chart.Height = height;
+            DistributionOfPurchases_Chart.Height = height;
             TotalSales_Chart.Height = height;
             DistributionOfSales_Chart.Height = height;
             Profits_Chart.Height = height;
@@ -1167,7 +1167,7 @@ namespace Sales_Tracker
 
             // Show purchase charts, hide sale charts
             TotalPurchases_Chart.Visible = true;
-            PurchaseDistribution_Chart.Visible = true;
+            DistributionOfPurchases_Chart.Visible = true;
             TotalSales_Chart.Visible = false;
             DistributionOfSales_Chart.Visible = false;
 
@@ -1197,7 +1197,7 @@ namespace Sales_Tracker
             TotalSales_Chart.Visible = true;
             DistributionOfSales_Chart.Visible = true;
             TotalPurchases_Chart.Visible = false;
-            PurchaseDistribution_Chart.Visible = false;
+            DistributionOfPurchases_Chart.Visible = false;
 
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
@@ -2235,7 +2235,7 @@ namespace Sales_Tracker
         public PieChart ReturnsByProduct_Chart { get; private set; }
         public PieChart PurchaseVsSaleReturns_Chart { get; private set; }
         public CartesianChart TotalPurchases_Chart { get; private set; }
-        public PieChart PurchaseDistribution_Chart { get; private set; }
+        public PieChart DistributionOfPurchases_Chart { get; private set; }
         public CartesianChart TotalSales_Chart { get; private set; }
         public PieChart DistributionOfSales_Chart { get; private set; }
         public CartesianChart LossesOverTime_Chart { get; private set; }
@@ -2263,7 +2263,7 @@ namespace Sales_Tracker
                 Sale_DataGridView,
                 Purchase_DataGridView,
                 TotalPurchases_Chart,
-                PurchaseDistribution_Chart,
+                DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
                 Profits_Chart,
@@ -2274,7 +2274,7 @@ namespace Sales_Tracker
         public IEnumerable<Control> GetAllCharts()
         {
             return [TotalPurchases_Chart,
-                PurchaseDistribution_Chart,
+                DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
                 Profits_Chart,
@@ -2310,7 +2310,7 @@ namespace Sales_Tracker
 
             // Reset chart positions in case returning from analytics
             TotalPurchases_Chart.Top = _analyticChartTop;
-            PurchaseDistribution_Chart.Top = _analyticChartTop;
+            DistributionOfPurchases_Chart.Top = _analyticChartTop;
             TotalSales_Chart.Top = _analyticChartTop;
             DistributionOfSales_Chart.Top = _analyticChartTop;
             Profits_Chart.Top = _analyticChartTop;
@@ -2512,7 +2512,7 @@ namespace Sales_Tracker
                 TotalSales_Chart,
                 TotalPurchases_Chart,
                 DistributionOfSales_Chart,
-                PurchaseDistribution_Chart
+                DistributionOfPurchases_Chart
             ]);
 
             _tabControls[AnalyticsTab.Performance].AddRange(

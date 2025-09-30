@@ -342,20 +342,38 @@ namespace Sales_Tracker.ReportGenerator
                 case MainMenu_Form.ChartDataType.DistributionOfSales:
                     return mainForm.DistributionOfSales_Chart;
 
-                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
-                    return mainForm.TotalExpensesVsSales_Chart;
-
-                case MainMenu_Form.ChartDataType.GrowthRates:
-                    return mainForm.GrowthRates_Chart;
-
-                case MainMenu_Form.ChartDataType.AverageTransactionValue:
-                    return mainForm.AverageTransactionValue_Chart;
+                case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    return mainForm.DistributionOfPurchases_Chart;
 
                 case MainMenu_Form.ChartDataType.Profits:
                     return mainForm.Profits_Chart;
 
+                case MainMenu_Form.ChartDataType.CountriesOfOrigin:
+                    return mainForm.CountriesOfOrigin_Chart;
+
+                case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
+                    return mainForm.CompaniesOfOrigin_Chart;
+
+                case MainMenu_Form.ChartDataType.CountriesOfDestination:
+                    return mainForm.CountriesOfDestination_Chart;
+
+                case MainMenu_Form.ChartDataType.Accountants:
+                    return mainForm.Accountants_Chart;
+
+                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    return mainForm.TotalExpensesVsSales_Chart;
+
+                case MainMenu_Form.ChartDataType.AverageTransactionValue:
+                    return mainForm.AverageTransactionValue_Chart;
+
                 case MainMenu_Form.ChartDataType.TotalTransactions:
                     return mainForm.TotalTransactions_Chart;
+
+                case MainMenu_Form.ChartDataType.AverageShippingCosts:
+                    return mainForm.AverageShippingCosts_Chart;
+
+                case MainMenu_Form.ChartDataType.GrowthRates:
+                    return mainForm.GrowthRates_Chart;
 
                 case MainMenu_Form.ChartDataType.ReturnsOverTime:
                     return mainForm.ReturnsOverTime_Chart;
@@ -366,23 +384,35 @@ namespace Sales_Tracker.ReportGenerator
                 case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
                     return mainForm.ReturnFinancialImpact_Chart;
 
+                case MainMenu_Form.ChartDataType.ReturnsByCategory:
+                    return mainForm.ReturnsByCategory_Chart;
+
+                case MainMenu_Form.ChartDataType.ReturnsByProduct:
+                    return mainForm.ReturnsByProduct_Chart;
+
+                case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
+                    return mainForm.PurchaseVsSaleReturns_Chart;
+
+                case MainMenu_Form.ChartDataType.WorldMap:
+                    return mainForm.WorldMap_GeoMap;
+
                 case MainMenu_Form.ChartDataType.LossesOverTime:
                     return mainForm.LossesOverTime_Chart;
 
                 case MainMenu_Form.ChartDataType.LossReasons:
                     return mainForm.LossReasons_Chart;
 
-                case MainMenu_Form.ChartDataType.WorldMap:
-                    return mainForm.WorldMap_GeoMap;
+                case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                    return mainForm.LossFinancialImpact_Chart;
 
-                case MainMenu_Form.ChartDataType.CountriesOfOrigin:
-                    return mainForm.CountriesOfOrigin_Chart;
+                case MainMenu_Form.ChartDataType.LossesByCategory:
+                    return mainForm.LossesByCategory_Chart;
 
-                case MainMenu_Form.ChartDataType.CountriesOfDestination:
-                    return mainForm.CountriesOfDestination_Chart;
+                case MainMenu_Form.ChartDataType.LossesByProduct:
+                    return mainForm.LossesByProduct_Chart;
 
-                case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
-                    return mainForm.CompaniesOfOrigin_Chart;
+                case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                    return mainForm.PurchaseVsSaleLosses_Chart;
 
                 default:
                     Log.Write(0, $"Unknown chart type: {chartType}");
