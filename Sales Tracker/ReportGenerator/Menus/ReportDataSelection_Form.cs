@@ -161,13 +161,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form event handlers
-        private void ReportDataSelection_Form_Shown(object sender, EventArgs e)
-        {
-            if (!_isUpdating)
-            {
-                OnStepActivated();
-            }
-        }
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)
         {
             if (!_isUpdating)
@@ -194,7 +187,7 @@ namespace Sales_Tracker.ReportGenerator
             RightPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
 
             // Position the right panel
-            RightPanel.Left = Width - RightPanel.Width;
+            RightPanel.Left = LeftPanel.Width;
         }
 
         // Event handlers

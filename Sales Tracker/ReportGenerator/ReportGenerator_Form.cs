@@ -65,7 +65,7 @@ namespace Sales_Tracker.ReportGenerator
             childForm.Visible = false;
 
             // Add to main content panel
-            MainContent_Panel.Controls.Add(childForm);
+            Content_Panel.Controls.Add(childForm);
         }
         private void UpdateTheme()
         {

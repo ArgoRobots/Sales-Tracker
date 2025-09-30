@@ -139,7 +139,7 @@
             PageSize_Label.BackColor = Color.Transparent;
             PageSize_Label.Font = new Font("Segoe UI", 9.5F);
             PageSize_Label.ForeColor = SystemColors.ControlText;
-            PageSize_Label.Location = new Point(23, 88);
+            PageSize_Label.Location = new Point(23, 90);
             PageSize_Label.Margin = new Padding(4, 0, 4, 0);
             PageSize_Label.Name = "PageSize_Label";
             PageSize_Label.Size = new Size(96, 25);
@@ -171,7 +171,7 @@
             Orientation_Label.BackColor = Color.Transparent;
             Orientation_Label.Font = new Font("Segoe UI", 9.5F);
             Orientation_Label.ForeColor = SystemColors.ControlText;
-            Orientation_Label.Location = new Point(23, 143);
+            Orientation_Label.Location = new Point(23, 151);
             Orientation_Label.Margin = new Padding(4, 0, 4, 0);
             Orientation_Label.Name = "Orientation_Label";
             Orientation_Label.Size = new Size(112, 25);
@@ -255,7 +255,7 @@
             OpenAfterExport_Label.BackColor = Color.Transparent;
             OpenAfterExport_Label.Font = new Font("Segoe UI", 9.5F);
             OpenAfterExport_Label.ForeColor = Color.Black;
-            OpenAfterExport_Label.Location = new Point(43, 497);
+            OpenAfterExport_Label.Location = new Point(43, 500);
             OpenAfterExport_Label.Name = "OpenAfterExport_Label";
             OpenAfterExport_Label.Padding = new Padding(5);
             OpenAfterExport_Label.Size = new Size(171, 35);
@@ -269,7 +269,7 @@
             ExportPath_Label.BackColor = Color.Transparent;
             ExportPath_Label.Font = new Font("Segoe UI", 9.5F);
             ExportPath_Label.ForeColor = SystemColors.ControlText;
-            ExportPath_Label.Location = new Point(23, 57);
+            ExportPath_Label.Location = new Point(23, 58);
             ExportPath_Label.Margin = new Padding(4, 0, 4, 0);
             ExportPath_Label.Name = "ExportPath_Label";
             ExportPath_Label.Size = new Size(112, 25);
@@ -293,7 +293,7 @@
             ExportPath_TextBox.ReadOnly = true;
             ExportPath_TextBox.SelectedText = "";
             ExportPath_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            ExportPath_TextBox.Size = new Size(297, 50);
+            ExportPath_TextBox.Size = new Size(295, 50);
             ExportPath_TextBox.TabIndex = 1;
             // 
             // BrowseExportPath_Button
@@ -307,11 +307,11 @@
             BrowseExportPath_Button.FillColor = Color.White;
             BrowseExportPath_Button.Font = new Font("Segoe UI", 9F);
             BrowseExportPath_Button.ForeColor = Color.Black;
-            BrowseExportPath_Button.Location = new Point(330, 91);
+            BrowseExportPath_Button.Location = new Point(328, 91);
             BrowseExportPath_Button.Margin = new Padding(4, 5, 4, 5);
             BrowseExportPath_Button.Name = "BrowseExportPath_Button";
             BrowseExportPath_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            BrowseExportPath_Button.Size = new Size(152, 50);
+            BrowseExportPath_Button.Size = new Size(154, 50);
             BrowseExportPath_Button.TabIndex = 2;
             BrowseExportPath_Button.Text = "Browse";
             BrowseExportPath_Button.Click += BrowseExportPath_Button_Click;
@@ -322,7 +322,7 @@
             ExportFormat_Label.BackColor = Color.Transparent;
             ExportFormat_Label.Font = new Font("Segoe UI", 9.5F);
             ExportFormat_Label.ForeColor = SystemColors.ControlText;
-            ExportFormat_Label.Location = new Point(23, 174);
+            ExportFormat_Label.Location = new Point(25, 177);
             ExportFormat_Label.Margin = new Padding(4, 0, 4, 0);
             ExportFormat_Label.Name = "ExportFormat_Label";
             ExportFormat_Label.Size = new Size(134, 25);
@@ -561,7 +561,6 @@
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportPreviewExport_Form";
-            Shown += ReportPreviewExport_Form_Shown;
             VisibleChanged += ReportPreviewExport_Form_VisibleChanged;
             Resize += ReportPreviewExport_Form_Resize;
             RightSettingsPanel.ResumeLayout(false);

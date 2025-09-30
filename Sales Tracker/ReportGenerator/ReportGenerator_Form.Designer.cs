@@ -47,10 +47,10 @@
             Previous_Button = new Guna.UI2.WinForms.Guna2Button();
             Next_Button = new Guna.UI2.WinForms.Guna2Button();
             Cancel_Button = new Guna.UI2.WinForms.Guna2Button();
-            MainContent_Panel = new Guna.UI2.WinForms.Guna2Panel();
-            MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Content_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Top_Panel = new Guna.UI2.WinForms.Guna2Panel();
             BottomNavigation_Panel.SuspendLayout();
-            MainTop_Panel.SuspendLayout();
+            Top_Panel.SuspendLayout();
             SuspendLayout();
             // 
             // StepTitle_Label
@@ -79,7 +79,6 @@
             Progress_ProgressBar.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Progress_ProgressBar.Size = new Size(214, 33);
             Progress_ProgressBar.TabIndex = 1;
-            Progress_ProgressBar.Text = "Progress_ProgressBar";
             Progress_ProgressBar.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
             Progress_ProgressBar.Value = 33;
             // 
@@ -181,34 +180,34 @@
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
-            // MainContent_Panel
+            // Content_Panel
             // 
-            MainContent_Panel.BackColor = Color.Transparent;
-            MainContent_Panel.CustomizableEdges = customizableEdges9;
-            MainContent_Panel.Dock = DockStyle.Fill;
-            MainContent_Panel.FillColor = SystemColors.Control;
-            MainContent_Panel.Location = new Point(0, 80);
-            MainContent_Panel.Margin = new Padding(6, 5, 6, 5);
-            MainContent_Panel.Name = "MainContent_Panel";
-            MainContent_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            MainContent_Panel.Size = new Size(1478, 884);
-            MainContent_Panel.TabIndex = 1;
+            Content_Panel.BackColor = Color.Transparent;
+            Content_Panel.CustomizableEdges = customizableEdges9;
+            Content_Panel.Dock = DockStyle.Fill;
+            Content_Panel.FillColor = SystemColors.Control;
+            Content_Panel.Location = new Point(0, 80);
+            Content_Panel.Margin = new Padding(6, 5, 6, 5);
+            Content_Panel.Name = "Content_Panel";
+            Content_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Content_Panel.Size = new Size(1478, 884);
+            Content_Panel.TabIndex = 1;
             // 
-            // MainTop_Panel
+            // Top_Panel
             // 
-            MainTop_Panel.BackColor = Color.Transparent;
-            MainTop_Panel.Controls.Add(StepTitle_Label);
-            MainTop_Panel.Controls.Add(ProgressValue_Label);
-            MainTop_Panel.Controls.Add(Progress_ProgressBar);
-            MainTop_Panel.CustomizableEdges = customizableEdges11;
-            MainTop_Panel.Dock = DockStyle.Top;
-            MainTop_Panel.FillColor = Color.LightGray;
-            MainTop_Panel.Location = new Point(0, 0);
-            MainTop_Panel.Margin = new Padding(6, 5, 6, 5);
-            MainTop_Panel.Name = "MainTop_Panel";
-            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            MainTop_Panel.Size = new Size(1478, 80);
-            MainTop_Panel.TabIndex = 0;
+            Top_Panel.BackColor = Color.Transparent;
+            Top_Panel.Controls.Add(StepTitle_Label);
+            Top_Panel.Controls.Add(ProgressValue_Label);
+            Top_Panel.Controls.Add(Progress_ProgressBar);
+            Top_Panel.CustomizableEdges = customizableEdges11;
+            Top_Panel.Dock = DockStyle.Top;
+            Top_Panel.FillColor = Color.LightGray;
+            Top_Panel.Location = new Point(0, 0);
+            Top_Panel.Margin = new Padding(6, 5, 6, 5);
+            Top_Panel.Name = "Top_Panel";
+            Top_Panel.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Top_Panel.Size = new Size(1478, 80);
+            Top_Panel.TabIndex = 0;
             // 
             // ReportGenerator_Form
             // 
@@ -216,9 +215,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(1478, 1044);
-            Controls.Add(MainContent_Panel);
+            Controls.Add(Content_Panel);
             Controls.Add(BottomNavigation_Panel);
-            Controls.Add(MainTop_Panel);
+            Controls.Add(Top_Panel);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 5, 4, 5);
@@ -230,8 +229,8 @@
             FormClosing += ReportGenerator_Form_FormClosing;
             Shown += ReportGenerator_Form_Shown;
             BottomNavigation_Panel.ResumeLayout(false);
-            MainTop_Panel.ResumeLayout(false);
-            MainTop_Panel.PerformLayout();
+            Top_Panel.ResumeLayout(false);
+            Top_Panel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -243,7 +242,7 @@
         public Guna.UI2.WinForms.Guna2Button Previous_Button;
         public Guna.UI2.WinForms.Guna2Button Next_Button;
         public Guna.UI2.WinForms.Guna2Button Cancel_Button;
-        public Guna.UI2.WinForms.Guna2Panel MainContent_Panel;
-        public Guna.UI2.WinForms.Guna2Panel MainTop_Panel;
+        public Guna.UI2.WinForms.Guna2Panel Content_Panel;
+        public Guna.UI2.WinForms.Guna2Panel Top_Panel;
     }
 }

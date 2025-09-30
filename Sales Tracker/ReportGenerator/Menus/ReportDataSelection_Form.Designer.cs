@@ -143,7 +143,7 @@
             IncludeLosses_CheckBox.CheckedState.BorderThickness = 0;
             IncludeLosses_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeLosses_CheckBox.CustomizableEdges = customizableEdges1;
-            IncludeLosses_CheckBox.Location = new Point(21, 400);
+            IncludeLosses_CheckBox.Location = new Point(21, 401);
             IncludeLosses_CheckBox.Name = "IncludeLosses_CheckBox";
             IncludeLosses_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             IncludeLosses_CheckBox.Size = new Size(20, 20);
@@ -160,7 +160,7 @@
             IncludeLosses_Label.BackColor = Color.Transparent;
             IncludeLosses_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeLosses_Label.ForeColor = Color.Black;
-            IncludeLosses_Label.Location = new Point(39, 390);
+            IncludeLosses_Label.Location = new Point(39, 394);
             IncludeLosses_Label.Name = "IncludeLosses_Label";
             IncludeLosses_Label.Padding = new Padding(5);
             IncludeLosses_Label.Size = new Size(173, 35);
@@ -177,7 +177,7 @@
             IncludeReturns_CheckBox.CheckedState.BorderThickness = 0;
             IncludeReturns_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeReturns_CheckBox.CustomizableEdges = customizableEdges3;
-            IncludeReturns_CheckBox.Location = new Point(21, 349);
+            IncludeReturns_CheckBox.Location = new Point(21, 350);
             IncludeReturns_CheckBox.Name = "IncludeReturns_CheckBox";
             IncludeReturns_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             IncludeReturns_CheckBox.Size = new Size(20, 20);
@@ -194,7 +194,7 @@
             IncludeReturns_Label.BackColor = Color.Transparent;
             IncludeReturns_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeReturns_Label.ForeColor = Color.Black;
-            IncludeReturns_Label.Location = new Point(39, 339);
+            IncludeReturns_Label.Location = new Point(39, 343);
             IncludeReturns_Label.Name = "IncludeReturns_Label";
             IncludeReturns_Label.Padding = new Padding(5);
             IncludeReturns_Label.Size = new Size(215, 35);
@@ -239,7 +239,7 @@
             StartDate_DateTimePicker.Font = new Font("Segoe UI", 9F);
             StartDate_DateTimePicker.ForeColor = Color.Black;
             StartDate_DateTimePicker.Format = DateTimePickerFormat.Short;
-            StartDate_DateTimePicker.Location = new Point(191, 103);
+            StartDate_DateTimePicker.Location = new Point(191, 97);
             StartDate_DateTimePicker.Margin = new Padding(4, 5, 4, 5);
             StartDate_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             StartDate_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
@@ -256,7 +256,7 @@
             EndDate_Label.BackColor = Color.Transparent;
             EndDate_Label.Font = new Font("Segoe UI", 9.5F);
             EndDate_Label.ForeColor = SystemColors.ControlText;
-            EndDate_Label.Location = new Point(21, 173);
+            EndDate_Label.Location = new Point(21, 170);
             EndDate_Label.Margin = new Padding(4, 0, 4, 0);
             EndDate_Label.Name = "EndDate_Label";
             EndDate_Label.Size = new Size(92, 25);
@@ -274,7 +274,7 @@
             EndDate_DateTimePicker.Font = new Font("Segoe UI", 9F);
             EndDate_DateTimePicker.ForeColor = Color.Black;
             EndDate_DateTimePicker.Format = DateTimePickerFormat.Short;
-            EndDate_DateTimePicker.Location = new Point(191, 166);
+            EndDate_DateTimePicker.Location = new Point(191, 157);
             EndDate_DateTimePicker.Margin = new Padding(4, 5, 4, 5);
             EndDate_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             EndDate_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
@@ -291,7 +291,7 @@
             TransactionType_Label.BackColor = Color.Transparent;
             TransactionType_Label.Font = new Font("Segoe UI", 9.5F);
             TransactionType_Label.ForeColor = SystemColors.ControlText;
-            TransactionType_Label.Location = new Point(21, 268);
+            TransactionType_Label.Location = new Point(21, 272);
             TransactionType_Label.Margin = new Padding(4, 0, 4, 0);
             TransactionType_Label.Name = "TransactionType_Label";
             TransactionType_Label.Size = new Size(156, 25);
@@ -309,7 +309,7 @@
             TransactionType_ComboBox.Font = new Font("Segoe UI", 9F);
             TransactionType_ComboBox.ForeColor = Color.Black;
             TransactionType_ComboBox.ItemHeight = 44;
-            TransactionType_ComboBox.Location = new Point(191, 258);
+            TransactionType_ComboBox.Location = new Point(191, 259);
             TransactionType_ComboBox.Margin = new Padding(4, 5, 4, 5);
             TransactionType_ComboBox.Name = "TransactionType_ComboBox";
             TransactionType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
@@ -344,7 +344,7 @@
             ReportTitle_Label.BackColor = Color.Transparent;
             ReportTitle_Label.Font = new Font("Segoe UI", 9.5F);
             ReportTitle_Label.ForeColor = SystemColors.ControlText;
-            ReportTitle_Label.Location = new Point(21, 78);
+            ReportTitle_Label.Location = new Point(21, 83);
             ReportTitle_Label.Margin = new Padding(4, 0, 4, 0);
             ReportTitle_Label.Name = "ReportTitle_Label";
             ReportTitle_Label.Size = new Size(112, 25);
@@ -360,7 +360,7 @@
             ReportTitle_TextBox.DefaultText = "Sales Report";
             ReportTitle_TextBox.Font = new Font("Segoe UI", 9F);
             ReportTitle_TextBox.ForeColor = Color.Black;
-            ReportTitle_TextBox.Location = new Point(191, 65);
+            ReportTitle_TextBox.Location = new Point(191, 70);
             ReportTitle_TextBox.Margin = new Padding(6, 8, 6, 8);
             ReportTitle_TextBox.Name = "ReportTitle_TextBox";
             ReportTitle_TextBox.PlaceholderText = "Enter report title";
@@ -402,7 +402,7 @@
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            ChartSelection_GroupBox.Size = new Size(858, 675);
+            ChartSelection_GroupBox.Size = new Size(858, 692);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
             // 
@@ -417,7 +417,7 @@
             SelectAll_Button.FillColor = Color.White;
             SelectAll_Button.Font = new Font("Segoe UI", 9F);
             SelectAll_Button.ForeColor = Color.Black;
-            SelectAll_Button.Location = new Point(18, 613);
+            SelectAll_Button.Location = new Point(18, 630);
             SelectAll_Button.Margin = new Padding(4, 5, 4, 5);
             SelectAll_Button.Name = "SelectAll_Button";
             SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -437,7 +437,7 @@
             SelectNone_Button.FillColor = Color.White;
             SelectNone_Button.Font = new Font("Segoe UI", 9F);
             SelectNone_Button.ForeColor = Color.Black;
-            SelectNone_Button.Location = new Point(176, 613);
+            SelectNone_Button.Location = new Point(176, 630);
             SelectNone_Button.Margin = new Padding(4, 5, 4, 5);
             SelectNone_Button.Name = "SelectNone_Button";
             SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
@@ -458,12 +458,12 @@
             Template_GroupBox.CustomizableEdges = customizableEdges27;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Template_GroupBox.ForeColor = Color.White;
-            Template_GroupBox.Location = new Point(28, 717);
+            Template_GroupBox.Location = new Point(28, 734);
             Template_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Template_GroupBox.Size = new Size(858, 167);
+            Template_GroupBox.Size = new Size(858, 150);
             Template_GroupBox.TabIndex = 1;
             Template_GroupBox.Text = "Report Templates";
             // 
@@ -473,7 +473,7 @@
             Template_Label.BackColor = Color.Transparent;
             Template_Label.Font = new Font("Segoe UI", 9.5F);
             Template_Label.ForeColor = SystemColors.ControlText;
-            Template_Label.Location = new Point(21, 83);
+            Template_Label.Location = new Point(18, 83);
             Template_Label.Margin = new Padding(4, 0, 4, 0);
             Template_Label.Name = "Template_Label";
             Template_Label.Size = new Size(92, 25);
@@ -491,7 +491,7 @@
             Template_ComboBox.Font = new Font("Segoe UI", 9F);
             Template_ComboBox.ForeColor = Color.Black;
             Template_ComboBox.ItemHeight = 44;
-            Template_ComboBox.Location = new Point(130, 67);
+            Template_ComboBox.Location = new Point(127, 70);
             Template_ComboBox.Margin = new Padding(4, 5, 4, 5);
             Template_ComboBox.Name = "Template_ComboBox";
             Template_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
@@ -509,7 +509,6 @@
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportDataSelection_Form";
-            Shown += ReportDataSelection_Form_Shown;
             VisibleChanged += ReportDataSelection_Form_VisibleChanged;
             Resize += ReportDataSelection_Form_Resize;
             RightPanel.ResumeLayout(false);

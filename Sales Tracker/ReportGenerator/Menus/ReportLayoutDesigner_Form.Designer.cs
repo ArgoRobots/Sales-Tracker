@@ -214,7 +214,6 @@
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportLayoutDesigner_Form";
-            Shown += ReportLayoutDesigner_Form_Shown;
             VisibleChanged += ReportLayoutDesigner_Form_VisibleChanged;
             Resize += ReportLayoutDesigner_Form_Resize;
             RightCanvasPanel.ResumeLayout(false);

@@ -75,20 +75,15 @@ namespace Sales_Tracker.ReportGenerator
         private void SetupExportSettings()
         {
             // Setup format combo box
-            ExportFormat_ComboBox.Items.Clear();
             ExportFormat_ComboBox.Items.Add("PNG Image (*.png)");
             ExportFormat_ComboBox.Items.Add("JPEG Image (*.jpg)");
             ExportFormat_ComboBox.SelectedIndex = 0;
 
             // Setup DPI
             DPI_NumericUpDown.Value = _exportSettings.DPI;
-            DPI_NumericUpDown.Minimum = 96;
-            DPI_NumericUpDown.Maximum = 600;
 
             // Setup quality
             Quality_TrackBar.Value = _exportSettings.Quality;
-            Quality_TrackBar.Minimum = 1;
-            Quality_TrackBar.Maximum = 100;
             UpdateQualityLabel();
 
             // Setup checkboxes
@@ -108,13 +103,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form event handlers
-        private void ReportPreviewExport_Form_Shown(object sender, EventArgs e)
-        {
-            if (!_isUpdating)
-            {
-                OnStepActivated();
-            }
-        }
         private void ReportPreviewExport_Form_VisibleChanged(object sender, EventArgs e)
         {
             if (!_isUpdating)

@@ -33,7 +33,7 @@
                 MainMenu_Form.ChartDataType.TotalSales,
                 MainMenu_Form.ChartDataType.DistributionOfSales,
                 MainMenu_Form.ChartDataType.GrowthRates,
-                MainMenu_Form.ChartDataType.AverageOrderValue
+                MainMenu_Form.ChartDataType.AverageTransactionValue
             ]);
 
             AddSalesReportElements(config);
@@ -67,7 +67,7 @@
                 MainMenu_Form.ChartDataType.TotalSales,
                 MainMenu_Form.ChartDataType.TotalPurchases,
                 MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                MainMenu_Form.ChartDataType.TotalProfits
+                MainMenu_Form.ChartDataType.Profits
             ]);
 
             AddFinancialOverviewElements(config);
@@ -99,7 +99,7 @@
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.GrowthRates,
-                MainMenu_Form.ChartDataType.AverageOrderValue,
+                MainMenu_Form.ChartDataType.AverageTransactionValue,
                 MainMenu_Form.ChartDataType.TotalTransactions,
                 MainMenu_Form.ChartDataType.ReturnsOverTime
             ]);
@@ -232,7 +232,7 @@
             config.AddElement(new ReportElement
             {
                 Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.AverageOrderValue,
+                Data = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
                 Bounds = new Rectangle((pageSize.Width / 2) + (margin / 2), headerHeight + margin + availableHeight / 2 + 20, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
                 ZOrder = 4
@@ -271,7 +271,7 @@
             config.AddElement(new ReportElement
             {
                 Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.TotalProfits,
+                Data = MainMenu_Form.ChartDataType.Profits,
                 DisplayName = "Total Profits",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 40, chartWidth, chartHeight),
                 ZOrder = 2
@@ -328,7 +328,7 @@
             config.AddElement(new ReportElement
             {
                 Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.AverageOrderValue,
+                Data = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
                 Bounds = new Rectangle(margin, headerHeight + margin + 100 + (availableHeight - 100) / 3, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
                 ZOrder = 2

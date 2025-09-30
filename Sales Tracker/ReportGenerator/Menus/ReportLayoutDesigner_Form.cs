@@ -123,13 +123,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form event handlers
-        private void ReportLayoutDesigner_Form_Shown(object sender, EventArgs e)
-        {
-            if (!_isUpdating)
-            {
-                OnStepActivated();
-            }
-        }
         private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
         {
             if (!_isUpdating)
@@ -155,7 +148,7 @@ namespace Sales_Tracker.ReportGenerator
             LeftToolsPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
             RightCanvasPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
 
-            // Adjust the position of the right panel
+            // Position the right panel
             RightCanvasPanel.Left = LeftToolsPanel.Width;
         }
 
@@ -580,7 +573,7 @@ namespace Sales_Tracker.ReportGenerator
                 MainMenu_Form.ChartDataType.DistributionOfSales => "Sales Distribution",
                 MainMenu_Form.ChartDataType.TotalExpensesVsSales => "Sales vs Expenses",
                 MainMenu_Form.ChartDataType.GrowthRates => "Growth Rates",
-                MainMenu_Form.ChartDataType.AverageOrderValue => "Average Order Value",
+                MainMenu_Form.ChartDataType.AverageTransactionValue => "Average Order Value",
                 _ => chartType.ToString()
             };
         }

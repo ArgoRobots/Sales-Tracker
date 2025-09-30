@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Theme;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
@@ -183,16 +184,30 @@ namespace Sales_Tracker.ReportGenerator
                 // Get the chart image from the chart data
                 if (element.Data is MainMenu_Form.ChartDataType chartType)
                 {
-                    // This would integrate with the existing LoadChart.SaveChartAsImage() method
-                    Image chartImage = GetChartImage(chartType, element.Bounds.Size);
-                    if (chartImage != null)
+                    // Get chart image from existing charts
+                    Control chartControl = GetChartControlForType(chartType);
+
+                    if (chartControl != null)
                     {
-                        graphics.DrawImage(chartImage, element.Bounds);
-                        chartImage.Dispose();
+                        // Create a bitmap of the chart at its original size
+                        Bitmap originalChart = new(chartControl.Width, chartControl.Height);
+                        chartControl.DrawToBitmap(originalChart, new Rectangle(0, 0, chartControl.Width, chartControl.Height));
+
+                        // Draw the chart scaled to fit the element bounds
+                        graphics.DrawImage(originalChart, element.Bounds);
+
+                        // Clean up
+                        originalChart.Dispose();
+                    }
+                    else
+                    {
+                        // Fallback to placeholder if chart control not found
+                        RenderPlaceholder(graphics, element.Bounds, $"Chart: {chartType}", Color.LightBlue);
                     }
                 }
                 else if (element.Data is Image directImage)
                 {
+                    // Scale the direct image to fit the element bounds
                     graphics.DrawImage(directImage, element.Bounds);
                 }
             }
@@ -309,31 +324,69 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Helper methods
-        private static Bitmap? GetChartImage(MainMenu_Form.ChartDataType chartType, Size size)
+        /// <summary>
+        /// Gets the appropriate chart control for the specified chart type.
+        /// </summary>
+        private static Control? GetChartControlForType(MainMenu_Form.ChartDataType chartType)
         {
-            try
+            MainMenu_Form mainForm = MainMenu_Form.Instance;
+
+            switch (chartType)
             {
-                // This would integrate with the existing chart system
-                // For now, return a placeholder
-                Bitmap bitmap = new(size.Width, size.Height);
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.Clear(Color.White);
-                    using Font font = new("Segoe UI", 12);
-                    using SolidBrush brush = new(Color.Black);
-                    string text = $"Chart: {chartType}";
-                    StringFormat format = new()
-                    {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Center
-                    };
-                    g.DrawString(text, font, brush, new Rectangle(0, 0, size.Width, size.Height), format);
-                }
-                return bitmap;
-            }
-            catch
-            {
-                return null;
+                case MainMenu_Form.ChartDataType.TotalSales:
+                    return mainForm.TotalSales_Chart;
+
+                case MainMenu_Form.ChartDataType.TotalPurchases:
+                    return mainForm.TotalPurchases_Chart;
+
+                case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    return mainForm.DistributionOfSales_Chart;
+
+                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    return mainForm.TotalExpensesVsSales_Chart;
+
+                case MainMenu_Form.ChartDataType.GrowthRates:
+                    return mainForm.GrowthRates_Chart;
+
+                case MainMenu_Form.ChartDataType.AverageTransactionValue:
+                    return mainForm.AverageTransactionValue_Chart;
+
+                case MainMenu_Form.ChartDataType.Profits:
+                    return mainForm.Profits_Chart;
+
+                case MainMenu_Form.ChartDataType.TotalTransactions:
+                    return mainForm.TotalTransactions_Chart;
+
+                case MainMenu_Form.ChartDataType.ReturnsOverTime:
+                    return mainForm.ReturnsOverTime_Chart;
+
+                case MainMenu_Form.ChartDataType.ReturnReasons:
+                    return mainForm.ReturnReasons_Chart;
+
+                case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
+                    return mainForm.ReturnFinancialImpact_Chart;
+
+                case MainMenu_Form.ChartDataType.LossesOverTime:
+                    return mainForm.LossesOverTime_Chart;
+
+                case MainMenu_Form.ChartDataType.LossReasons:
+                    return mainForm.LossReasons_Chart;
+
+                case MainMenu_Form.ChartDataType.WorldMap:
+                    return mainForm.WorldMap_GeoMap;
+
+                case MainMenu_Form.ChartDataType.CountriesOfOrigin:
+                    return mainForm.CountriesOfOrigin_Chart;
+
+                case MainMenu_Form.ChartDataType.CountriesOfDestination:
+                    return mainForm.CountriesOfDestination_Chart;
+
+                case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
+                    return mainForm.CompaniesOfOrigin_Chart;
+
+                default:
+                    Log.Write(0, $"Unknown chart type: {chartType}");
+                    return null;
             }
         }
         private void SaveBitmap(Bitmap bitmap)
@@ -366,8 +419,11 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static ImageCodecInfo GetEncoderInfo(string mimeType)
         {
+            // Find the codec matching the mimeType
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-            return codecs.FirstOrDefault(codec => codec.MimeType == mimeType);
+            ImageCodecInfo? codec = codecs.FirstOrDefault(c => c.MimeType == mimeType);
+
+            return codec ?? throw new ArgumentException($"Encoder for MIME type '{mimeType}' not found.");
         }
     }
 }
