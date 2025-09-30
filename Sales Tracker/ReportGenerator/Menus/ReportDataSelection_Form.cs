@@ -35,6 +35,12 @@ namespace Sales_Tracker.ReportGenerator
         public ReportDataSelection_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
+
+            // This fixes a bug. I have a similar setup on ReportPreviewExport_Form but it doesn't have this issue. I'm not sure why.
+            Filters_GroupBox.Anchor = AnchorStyles.None;
+            Filters_GroupBox.Height = Right_Panel.Height - Right_Panel.Padding.Bottom - Filters_GroupBox.Top;
+            Filters_GroupBox.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+
             ParentReportForm = parentForm;
 
             InitChartSelectionControl();
@@ -127,8 +133,8 @@ namespace Sales_Tracker.ReportGenerator
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
-            _initialLeftPanelWidth = LeftPanel.Width;
-            _initialRightPanelWidth = RightPanel.Width;
+            _initialLeftPanelWidth = Left_Panel.Width;
+            _initialRightPanelWidth = Right_Panel.Width;
         }
 
         // Helper methods
@@ -183,11 +189,11 @@ namespace Sales_Tracker.ReportGenerator
             float widthRatio = (float)Width / _initialFormWidth;
 
             // Calculate new panel widths while maintaining proportion
-            LeftPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
-            RightPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+            Left_Panel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            Right_Panel.Width = (int)(_initialRightPanelWidth * widthRatio);
 
             // Position the right panel
-            RightPanel.Left = LeftPanel.Width;
+            Right_Panel.Left = Left_Panel.Width;
         }
 
         // Event handlers
@@ -289,7 +295,7 @@ namespace Sales_Tracker.ReportGenerator
         // Template application
         private void ApplyTemplate(string templateName)
         {
-            if (string.IsNullOrEmpty(templateName)) return;
+            if (string.IsNullOrEmpty(templateName)) { return; }
 
             // Create a new report configuration from the template
             ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);

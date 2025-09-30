@@ -118,8 +118,8 @@ namespace Sales_Tracker.ReportGenerator
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
-            _initialLeftPanelWidth = LeftToolsPanel.Width;
-            _initialRightPanelWidth = RightCanvasPanel.Width;
+            _initialLeftPanelWidth = LeftTools_Panel.Width;
+            _initialRightPanelWidth = RightCanvas_Panel.Width;
         }
 
         // Form event handlers
@@ -145,11 +145,11 @@ namespace Sales_Tracker.ReportGenerator
             float widthRatio = (float)Width / _initialFormWidth;
 
             // Calculate new panel widths while maintaining proportion
-            LeftToolsPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
-            RightCanvasPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+            LeftTools_Panel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            RightCanvas_Panel.Width = (int)(_initialRightPanelWidth * widthRatio);
 
             // Position the right panel
-            RightCanvasPanel.Left = LeftToolsPanel.Width;
+            RightCanvas_Panel.Left = LeftTools_Panel.Width;
         }
 
         // Canvas event handlers

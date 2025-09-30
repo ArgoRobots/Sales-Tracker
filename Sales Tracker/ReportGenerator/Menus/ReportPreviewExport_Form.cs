@@ -98,8 +98,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             _initialFormWidth = Width;
             _initialFormHeight = Height;
-            _initialLeftPanelWidth = LeftPreviewPanel.Width;
-            _initialRightPanelWidth = RightSettingsPanel.Width;
+            _initialLeftPanelWidth = LeftPreview_Panel.Width;
+            _initialRightPanelWidth = RightSettings_Panel.Width;
         }
 
         // Form event handlers
@@ -125,11 +125,11 @@ namespace Sales_Tracker.ReportGenerator
             float widthRatio = (float)Width / _initialFormWidth;
 
             // Calculate new panel widths while maintaining proportion
-            LeftPreviewPanel.Width = (int)(_initialLeftPanelWidth * widthRatio);
-            RightSettingsPanel.Width = (int)(_initialRightPanelWidth * widthRatio);
+            LeftPreview_Panel.Width = (int)(_initialLeftPanelWidth * widthRatio);
+            RightSettings_Panel.Width = (int)(_initialRightPanelWidth * widthRatio);
 
             // Position the right panel
-            RightSettingsPanel.Left = Width - RightSettingsPanel.Width;
+            RightSettings_Panel.Left = LeftPreview_Panel.Width;
         }
 
         // Event handlers

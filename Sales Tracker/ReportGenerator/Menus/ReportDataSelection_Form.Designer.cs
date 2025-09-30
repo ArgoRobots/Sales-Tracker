@@ -58,7 +58,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            RightPanel = new Guna.UI2.WinForms.Guna2Panel();
+            Right_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Filters_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             IncludeLosses_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             IncludeLosses_Label = new Label();
@@ -74,35 +74,35 @@
             ReportSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             ReportTitle_Label = new Label();
             ReportTitle_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            LeftPanel = new Guna.UI2.WinForms.Guna2Panel();
+            Left_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ChartSelection_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             SelectAll_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectNone_Button = new Guna.UI2.WinForms.Guna2Button();
             Template_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             Template_Label = new Label();
             Template_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            RightPanel.SuspendLayout();
+            Right_Panel.SuspendLayout();
             Filters_GroupBox.SuspendLayout();
             ReportSettings_GroupBox.SuspendLayout();
-            LeftPanel.SuspendLayout();
+            Left_Panel.SuspendLayout();
             ChartSelection_GroupBox.SuspendLayout();
             Template_GroupBox.SuspendLayout();
             SuspendLayout();
             // 
-            // RightPanel
+            // Right_Panel
             // 
-            RightPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            RightPanel.Controls.Add(Filters_GroupBox);
-            RightPanel.Controls.Add(ReportSettings_GroupBox);
-            RightPanel.CustomizableEdges = customizableEdges17;
-            RightPanel.FillColor = Color.Transparent;
-            RightPanel.Location = new Point(900, 0);
-            RightPanel.Margin = new Padding(4, 5, 4, 5);
-            RightPanel.Name = "RightPanel";
-            RightPanel.Padding = new Padding(14, 28, 28, 14);
-            RightPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            RightPanel.Size = new Size(600, 900);
-            RightPanel.TabIndex = 1;
+            Right_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            Right_Panel.Controls.Add(Filters_GroupBox);
+            Right_Panel.Controls.Add(ReportSettings_GroupBox);
+            Right_Panel.CustomizableEdges = customizableEdges17;
+            Right_Panel.FillColor = Color.Transparent;
+            Right_Panel.Location = new Point(900, 0);
+            Right_Panel.Margin = new Padding(4, 5, 4, 5);
+            Right_Panel.Name = "Right_Panel";
+            Right_Panel.Padding = new Padding(14, 28, 28, 14);
+            Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Right_Panel.Size = new Size(600, 900);
+            Right_Panel.TabIndex = 1;
             // 
             // Filters_GroupBox
             // 
@@ -370,20 +370,20 @@
             ReportTitle_TextBox.TabIndex = 1;
             ReportTitle_TextBox.TextChanged += ReportTitle_TextBox_TextChanged;
             // 
-            // LeftPanel
+            // Left_Panel
             // 
-            LeftPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            LeftPanel.Controls.Add(ChartSelection_GroupBox);
-            LeftPanel.Controls.Add(Template_GroupBox);
-            LeftPanel.CustomizableEdges = customizableEdges29;
-            LeftPanel.FillColor = Color.Transparent;
-            LeftPanel.Location = new Point(0, 0);
-            LeftPanel.Margin = new Padding(4, 5, 4, 5);
-            LeftPanel.Name = "LeftPanel";
-            LeftPanel.Padding = new Padding(28, 28, 14, 14);
-            LeftPanel.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            LeftPanel.Size = new Size(900, 900);
-            LeftPanel.TabIndex = 0;
+            Left_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            Left_Panel.Controls.Add(ChartSelection_GroupBox);
+            Left_Panel.Controls.Add(Template_GroupBox);
+            Left_Panel.CustomizableEdges = customizableEdges29;
+            Left_Panel.FillColor = Color.Transparent;
+            Left_Panel.Location = new Point(0, 0);
+            Left_Panel.Margin = new Padding(4, 5, 4, 5);
+            Left_Panel.Name = "Left_Panel";
+            Left_Panel.Padding = new Padding(28, 28, 14, 14);
+            Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            Left_Panel.Size = new Size(900, 900);
+            Left_Panel.TabIndex = 0;
             // 
             // ChartSelection_GroupBox
             // 
@@ -504,19 +504,19 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1500, 900);
-            Controls.Add(RightPanel);
-            Controls.Add(LeftPanel);
+            Controls.Add(Right_Panel);
+            Controls.Add(Left_Panel);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportDataSelection_Form";
             VisibleChanged += ReportDataSelection_Form_VisibleChanged;
             Resize += ReportDataSelection_Form_Resize;
-            RightPanel.ResumeLayout(false);
+            Right_Panel.ResumeLayout(false);
             Filters_GroupBox.ResumeLayout(false);
             Filters_GroupBox.PerformLayout();
             ReportSettings_GroupBox.ResumeLayout(false);
             ReportSettings_GroupBox.PerformLayout();
-            LeftPanel.ResumeLayout(false);
+            Left_Panel.ResumeLayout(false);
             ChartSelection_GroupBox.ResumeLayout(false);
             Template_GroupBox.ResumeLayout(false);
             Template_GroupBox.PerformLayout();
@@ -525,7 +525,7 @@
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2Panel RightPanel;
+        private Guna.UI2.WinForms.Guna2Panel Right_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Filters_GroupBox;
         private Label StartDate_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker StartDate_DateTimePicker;
@@ -536,7 +536,7 @@
         private Guna.UI2.WinForms.Guna2GroupBox ReportSettings_GroupBox;
         private Label ReportTitle_Label;
         private Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;
-        private Guna.UI2.WinForms.Guna2Panel LeftPanel;
+        private Guna.UI2.WinForms.Guna2Panel Left_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox ChartSelection_GroupBox;
         private Guna.UI2.WinForms.Guna2Button SelectAll_Button;
         private Guna.UI2.WinForms.Guna2Button SelectNone_Button;

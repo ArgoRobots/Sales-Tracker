@@ -60,7 +60,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            RightSettingsPanel = new Guna.UI2.WinForms.Guna2Panel();
+            RightSettings_Panel = new Guna.UI2.WinForms.Guna2Panel();
             PageSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             PageSize_Label = new Label();
             PageSize_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -79,36 +79,36 @@
             Quality_Label = new Label();
             Quality_TrackBar = new Guna.UI2.WinForms.Guna2TrackBar();
             Quality_ValueLabel = new Label();
-            LeftPreviewPanel = new Guna.UI2.WinForms.Guna2Panel();
+            LeftPreview_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Preview_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             RefreshPreview_Button = new Guna.UI2.WinForms.Guna2Button();
             Preview_PictureBox = new PictureBox();
             ZoomIn_Button = new Guna.UI2.WinForms.Guna2Button();
             ZoomOut_Button = new Guna.UI2.WinForms.Guna2Button();
             FitToWindow_Button = new Guna.UI2.WinForms.Guna2Button();
-            RightSettingsPanel.SuspendLayout();
+            RightSettings_Panel.SuspendLayout();
             PageSettings_GroupBox.SuspendLayout();
             ExportSettings_GroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DPI_NumericUpDown).BeginInit();
-            LeftPreviewPanel.SuspendLayout();
+            LeftPreview_Panel.SuspendLayout();
             Preview_GroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Preview_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // RightSettingsPanel
             // 
-            RightSettingsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            RightSettingsPanel.Controls.Add(PageSettings_GroupBox);
-            RightSettingsPanel.Controls.Add(ExportSettings_GroupBox);
-            RightSettingsPanel.CustomizableEdges = customizableEdges19;
-            RightSettingsPanel.FillColor = Color.Transparent;
-            RightSettingsPanel.Location = new Point(961, 0);
-            RightSettingsPanel.Margin = new Padding(4, 5, 4, 5);
-            RightSettingsPanel.Name = "RightSettingsPanel";
-            RightSettingsPanel.Padding = new Padding(14, 28, 28, 14);
-            RightSettingsPanel.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            RightSettingsPanel.Size = new Size(540, 900);
-            RightSettingsPanel.TabIndex = 1;
+            RightSettings_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RightSettings_Panel.Controls.Add(PageSettings_GroupBox);
+            RightSettings_Panel.Controls.Add(ExportSettings_GroupBox);
+            RightSettings_Panel.CustomizableEdges = customizableEdges19;
+            RightSettings_Panel.FillColor = Color.Transparent;
+            RightSettings_Panel.Location = new Point(961, 0);
+            RightSettings_Panel.Margin = new Padding(4, 5, 4, 5);
+            RightSettings_Panel.Name = "RightSettingsPanel";
+            RightSettings_Panel.Padding = new Padding(14, 28, 28, 14);
+            RightSettings_Panel.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            RightSettings_Panel.Size = new Size(540, 900);
+            RightSettings_Panel.TabIndex = 1;
             // 
             // PageSettings_GroupBox
             // 
@@ -422,17 +422,17 @@
             // 
             // LeftPreviewPanel
             // 
-            LeftPreviewPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            LeftPreviewPanel.Controls.Add(Preview_GroupBox);
-            LeftPreviewPanel.CustomizableEdges = customizableEdges31;
-            LeftPreviewPanel.FillColor = Color.Transparent;
-            LeftPreviewPanel.Location = new Point(0, 0);
-            LeftPreviewPanel.Margin = new Padding(4, 5, 4, 5);
-            LeftPreviewPanel.Name = "LeftPreviewPanel";
-            LeftPreviewPanel.Padding = new Padding(28, 28, 14, 14);
-            LeftPreviewPanel.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            LeftPreviewPanel.Size = new Size(960, 900);
-            LeftPreviewPanel.TabIndex = 0;
+            LeftPreview_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LeftPreview_Panel.Controls.Add(Preview_GroupBox);
+            LeftPreview_Panel.CustomizableEdges = customizableEdges31;
+            LeftPreview_Panel.FillColor = Color.Transparent;
+            LeftPreview_Panel.Location = new Point(0, 0);
+            LeftPreview_Panel.Margin = new Padding(4, 5, 4, 5);
+            LeftPreview_Panel.Name = "LeftPreviewPanel";
+            LeftPreview_Panel.Padding = new Padding(28, 28, 14, 14);
+            LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            LeftPreview_Panel.Size = new Size(960, 900);
+            LeftPreview_Panel.TabIndex = 0;
             // 
             // Preview_GroupBox
             // 
@@ -556,28 +556,28 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1500, 900);
-            Controls.Add(RightSettingsPanel);
-            Controls.Add(LeftPreviewPanel);
+            Controls.Add(RightSettings_Panel);
+            Controls.Add(LeftPreview_Panel);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportPreviewExport_Form";
             VisibleChanged += ReportPreviewExport_Form_VisibleChanged;
             Resize += ReportPreviewExport_Form_Resize;
-            RightSettingsPanel.ResumeLayout(false);
+            RightSettings_Panel.ResumeLayout(false);
             PageSettings_GroupBox.ResumeLayout(false);
             PageSettings_GroupBox.PerformLayout();
             ExportSettings_GroupBox.ResumeLayout(false);
             ExportSettings_GroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)DPI_NumericUpDown).EndInit();
-            LeftPreviewPanel.ResumeLayout(false);
+            LeftPreview_Panel.ResumeLayout(false);
             Preview_GroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)Preview_PictureBox).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-        private Guna.UI2.WinForms.Guna2Panel LeftPreviewPanel;
-        private Guna.UI2.WinForms.Guna2Panel RightSettingsPanel;
+        private Guna.UI2.WinForms.Guna2Panel LeftPreview_Panel;
+        private Guna.UI2.WinForms.Guna2Panel RightSettings_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Preview_GroupBox;
         private System.Windows.Forms.PictureBox Preview_PictureBox;
         private Guna.UI2.WinForms.Guna2Button RefreshPreview_Button;

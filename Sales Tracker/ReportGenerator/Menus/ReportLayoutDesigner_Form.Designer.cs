@@ -38,36 +38,36 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            RightCanvasPanel = new Guna.UI2.WinForms.Guna2Panel();
+            RightCanvas_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Canvas_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             Canvas_Panel = new Panel();
-            LeftToolsPanel = new Guna.UI2.WinForms.Guna2Panel();
+            LeftTools_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Properties_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             ElementProperties_Label = new Label();
             PropertiesContainer_Panel = new Panel();
             Tools_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             ElementsTitle_Label = new Label();
             ToolsContainer_Panel = new Panel();
-            RightCanvasPanel.SuspendLayout();
+            RightCanvas_Panel.SuspendLayout();
             Canvas_GroupBox.SuspendLayout();
-            LeftToolsPanel.SuspendLayout();
+            LeftTools_Panel.SuspendLayout();
             Properties_GroupBox.SuspendLayout();
             Tools_GroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // RightCanvasPanel
             // 
-            RightCanvasPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            RightCanvasPanel.Controls.Add(Canvas_GroupBox);
-            RightCanvasPanel.CustomizableEdges = customizableEdges3;
-            RightCanvasPanel.FillColor = Color.Transparent;
-            RightCanvasPanel.Location = new Point(380, 0);
-            RightCanvasPanel.Margin = new Padding(4, 5, 4, 5);
-            RightCanvasPanel.Name = "RightCanvasPanel";
-            RightCanvasPanel.Padding = new Padding(14, 28, 28, 14);
-            RightCanvasPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            RightCanvasPanel.Size = new Size(1120, 900);
-            RightCanvasPanel.TabIndex = 1;
+            RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RightCanvas_Panel.Controls.Add(Canvas_GroupBox);
+            RightCanvas_Panel.CustomizableEdges = customizableEdges3;
+            RightCanvas_Panel.FillColor = Color.Transparent;
+            RightCanvas_Panel.Location = new Point(380, 0);
+            RightCanvas_Panel.Margin = new Padding(4, 5, 4, 5);
+            RightCanvas_Panel.Name = "RightCanvasPanel";
+            RightCanvas_Panel.Padding = new Padding(14, 28, 28, 14);
+            RightCanvas_Panel.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            RightCanvas_Panel.Size = new Size(1120, 900);
+            RightCanvas_Panel.TabIndex = 1;
             // 
             // Canvas_GroupBox
             // 
@@ -102,18 +102,18 @@
             // 
             // LeftToolsPanel
             // 
-            LeftToolsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            LeftToolsPanel.Controls.Add(Properties_GroupBox);
-            LeftToolsPanel.Controls.Add(Tools_GroupBox);
-            LeftToolsPanel.CustomizableEdges = customizableEdges9;
-            LeftToolsPanel.FillColor = Color.Transparent;
-            LeftToolsPanel.Location = new Point(0, 0);
-            LeftToolsPanel.Margin = new Padding(4, 5, 4, 5);
-            LeftToolsPanel.Name = "LeftToolsPanel";
-            LeftToolsPanel.Padding = new Padding(28, 28, 14, 14);
-            LeftToolsPanel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            LeftToolsPanel.Size = new Size(380, 900);
-            LeftToolsPanel.TabIndex = 0;
+            LeftTools_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LeftTools_Panel.Controls.Add(Properties_GroupBox);
+            LeftTools_Panel.Controls.Add(Tools_GroupBox);
+            LeftTools_Panel.CustomizableEdges = customizableEdges9;
+            LeftTools_Panel.FillColor = Color.Transparent;
+            LeftTools_Panel.Location = new Point(0, 0);
+            LeftTools_Panel.Margin = new Padding(4, 5, 4, 5);
+            LeftTools_Panel.Name = "LeftToolsPanel";
+            LeftTools_Panel.Padding = new Padding(28, 28, 14, 14);
+            LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            LeftTools_Panel.Size = new Size(380, 900);
+            LeftTools_Panel.TabIndex = 0;
             // 
             // Properties_GroupBox
             // 
@@ -209,16 +209,16 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1500, 900);
-            Controls.Add(LeftToolsPanel);
-            Controls.Add(RightCanvasPanel);
+            Controls.Add(LeftTools_Panel);
+            Controls.Add(RightCanvas_Panel);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportLayoutDesigner_Form";
             VisibleChanged += ReportLayoutDesigner_Form_VisibleChanged;
             Resize += ReportLayoutDesigner_Form_Resize;
-            RightCanvasPanel.ResumeLayout(false);
+            RightCanvas_Panel.ResumeLayout(false);
             Canvas_GroupBox.ResumeLayout(false);
-            LeftToolsPanel.ResumeLayout(false);
+            LeftTools_Panel.ResumeLayout(false);
             Properties_GroupBox.ResumeLayout(false);
             Properties_GroupBox.PerformLayout();
             Tools_GroupBox.ResumeLayout(false);
@@ -227,8 +227,8 @@
         }
 
         #endregion
-        private Guna.UI2.WinForms.Guna2Panel LeftToolsPanel;
-        private Guna.UI2.WinForms.Guna2Panel RightCanvasPanel;
+        private Guna.UI2.WinForms.Guna2Panel LeftTools_Panel;
+        private Guna.UI2.WinForms.Guna2Panel RightCanvas_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Tools_GroupBox;
         private System.Windows.Forms.Panel ToolsContainer_Panel;
         private System.Windows.Forms.Label ElementsTitle_Label;
