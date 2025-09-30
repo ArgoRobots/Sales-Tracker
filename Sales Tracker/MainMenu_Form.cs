@@ -2604,13 +2604,13 @@ namespace Sales_Tracker
                     GeoMapDataType dataType = GetSelectedGeoMapDataType();
                     LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
 
-                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
+                    LoadChart.LoadCountriesOfOriginChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
 
-                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
+                    LoadChart.LoadCountriesOfDestinationChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfDestination_Chart, TranslatedChartTitles.CountriesOfDestination);
 
-                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
+                    LoadChart.LoadCompaniesOfOriginChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
                     SetChartTitle(CompaniesOfOrigin_Chart, TranslatedChartTitles.CompaniesOfOrigin);
                     break;
 

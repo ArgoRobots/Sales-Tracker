@@ -118,15 +118,15 @@ namespace Sales_Tracker.Charts
                     break;
 
                 case MainMenu_Form.ChartDataType.CountriesOfOrigin:
-                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCountriesOfOriginChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
-                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCompaniesOfOriginChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.CountriesOfDestination:
-                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCountriesOfDestinationChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.Accountants:
@@ -278,7 +278,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfOrigin:
                         {
-                            ChartData chartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCountriesOfOriginChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");
@@ -289,7 +289,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
                         {
-                            ChartData chartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCompaniesOfOriginChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                             string first = LanguageManager.TranslateString("Companies");
                             string second = LanguageManager.TranslateString("# of items");
@@ -300,7 +300,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfDestination:
                         {
-                            ChartData chartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCountriesOfDestinationChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");

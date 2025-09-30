@@ -712,7 +712,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Statistics charts
-        public static ChartData LoadCountriesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfOriginChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
@@ -781,7 +781,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCompaniesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCompaniesOfOriginChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
@@ -850,7 +850,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(companyCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCountriesOfDestinationForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfDestinationChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
