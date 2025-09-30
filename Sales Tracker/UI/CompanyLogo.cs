@@ -122,7 +122,8 @@ namespace Sales_Tracker.UI
             {
                 try
                 {
-                    _companyLogo.Image = Image.FromFile(logoPath);
+                    using MemoryStream ms = new(File.ReadAllBytes(logoPath));
+                    _companyLogo.Image = Image.FromStream(ms);
                 }
                 catch (Exception ex)
                 {
@@ -168,10 +169,26 @@ namespace Sales_Tracker.UI
         private static string GetCompanyInitials(string companyName)
         {
             string[] words = companyName.Split([' ', '.', '-'], StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length == 0) { return "AC"; }  // Default initials if name is empty "Argo Company"
-            if (words.Length == 1) { return char.ToUpperInvariant(words[0][0]).ToString(); }
 
-            return char.ToUpperInvariant(words[0][0]).ToString() + char.ToUpperInvariant(words[1][0]).ToString();
+            if (words.Length == 0) { return "AC"; }  // Default initials if name is empty
+
+            // Find first alphanumeric character in first word
+            char? firstInitial = words[0].FirstOrDefault(char.IsLetterOrDigit);
+
+            if (words.Length == 1)
+            {
+                return firstInitial.HasValue ? char.ToUpperInvariant(firstInitial.Value).ToString() : "AC";
+            }
+
+            // Find first alphanumeric character in second word
+            char? secondInitial = words[1].FirstOrDefault(char.IsLetterOrDigit);
+
+            // Build result with only valid alphanumeric characters
+            string result = "";
+            if (firstInitial.HasValue) { result += char.ToUpperInvariant(firstInitial.Value); }
+            if (secondInitial.HasValue) { result += char.ToUpperInvariant(secondInitial.Value); }
+
+            return !string.IsNullOrEmpty(result) ? result : "AC";
         }
         private static void CompanyLogo_MouseEnter(object sender, EventArgs e)
         {
@@ -309,13 +326,6 @@ namespace Sales_Tracker.UI
 
             try
             {
-                // Dispose current image first to release file lock
-                if (_companyLogo?.Image != null)
-                {
-                    _companyLogo.Image.Dispose();
-                    _companyLogo.Image = null;
-                }
-
                 // Copy the logo file to application data directory
                 string logoFileName = $"company_logo{Path.GetExtension(dialog.FileName)}";
                 string logoDestinationPath = Path.Combine(Directories.TempCompany_dir, logoFileName);
