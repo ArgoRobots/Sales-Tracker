@@ -133,11 +133,6 @@
         public string Description { get; set; }
 
         /// <summary>
-        /// Creation timestamp.
-        /// </summary>
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-        /// <summary>
         /// Last modified timestamp.
         /// </summary>
         public DateTime LastModified { get; set; } = DateTime.Now;
@@ -202,14 +197,6 @@
             }
             return false;
         }
-
-        /// <summary>
-        /// Gets an element by its ID
-        /// </summary>
-        public ReportElement GetElement(string elementId)
-        {
-            return Elements.FirstOrDefault(e => e.Id == elementId);
-        }
     }
 
     /// <summary>
@@ -238,11 +225,6 @@
         public List<MainMenu_Form.ChartDataType> SelectedChartTypes { get; set; } = [];
 
         /// <summary>
-        /// Selected columns for transaction tables.
-        /// </summary>
-        public List<string> SelectedColumns { get; set; } = [];
-
-        /// <summary>
         /// Whether to include returned items.
         /// </summary>
         public bool IncludeReturns { get; set; } = true;
@@ -251,47 +233,6 @@
         /// Whether to include lost items.
         /// </summary>
         public bool IncludeLosses { get; set; } = true;
-
-        /// <summary>
-        /// Company filter.
-        /// </summary>
-        public string SelectedCompany { get; set; }
-
-        /// <summary>
-        /// Category filter.
-        /// </summary>
-        public string SelectedCategory { get; set; }
-
-        /// <summary>
-        /// Accountant filter.
-        /// </summary>
-        public string SelectedAccountant { get; set; }
-
-        /// <summary>
-        /// Maximum number of records to include.
-        /// </summary>
-        public int? MaxRecords { get; set; }
-
-        /// <summary>
-        /// Creates a copy of the filters.
-        /// </summary>
-        public ReportFilters Clone()
-        {
-            return new ReportFilters
-            {
-                StartDate = StartDate,
-                EndDate = EndDate,
-                TransactionType = TransactionType,
-                SelectedChartTypes = [.. SelectedChartTypes],
-                SelectedColumns = [.. SelectedColumns],
-                IncludeReturns = IncludeReturns,
-                IncludeLosses = IncludeLosses,
-                SelectedCompany = SelectedCompany,
-                SelectedCategory = SelectedCategory,
-                SelectedAccountant = SelectedAccountant,
-                MaxRecords = MaxRecords
-            };
-        }
     }
 
     /// <summary>
