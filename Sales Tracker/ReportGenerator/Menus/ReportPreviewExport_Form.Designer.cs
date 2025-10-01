@@ -240,7 +240,6 @@
             OpenAfterExport_CheckBox.UncheckedState.BorderThickness = 0;
             OpenAfterExport_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
             OpenAfterExport_CheckBox.CheckedChanged += ExportSettings_Changed;
-            OpenAfterExport_CheckBox.Click += OpenAfterExport_Label_Click;
             // 
             // OpenAfterExport_Label
             // 
@@ -559,7 +558,7 @@
         private System.Windows.Forms.Label Quality_Label;
         private System.Windows.Forms.Label Quality_ValueLabel;
         private Guna.UI2.WinForms.Guna2TrackBar Quality_TrackBar;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox OpenAfterExport_CheckBox;
         private Label OpenAfterExport_Label;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox OpenAfterExport_CheckBox;
     }
 }

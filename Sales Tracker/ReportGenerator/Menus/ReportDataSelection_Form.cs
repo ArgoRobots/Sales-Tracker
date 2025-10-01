@@ -11,6 +11,7 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportDataSelection_Form : Form
     {
         // Properties
+        private static ReportDataSelection_Form _instance;
         private int _initialFormWidth;
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
@@ -31,17 +32,20 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private bool _isUpdating;
 
+        // Getters
+        public static ReportDataSelection_Form Instance => _instance;
+
         // Init.
         public ReportDataSelection_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
+            _instance = this;
+            ParentReportForm = parentForm;
 
             // This fixes a bug. I have a similar setup on ReportPreviewExport_Form but it doesn't have this issue. I'm not sure why.
             Filters_GroupBox.Anchor = AnchorStyles.None;
             Filters_GroupBox.Height = Right_Panel.Height - Right_Panel.Padding.Bottom - Filters_GroupBox.Top;
             Filters_GroupBox.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            ParentReportForm = parentForm;
 
             InitChartSelectionControl();
             SetupChartSelection();

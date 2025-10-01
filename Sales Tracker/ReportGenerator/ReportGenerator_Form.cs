@@ -71,6 +71,10 @@ namespace Sales_Tracker.ReportGenerator
         {
             ThemeManager.SetThemeForForm(this);
 
+            ReportDataSelection_Form.Instance.IncludeReturns_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
+            ReportDataSelection_Form.Instance.IncludeLosses_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
+            ReportPreviewExport_Form.Instance.OpenAfterExport_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
+
             ThemeManager.MakeGButtonBluePrimary(Previous_Button);
             ThemeManager.MakeGButtonBluePrimary(Next_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
@@ -130,7 +134,7 @@ namespace Sales_Tracker.ReportGenerator
 
             if (_currentStep == _totalSteps - 1)
             {
-                Next_Button.Text = LanguageManager.TranslateString("Finish");
+                Next_Button.Text = LanguageManager.TranslateString("Export");
                 Next_Button.Enabled = canProceed;
             }
             else
@@ -224,7 +228,6 @@ namespace Sales_Tracker.ReportGenerator
                 if (exportSuccess)
                 {
                     DialogResult = DialogResult.OK;
-                    Close();
                 }
             }
             catch (Exception ex)

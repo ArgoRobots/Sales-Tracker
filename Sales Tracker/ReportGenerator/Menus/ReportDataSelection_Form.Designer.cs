@@ -544,9 +544,9 @@
         private Label Template_Label;
         private Guna.UI2.WinForms.Guna2ComboBox Template_ComboBox;
         private Label DateRange_Label;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeLosses_CheckBox;
         private Label IncludeLosses_Label;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeReturns_CheckBox;
         private Label IncludeReturns_Label;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox IncludeLosses_CheckBox;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox IncludeReturns_CheckBox;
     }
 }

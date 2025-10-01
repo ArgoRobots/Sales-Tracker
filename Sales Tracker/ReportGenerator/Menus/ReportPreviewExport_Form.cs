@@ -8,7 +8,8 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public partial class ReportPreviewExport_Form : Form
     {
-        // Properties  private int _initialFormWidth;
+        // Properties
+        private static ReportPreviewExport_Form _instance;
         private int _initialFormWidth;
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
@@ -33,10 +34,14 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private bool _isUpdating;
 
+        // Getters
+        public static ReportPreviewExport_Form Instance => _instance;
+
         // Init.
         public ReportPreviewExport_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
+            _instance = this;
             ParentReportForm = parentForm;
 
             InitializeExportSettings();
@@ -47,13 +52,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void InitializeExportSettings()
         {
-            _exportSettings = new ExportSettings
-            {
-                Format = ExportFormat.PNG,
-                DPI = 200,      // Will be overridden by quality slider
-                Quality = 75,   // Default to 75% (good balance)
-                OpenAfterExport = true
-            };
+            _exportSettings = new ExportSettings();
         }
         private void SetupPageSettings()
         {
@@ -81,10 +80,6 @@ namespace Sales_Tracker.ReportGenerator
             // Setup quality slider (controls both resolution and compression)
             Quality_TrackBar.Value = _exportSettings.Quality;
             UpdateQualityLabel();
-
-            // Hide DPI controls (or remove from designer)
-            DPI_Label.Visible = false;
-            DPI_NumericUpDown.Visible = false;
 
             // Setup checkboxes
             OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
