@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.ReportGenerator.Elements;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -157,6 +158,8 @@ namespace Sales_Tracker.ReportGenerator
                 Directory.CreateDirectory(directory);
             }
 
+            string fileName = Directories.GetNewFileNameIfItAlreadyExists(_exportSettings.FilePath);
+
             ImageFormat format = _exportSettings.Format switch
             {
                 ExportFormat.PNG => ImageFormat.Png,
@@ -170,11 +173,11 @@ namespace Sales_Tracker.ReportGenerator
                 EncoderParameters encoderParams = new(1);
                 encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, _exportSettings.Quality);
                 ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
-                bitmap.Save(_exportSettings.FilePath, jpegCodec, encoderParams);
+                bitmap.Save(fileName, jpegCodec, encoderParams);
             }
             else
             {
-                bitmap.Save(_exportSettings.FilePath, format);
+                bitmap.Save(fileName, format);
             }
         }
         private static ImageCodecInfo GetEncoderInfo(string mimeType)

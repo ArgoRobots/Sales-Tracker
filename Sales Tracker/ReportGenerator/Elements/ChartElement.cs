@@ -232,7 +232,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private Bitmap GeneratePieChartImage(PieChart sourceChart)
         {
-            var skChart = new SKPieChart
+            SKPieChart skChart = new()
             {
                 Width = Bounds.Width,
                 Height = Bounds.Height,
