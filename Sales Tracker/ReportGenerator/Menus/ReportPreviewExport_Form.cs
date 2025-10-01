@@ -373,13 +373,19 @@ namespace Sales_Tracker.ReportGenerator
         {
             return quality switch
             {
-                <= 25 => 96,    // Low quality - screen resolution
-                <= 50 => 150,   // Medium quality - basic print
-                <= 75 => 200,   // High quality - good print
-                _ => 300        // Very high quality - professional print
+                <= 10 => 72,   // Very low
+                <= 20 => 96,   // Low
+                <= 30 => 120,  // Low-medium
+                <= 40 => 150,  // Medium
+                <= 50 => 180,  // Medium-high
+                <= 60 => 200,  // High
+                <= 70 => 250,  // High quality print
+                <= 80 => 300,  // Professional print
+                <= 90 => 400,  // Very high quality
+                <= 95 => 500,  // Exceptional quality
+                _ => 600       // Maximum quality
             };
         }
-
         private void UpdateReportConfigFromPageSettings()
         {
             if (ReportConfig == null) { return; }
