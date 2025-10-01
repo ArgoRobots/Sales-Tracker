@@ -1498,7 +1498,7 @@ namespace Sales_Tracker
                 Text = text,
                 ForeColor = CustomColors.Text,
                 BackColor = CustomColors.ControlBack,
-                Font = new Font("Segoe UI", 9F), 
+                Font = new Font("Segoe UI", 9), 
                 MaxLength = maxLength,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,

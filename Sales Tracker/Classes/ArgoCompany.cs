@@ -311,6 +311,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.ReloadCurrentAnalyticTab();
             DataGridViewManager.UpdateRowColors(MainMenu_Form.Instance.SelectedDataGridView);
             DateRange_Form.Instance.ResetControls();
+            CompanyLogo.SetCompanyLogo();
 
             Tools.CloseAllOpenForms();
 
