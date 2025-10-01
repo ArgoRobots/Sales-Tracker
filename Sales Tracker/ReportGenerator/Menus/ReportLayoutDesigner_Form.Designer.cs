@@ -55,7 +55,7 @@
             Tools_GroupBox.SuspendLayout();
             SuspendLayout();
             // 
-            // RightCanvasPanel
+            // RightCanvas_Panel
             // 
             RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RightCanvas_Panel.Controls.Add(Canvas_GroupBox);
@@ -63,7 +63,7 @@
             RightCanvas_Panel.FillColor = Color.Transparent;
             RightCanvas_Panel.Location = new Point(380, 0);
             RightCanvas_Panel.Margin = new Padding(4, 5, 4, 5);
-            RightCanvas_Panel.Name = "RightCanvasPanel";
+            RightCanvas_Panel.Name = "RightCanvas_Panel";
             RightCanvas_Panel.Padding = new Padding(14, 28, 28, 14);
             RightCanvas_Panel.ShadowDecoration.CustomizableEdges = customizableEdges4;
             RightCanvas_Panel.Size = new Size(1120, 900);
@@ -100,7 +100,7 @@
             Canvas_Panel.Size = new Size(1034, 749);
             Canvas_Panel.TabIndex = 0;
             // 
-            // LeftToolsPanel
+            // LeftTools_Panel
             // 
             LeftTools_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftTools_Panel.Controls.Add(Properties_GroupBox);
@@ -109,7 +109,7 @@
             LeftTools_Panel.FillColor = Color.Transparent;
             LeftTools_Panel.Location = new Point(0, 0);
             LeftTools_Panel.Margin = new Padding(4, 5, 4, 5);
-            LeftTools_Panel.Name = "LeftToolsPanel";
+            LeftTools_Panel.Name = "LeftTools_Panel";
             LeftTools_Panel.Padding = new Padding(28, 28, 14, 14);
             LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
             LeftTools_Panel.Size = new Size(380, 900);
@@ -152,6 +152,7 @@
             // PropertiesContainer_Panel
             // 
             PropertiesContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            PropertiesContainer_Panel.AutoScroll = true;
             PropertiesContainer_Panel.BackColor = Color.Transparent;
             PropertiesContainer_Panel.Location = new Point(14, 87);
             PropertiesContainer_Panel.Margin = new Padding(4, 5, 4, 5);

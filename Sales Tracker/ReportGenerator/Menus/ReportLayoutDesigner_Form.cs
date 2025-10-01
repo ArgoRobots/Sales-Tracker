@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Theme;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -18,6 +19,11 @@ namespace Sales_Tracker.ReportGenerator
         private bool _isResizing = false;
         private ResizeHandle _activeResizeHandle;
         private Rectangle _originalBounds;
+        private Rectangle _lastElementBounds;
+        private bool _deferPropertyUpdate = false;
+        private Timer _propertyUpdateTimer;
+        private Bitmap _gridCache = null;
+        private Size _lastCanvasSize = Size.Empty;
 
         // Property controls
         private readonly Dictionary<string, Control> _propertyControls = [];
@@ -57,6 +63,13 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupCanvas()
         {
+            // Enable double buffering for smooth rendering
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.SetProperty |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null, Canvas_Panel, [true]);
+
             // Configure canvas panel for drag-and-drop
             Canvas_Panel.AllowDrop = true;
             Canvas_Panel.DragEnter += Canvas_Panel_DragEnter;
@@ -68,6 +81,20 @@ namespace Sales_Tracker.ReportGenerator
 
             // Set canvas backgrounds
             Canvas_Panel.BackColor = Color.White;
+
+            // Initialize property update timer
+            _propertyUpdateTimer = new Timer
+            {
+                Interval = 100  // 100ms delay
+            };
+            _propertyUpdateTimer.Tick += (s, e) =>
+            {
+                _propertyUpdateTimer.Stop();
+                if (!_deferPropertyUpdate)
+                {
+                    UpdatePropertiesPanel();
+                }
+            };
         }
         private void SetupToolsPanel()
         {
@@ -197,7 +224,9 @@ namespace Sales_Tracker.ReportGenerator
                         _isResizing = true;
                         _activeResizeHandle = handle;
                         _originalBounds = _selectedElement.Bounds;
+                        _lastElementBounds = _selectedElement.Bounds;
                         _dragStartPoint = e.Location;
+                        _deferPropertyUpdate = true;  // Defer updates during resize
                         return;
                     }
                 }
@@ -209,6 +238,8 @@ namespace Sales_Tracker.ReportGenerator
                     SelectElement(clickedElement);
                     _isDragging = true;
                     _dragStartPoint = e.Location;
+                    _lastElementBounds = clickedElement.Bounds;
+                    _deferPropertyUpdate = true;  // Defer updates during drag
                 }
                 else
                 {
@@ -224,7 +255,11 @@ namespace Sales_Tracker.ReportGenerator
                 if (!_isResizing && !_isDragging)
                 {
                     ResizeHandle handle = GetResizeHandleAt(e.Location);
-                    Canvas_Panel.Cursor = GetCursorForHandle(handle);
+                    Cursor newCursor = GetCursorForHandle(handle);
+                    if (Canvas_Panel.Cursor != newCursor)
+                    {
+                        Canvas_Panel.Cursor = newCursor;
+                    }
                 }
 
                 // Handle resizing
@@ -232,7 +267,6 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     ResizeElement(e.Location);
                 }
-
                 // Handle dragging
                 else if (_isDragging)
                 {
@@ -248,32 +282,87 @@ namespace Sales_Tracker.ReportGenerator
                     if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
                         newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
                     {
+                        // Invalidate only the affected regions
+                        InvalidateElementRegion(_selectedElement.Bounds);
                         _selectedElement.Bounds = newBounds;
+                        InvalidateElementRegion(newBounds);
+
                         _dragStartPoint = e.Location;
-                        Canvas_Panel.Invalidate();
-                        UpdatePropertiesPanel();
+
+                        // Defer property panel update
+                        _propertyUpdateTimer.Stop();
+                        _propertyUpdateTimer.Start();
                     }
                 }
             }
         }
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
+            bool wasInteracting = _isDragging || _isResizing;
+
             _isDragging = false;
             _isResizing = false;
             _activeResizeHandle = ResizeHandle.None;
             Canvas_Panel.Cursor = Cursors.Default;
+            _deferPropertyUpdate = false;
+
+            // Update properties panel once at the end
+            if (wasInteracting && _selectedElement != null)
+            {
+                _propertyUpdateTimer.Stop();
+                UpdatePropertiesPanel();
+                NotifyParentValidationChanged(); // Only notify once at the end
+            }
         }
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
-            DrawGrid(e.Graphics);
-            DrawElements(e.Graphics);
+            // Use clipping region for better performance
+            e.Graphics.SetClip(e.ClipRectangle);
+
+            // Draw cached grid if size hasn't changed
+            if (_gridCache == null || _lastCanvasSize != Canvas_Panel.Size)
+            {
+                CreateGridCache();
+                _lastCanvasSize = Canvas_Panel.Size;
+            }
+
+            if (_gridCache != null)
+            {
+                e.Graphics.DrawImage(_gridCache, 0, 0);
+            }
+
+            // Draw only visible elements
+            Rectangle clipRect = e.ClipRectangle;
+            DrawVisibleElements(e.Graphics, clipRect);
             DrawSelection(e.Graphics);
+        }
+        private void DrawVisibleElements(Graphics g, Rectangle clipRect)
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (ReportElement element in ReportConfig.Elements.Where(e => e.IsVisible))
+            {
+                // Only draw elements that intersect with the clip rectangle
+                if (clipRect.IntersectsWith(element.Bounds))
+                {
+                    DrawElement(g, element);
+                }
+            }
+        }
+        private void CreateGridCache()
+        {
+            _gridCache?.Dispose();
+            _gridCache = new Bitmap(Canvas_Panel.Width, Canvas_Panel.Height);
+
+            using Graphics g = Graphics.FromImage(_gridCache);
+            g.Clear(Canvas_Panel.BackColor);
+            DrawGrid(g);
         }
 
         // Resize handling methods
         private ResizeHandle GetResizeHandleAt(Point point)
         {
-            if (_selectedElement == null) return ResizeHandle.None;
+            if (_selectedElement == null) { return ResizeHandle.None; }
 
             const int handleSize = 8;
             Rectangle bounds = _selectedElement.Bounds;
@@ -329,7 +418,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ResizeElement(Point currentPoint)
         {
-            if (_selectedElement == null) return;
+            if (_selectedElement == null) { return; }
 
             int deltaX = currentPoint.X - _dragStartPoint.X;
             int deltaY = currentPoint.Y - _dragStartPoint.Y;
@@ -376,9 +465,17 @@ namespace Sales_Tracker.ReportGenerator
             // Ensure minimum size
             if (newBounds.Width >= 50 && newBounds.Height >= 30)
             {
+                // Invalidate only the affected regions
+                Rectangle unionRect = Rectangle.Union(_lastElementBounds, newBounds);
+                unionRect.Inflate(10, 10);  // Add padding for resize handles
+                Canvas_Panel.Invalidate(unionRect);
+
                 _selectedElement.Bounds = newBounds;
-                Canvas_Panel.Invalidate();
-                UpdatePropertiesPanel();
+                _lastElementBounds = newBounds;
+
+                // Defer property update
+                _propertyUpdateTimer.Stop();
+                _propertyUpdateTimer.Start();
             }
         }
 
@@ -399,15 +496,6 @@ namespace Sales_Tracker.ReportGenerator
             for (int y = 0; y < Canvas_Panel.Height; y += gridSize)
             {
                 g.DrawLine(pen, 0, y, Canvas_Panel.Width, y);
-            }
-        }
-        private void DrawElements(Graphics g)
-        {
-            if (ReportConfig?.Elements == null) { return; }
-
-            foreach (ReportElement? element in ReportConfig.Elements.Where(e => e.IsVisible))
-            {
-                DrawElement(g, element);
             }
         }
         private static void DrawElement(Graphics g, ReportElement element)
@@ -591,27 +679,53 @@ namespace Sales_Tracker.ReportGenerator
 
             return null;
         }
+        private void InvalidateElementRegion(Rectangle bounds)
+        {
+            // Inflate the bounds slightly to include borders and handles
+            Rectangle invalidateRect = bounds;
+            invalidateRect.Inflate(10, 10);
+            Canvas_Panel.Invalidate(invalidateRect);
+        }
         private void SelectElement(ReportElement element)
         {
+            if (_selectedElement == element) { return; }  // Already selected
+
+            Rectangle? oldSelectionBounds = null;
             if (_selectedElement != null)
             {
                 _selectedElement.IsSelected = false;
+                oldSelectionBounds = _selectedElement.Bounds;
             }
 
             _selectedElement = element;
             element.IsSelected = true;
 
-            Canvas_Panel.Invalidate();
-            UpdatePropertiesPanel();
+            // Invalidate only the selection regions
+            if (oldSelectionBounds.HasValue)
+            {
+                InvalidateElementRegion(oldSelectionBounds.Value);
+            }
+            InvalidateElementRegion(element.Bounds);
+
+            if (!_deferPropertyUpdate)
+            {
+                UpdatePropertiesPanel();
+            }
         }
         private void ClearSelection()
         {
             if (_selectedElement != null)
             {
+                Rectangle oldBounds = _selectedElement.Bounds;
                 _selectedElement.IsSelected = false;
                 _selectedElement = null;
-                Canvas_Panel.Invalidate();
-                UpdatePropertiesPanel();
+
+                InvalidateElementRegion(oldBounds);
+
+                if (!_deferPropertyUpdate)
+                {
+                    UpdatePropertiesPanel();
+                }
             }
         }
         private void UpdatePropertiesPanel()
@@ -942,7 +1056,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void UpdateFontStyle(ReportElement element)
         {
-            if (_isUpdating) return;
+            if (_isUpdating) { return; }
 
             FontStyle style = FontStyle.Regular;
             if (_propertyControls.ContainsKey("Bold") && ((CheckBox)_propertyControls["Bold"]).Checked)
@@ -1019,7 +1133,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void BringElementToFront(ReportElement element)
         {
-            if (ReportConfig?.Elements == null) return;
+            if (ReportConfig?.Elements == null) { return; }
 
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
             element.ZOrder = maxZOrder + 1;
@@ -1027,7 +1141,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SendElementToBack(ReportElement element)
         {
-            if (ReportConfig?.Elements == null) return;
+            if (ReportConfig?.Elements == null) { return; }
 
             // Shift all other elements up by 1
             foreach (var e in ReportConfig.Elements.Where(e => e != element))
