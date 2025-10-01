@@ -197,19 +197,20 @@ namespace Sales_Tracker.ReportGenerator
         // Canvas event handlers
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.Text))
+            if (e.Data.GetDataPresent(typeof(ReportElementType)))
             {
                 e.Effect = DragDropEffects.Copy;
             }
         }
         private void Canvas_Panel_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.Text))
+            if (e.Data.GetDataPresent(typeof(ReportElementType)))
             {
-                string elementType = (string)e.Data.GetData(DataFormats.Text);
-                Point dropLocation = Canvas_Panel.PointToClient(new Point(e.X, e.Y));
-
-                CreateElementAtLocation(elementType, dropLocation);
+                if (e.Data.GetData(typeof(ReportElementType)) is ReportElementType elementType)
+                {
+                    Point dropLocation = Canvas_Panel.PointToClient(new Point(e.X, e.Y));
+                    CreateElementAtLocation(elementType, dropLocation);
+                }
             }
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
@@ -521,7 +522,7 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Element management
-        private void CreateElementAtLocation(string elementType, Point location)
+        private void CreateElementAtLocation(ReportElementType elementType, Point location)
         {
             BaseElement element = CreateElementByType(elementType, location);
             if (element != null)
@@ -531,33 +532,33 @@ namespace Sales_Tracker.ReportGenerator
                 NotifyParentValidationChanged();
             }
         }
-        private BaseElement? CreateElementByType(string elementType, Point location)
+        private BaseElement? CreateElementByType(ReportElementType elementType, Point location)
         {
-            return elementType.ToLower() switch
+            return elementType switch
             {
-                "chart" => new ChartElement
+                ReportElementType.Chart => new ChartElement
                 {
                     DisplayName = "Chart",
                     Bounds = new Rectangle(location, new Size(350, 250)),
                     ChartType = GetDefaultChartType()
                 },
-                "text" => new TextLabelElement
+                ReportElementType.TextLabel => new TextLabelElement
                 {
                     DisplayName = "Text Label",
                     Bounds = new Rectangle(location, new Size(200, 30)),
                     Text = "Sample Text"
                 },
-                "daterange" => new DateRangeElement
+                ReportElementType.DateRange => new DateRangeElement
                 {
                     DisplayName = "Date Range",
                     Bounds = new Rectangle(location, new Size(250, 30))
                 },
-                "summary" => new SummaryElement
+                ReportElementType.Summary => new SummaryElement
                 {
                     DisplayName = "Summary",
                     Bounds = new Rectangle(location, new Size(300, 120))
                 },
-                "table" => new TransactionTableElement
+                ReportElementType.TransactionTable => new TransactionTableElement
                 {
                     DisplayName = "Transaction Table",
                     Bounds = new Rectangle(location, new Size(400, 200))
@@ -799,23 +800,23 @@ namespace Sales_Tracker.ReportGenerator
         // Tool event handlers
         private void AddChartElement(object sender, EventArgs e)
         {
-            CreateElementAtLocation("chart", new Point(50, 50));
+            CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
         }
         private void AddTextElement(object sender, EventArgs e)
         {
-            CreateElementAtLocation("text", new Point(50, 220));
+            CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
         }
         private void AddDateRangeElement(object sender, EventArgs e)
         {
-            CreateElementAtLocation("daterange", new Point(50, 280));
+            CreateElementAtLocation(ReportElementType.DateRange, new Point(50, 280));
         }
         private void AddSummaryElement(object sender, EventArgs e)
         {
-            CreateElementAtLocation("summary", new Point(50, 320));
+            CreateElementAtLocation(ReportElementType.Summary, new Point(50, 320));
         }
         private void AddTableElement(object sender, EventArgs e)
         {
-            CreateElementAtLocation("table", new Point(50, 450));
+            CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
         }
         private void AlignLeft(object sender, EventArgs e)
         {
