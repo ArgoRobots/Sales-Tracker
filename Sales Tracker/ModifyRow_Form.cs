@@ -1064,6 +1064,12 @@ namespace Sales_Tracker
         }
         private void HandleReceiptChanges()
         {
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales
+                && MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
+            {
+                return;
+            }
+
             if (_receiptFilePath == null) { return; }
 
             // Case 1: Adding a receipt to a row that didn't have one
