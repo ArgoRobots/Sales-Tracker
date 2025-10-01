@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.ReportGenerator
+﻿using Sales_Tracker.ReportGenerator.Elements;
+
+namespace Sales_Tracker.ReportGenerator
 {
     /// <summary>
     /// Provides predefined report templates for common business reporting scenarios.
@@ -190,49 +192,44 @@
             int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
 
             // Date range element
-            config.AddElement(new ReportElement
+            config.AddElement(new DateRangeElement
             {
-                Type = ReportElementType.DateRange,
                 DisplayName = "Report Period",
                 Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 30),
                 ZOrder = 0
             });
 
             // Sales total chart (top half, left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalSales,
                 DisplayName = "Total Sales",
                 Bounds = new Rectangle(margin, headerHeight + margin + 40, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
                 ZOrder = 1
             });
 
             // Sales distribution chart (top half, right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.DistributionOfSales,
+                ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
                 DisplayName = "Sales Distribution",
                 Bounds = new Rectangle((pageSize.Width / 2) + (margin / 2), headerHeight + margin + 40, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
                 ZOrder = 2
             });
 
             // Growth rates chart (bottom half, left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.GrowthRates,
+                ChartType = MainMenu_Form.ChartDataType.GrowthRates,
                 DisplayName = "Growth Rates",
                 Bounds = new Rectangle(margin, headerHeight + margin + availableHeight / 2 + 20, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
                 ZOrder = 3
             });
 
             // Average order value chart (bottom half, right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.AverageTransactionValue,
+                ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
                 Bounds = new Rectangle((pageSize.Width / 2) + (margin / 2), headerHeight + margin + availableHeight / 2 + 20, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
                 ZOrder = 4
@@ -249,49 +246,44 @@
             int chartHeight = (availableHeight - 30) / 2;
 
             // Date range
-            config.AddElement(new ReportElement
+            config.AddElement(new DateRangeElement
             {
-                Type = ReportElementType.DateRange,
                 DisplayName = "Report Period",
                 Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 30),
                 ZOrder = 0
             });
 
             // Sales vs Expenses (top left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
                 DisplayName = "Sales vs Expenses",
                 Bounds = new Rectangle(margin, headerHeight + margin + 40, chartWidth, chartHeight),
                 ZOrder = 1
             });
 
             // Total Profits (top right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.Profits,
+                ChartType = MainMenu_Form.ChartDataType.Profits,
                 DisplayName = "Total Profits",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 40, chartWidth, chartHeight),
                 ZOrder = 2
             });
 
             // Total Sales (bottom left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalSales,
                 DisplayName = "Total Sales",
                 Bounds = new Rectangle(margin, headerHeight + margin + 50 + chartHeight, chartWidth, chartHeight),
                 ZOrder = 3
             });
 
             // Total Purchases (bottom right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.TotalPurchases,
+                ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
                 DisplayName = "Total Purchases",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 50 + chartHeight, chartWidth, chartHeight),
                 ZOrder = 4
@@ -306,39 +298,39 @@
             int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
 
             // Summary section
-            config.AddElement(new ReportElement
+            config.AddElement(new SummaryElement
             {
-                Type = ReportElementType.Summary,
                 DisplayName = "Performance Summary",
                 Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 80),
-                ZOrder = 0
+                ZOrder = 0,
+                ShowTotalSales = true,
+                ShowTotalTransactions = true,
+                ShowAverageValue = true,
+                ShowGrowthRate = true
             });
 
             // Growth rates chart (top)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.GrowthRates,
+                ChartType = MainMenu_Form.ChartDataType.GrowthRates,
                 DisplayName = "Growth Rates",
                 Bounds = new Rectangle(margin, headerHeight + margin + 90, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
                 ZOrder = 1
             });
 
             // Average order value (middle)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.AverageTransactionValue,
+                ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
                 Bounds = new Rectangle(margin, headerHeight + margin + 100 + (availableHeight - 100) / 3, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
                 ZOrder = 2
             });
 
             // Returns over time (bottom)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.ReturnsOverTime,
+                ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
                 DisplayName = "Returns Over Time",
                 Bounds = new Rectangle(margin, headerHeight + margin + 110 + 2 * (availableHeight - 100) / 3, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
                 ZOrder = 3
@@ -355,50 +347,45 @@
             int chartHeight = availableHeight / 3;
 
             // Returns over time (top, full width)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.ReturnsOverTime,
+                ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
                 DisplayName = "Returns Over Time",
                 Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), chartHeight),
                 ZOrder = 0
             });
 
             // Return reasons (middle left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.ReturnReasons,
+                ChartType = MainMenu_Form.ChartDataType.ReturnReasons,
                 DisplayName = "Return Reasons",
                 Bounds = new Rectangle(margin, headerHeight + margin + chartHeight + 10, chartWidth, chartHeight),
                 ZOrder = 1
             });
 
             // Return financial impact (middle right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.ReturnFinancialImpact,
+                ChartType = MainMenu_Form.ChartDataType.ReturnFinancialImpact,
                 DisplayName = "Financial Impact",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + chartHeight + 10, chartWidth, chartHeight),
                 ZOrder = 2
             });
 
             // Losses over time (bottom left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.LossesOverTime,
+                ChartType = MainMenu_Form.ChartDataType.LossesOverTime,
                 DisplayName = "Losses Over Time",
                 Bounds = new Rectangle(margin, headerHeight + margin + 2 * chartHeight + 20, chartWidth, chartHeight),
                 ZOrder = 3
             });
 
             // Loss reasons (bottom right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.LossReasons,
+                ChartType = MainMenu_Form.ChartDataType.LossReasons,
                 DisplayName = "Loss Reasons",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 2 * chartHeight + 20, chartWidth, chartHeight),
                 ZOrder = 4
@@ -414,30 +401,27 @@
             int chartWidth = (pageSize.Width - margin * 3) / 2;
 
             // World map (top, full width)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.WorldMap,
+                ChartType = MainMenu_Form.ChartDataType.WorldMap,
                 DisplayName = "World Map",
                 Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), availableHeight / 2),
                 ZOrder = 0
             });
 
             // Countries of origin (bottom left)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.CountriesOfOrigin,
+                ChartType = MainMenu_Form.ChartDataType.CountriesOfOrigin,
                 DisplayName = "Countries of Origin",
                 Bounds = new Rectangle(margin, headerHeight + margin + availableHeight / 2 + 10, chartWidth, availableHeight / 2 - 10),
                 ZOrder = 1
             });
 
             // Countries of destination (bottom right)
-            config.AddElement(new ReportElement
+            config.AddElement(new ChartElement
             {
-                Type = ReportElementType.Chart,
-                Data = MainMenu_Form.ChartDataType.CountriesOfDestination,
+                ChartType = MainMenu_Form.ChartDataType.CountriesOfDestination,
                 DisplayName = "Countries of Destination",
                 Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + availableHeight / 2 + 10, chartWidth, availableHeight / 2 - 10),
                 ZOrder = 2

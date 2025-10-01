@@ -1,83 +1,7 @@
-﻿namespace Sales_Tracker.ReportGenerator
+﻿using Sales_Tracker.ReportGenerator.Elements;
+
+namespace Sales_Tracker.ReportGenerator
 {
-    /// <summary>
-    /// Represents a single element in a report (chart, table, text, etc.).
-    /// </summary>
-    public class ReportElement
-    {
-        /// <summary>
-        /// Unique identifier for the element.
-        /// </summary>
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        /// <summary>
-        /// Type of report element.
-        /// </summary>
-        public ReportElementType Type { get; set; }
-
-        /// <summary>
-        /// Position and size of the element on the report canvas.
-        /// </summary>
-        public Rectangle Bounds { get; set; }
-
-        /// <summary>
-        /// The actual data/content for this element.
-        /// </summary>
-        public object Data { get; set; }
-
-        /// <summary>
-        /// Additional properties for customization.
-        /// </summary>
-        public Dictionary<string, object> Properties { get; set; } = [];
-
-        /// <summary>
-        /// Display name for the element (used in UI).
-        /// </summary>
-        public string DisplayName { get; set; }
-
-        /// <summary>
-        /// Z-order for layering elements.
-        /// </summary>
-        public int ZOrder { get; set; }
-
-        /// <summary>
-        /// Whether the element is currently selected in the designer.
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        /// <summary>
-        /// Whether the element is visible in the report.
-        /// </summary>
-        public bool IsVisible { get; set; } = true;
-
-        /// <summary>
-        /// Creates a new report element.
-        /// </summary>
-        public ReportElement()
-        {
-            Properties = [];
-        }
-
-        /// <summary>
-        /// Creates a copy of this report element.
-        /// </summary>
-        public ReportElement Clone()
-        {
-            return new ReportElement
-            {
-                Id = Guid.NewGuid().ToString(),  // New ID for the clone
-                Type = Type,
-                Bounds = Bounds,
-                Data = Data,
-                Properties = new Dictionary<string, object>(Properties),
-                DisplayName = DisplayName + " (Copy)",
-                ZOrder = ZOrder,
-                IsSelected = false,
-                IsVisible = IsVisible
-            };
-        }
-    }
-
     /// <summary>
     /// Types of elements that can be included in a report.
     /// </summary>
@@ -110,7 +34,7 @@
         /// <summary>
         /// List of all elements in the report.
         /// </summary>
-        public List<ReportElement> Elements { get; set; } = [];
+        public List<BaseElement> Elements { get; set; } = [];
 
         /// <summary>
         /// Data filtering configuration.
@@ -160,7 +84,7 @@
         /// <summary>
         /// Gets elements sorted by Z-order (for rendering).
         /// </summary>
-        public List<ReportElement> GetElementsByZOrder()
+        public List<BaseElement> GetElementsByZOrder()
         {
             return Elements.OrderBy(e => e.ZOrder).ToList();
         }
@@ -168,7 +92,7 @@
         /// <summary>
         /// Adds an element to the report.
         /// </summary>
-        public void AddElement(ReportElement element)
+        public void AddElement(BaseElement element)
         {
             if (element != null)
             {
@@ -182,13 +106,29 @@
         /// </summary>
         public bool RemoveElement(string elementId)
         {
-            ReportElement? element = Elements.FirstOrDefault(e => e.Id == elementId);
+            BaseElement? element = Elements.FirstOrDefault(e => e.Id == elementId);
             if (element != null)
             {
                 Elements.Remove(element);
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Gets an element by its ID.
+        /// </summary>
+        public BaseElement? GetElementById(string elementId)
+        {
+            return Elements.FirstOrDefault(e => e.Id == elementId);
+        }
+
+        /// <summary>
+        /// Gets all elements of a specific type.
+        /// </summary>
+        public List<T> GetElementsOfType<T>() where T : BaseElement
+        {
+            return Elements.OfType<T>().ToList();
         }
     }
 
