@@ -109,7 +109,7 @@ namespace Sales_Tracker.ReportGenerator
 
                 case ReportStep.PreviewExport:
                     ShowChildForm(_previewExportForm);
-                    StepTitle_Label.Text = LanguageManager.TranslateString("Preview & Export");
+                    StepTitle_Label.Text = LanguageManager.TranslateString("Preview && Export");
                     break;
             }
 

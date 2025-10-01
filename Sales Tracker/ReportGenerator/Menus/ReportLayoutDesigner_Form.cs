@@ -15,6 +15,12 @@ namespace Sales_Tracker.ReportGenerator
         private bool _isDragging = false;
         private Point _dragStartPoint;
         private ReportElement _selectedElement;
+        private bool _isResizing = false;
+        private ResizeHandle _activeResizeHandle;
+        private Rectangle _originalBounds;
+
+        // Property controls
+        private readonly Dictionary<string, Control> _propertyControls = [];
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -30,6 +36,14 @@ namespace Sales_Tracker.ReportGenerator
         /// Indicates if the form is currently being loaded/updated programmatically.
         /// </summary>
         private bool _isUpdating;
+
+        // Resize handle enumeration
+        private enum ResizeHandle
+        {
+            None,
+            TopLeft, TopRight, BottomLeft, BottomRight,
+            Top, Bottom, Left, Right
+        }
 
         // Init.
         public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
@@ -174,6 +188,20 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (e.Button == MouseButtons.Left)
             {
+                // Check if clicking on a resize handle
+                if (_selectedElement != null)
+                {
+                    ResizeHandle handle = GetResizeHandleAt(e.Location);
+                    if (handle != ResizeHandle.None)
+                    {
+                        _isResizing = true;
+                        _activeResizeHandle = handle;
+                        _originalBounds = _selectedElement.Bounds;
+                        _dragStartPoint = e.Location;
+                        return;
+                    }
+                }
+
                 // Check if clicking on an element
                 ReportElement clickedElement = GetElementAtPoint(e.Location);
                 if (clickedElement != null)
@@ -190,35 +218,168 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDragging && _selectedElement != null)
+            if (_selectedElement != null)
             {
-                int deltaX = e.X - _dragStartPoint.X;
-                int deltaY = e.Y - _dragStartPoint.Y;
-
-                // Update element position
-                Rectangle newBounds = _selectedElement.Bounds;
-                newBounds.X += deltaX;
-                newBounds.Y += deltaY;
-
-                // Keep within canvas bounds
-                if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
-                    newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
+                // Update cursor based on hover over resize handles
+                if (!_isResizing && !_isDragging)
                 {
-                    _selectedElement.Bounds = newBounds;
-                    _dragStartPoint = e.Location;
-                    Canvas_Panel.Invalidate();
+                    ResizeHandle handle = GetResizeHandleAt(e.Location);
+                    Canvas_Panel.Cursor = GetCursorForHandle(handle);
+                }
+
+                // Handle resizing
+                if (_isResizing)
+                {
+                    ResizeElement(e.Location);
+                }
+
+                // Handle dragging
+                else if (_isDragging)
+                {
+                    int deltaX = e.X - _dragStartPoint.X;
+                    int deltaY = e.Y - _dragStartPoint.Y;
+
+                    // Update element position
+                    Rectangle newBounds = _selectedElement.Bounds;
+                    newBounds.X += deltaX;
+                    newBounds.Y += deltaY;
+
+                    // Keep within canvas bounds
+                    if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
+                        newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
+                    {
+                        _selectedElement.Bounds = newBounds;
+                        _dragStartPoint = e.Location;
+                        Canvas_Panel.Invalidate();
+                        UpdatePropertiesPanel();
+                    }
                 }
             }
         }
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
             _isDragging = false;
+            _isResizing = false;
+            _activeResizeHandle = ResizeHandle.None;
+            Canvas_Panel.Cursor = Cursors.Default;
         }
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
             DrawGrid(e.Graphics);
             DrawElements(e.Graphics);
             DrawSelection(e.Graphics);
+        }
+
+        // Resize handling methods
+        private ResizeHandle GetResizeHandleAt(Point point)
+        {
+            if (_selectedElement == null) return ResizeHandle.None;
+
+            const int handleSize = 8;
+            Rectangle bounds = _selectedElement.Bounds;
+
+            // Corner handles
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.TopLeft;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.TopRight;
+            }
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.BottomLeft;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.BottomRight;
+            }
+
+            // Edge handles
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
+            {
+                return ResizeHandle.Left;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
+            {
+                return ResizeHandle.Right;
+            }
+            if (new Rectangle(bounds.Left + handleSize, bounds.Top - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.Top;
+            }
+            if (new Rectangle(bounds.Left + handleSize, bounds.Bottom - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.Bottom;
+            }
+
+            return ResizeHandle.None;
+        }
+        private static Cursor GetCursorForHandle(ResizeHandle handle)
+        {
+            return handle switch
+            {
+                ResizeHandle.TopLeft or ResizeHandle.BottomRight => Cursors.SizeNWSE,
+                ResizeHandle.TopRight or ResizeHandle.BottomLeft => Cursors.SizeNESW,
+                ResizeHandle.Left or ResizeHandle.Right => Cursors.SizeWE,
+                ResizeHandle.Top or ResizeHandle.Bottom => Cursors.SizeNS,
+                _ => Cursors.Default
+            };
+        }
+        private void ResizeElement(Point currentPoint)
+        {
+            if (_selectedElement == null) return;
+
+            int deltaX = currentPoint.X - _dragStartPoint.X;
+            int deltaY = currentPoint.Y - _dragStartPoint.Y;
+            Rectangle newBounds = _originalBounds;
+
+            switch (_activeResizeHandle)
+            {
+                case ResizeHandle.TopLeft:
+                    newBounds.X += deltaX;
+                    newBounds.Y += deltaY;
+                    newBounds.Width -= deltaX;
+                    newBounds.Height -= deltaY;
+                    break;
+                case ResizeHandle.TopRight:
+                    newBounds.Y += deltaY;
+                    newBounds.Width += deltaX;
+                    newBounds.Height -= deltaY;
+                    break;
+                case ResizeHandle.BottomLeft:
+                    newBounds.X += deltaX;
+                    newBounds.Width -= deltaX;
+                    newBounds.Height += deltaY;
+                    break;
+                case ResizeHandle.BottomRight:
+                    newBounds.Width += deltaX;
+                    newBounds.Height += deltaY;
+                    break;
+                case ResizeHandle.Left:
+                    newBounds.X += deltaX;
+                    newBounds.Width -= deltaX;
+                    break;
+                case ResizeHandle.Right:
+                    newBounds.Width += deltaX;
+                    break;
+                case ResizeHandle.Top:
+                    newBounds.Y += deltaY;
+                    newBounds.Height -= deltaY;
+                    break;
+                case ResizeHandle.Bottom:
+                    newBounds.Height += deltaY;
+                    break;
+            }
+
+            // Ensure minimum size
+            if (newBounds.Width >= 50 && newBounds.Height >= 30)
+            {
+                _selectedElement.Bounds = newBounds;
+                Canvas_Panel.Invalidate();
+                UpdatePropertiesPanel();
+            }
         }
 
         // Drawing methods
@@ -251,24 +412,67 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static void DrawElement(Graphics g, ReportElement element)
         {
+            // Draw element background
             using SolidBrush brush = new(GetElementColor(element.Type));
             using Pen pen = new(Color.Gray, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Black);
-
-            // Draw element background
             g.FillRectangle(brush, element.Bounds);
             g.DrawRectangle(pen, element.Bounds);
 
-            // Draw element label
-            StringFormat format = new()
+            // Draw element content based on type
+            if (element.Type == ReportElementType.TextLabel)
             {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
+                DrawTextElementContent(g, element);
+            }
+            else
+            {
+                // For other elements, draw default label
+                using Font defaultFont = new("Segoe UI", 9);
+                using SolidBrush defaultTextBrush = new(Color.Black);
+                StringFormat defaultFormat = new()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                string displayText = element.DisplayName ?? element.Type.ToString();
+                g.DrawString(displayText, defaultFont, defaultTextBrush, element.Bounds, defaultFormat);
+            }
+        }
+        private static void DrawTextElementContent(Graphics g, ReportElement element)
+        {
+            // Get text properties
+            string text = element.Data?.ToString() ?? "Text";
+            string fontFamily = element.Properties.ContainsKey("FontFamily") ?
+                element.Properties["FontFamily"].ToString() : "Segoe UI";
+            float fontSize = element.Properties.ContainsKey("FontSize") ?
+                Convert.ToSingle(element.Properties["FontSize"]) : 12f;
+            FontStyle fontStyle = element.Properties.ContainsKey("FontStyle") ?
+                (FontStyle)element.Properties["FontStyle"] : FontStyle.Regular;
+            Color textColor = element.Properties.ContainsKey("TextColor") ?
+                (Color)element.Properties["TextColor"] : Color.Black;
+            StringAlignment alignment = element.Properties.ContainsKey("Alignment") ?
+                (StringAlignment)element.Properties["Alignment"] : StringAlignment.Near;
 
-            string displayText = element.DisplayName ?? element.Type.ToString();
-            g.DrawString(displayText, font, textBrush, element.Bounds, format);
+            // Create font and draw text
+            try
+            {
+                using Font font = new(fontFamily, fontSize, fontStyle);
+                using SolidBrush textBrush = new(textColor);
+                StringFormat format = new()
+                {
+                    Alignment = alignment,
+                    LineAlignment = StringAlignment.Center,
+                    FormatFlags = StringFormatFlags.NoWrap
+                };
+
+                g.DrawString(text, font, textBrush, element.Bounds, format);
+            }
+            catch
+            {
+                // Fallback to default font if there's an error
+                using Font fallbackFont = new("Segoe UI", 12, FontStyle.Regular);
+                using SolidBrush fallbackBrush = new(Color.Black);
+                g.DrawString(text, fallbackFont, fallbackBrush, element.Bounds);
+            }
         }
         private void DrawSelection(Graphics g)
         {
@@ -328,26 +532,37 @@ namespace Sales_Tracker.ReportGenerator
                     Type = ReportElementType.Chart,
                     DisplayName = "Chart",
                     Bounds = new Rectangle(location, size),
-                    Data = GetDefaultChartType()
+                    Data = GetDefaultChartType(),
+                    Properties = []
                 },
                 "text" => new ReportElement
                 {
                     Type = ReportElementType.TextLabel,
                     DisplayName = "Text Label",
                     Bounds = new Rectangle(location, new Size(150, 30)),
-                    Data = "Sample Text"
+                    Data = "Sample Text",
+                    Properties = new Dictionary<string, object>
+                    {
+                        ["FontFamily"] = "Segoe UI",
+                        ["FontSize"] = 12f,
+                        ["FontStyle"] = FontStyle.Regular,
+                        ["TextColor"] = Color.Black,
+                        ["Alignment"] = StringAlignment.Near
+                    }
                 },
                 "daterange" => new ReportElement
                 {
                     Type = ReportElementType.DateRange,
                     DisplayName = "Date Range",
-                    Bounds = new Rectangle(location, new Size(200, 30))
+                    Bounds = new Rectangle(location, new Size(200, 30)),
+                    Properties = []
                 },
                 "summary" => new ReportElement
                 {
                     Type = ReportElementType.Summary,
                     DisplayName = "Summary",
-                    Bounds = new Rectangle(location, new Size(300, 100))
+                    Bounds = new Rectangle(location, new Size(300, 100)),
+                    Properties = []
                 },
                 _ => null
             };
@@ -401,17 +616,426 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void UpdatePropertiesPanel()
         {
-            // Update properties panel based on selected element
+            // Clear existing property controls
+            PropertiesContainer_Panel.Controls.Clear();
+            _propertyControls.Clear();
+
             if (_selectedElement != null)
             {
                 ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
                 ElementProperties_Label.Visible = true;
+
+                // Create property controls based on element type
+                CreatePropertyControls(_selectedElement);
             }
             else
             {
                 ElementProperties_Label.Text = "No element selected";
                 ElementProperties_Label.Visible = true;
             }
+        }
+        private void CreatePropertyControls(ReportElement element)
+        {
+            int yPosition = 10;
+            const int rowHeight = 35;
+
+            // Common properties for all elements
+            AddPropertyLabel("Name:", yPosition);
+            AddPropertyTextBox("Name", element.DisplayName ?? "", yPosition, (value) =>
+            {
+                element.DisplayName = value;
+                Canvas_Panel.Invalidate();
+                NotifyParentValidationChanged();  // Notify parent to update preview if visible
+            });
+            yPosition += rowHeight;
+
+            AddPropertyLabel("X:", yPosition);
+            AddPropertyNumericUpDown("X", element.Bounds.X, yPosition, (value) =>
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.X = (int)value;
+                element.Bounds = bounds;
+                Canvas_Panel.Invalidate();
+            });
+            yPosition += rowHeight;
+
+            AddPropertyLabel("Y:", yPosition);
+            AddPropertyNumericUpDown("Y", element.Bounds.Y, yPosition, (value) =>
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Y = (int)value;
+                element.Bounds = bounds;
+                Canvas_Panel.Invalidate();
+            });
+            yPosition += rowHeight;
+
+            AddPropertyLabel("Width:", yPosition);
+            AddPropertyNumericUpDown("Width", element.Bounds.Width, yPosition, (value) =>
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Width = Math.Max(50, (int)value);
+                element.Bounds = bounds;
+                Canvas_Panel.Invalidate();
+            });
+            yPosition += rowHeight;
+
+            AddPropertyLabel("Height:", yPosition);
+            AddPropertyNumericUpDown("Height", element.Bounds.Height, yPosition, (value) =>
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Height = Math.Max(30, (int)value);
+                element.Bounds = bounds;
+                Canvas_Panel.Invalidate();
+            });
+            yPosition += rowHeight;
+
+            // Type-specific properties
+            switch (element.Type)
+            {
+                case ReportElementType.TextLabel:
+                    yPosition = AddTextElementProperties(element, yPosition, rowHeight);
+                    break;
+                case ReportElementType.Chart:
+                    yPosition = AddChartElementProperties(element, yPosition, rowHeight);
+                    break;
+            }
+
+            // Add separator
+            yPosition += 10;
+            Panel separator = new()
+            {
+                BackColor = CustomColors.ControlBorder,
+                Location = new Point(10, yPosition),
+                Size = new Size(PropertiesContainer_Panel.Width - 20, 1)
+            };
+            PropertiesContainer_Panel.Controls.Add(separator);
+            yPosition += 15;
+
+            // Z-Order controls
+            AddPropertyLabel("Layer:", yPosition);
+            Guna2Button bringToFrontBtn = new()
+            {
+                Text = "Front",
+                Size = new Size(60, 25),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 8)
+            };
+            bringToFrontBtn.Click += (s, e) => BringElementToFront(element);
+            PropertiesContainer_Panel.Controls.Add(bringToFrontBtn);
+
+            Guna2Button sendToBackBtn = new()
+            {
+                Text = "Back",
+                Size = new Size(60, 25),
+                Location = new Point(150, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 8)
+            };
+            sendToBackBtn.Click += (s, e) => SendElementToBack(element);
+            PropertiesContainer_Panel.Controls.Add(sendToBackBtn);
+        }
+        private int AddTextElementProperties(ReportElement element, int yPosition, int rowHeight)
+        {
+            // Text content
+            AddPropertyLabel("Text:", yPosition);
+            AddPropertyTextBox("Text", element.Data?.ToString() ?? "", yPosition, (value) =>
+            {
+                element.Data = value;
+                Canvas_Panel.Invalidate();
+            });
+            yPosition += rowHeight;
+
+            // Font family
+            AddPropertyLabel("Font:", yPosition);
+            string currentFont = element.Properties.ContainsKey("FontFamily") ?
+                element.Properties["FontFamily"].ToString() : "Segoe UI";
+            AddPropertyComboBox("FontFamily", currentFont, yPosition,
+                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+                (value) =>
+                {
+                    element.Properties["FontFamily"] = value;
+                    Canvas_Panel.Invalidate();
+                });
+            yPosition += rowHeight;
+
+            // Font size
+            AddPropertyLabel("Size:", yPosition);
+            float currentSize = element.Properties.ContainsKey("FontSize") ?
+                Convert.ToSingle(element.Properties["FontSize"]) : 12f;
+            AddPropertyNumericUpDown("FontSize", (decimal)currentSize, yPosition, (value) =>
+            {
+                element.Properties["FontSize"] = (float)value;
+                Canvas_Panel.Invalidate();
+            }, 6, 72);
+            yPosition += rowHeight;
+
+            // Font style
+            AddPropertyLabel("Style:", yPosition);
+            AddFontStyleCheckBoxes(element, yPosition);
+            yPosition += rowHeight;
+
+            // Text alignment
+            AddPropertyLabel("Align:", yPosition);
+            StringAlignment currentAlign = element.Properties.ContainsKey("Alignment") ?
+                (StringAlignment)element.Properties["Alignment"] : StringAlignment.Near;
+            AddPropertyComboBox("Alignment", currentAlign.ToString(), yPosition,
+                ["Near", "Center", "Far"],
+                (value) =>
+                {
+                    element.Properties["Alignment"] = Enum.Parse<StringAlignment>(value);
+                    Canvas_Panel.Invalidate();
+                });
+            yPosition += rowHeight;
+
+            // Text color
+            AddPropertyLabel("Color:", yPosition);
+            AddColorPicker(element, yPosition);
+            yPosition += rowHeight;
+
+            return yPosition;
+        }
+        private int AddChartElementProperties(ReportElement element, int yPosition, int rowHeight)
+        {
+            // Chart type
+            AddPropertyLabel("Chart:", yPosition);
+            MainMenu_Form.ChartDataType currentType = element.Data is MainMenu_Form.ChartDataType chartType ?
+                chartType : MainMenu_Form.ChartDataType.TotalSales;
+
+            // Only show available chart types from selected charts
+            List<string> availableCharts = ReportConfig?.Filters?.SelectedChartTypes?
+                .Select(ct => ct.ToString()).ToList() ?? [];
+
+            if (availableCharts.Count > 0)
+            {
+                AddPropertyComboBox("ChartType", currentType.ToString(), yPosition,
+                    availableCharts.ToArray(),
+                    (value) =>
+                    {
+                        element.Data = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                        Canvas_Panel.Invalidate();
+                    });
+            }
+            yPosition += rowHeight;
+
+            return yPosition;
+        }
+        private void AddPropertyLabel(string text, int yPosition)
+        {
+            Label label = new()
+            {
+                Text = text,
+                Font = new Font("Segoe UI", 9),
+                ForeColor = CustomColors.Text,
+                Location = new Point(10, yPosition + 3),
+                Size = new Size(70, 20)
+            };
+            PropertiesContainer_Panel.Controls.Add(label);
+        }
+        private void AddPropertyTextBox(string name, string value, int yPosition, Action<string> onChange)
+        {
+            Guna2TextBox textBox = new()
+            {
+                Text = value,
+                Size = new Size(180, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9)
+            };
+            textBox.TextChanged += (s, e) =>
+            {
+                if (!_isUpdating)
+                {
+                    onChange(textBox.Text);
+                    TriggerPreviewRefresh();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(textBox);
+            _propertyControls[name] = textBox;
+        }
+        private void AddPropertyNumericUpDown(string name, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
+        {
+            Guna2NumericUpDown numericUpDown = new()
+            {
+                Size = new Size(100, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Minimum = min,
+                Maximum = max,
+                Value = value
+            };
+            numericUpDown.ValueChanged += (s, e) =>
+            {
+                if (!_isUpdating)
+                {
+                    onChange(numericUpDown.Value);
+                    TriggerPreviewRefresh();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(numericUpDown);
+            _propertyControls[name] = numericUpDown;
+        }
+        private void AddPropertyComboBox(string name, string value, int yPosition, string[] items, Action<string> onChange)
+        {
+            Guna2ComboBox comboBox = new()
+            {
+                Size = new Size(180, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            comboBox.Items.AddRange(items);
+            comboBox.SelectedItem = value;
+            comboBox.SelectedIndexChanged += (s, e) =>
+            {
+                if (!_isUpdating && comboBox.SelectedItem != null)
+                {
+                    onChange(comboBox.SelectedItem.ToString());
+                    TriggerPreviewRefresh();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(comboBox);
+            _propertyControls[name] = comboBox;
+        }
+        private void AddFontStyleCheckBoxes(ReportElement element, int yPosition)
+        {
+            FontStyle currentStyle = element.Properties.ContainsKey("FontStyle") ?
+                (FontStyle)element.Properties["FontStyle"] : FontStyle.Regular;
+
+            CheckBox boldCheck = new()
+            {
+                Text = "B",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                Size = new Size(35, 20),
+                Location = new Point(85, yPosition),
+                Checked = currentStyle.HasFlag(FontStyle.Bold)
+            };
+            boldCheck.CheckedChanged += (s, e) => UpdateFontStyle(element);
+            PropertiesContainer_Panel.Controls.Add(boldCheck);
+            _propertyControls["Bold"] = boldCheck;
+
+            CheckBox italicCheck = new()
+            {
+                Text = "I",
+                Font = new Font("Segoe UI", 9, FontStyle.Italic),
+                Size = new Size(35, 20),
+                Location = new Point(125, yPosition),
+                Checked = currentStyle.HasFlag(FontStyle.Italic)
+            };
+            italicCheck.CheckedChanged += (s, e) => UpdateFontStyle(element);
+            PropertiesContainer_Panel.Controls.Add(italicCheck);
+            _propertyControls["Italic"] = italicCheck;
+
+            CheckBox underlineCheck = new()
+            {
+                Text = "U",
+                Font = new Font("Segoe UI", 9, FontStyle.Underline),
+                Size = new Size(35, 20),
+                Location = new Point(165, yPosition),
+                Checked = currentStyle.HasFlag(FontStyle.Underline)
+            };
+            underlineCheck.CheckedChanged += (s, e) => UpdateFontStyle(element);
+            PropertiesContainer_Panel.Controls.Add(underlineCheck);
+            _propertyControls["Underline"] = underlineCheck;
+        }
+        private void UpdateFontStyle(ReportElement element)
+        {
+            if (_isUpdating) return;
+
+            FontStyle style = FontStyle.Regular;
+            if (_propertyControls.ContainsKey("Bold") && ((CheckBox)_propertyControls["Bold"]).Checked)
+            {
+                style |= FontStyle.Bold;
+            }
+
+            if (_propertyControls.ContainsKey("Italic") && ((CheckBox)_propertyControls["Italic"]).Checked)
+            {
+                style |= FontStyle.Italic;
+            }
+
+            if (_propertyControls.ContainsKey("Underline") && ((CheckBox)_propertyControls["Underline"]).Checked)
+            {
+                style |= FontStyle.Underline;
+            }
+
+            element.Properties["FontStyle"] = style;
+            Canvas_Panel.Invalidate();
+            TriggerPreviewRefresh();
+        }
+        private void AddColorPicker(ReportElement element, int yPosition)
+        {
+            Color currentColor = element.Properties.ContainsKey("TextColor") ?
+                (Color)element.Properties["TextColor"] : Color.Black;
+
+            Panel colorPreview = new()
+            {
+                BackColor = currentColor,
+                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(50, 22),
+                Location = new Point(85, yPosition),
+                Cursor = Cursors.Hand
+            };
+
+            colorPreview.Click += (s, e) =>
+            {
+                ColorDialog colorDialog = new()
+                {
+                    Color = colorPreview.BackColor,
+                    FullOpen = true
+                };
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    colorPreview.BackColor = colorDialog.Color;
+                    element.Properties["TextColor"] = colorDialog.Color;
+                    Canvas_Panel.Invalidate();
+                    TriggerPreviewRefresh();
+                }
+            };
+
+            PropertiesContainer_Panel.Controls.Add(colorPreview);
+            _propertyControls["ColorPreview"] = colorPreview;
+
+            Label colorLabel = new()
+            {
+                Text = "Click to change",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(140, yPosition + 3),
+                Size = new Size(100, 20)
+            };
+            PropertiesContainer_Panel.Controls.Add(colorLabel);
+        }
+
+        /// <summary>
+        /// Triggers a refresh of the preview if the preview form is visible.
+        /// </summary>
+        private void TriggerPreviewRefresh()
+        {
+            // The preview will automatically regenerate when the user navigates to that step
+            // For now, we just ensure the canvas is updated
+            NotifyParentValidationChanged();
+        }
+        private void BringElementToFront(ReportElement element)
+        {
+            if (ReportConfig?.Elements == null) return;
+
+            int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
+            element.ZOrder = maxZOrder + 1;
+            Canvas_Panel.Invalidate();
+        }
+        private void SendElementToBack(ReportElement element)
+        {
+            if (ReportConfig?.Elements == null) return;
+
+            // Shift all other elements up by 1
+            foreach (var e in ReportConfig.Elements.Where(e => e != element))
+            {
+                e.ZOrder++;
+            }
+            element.ZOrder = 0;
+            Canvas_Panel.Invalidate();
         }
 
         // Tool event handlers
@@ -439,6 +1063,7 @@ namespace Sales_Tracker.ReportGenerator
                 bounds.X = 20;  // Align to left margin
                 _selectedElement.Bounds = bounds;
                 Canvas_Panel.Invalidate();
+                UpdatePropertiesPanel();
             }
         }
         private void AlignCenter(object sender, EventArgs e)
@@ -449,6 +1074,7 @@ namespace Sales_Tracker.ReportGenerator
                 bounds.X = (Canvas_Panel.Width - bounds.Width) / 2;
                 _selectedElement.Bounds = bounds;
                 Canvas_Panel.Invalidate();
+                UpdatePropertiesPanel();
             }
         }
         private void DeleteSelected(object sender, EventArgs e)
@@ -458,6 +1084,7 @@ namespace Sales_Tracker.ReportGenerator
                 ReportConfig?.RemoveElement(_selectedElement.Id);
                 _selectedElement = null;
                 Canvas_Panel.Invalidate();
+                UpdatePropertiesPanel();
                 NotifyParentValidationChanged();
             }
         }

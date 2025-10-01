@@ -234,22 +234,59 @@ namespace Sales_Tracker.ReportGenerator
         {
             try
             {
+                // Get text content
                 string text = element.Data?.ToString() ?? element.DisplayName ?? "Text";
-                float fontSize = element.Properties.TryGetValue("FontSize", out object? value) ?
-                    Convert.ToSingle(value) : 12f;
-                FontStyle fontStyle = element.Properties.TryGetValue("FontStyle", out object? value1) ?
-                    (FontStyle)value1 : FontStyle.Regular;
 
-                using Font font = new("Segoe UI", fontSize, fontStyle);
-                using SolidBrush brush = new(CustomColors.Text);
-                StringFormat format = new()
+                // Get font properties with proper defaults
+                string fontFamily = element.Properties.ContainsKey("FontFamily") ?
+                    element.Properties["FontFamily"].ToString() : "Segoe UI";
+
+                float fontSize = element.Properties.ContainsKey("FontSize") ?
+                    Convert.ToSingle(element.Properties["FontSize"]) : 12f;
+
+                FontStyle fontStyle = element.Properties.ContainsKey("FontStyle") ?
+                    (FontStyle)element.Properties["FontStyle"] : FontStyle.Regular;
+
+                // Get text color
+                Color textColor = element.Properties.ContainsKey("TextColor") ?
+                    (Color)element.Properties["TextColor"] : Color.Black;
+
+                // Get alignment
+                StringAlignment alignment = element.Properties.ContainsKey("Alignment") ?
+                    (StringAlignment)element.Properties["Alignment"] : StringAlignment.Near;
+
+                // Create font and draw text with proper properties
+                try
                 {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Near,
-                    FormatFlags = StringFormatFlags.LineLimit
-                };
+                    using Font font = new(fontFamily, fontSize, fontStyle);
+                    using SolidBrush brush = new(textColor);
 
-                graphics.DrawString(text, font, brush, element.Bounds, format);
+                    StringFormat format = new()
+                    {
+                        Alignment = alignment,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                        Trimming = StringTrimming.EllipsisCharacter
+                    };
+
+                    graphics.DrawString(text, font, brush, element.Bounds, format);
+                }
+                catch (ArgumentException)
+                {
+                    // Fallback if font family is not available
+                    using Font fallbackFont = new("Segoe UI", fontSize, fontStyle);
+                    using SolidBrush fallbackBrush = new(textColor);
+
+                    StringFormat fallbackFormat = new()
+                    {
+                        Alignment = alignment,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                        Trimming = StringTrimming.EllipsisCharacter
+                    };
+
+                    graphics.DrawString(text, fallbackFont, fallbackBrush, element.Bounds, fallbackFormat);
+                }
             }
             catch (Exception ex)
             {
