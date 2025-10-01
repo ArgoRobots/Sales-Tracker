@@ -10,7 +10,6 @@ namespace Sales_Tracker.ReportGenerator
     {
         // Properties  private int _initialFormWidth;
         private int _initialFormWidth;
-        private int _initialFormHeight;
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
         private ExportSettings _exportSettings;
@@ -51,8 +50,8 @@ namespace Sales_Tracker.ReportGenerator
             _exportSettings = new ExportSettings
             {
                 Format = ExportFormat.PNG,
-                DPI = 300,
-                Quality = 95,
+                DPI = 200,      // Will be overridden by quality slider
+                Quality = 75,   // Default to 75% (good balance)
                 OpenAfterExport = true
             };
         }
@@ -79,12 +78,13 @@ namespace Sales_Tracker.ReportGenerator
             ExportFormat_ComboBox.Items.Add("JPEG Image (*.jpg)");
             ExportFormat_ComboBox.SelectedIndex = 0;
 
-            // Setup DPI
-            DPI_NumericUpDown.Value = _exportSettings.DPI;
-
-            // Setup quality
+            // Setup quality slider (controls both resolution and compression)
             Quality_TrackBar.Value = _exportSettings.Quality;
             UpdateQualityLabel();
+
+            // Hide DPI controls (or remove from designer)
+            DPI_Label.Visible = false;
+            DPI_NumericUpDown.Visible = false;
 
             // Setup checkboxes
             OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
@@ -97,7 +97,6 @@ namespace Sales_Tracker.ReportGenerator
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
-            _initialFormHeight = Height;
             _initialLeftPanelWidth = LeftPreview_Panel.Width;
             _initialRightPanelWidth = RightSettings_Panel.Width;
         }
@@ -363,10 +362,29 @@ namespace Sales_Tracker.ReportGenerator
         {
             _exportSettings.FilePath = ExportPath_TextBox.Text;
             _exportSettings.Format = ExportFormat_ComboBox.SelectedIndex == 0 ? ExportFormat.PNG : ExportFormat.JPG;
-            _exportSettings.DPI = (int)DPI_NumericUpDown.Value;
-            _exportSettings.Quality = Quality_TrackBar.Value;
+
+            // Map quality slider to both DPI and compression quality
+            int quality = Quality_TrackBar.Value;
+            _exportSettings.DPI = GetDPIFromQuality(quality);
+            _exportSettings.Quality = quality;  // JPEG compression quality
+
             _exportSettings.OpenAfterExport = OpenAfterExport_CheckBox.Checked;
         }
+
+        /// <summary>
+        /// Maps quality percentage to appropriate DPI value.
+        /// </summary>
+        private static int GetDPIFromQuality(int quality)
+        {
+            return quality switch
+            {
+                <= 25 => 96,    // Low quality - screen resolution
+                <= 50 => 150,   // Medium quality - basic print
+                <= 75 => 200,   // High quality - good print
+                _ => 300        // Very high quality - professional print
+            };
+        }
+
         private void UpdateReportConfigFromPageSettings()
         {
             if (ReportConfig == null) { return; }

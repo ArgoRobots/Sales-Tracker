@@ -577,7 +577,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private void AddNewChartElements(List<MainMenu_Form.ChartDataType> chartTypes)
         {
-            if (chartTypes == null || chartTypes.Count == 0) return;
+            if (chartTypes == null || chartTypes.Count == 0) { return; }
 
             // Find a good position for new charts (avoid overlap)
             int x = 50;
@@ -629,7 +629,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
-
         private void GenerateElementsFromTemplate()
         {
             if (ReportConfig?.Filters?.SelectedChartTypes == null) { return; }
