@@ -506,7 +506,42 @@ namespace Sales_Tracker
                             }
                         };
                         Panel.Controls.Add(_receipt_Button);
-                        left += buttonWidth;
+                        left += buttonWidth + CustomControls.SpaceBetweenControls;
+
+                        // ImageButton
+                        _removeReceipt_ImageButton = new()
+                        {
+                            Size = new Size(38, 38),
+                            ImageSize = new Size(30, 30),
+                            Image = Properties.Resources.CloseGray,
+                            Anchor = AnchorStyles.Top,
+                            HoverState = { ImageSize = new Size(30, 30) },
+                            PressedState = { ImageSize = new Size(30, 30) }
+                        };
+                        _removeReceipt_ImageButton.Click += (_, _) =>
+                        {
+                            CloseSearchBox(null, null);
+                            RemoveReceiptLabel();
+                            _removedReceipt = true;
+                        };
+                        _removeReceipt_ImageButton.MouseEnter += (_, _) =>
+                        {
+                            _removeReceipt_ImageButton.BackColor = CustomColors.MouseHover;
+                        };
+                        _removeReceipt_ImageButton.MouseLeave += (_, _) =>
+                        {
+                            _removeReceipt_ImageButton.BackColor = CustomColors.MainBackground;
+                        };
+
+                        // Label
+                        _selectedReceipt_Label = new()
+                        {
+                            ForeColor = CustomColors.Text,
+                            Font = new Font("Segoe UI", 10),
+                            AutoSize = true,
+                            Anchor = AnchorStyles.Top
+                        };
+                        _selectedReceipt_Label.Click += CloseSearchBox;
                         break;
 
                     case nameof(MainMenu_Form.Column.Date):
@@ -1427,7 +1462,7 @@ namespace Sales_Tracker
             _secondPanel = new()
             {
                 Size = Panel.Size,
-                Location = new Point(Panel.Left, Panel.Bottom),
+                Location = new Point(Panel.Left, Panel.Bottom + 40),
                 Anchor = AnchorStyles.Top
             };
             _secondPanel.Click += CloseSearchBox;
