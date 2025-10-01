@@ -26,6 +26,11 @@ namespace Sales_Tracker.ReportGenerator
         private Bitmap _gridCache = null;
         private Size _lastCanvasSize = Size.Empty;
 
+        // Property controls caching
+        private string _currentElementId = null;
+        private readonly Dictionary<string, Control> _propertyControls = [];
+        private readonly Dictionary<string, Action> _updateActions = [];
+
         /// <summary>
         /// Gets the parent report generator form.
         /// </summary>
@@ -90,7 +95,7 @@ namespace Sales_Tracker.ReportGenerator
                 _propertyUpdateTimer.Stop();
                 if (!_deferPropertyUpdate)
                 {
-                    UpdatePropertiesPanel();
+                    UpdatePropertyValues();
                 }
             };
         }
@@ -213,6 +218,28 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
+        private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
+        {
+            // Use clipping region for better performance
+            e.Graphics.SetClip(e.ClipRectangle);
+
+            // Draw cached grid if size hasn't changed
+            if (_gridCache == null || _lastCanvasSize != Canvas_Panel.Size)
+            {
+                CreateGridCache();
+                _lastCanvasSize = Canvas_Panel.Size;
+            }
+
+            if (_gridCache != null)
+            {
+                e.Graphics.DrawImage(_gridCache, 0, 0);
+            }
+
+            // Draw only visible elements
+            Rectangle clipRect = e.ClipRectangle;
+            DrawVisibleElements(e.Graphics, clipRect);
+            DrawSelection(e.Graphics);
+        }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -312,31 +339,355 @@ namespace Sales_Tracker.ReportGenerator
             if (wasInteracting && _selectedElement != null)
             {
                 _propertyUpdateTimer.Stop();
-                UpdatePropertiesPanel();
+                UpdatePropertyValues();
                 NotifyParentValidationChanged();
             }
         }
-        private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
+
+        // Canvas methods
+        private void SelectElement(BaseElement element)
         {
-            // Use clipping region for better performance
-            e.Graphics.SetClip(e.ClipRectangle);
+            if (_selectedElement == element) { return; }
 
-            // Draw cached grid if size hasn't changed
-            if (_gridCache == null || _lastCanvasSize != Canvas_Panel.Size)
+            Rectangle? oldSelectionBounds = null;
+            if (_selectedElement != null)
             {
-                CreateGridCache();
-                _lastCanvasSize = Canvas_Panel.Size;
+                _selectedElement.IsSelected = false;
+                oldSelectionBounds = _selectedElement.Bounds;
             }
 
-            if (_gridCache != null)
+            _selectedElement = element;
+            element.IsSelected = true;
+
+            // Invalidate only the selection regions
+            if (oldSelectionBounds.HasValue)
             {
-                e.Graphics.DrawImage(_gridCache, 0, 0);
+                InvalidateElementRegion(oldSelectionBounds.Value);
+            }
+            InvalidateElementRegion(element.Bounds);
+
+            if (!_deferPropertyUpdate)
+            {
+                // Create or show property controls for this element
+                CreateOrShowPropertiesPanel();
+            }
+        }
+        private void ClearSelection()
+        {
+            if (_selectedElement != null)
+            {
+                Rectangle oldBounds = _selectedElement.Bounds;
+                _selectedElement.IsSelected = false;
+                _selectedElement = null;
+
+                InvalidateElementRegion(oldBounds);
+
+                if (!_deferPropertyUpdate)
+                {
+                    HidePropertiesPanel();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates property controls if they don't exist, or shows existing ones.
+        /// </summary>
+        private void CreateOrShowPropertiesPanel()
+        {
+            if (_selectedElement == null)
+            {
+                HidePropertiesPanel();
+                return;
             }
 
-            // Draw only visible elements
-            Rectangle clipRect = e.ClipRectangle;
-            DrawVisibleElements(e.Graphics, clipRect);
-            DrawSelection(e.Graphics);
+            ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
+            ElementProperties_Label.Visible = true;
+
+            // Check if we need to create new controls
+            if (_currentElementId != _selectedElement.Id)
+            {
+                // Clear old controls
+                PropertiesContainer_Panel.Controls.Clear();
+                _propertyControls.Clear();
+                _updateActions.Clear();
+
+                _currentElementId = _selectedElement.Id;
+
+                // Create new property controls
+                int yPosition = 10;
+                const int rowHeight = 35;
+
+                // Create common property controls
+                CreateCommonPropertyControls(yPosition);
+                yPosition += rowHeight * 5;
+
+                // Add element-specific properties
+                yPosition = CreateElementSpecificControls(yPosition);
+
+                // Add separator
+                yPosition += 10;
+                Panel separator = new()
+                {
+                    BackColor = CustomColors.ControlBorder,
+                    Location = new Point(10, yPosition),
+                    Size = new Size(PropertiesContainer_Panel.Width - 20, 1)
+                };
+                PropertiesContainer_Panel.Controls.Add(separator);
+                yPosition += 15;
+
+                // Z-Order controls
+                CreateZOrderControls(yPosition);
+            }
+
+            // Update control values
+            UpdatePropertyValues();
+        }
+
+        /// <summary>
+        /// Creates common property controls that all elements have.
+        /// </summary>
+        private void CreateCommonPropertyControls(int startY)
+        {
+            int yPosition = startY;
+            const int rowHeight = 35;
+
+            // Name property
+            Label nameLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Name:", yPosition);
+            Guna2TextBox nameTextBox = new()
+            {
+                Size = new Size(180, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9)
+            };
+            nameTextBox.TextChanged += (s, e) =>
+            {
+                if (_selectedElement != null)
+                {
+                    _selectedElement.DisplayName = nameTextBox.Text;
+                    Canvas_Panel.Invalidate();
+                    NotifyParentValidationChanged();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(nameTextBox);
+            _propertyControls["Name"] = nameTextBox;
+            _updateActions["Name"] = () => nameTextBox.Text = _selectedElement?.DisplayName ?? "";
+            yPosition += rowHeight;
+
+            // X position
+            Label xLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "X:", yPosition);
+            Guna2NumericUpDown xNumeric = new()
+            {
+                Size = new Size(100, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Minimum = 0,
+                Maximum = 9999
+            };
+            xNumeric.ValueChanged += (s, e) =>
+            {
+                if (_selectedElement != null)
+                {
+                    Rectangle bounds = _selectedElement.Bounds;
+                    bounds.X = (int)xNumeric.Value;
+                    _selectedElement.Bounds = bounds;
+                    Canvas_Panel.Invalidate();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(xNumeric);
+            _propertyControls["X"] = xNumeric;
+            _updateActions["X"] = () => xNumeric.Value = _selectedElement?.Bounds.X ?? 0;
+            yPosition += rowHeight;
+
+            // Y position
+            Label yLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Y:", yPosition);
+            Guna2NumericUpDown yNumeric = new()
+            {
+                Size = new Size(100, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Minimum = 0,
+                Maximum = 9999
+            };
+            yNumeric.ValueChanged += (s, e) =>
+            {
+                if (_selectedElement != null)
+                {
+                    Rectangle bounds = _selectedElement.Bounds;
+                    bounds.Y = (int)yNumeric.Value;
+                    _selectedElement.Bounds = bounds;
+                    Canvas_Panel.Invalidate();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(yNumeric);
+            _propertyControls["Y"] = yNumeric;
+            _updateActions["Y"] = () => yNumeric.Value = _selectedElement?.Bounds.Y ?? 0;
+            yPosition += rowHeight;
+
+            // Width
+            Label widthLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Width:", yPosition);
+            Guna2NumericUpDown widthNumeric = new()
+            {
+                Size = new Size(100, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Minimum = 50,
+                Maximum = 9999
+            };
+            widthNumeric.ValueChanged += (s, e) =>
+            {
+                if (_selectedElement != null)
+                {
+                    Rectangle bounds = _selectedElement.Bounds;
+                    bounds.Width = Math.Max(50, (int)widthNumeric.Value);
+                    _selectedElement.Bounds = bounds;
+                    Canvas_Panel.Invalidate();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(widthNumeric);
+            _propertyControls["Width"] = widthNumeric;
+            _updateActions["Width"] = () => widthNumeric.Value = _selectedElement?.Bounds.Width ?? 100;
+            yPosition += rowHeight;
+
+            // Height
+            Label heightLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Height:", yPosition);
+            Guna2NumericUpDown heightNumeric = new()
+            {
+                Size = new Size(100, 26),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Minimum = 30,
+                Maximum = 9999
+            };
+            heightNumeric.ValueChanged += (s, e) =>
+            {
+                if (_selectedElement != null)
+                {
+                    Rectangle bounds = _selectedElement.Bounds;
+                    bounds.Height = Math.Max(30, (int)heightNumeric.Value);
+                    _selectedElement.Bounds = bounds;
+                    Canvas_Panel.Invalidate();
+                }
+            };
+            PropertiesContainer_Panel.Controls.Add(heightNumeric);
+            _propertyControls["Height"] = heightNumeric;
+            _updateActions["Height"] = () => heightNumeric.Value = _selectedElement?.Bounds.Height ?? 100;
+        }
+
+        /// <summary>
+        /// Creates element-specific property controls.
+        /// </summary>
+        private int CreateElementSpecificControls(int yPosition)
+        {
+            if (_selectedElement == null) return yPosition;
+
+            // Let the element create its own specific controls
+            // We'll need to modify the element classes to support this caching approach
+            return _selectedElement.CreatePropertyControls(
+                PropertiesContainer_Panel,
+                yPosition,
+                OnPropertyChanged);
+        }
+
+        /// <summary>
+        /// Creates Z-order controls.
+        /// </summary>
+        private void CreateZOrderControls(int yPosition)
+        {
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Layer:", yPosition);
+
+            Guna2Button bringToFrontBtn = new()
+            {
+                Text = "Front",
+                Size = new Size(60, 25),
+                Location = new Point(85, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 8)
+            };
+            bringToFrontBtn.Click += (s, e) => BringElementToFront(_selectedElement);
+            PropertiesContainer_Panel.Controls.Add(bringToFrontBtn);
+
+            Guna2Button sendToBackBtn = new()
+            {
+                Text = "Back",
+                Size = new Size(60, 25),
+                Location = new Point(150, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 8)
+            };
+            sendToBackBtn.Click += (s, e) => SendElementToBack(_selectedElement);
+            PropertiesContainer_Panel.Controls.Add(sendToBackBtn);
+        }
+
+        /// <summary>
+        /// Updates the values of existing property controls.
+        /// </summary>
+        private void UpdatePropertyValues()
+        {
+            if (_selectedElement == null || _currentElementId != _selectedElement.Id)
+            {
+                CreateOrShowPropertiesPanel();
+                return;
+            }
+
+            // Update all registered property controls
+            foreach (var updateAction in _updateActions.Values)
+            {
+                updateAction?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Hides the properties panel when no element is selected.
+        /// </summary>
+        private void HidePropertiesPanel()
+        {
+            ElementProperties_Label.Text = "No element selected";
+            ElementProperties_Label.Visible = true;
+            PropertiesContainer_Panel.Controls.Clear();
+            _propertyControls.Clear();
+            _updateActions.Clear();
+            _currentElementId = null;
+        }
+        private void OnPropertyChanged()
+        {
+            Canvas_Panel.Invalidate();
+            TriggerPreviewRefresh();
+        }
+        private void TriggerPreviewRefresh()
+        {
+            NotifyParentValidationChanged();
+        }
+        private void BringElementToFront(BaseElement element)
+        {
+            if (ReportConfig?.Elements == null || element == null) { return; }
+
+            int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
+            element.ZOrder = maxZOrder + 1;
+            Canvas_Panel.Invalidate();
+        }
+        private void SendElementToBack(BaseElement element)
+        {
+            if (ReportConfig?.Elements == null || element == null) { return; }
+
+            // Shift all other elements up by 1
+            foreach (var e in ReportConfig.Elements.Where(e => e != element))
+            {
+                e.ZOrder++;
+            }
+            element.ZOrder = 0;
+            Canvas_Panel.Invalidate();
+        }
+        private void InvalidateElementRegion(Rectangle bounds)
+        {
+            // Inflate the bounds slightly to include borders and handles
+            Rectangle invalidateRect = bounds;
+            invalidateRect.Inflate(10, 10);
+            Canvas_Panel.Invalidate(invalidateRect);
         }
         private void DrawVisibleElements(Graphics g, Rectangle clipRect)
         {
@@ -401,7 +752,7 @@ namespace Sales_Tracker.ReportGenerator
             g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
         }
 
-        // Resize handling methods
+        // Resize element methods
         private ResizeHandle GetResizeHandleAt(Point point)
         {
             if (_selectedElement == null) { return ResizeHandle.None; }
@@ -573,7 +924,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private BaseElement? GetElementAtPoint(Point point)
         {
-            if (ReportConfig?.Elements == null) { return null; }
+            if (ReportConfig?.Elements == null) return null;
 
             // Check elements in reverse Z-order (top to bottom)
             IOrderedEnumerable<BaseElement> sortedElements = ReportConfig.Elements
@@ -589,212 +940,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return null;
-        }
-        private void InvalidateElementRegion(Rectangle bounds)
-        {
-            // Inflate the bounds slightly to include borders and handles
-            Rectangle invalidateRect = bounds;
-            invalidateRect.Inflate(10, 10);
-            Canvas_Panel.Invalidate(invalidateRect);
-        }
-        private void SelectElement(BaseElement element)
-        {
-            if (_selectedElement == element) { return; }
-
-            Rectangle? oldSelectionBounds = null;
-            if (_selectedElement != null)
-            {
-                _selectedElement.IsSelected = false;
-                oldSelectionBounds = _selectedElement.Bounds;
-            }
-
-            _selectedElement = element;
-            element.IsSelected = true;
-
-            // Invalidate only the selection regions
-            if (oldSelectionBounds.HasValue)
-            {
-                InvalidateElementRegion(oldSelectionBounds.Value);
-            }
-            InvalidateElementRegion(element.Bounds);
-
-            if (!_deferPropertyUpdate)
-            {
-                UpdatePropertiesPanel();
-            }
-        }
-        private void ClearSelection()
-        {
-            if (_selectedElement != null)
-            {
-                Rectangle oldBounds = _selectedElement.Bounds;
-                _selectedElement.IsSelected = false;
-                _selectedElement = null;
-
-                InvalidateElementRegion(oldBounds);
-
-                if (!_deferPropertyUpdate)
-                {
-                    UpdatePropertiesPanel();
-                }
-            }
-        }
-        private void UpdatePropertiesPanel()
-        {
-            // Clear existing property controls
-            PropertiesContainer_Panel.Controls.Clear();
-
-            if (_selectedElement != null)
-            {
-                ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
-                ElementProperties_Label.Visible = true;
-
-                // Create common property controls
-                int yPosition = 10;
-                const int rowHeight = 35;
-
-                // Common properties for all elements
-                AddCommonProperties(yPosition);
-                yPosition += rowHeight * 5;
-
-                // Add element-specific properties
-                yPosition = _selectedElement.CreatePropertyControls(
-                    PropertiesContainer_Panel,
-                    yPosition,
-                    OnPropertyChanged);
-
-                // Add separator
-                yPosition += 10;
-                Panel separator = new()
-                {
-                    BackColor = CustomColors.ControlBorder,
-                    Location = new Point(10, yPosition),
-                    Size = new Size(PropertiesContainer_Panel.Width - 20, 1)
-                };
-                PropertiesContainer_Panel.Controls.Add(separator);
-                yPosition += 15;
-
-                // Z-Order controls
-                AddZOrderControls(yPosition);
-            }
-            else
-            {
-                ElementProperties_Label.Text = "No element selected";
-                ElementProperties_Label.Visible = true;
-            }
-        }
-        private void AddCommonProperties(int startY)
-        {
-            int yPosition = startY;
-            const int rowHeight = 35;
-
-            // Name property
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Name:", yPosition);
-            BaseElement.AddPropertyTextBox(PropertiesContainer_Panel, _selectedElement.DisplayName ?? "", yPosition, value =>
-            {
-                _selectedElement.DisplayName = value;
-                Canvas_Panel.Invalidate();
-                NotifyParentValidationChanged();
-            });
-            yPosition += rowHeight;
-
-            // X position
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "X:", yPosition);
-            BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement.Bounds.X, yPosition, value =>
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.X = (int)value;
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-            });
-            yPosition += rowHeight;
-
-            // Y position
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Y:", yPosition);
-            BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement.Bounds.Y, yPosition, value =>
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.Y = (int)value;
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-            });
-            yPosition += rowHeight;
-
-            // Width
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Width:", yPosition);
-            BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement.Bounds.Width, yPosition, value =>
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.Width = Math.Max(50, (int)value);
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-            });
-            yPosition += rowHeight;
-
-            // Height
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Height:", yPosition);
-            BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement.Bounds.Height, yPosition, value =>
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.Height = Math.Max(30, (int)value);
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-            });
-        }
-        private void AddZOrderControls(int yPosition)
-        {
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Layer:", yPosition);
-
-            Guna2Button bringToFrontBtn = new()
-            {
-                Text = "Front",
-                Size = new Size(60, 25),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 8)
-            };
-            bringToFrontBtn.Click += (s, e) => BringElementToFront(_selectedElement);
-            PropertiesContainer_Panel.Controls.Add(bringToFrontBtn);
-
-            Guna2Button sendToBackBtn = new()
-            {
-                Text = "Back",
-                Size = new Size(60, 25),
-                Location = new Point(150, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 8)
-            };
-            sendToBackBtn.Click += (s, e) => SendElementToBack(_selectedElement);
-            PropertiesContainer_Panel.Controls.Add(sendToBackBtn);
-        }
-        private void OnPropertyChanged()
-        {
-            Canvas_Panel.Invalidate();
-            TriggerPreviewRefresh();
-        }
-        private void TriggerPreviewRefresh()
-        {
-            NotifyParentValidationChanged();
-        }
-        private void BringElementToFront(BaseElement element)
-        {
-            if (ReportConfig?.Elements == null) { return; }
-
-            int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
-            element.ZOrder = maxZOrder + 1;
-            Canvas_Panel.Invalidate();
-        }
-        private void SendElementToBack(BaseElement element)
-        {
-            if (ReportConfig?.Elements == null) { return; }
-
-            // Shift all other elements up by 1
-            foreach (var e in ReportConfig.Elements.Where(e => e != element))
-            {
-                e.ZOrder++;
-            }
-            element.ZOrder = 0;
-            Canvas_Panel.Invalidate();
         }
 
         // Tool event handlers
@@ -826,7 +971,7 @@ namespace Sales_Tracker.ReportGenerator
                 bounds.X = 20;
                 _selectedElement.Bounds = bounds;
                 Canvas_Panel.Invalidate();
-                UpdatePropertiesPanel();
+                UpdatePropertyValues();
             }
         }
         private void AlignCenter(object sender, EventArgs e)
@@ -837,7 +982,7 @@ namespace Sales_Tracker.ReportGenerator
                 bounds.X = (Canvas_Panel.Width - bounds.Width) / 2;
                 _selectedElement.Bounds = bounds;
                 Canvas_Panel.Invalidate();
-                UpdatePropertiesPanel();
+                UpdatePropertyValues();
             }
         }
         private void DeleteSelected(object sender, EventArgs e)
@@ -847,7 +992,7 @@ namespace Sales_Tracker.ReportGenerator
                 ReportConfig?.RemoveElement(_selectedElement.Id);
                 _selectedElement = null;
                 Canvas_Panel.Invalidate();
-                UpdatePropertiesPanel();
+                HidePropertiesPanel();
                 NotifyParentValidationChanged();
             }
         }

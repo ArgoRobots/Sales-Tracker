@@ -69,22 +69,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <returns>New Y position after adding controls</returns>
         public abstract int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged);
 
-        /// <summary>
-        /// Validates the element configuration.
-        /// </summary>
-        public virtual bool Validate(out string errorMessage)
-        {
-            errorMessage = string.Empty;
-
-            if (Bounds.Width < 10 || Bounds.Height < 10)
-            {
-                errorMessage = "Element size too small";
-                return false;
-            }
-
-            return true;
-        }
-
         // Helper methods
         /// <summary>
         /// Gets the designer color for this element type.
