@@ -81,6 +81,7 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.MouseDown += Canvas_Panel_MouseDown;
             Canvas_Panel.MouseMove += Canvas_Panel_MouseMove;
             Canvas_Panel.MouseUp += Canvas_Panel_MouseUp;
+            Canvas_Panel.KeyDown += Canvas_Panel_KeyDown;
 
             // Set canvas backgrounds
             Canvas_Panel.BackColor = Color.White;
@@ -139,6 +140,9 @@ namespace Sales_Tracker.ReportGenerator
             yPosition += buttonHeight + spacing;
 
             AddToolButton("Align Center", "Center selected elements horizontally", yPosition, AlignCenter);
+            yPosition += buttonHeight + spacing;
+
+            AddToolButton("Align Right", "Align selected elements to the right", yPosition, AlignRight);
             yPosition += buttonHeight + spacing;
 
             AddToolButton("Delete", "Delete selected element", yPosition, DeleteSelected);
@@ -242,6 +246,9 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
+            // Ensure canvas has focus to receive keyboard events
+            Canvas_Panel.Focus();
+
             if (e.Button == MouseButtons.Left)
             {
                 // Check if clicking on a resize handle
@@ -340,6 +347,17 @@ namespace Sales_Tracker.ReportGenerator
             {
                 _propertyUpdateTimer.Stop();
                 UpdatePropertyValues();
+                NotifyParentValidationChanged();
+            }
+        }
+        private void Canvas_Panel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && _selectedElement != null)
+            {
+                ReportConfig?.RemoveElement(_selectedElement.Id);
+                _selectedElement = null;
+                Canvas_Panel.Invalidate();
+                HidePropertiesPanel();
                 NotifyParentValidationChanged();
             }
         }
@@ -980,6 +998,17 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Rectangle bounds = _selectedElement.Bounds;
                 bounds.X = (Canvas_Panel.Width - bounds.Width) / 2;
+                _selectedElement.Bounds = bounds;
+                Canvas_Panel.Invalidate();
+                UpdatePropertyValues();
+            }
+        }
+        private void AlignRight(object sender, EventArgs e)
+        {
+            if (_selectedElement != null)
+            {
+                Rectangle bounds = _selectedElement.Bounds;
+                bounds.X = Canvas_Panel.Width - bounds.Width - 20;
                 _selectedElement.Bounds = bounds;
                 Canvas_Panel.Invalidate();
                 UpdatePropertyValues();
