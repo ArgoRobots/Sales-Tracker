@@ -21,6 +21,7 @@ namespace Sales_Tracker.Classes
         public static string CompanyData_file { get; private set; }
         public static string Purchases_file { get; private set; }
         public static string Sales_file { get; private set; }
+        public static string Rentals_file { get; private set; }
         public static string CategoryPurchases_file { get; private set; }
         public static string CategorySales_file { get; private set; }
         public static string Accountants_file { get; private set; }

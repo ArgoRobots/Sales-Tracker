@@ -15,6 +15,12 @@ namespace Sales_Tracker
         private readonly DataGridViewRow _selectedRow;
         private string _receiptFilePath;
 
+        // Form Width/Height properties
+        private static int ScaledLargeWidth => (int)(300 * DpiHelper.GetRelativeDpiScale()); 
+        private static int ScaledStandardWidth => (int)(150 * DpiHelper.GetRelativeDpiScale()); 
+        private static int ScaledDatePickerWidth => (int)(300 * DpiHelper.GetRelativeDpiScale()); 
+        private static int ScaledControlHeight => (int)(50 * DpiHelper.GetRelativeDpiScale()); 
+
         // Init.
         public ModifyRow_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public ModifyRow_Form(DataGridViewRow row)
@@ -40,6 +46,12 @@ namespace Sales_Tracker
             AttachChangeHandlers();
             SetAccessibleDescriptions();
             UpdateTheme();
+            
+            if (_removeReceipt_ImageButton != null)
+            {
+                DpiHelper.ScaleImageButton(_removeReceipt_ImageButton);
+            }
+            
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -143,17 +155,17 @@ namespace Sales_Tracker
             if (_selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 ConstructControlsForAccountant();
-                left = _controlWidth;
+                left = ScaledStandardWidth; 
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
                 ConstructControlsForCategory();
-                left = _controlWidth;
+                left = ScaledStandardWidth; 
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.Company.ToString())
             {
                 ConstructControlsForCompany();
-                left = _controlWidth;
+                left = ScaledStandardWidth; 
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString())
             {
@@ -172,25 +184,30 @@ namespace Sales_Tracker
         }
         private void SizeControls(int left, int secondLeft)
         {
-            Width = left + 120;
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledPadding = (int)(140 * scale);
+            
+            Width = left + scaledPadding;
             Panel.Width = left;
 
             if (_secondRow)
             {
                 if (secondLeft > left)
                 {
-                    Width = secondLeft + 80;
+                    Width = secondLeft + scaledPadding;
                 }
 
-                Height += 100;
+                Height += (int)(100 * scale);
                 _secondPanel.Width = secondLeft;
+
             }
 
             if (_notes)
             {
-                Height += 180;
+                Height += (int)(180 * scale);
             }
-            MinimumSize = new Size(Math.Max(500, Width), Height);
+            
+            MinimumSize = new Size(Math.Max((int)(600 * scale), Width), Height); // Increased minimum width
         }
         private void CenterControls()
         {
@@ -224,7 +241,7 @@ namespace Sales_Tracker
 
             ConstructLabel(Accountants_Form.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
 
-            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyLetters, true, false, false, Panel);
+            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyLetters, true, false, false, Panel, "standard");
             _controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
 
             ConstructWarningLabel();
@@ -261,7 +278,7 @@ namespace Sales_Tracker
 
             ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Column.CategoryName], 0, Panel);
 
-            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, false, Panel);
+            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, false, Panel, "standard");
             _controlToFocus.TextChanged += Category_TextBox_TextChanged;
 
             ConstructWarningLabel();
@@ -310,7 +327,7 @@ namespace Sales_Tracker
 
             ConstructLabel(Companies_Form.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
 
-            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, false, Panel);
+            _controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, false, Panel, "standard");
             _controlToFocus.TextChanged += Company_TextBox_TextChanged;
 
             ConstructWarningLabel();
@@ -355,44 +372,42 @@ namespace Sales_Tracker
                 {
                     case nameof(Products_Form.Column.ProductID):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel);
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel, "standard");
                         break;
 
                     case nameof(Products_Form.Column.ProductName):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel);
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, true, Panel, "standard");
                         _oldProductName = cellValue;
                         break;
 
                     case nameof(Products_Form.Column.ProductCategory):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
 
-                        Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "standard");
                         SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight, false, false, false, true);
                         ProductCategory_TextBox.TextChanged += ValidateInputs;
                         _oldCategoryName = cellValue;
                         break;
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
-
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
 
-                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "standard");
                         SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
                         break;
 
                     case nameof(Products_Form.Column.CompanyOfOrigin):
-
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
 
-                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "standard");
                         List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
                         SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, true);
                         textBox.TextChanged += ValidateInputs;
                         break;
                 }
-                left += _controlWidth + CustomControls.SpaceBetweenControls;
+                left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
             }
             return left - CustomControls.SpaceBetweenControls;
         }
@@ -433,10 +448,8 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.ID]; }
 
                         ConstructLabel(text, left, Panel);
-
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-
-                        left += _controlWidth + CustomControls.SpaceBetweenControls;
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "large");
+                        left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Accountant):
@@ -447,44 +460,39 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Accountant]; }
 
                         ConstructLabel(text, left, Panel);
-
-                        Guna2TextBox Accountant_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        Guna2TextBox Accountant_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "standard");
                         searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
                         SearchBox.Attach(Accountant_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, true);
                         Accountant_TextBox.TextChanged += ValidateInputs;
-
-                        left += _controlWidth + CustomControls.SpaceBetweenControls;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Product):
                         if (cellValue != ReadOnlyVariables.MultipleItems_text)
                         {
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
-
                             string fullProductPath = GetFullProductPath(_selectedRow, cellValue);
-                            Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                            Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "large");
                             SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                             ProductName_TextBox.TextChanged += ValidateInputs;
-
-                            left += _controlWidth + CustomControls.SpaceBetweenControls;
+                            left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
                             _oldProductName = cellValue;
                         }
 
-                        // Button
-                        byte buttonWidth = 200;
+                        int buttonWidth = (int)(210 * DpiHelper.GetRelativeDpiScale());
                         _receipt_Button = new()
                         {
                             Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
-                            Text = "Change receipt",
+                            Text = "Add receipt",
+                            BackColor = CustomColors.ControlBack,
                             FillColor = CustomColors.ControlBack,
-                            Size = new Size(buttonWidth, _controlHeight),
+                            Size = new Size(buttonWidth, ScaledControlHeight),
                             BorderRadius = 2,
                             BorderThickness = 1,
                             Font = new Font("Segoe UI", 10),
                         };
                         _receipt_Button.Click += (_, _) =>
                         {
-                            // Select file
                             OpenFileDialog dialog = new();
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
@@ -498,7 +506,6 @@ namespace Sales_Tracker
                             }
                         };
                         Panel.Controls.Add(_receipt_Button);
-
                         left += buttonWidth + CustomControls.SpaceBetweenControls;
 
                         // ImageButton
@@ -538,10 +545,11 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Date):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], left, Panel);
+                        _secondRow = true;
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], secondLeft, _secondPanel);
                         DateTime date = Tools.ParseDateOrToday(cellValue);
-                        ConstructDatePicker(left, columnName, date, Panel);
-                        left += _controlWidth;
+                        ConstructDatePicker(secondLeft, columnName, date, _secondPanel);
+                        secondLeft += ScaledDatePickerWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.TotalItems):
@@ -549,47 +557,43 @@ namespace Sales_Tracker
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
                         string productName = _selectedRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
-
-                        if (productName == ReadOnlyVariables.MultipleItems_text)
-                        {
-                            continue;
-                        }
+                        if (productName == ReadOnlyVariables.MultipleItems_text) { continue; }
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.TotalItems], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbers, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbers, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Shipping):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Shipping], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Tax):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Tax], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Fee):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Fee], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Discount):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Discount], secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
@@ -600,8 +604,8 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total]; }
 
                         ConstructLabel(text, secondLeft, _secondPanel);
-                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel);
-                        secondLeft += _smallControlWidth;
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, false, true, true, _secondPanel, "standard");
+                        secondLeft += ScaledStandardWidth;
                         break;
 
                     case nameof(MainMenu_Form.Column.Note):
@@ -614,7 +618,11 @@ namespace Sales_Tracker
                         label.Location = new Point((ClientSize.Width - label.Width) / 2, _secondPanel.Bottom);
                         label.Anchor = AnchorStyles.Top;
 
-                        textBox.Size = new Size(400, 100);
+                        int notesWidth = (int)(525 * DpiHelper.GetRelativeDpiScale());
+                        int notesHeight = (int)(105 * DpiHelper.GetRelativeDpiScale());
+                        
+                        textBox.Size = new Size(notesWidth, notesHeight);
+                        textBox.MinimumSize = new Size(notesWidth, notesHeight);
                         textBox.Location = new Point((ClientSize.Width - textBox.Width) / 2, label.Bottom + CustomControls.SpaceBetweenControls);
                         textBox.Anchor = AnchorStyles.Top;
                         textBox.MaxLength = 1000;
@@ -643,29 +651,29 @@ namespace Sales_Tracker
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], 0, Panel);
 
                         string fullProductPath = GetFullProductPath(_selectedRow, cellValue);
-                        Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel, "standard");
                         SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                         ProductName_TextBox.TextChanged += ValidateInputs;
 
-                        left += _controlWidth + CustomControls.SpaceBetweenControls;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.TotalItems):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.TotalItems], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbers, true, false, true, Panel);
-                        left += _controlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbers, true, false, true, Panel, "standard");
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, false, true, Panel);
-                        left += _controlWidth + CustomControls.SpaceBetweenControls;
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, false, true, Panel, "standard");
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, false, true, Panel);
-                        left += _controlWidth;
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, false, true, Panel, "standard");
+                        left += ScaledStandardWidth;
                         break;
                 }
             }
@@ -1448,14 +1456,13 @@ namespace Sales_Tracker
         }
 
         // Construct controls
-        private readonly byte _controlWidth = 250, _smallControlWidth = 180, _controlHeight = 45;
         private Panel _secondPanel;
         private void ConstructPanel()
         {
             _secondPanel = new()
             {
                 Size = Panel.Size,
-                Location = new Point(Panel.Left, Panel.Bottom),
+                Location = new Point(Panel.Left, Panel.Bottom + 40),
                 Anchor = AnchorStyles.Top
             };
             _secondPanel.Click += CloseSearchBox;
@@ -1479,16 +1486,19 @@ namespace Sales_Tracker
 
             return label;
         }
-        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, CustomControls.KeyPressValidation keyPressValidation, bool pressSaveButton, bool smallWidth, bool closeSearchBox, Control control)
+
+        
+        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, CustomControls.KeyPressValidation keyPressValidation, bool pressSaveButton, bool smallWidth, bool closeSearchBox, Control control, string sizeType = "standard")
         {
             Guna2TextBox textBox = new()
             {
                 Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
-                Height = _controlHeight,
+                Height = ScaledControlHeight, 
                 Name = name,
                 Text = text,
                 ForeColor = CustomColors.Text,
-                Font = new Font("Segoe UI", 10),
+                BackColor = CustomColors.ControlBack,
+                Font = new Font("Segoe UI", 9), 
                 MaxLength = maxLength,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
@@ -1503,11 +1513,18 @@ namespace Sales_Tracker
                 HoverState = { BorderColor = CustomColors.AccentBlue }
             };
 
-            if (smallWidth)
+            switch (sizeType)
             {
-                textBox.Width = _smallControlWidth;
+                case "large":
+                    textBox.Width = ScaledLargeWidth; 
+                    break;
+                case "standard":
+                    textBox.Width = ScaledStandardWidth; 
+                    break;
+                default:
+                    textBox.Width = ScaledStandardWidth;
+                    break;
             }
-            else { textBox.Width = _controlWidth; }
 
             // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
             switch (keyPressValidation)
@@ -1565,13 +1582,14 @@ namespace Sales_Tracker
             Guna2DateTimePicker gDatePicker = new()
             {
                 Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
-                Size = new Size(_controlWidth, _controlHeight),
+                Size = new Size(ScaledDatePickerWidth, ScaledControlHeight), 
                 FillColor = CustomColors.ControlBack,
                 ForeColor = CustomColors.Text,
                 BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 3,
                 Name = name,
                 Value = value,
+                Font = new Font("Segoe UI", 9F), // Changed to match other text boxes
                 AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                 HoverState = { BorderColor = CustomColors.AccentBlue }
             };
