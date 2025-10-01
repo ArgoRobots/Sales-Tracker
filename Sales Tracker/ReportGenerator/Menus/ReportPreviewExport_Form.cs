@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Language;
+using Sales_Tracker.UI;
 using System.Diagnostics;
 
 namespace Sales_Tracker.ReportGenerator
@@ -14,10 +15,7 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
         private ExportSettings _exportSettings;
-        private float _currentZoom = 1.0f;
-        private const float _zoomIncrement = 0.25f;
-        private const float _minZoom = 0.25f;
-        private const float _maxZoom = 4.0f;
+        private ZoomableImageViewer _zoomableViewer;  // Handler for zoom/pan functionality
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -45,14 +43,30 @@ namespace Sales_Tracker.ReportGenerator
             ParentReportForm = parentForm;
 
             InitializeExportSettings();
+            SetupZoomableViewer();
             SetupPageSettings();
             SetupExportSettings();
-            SetupPreviewControls();
             StoreInitialSizes();
         }
         private void InitializeExportSettings()
         {
             _exportSettings = new ExportSettings();
+        }
+        private void SetupZoomableViewer()
+        {
+            // Create the zoomable viewer handler and attach it to the existing PictureBox
+            _zoomableViewer = new ZoomableImageViewer(Preview_PictureBox);
+
+            // Subscribe to zoom changed event
+            _zoomableViewer.ZoomChanged += (s, e) =>
+            {
+                ZoomStatus_Label.Text = _zoomableViewer.ZoomPercentageText;
+            };
+
+            // Add event handlers
+            ZoomIn_Button.Click += (s, e) => _zoomableViewer.ZoomIn();
+            ZoomOut_Button.Click += (s, e) => _zoomableViewer.ZoomOut();
+            FitToWindow_Button.Click += (s, e) => _zoomableViewer.FitToWindow();
         }
         private void SetupPageSettings()
         {
@@ -73,6 +87,7 @@ namespace Sales_Tracker.ReportGenerator
         private void SetupExportSettings()
         {
             // Setup format combo box
+            ExportFormat_ComboBox.Items.Clear();
             ExportFormat_ComboBox.Items.Add("PNG Image (*.png)");
             ExportFormat_ComboBox.Items.Add("JPEG Image (*.jpg)");
             ExportFormat_ComboBox.SelectedIndex = 0;
@@ -83,13 +98,8 @@ namespace Sales_Tracker.ReportGenerator
 
             // Setup checkboxes
             OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
-            IncludeHeader_CheckBox.Checked = ReportConfig.ShowHeader;
-            IncludeFooter_CheckBox.Checked = ReportConfig.ShowFooter;
-        }
-        private void SetupPreviewControls()
-        {
-            Preview_PictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-            Preview_PictureBox.BackColor = Color.White;
+            IncludeHeader_CheckBox.Checked = ReportConfig?.ShowHeader ?? true;
+            IncludeFooter_CheckBox.Checked = ReportConfig?.ShowFooter ?? true;
         }
         private void StoreInitialSizes()
         {
@@ -120,29 +130,6 @@ namespace Sales_Tracker.ReportGenerator
 
             // Position the right panel
             RightSettings_Panel.Left = LeftPreview_Panel.Width;
-        }
-
-        // Event handlers
-        private void ZoomOut_Button_Click(object sender, EventArgs e)
-        {
-            if (_currentZoom > _minZoom)
-            {
-                _currentZoom -= _zoomIncrement;
-                GeneratePreview();
-            }
-        }
-        private void ZoomIn_Button_Click(object sender, EventArgs e)
-        {
-            if (_currentZoom < _maxZoom)
-            {
-                _currentZoom += _zoomIncrement;
-                GeneratePreview();
-            }
-        }
-        private void FitToWindow_Button_Click(object sender, EventArgs e)
-        {
-            _currentZoom = 1.0f;
-            GeneratePreview();
         }
         private void BrowseExportPath_Button_Click(object sender, EventArgs e)
         {
@@ -243,7 +230,7 @@ namespace Sales_Tracker.ReportGenerator
             {
                 if (ReportConfig == null)
                 {
-                    Preview_PictureBox.Image = CreatePreviewPlaceholder();
+                    _zoomableViewer.Image = CreatePreviewPlaceholder();
                     return;
                 }
 
@@ -252,15 +239,24 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Create renderer and generate preview
                 ReportRenderer renderer = new(ReportConfig, _exportSettings);
-                Bitmap previewImage = renderer.RenderToPreview(
-                    (int)(Preview_PictureBox.Width * _currentZoom),
-                    (int)(Preview_PictureBox.Height * _currentZoom)
-                );
 
-                // Dispose previous image to prevent memory leaks
-                Preview_PictureBox.Image?.Dispose();
+                // Generate at higher resolution for better quality when zooming
+                int previewWidth = Math.Max(1600, Preview_PictureBox.Width * 2);
+                int previewHeight = Math.Max(1200, Preview_PictureBox.Height * 2);
 
-                Preview_PictureBox.Image = previewImage;
+                Bitmap previewImage = renderer.RenderToPreview(previewWidth, previewHeight);
+
+                // Set the image in the zoomable viewer
+                if (_zoomableViewer.Image != null)
+                {
+                    Image oldImage = _zoomableViewer.Image;
+                    _zoomableViewer.Image = previewImage;
+                    oldImage.Dispose(); // Dispose after setting new image
+                }
+                else
+                {
+                    _zoomableViewer.Image = previewImage;
+                }
             }
             catch (Exception ex)
             {
@@ -271,7 +267,7 @@ namespace Sales_Tracker.ReportGenerator
                     CustomMessageBoxButtons.Ok
                 );
 
-                Preview_PictureBox.Image = CreatePreviewPlaceholder();
+                _zoomableViewer.Image = CreatePreviewPlaceholder();
             }
         }
         private static Bitmap CreatePreviewPlaceholder()
@@ -294,7 +290,7 @@ namespace Sales_Tracker.ReportGenerator
                 using (Font font = new("Segoe UI", 10))
                 using (SolidBrush brush = new(Color.LightGray))
                 {
-                    string text = LanguageManager.TranslateString("Click Refresh to generate preview");
+                    string text = LanguageManager.TranslateString("Configure settings and generate preview");
                     SizeF textSize = g.MeasureString(text, font);
                     float x = (bitmap.Width - textSize.Width) / 2;
                     int y = (bitmap.Height / 2) + 30;
