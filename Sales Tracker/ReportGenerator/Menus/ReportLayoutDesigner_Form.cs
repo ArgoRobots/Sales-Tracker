@@ -127,7 +127,14 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!_isUpdating && Visible)
             {
-                OnStepActivated();
+                if (ReportConfig == null)
+                {
+                    NotifyParentValidationChanged();
+                    return;
+                }
+
+                PerformUpdate(SynchronizeCanvasWithSelection);
+                NotifyParentValidationChanged();
             }
         }
         private void ReportLayoutDesigner_Form_Resize(object sender, EventArgs e)
@@ -475,21 +482,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Called when the form becomes active (user navigates to this step).
-        /// </summary>
-        public void OnStepActivated()
-        {
-            if (ReportConfig == null)
-            {
-                NotifyParentValidationChanged();
-                return;
-            }
-
-            PerformUpdate(SynchronizeCanvasWithSelection);
-            NotifyParentValidationChanged();
         }
 
         /// <summary>

@@ -83,6 +83,8 @@ namespace Sales_Tracker.ReportGenerator
 
             // Setup checkboxes
             OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
+            IncludeHeader_CheckBox.Checked = ReportConfig.ShowHeader;
+            IncludeFooter_CheckBox.Checked = ReportConfig.ShowFooter;
         }
         private void SetupPreviewControls()
         {
@@ -101,7 +103,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!_isUpdating && Visible)
             {
-                OnStepActivated();
+                LoadFromReportConfiguration();
+                NotifyParentValidationChanged();
             }
         }
         private void ReportPreviewExport_Form_Resize(object sender, EventArgs e)
@@ -208,9 +211,33 @@ namespace Sales_Tracker.ReportGenerator
                 UpdateExportSettingsFromUI();
             }
         }
+        private void IncludeHeader_Label_Click(object sender, EventArgs e)
+        {
+            IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
+        }
+        private void IncludeFooter_Label_Click(object sender, EventArgs e)
+        {
+            IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
+        }
         private void OpenAfterExport_Label_Click(object sender, EventArgs e)
         {
             OpenAfterExport_CheckBox.Checked = !OpenAfterExport_CheckBox.Checked;
+        }
+        private void IncludeHeader_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_isUpdating && ReportConfig != null)
+            {
+                ReportConfig.ShowHeader = IncludeHeader_CheckBox.Checked;
+                GeneratePreview();
+            }
+        }
+        private void IncludeFooter_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_isUpdating && ReportConfig != null)
+            {
+                ReportConfig.ShowFooter = IncludeFooter_CheckBox.Checked;
+                GeneratePreview();
+            }
         }
 
         // Preview generation
@@ -481,15 +508,6 @@ namespace Sales_Tracker.ReportGenerator
 
                 GeneratePreview();
             });
-        }
-
-        /// <summary>
-        /// Called when the form becomes active (user navigates to this step).
-        /// </summary>
-        public void OnStepActivated()
-        {
-            LoadFromReportConfiguration();
-            NotifyParentValidationChanged();
         }
 
         // Helper methods for base functionality
