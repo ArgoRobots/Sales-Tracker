@@ -123,10 +123,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Event handlers
-        private void RefreshPreview_Button_Click(object sender, EventArgs e)
-        {
-            GeneratePreview();
-        }
         private void ZoomOut_Button_Click(object sender, EventArgs e)
         {
             if (_currentZoom > _minZoom)
@@ -334,8 +330,6 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Show progress indication
                 UseWaitCursor = true;
-                RefreshPreview_Button.Text = LanguageManager.TranslateString("Exporting...");
-                RefreshPreview_Button.Enabled = false;
 
                 try
                 {
@@ -365,8 +359,6 @@ namespace Sales_Tracker.ReportGenerator
                 finally
                 {
                     UseWaitCursor = false;
-                    RefreshPreview_Button.Text = LanguageManager.TranslateString("Refresh");
-                    RefreshPreview_Button.Enabled = true;
                 }
             }
             catch (Exception ex)

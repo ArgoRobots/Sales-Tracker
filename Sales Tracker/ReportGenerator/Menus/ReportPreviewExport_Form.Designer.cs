@@ -50,18 +50,16 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             RightSettings_Panel = new Guna.UI2.WinForms.Guna2Panel();
             PageSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             PageSize_Label = new Label();
@@ -85,7 +83,6 @@
             Quality_ValueLabel = new Label();
             LeftPreview_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Preview_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
-            RefreshPreview_Button = new Guna.UI2.WinForms.Guna2Button();
             Preview_PictureBox = new PictureBox();
             ZoomIn_Button = new Guna.UI2.WinForms.Guna2Button();
             ZoomOut_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -465,13 +462,13 @@
             // 
             LeftPreview_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftPreview_Panel.Controls.Add(Preview_GroupBox);
-            LeftPreview_Panel.CustomizableEdges = customizableEdges33;
+            LeftPreview_Panel.CustomizableEdges = customizableEdges31;
             LeftPreview_Panel.FillColor = Color.Transparent;
             LeftPreview_Panel.Location = new Point(0, 0);
             LeftPreview_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftPreview_Panel.Name = "LeftPreview_Panel";
             LeftPreview_Panel.Padding = new Padding(28, 28, 14, 14);
-            LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges32;
             LeftPreview_Panel.Size = new Size(960, 900);
             LeftPreview_Panel.TabIndex = 0;
             // 
@@ -481,43 +478,22 @@
             Preview_GroupBox.BackColor = Color.Transparent;
             Preview_GroupBox.BorderRadius = 8;
             Preview_GroupBox.BorderThickness = 0;
-            Preview_GroupBox.Controls.Add(RefreshPreview_Button);
             Preview_GroupBox.Controls.Add(Preview_PictureBox);
             Preview_GroupBox.Controls.Add(ZoomIn_Button);
             Preview_GroupBox.Controls.Add(ZoomOut_Button);
             Preview_GroupBox.Controls.Add(FitToWindow_Button);
             Preview_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Preview_GroupBox.CustomizableEdges = customizableEdges31;
+            Preview_GroupBox.CustomizableEdges = customizableEdges29;
             Preview_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Preview_GroupBox.ForeColor = Color.White;
             Preview_GroupBox.Location = new Point(28, 28);
             Preview_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Preview_GroupBox.Name = "Preview_GroupBox";
             Preview_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Preview_GroupBox.Size = new Size(918, 858);
             Preview_GroupBox.TabIndex = 0;
             Preview_GroupBox.Text = "Report Preview";
-            // 
-            // RefreshPreview_Button
-            // 
-            RefreshPreview_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            RefreshPreview_Button.BackColor = Color.Transparent;
-            RefreshPreview_Button.BorderColor = Color.LightGray;
-            RefreshPreview_Button.BorderRadius = 2;
-            RefreshPreview_Button.BorderThickness = 1;
-            RefreshPreview_Button.CustomizableEdges = customizableEdges23;
-            RefreshPreview_Button.FillColor = Color.White;
-            RefreshPreview_Button.Font = new Font("Segoe UI", 9F);
-            RefreshPreview_Button.ForeColor = Color.Black;
-            RefreshPreview_Button.Location = new Point(746, 789);
-            RefreshPreview_Button.Margin = new Padding(4, 5, 4, 5);
-            RefreshPreview_Button.Name = "RefreshPreview_Button";
-            RefreshPreview_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            RefreshPreview_Button.Size = new Size(150, 50);
-            RefreshPreview_Button.TabIndex = 0;
-            RefreshPreview_Button.Text = "Refresh";
-            RefreshPreview_Button.Click += RefreshPreview_Button_Click;
             // 
             // Preview_PictureBox
             // 
@@ -539,14 +515,14 @@
             ZoomIn_Button.BorderColor = Color.LightGray;
             ZoomIn_Button.BorderRadius = 2;
             ZoomIn_Button.BorderThickness = 1;
-            ZoomIn_Button.CustomizableEdges = customizableEdges25;
+            ZoomIn_Button.CustomizableEdges = customizableEdges23;
             ZoomIn_Button.FillColor = Color.White;
             ZoomIn_Button.Font = new Font("Segoe UI", 18F);
             ZoomIn_Button.ForeColor = Color.Black;
             ZoomIn_Button.Location = new Point(144, 789);
             ZoomIn_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomIn_Button.Name = "ZoomIn_Button";
-            ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             ZoomIn_Button.Size = new Size(115, 50);
             ZoomIn_Button.TabIndex = 1;
             ZoomIn_Button.Text = "+";
@@ -559,14 +535,14 @@
             ZoomOut_Button.BorderColor = Color.LightGray;
             ZoomOut_Button.BorderRadius = 2;
             ZoomOut_Button.BorderThickness = 1;
-            ZoomOut_Button.CustomizableEdges = customizableEdges27;
+            ZoomOut_Button.CustomizableEdges = customizableEdges25;
             ZoomOut_Button.FillColor = Color.White;
             ZoomOut_Button.Font = new Font("Segoe UI", 18F);
             ZoomOut_Button.ForeColor = Color.Black;
             ZoomOut_Button.Location = new Point(21, 789);
             ZoomOut_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomOut_Button.Name = "ZoomOut_Button";
-            ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
             ZoomOut_Button.Size = new Size(115, 50);
             ZoomOut_Button.TabIndex = 2;
             ZoomOut_Button.Text = "-";
@@ -579,14 +555,14 @@
             FitToWindow_Button.BorderColor = Color.LightGray;
             FitToWindow_Button.BorderRadius = 2;
             FitToWindow_Button.BorderThickness = 1;
-            FitToWindow_Button.CustomizableEdges = customizableEdges29;
+            FitToWindow_Button.CustomizableEdges = customizableEdges27;
             FitToWindow_Button.FillColor = Color.White;
             FitToWindow_Button.Font = new Font("Segoe UI", 9F);
             FitToWindow_Button.ForeColor = Color.Black;
             FitToWindow_Button.Location = new Point(267, 789);
             FitToWindow_Button.Margin = new Padding(4, 5, 4, 5);
             FitToWindow_Button.Name = "FitToWindow_Button";
-            FitToWindow_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            FitToWindow_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
             FitToWindow_Button.Size = new Size(200, 50);
             FitToWindow_Button.TabIndex = 3;
             FitToWindow_Button.Text = "Fit to window";
@@ -620,7 +596,6 @@
         private Guna.UI2.WinForms.Guna2Panel RightSettings_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Preview_GroupBox;
         private System.Windows.Forms.PictureBox Preview_PictureBox;
-        private Guna.UI2.WinForms.Guna2Button RefreshPreview_Button;
         private Guna.UI2.WinForms.Guna2Button ZoomIn_Button;
         private Guna.UI2.WinForms.Guna2Button ZoomOut_Button;
         private Guna.UI2.WinForms.Guna2Button FitToWindow_Button;
