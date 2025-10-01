@@ -402,8 +402,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 ReportConfig.Title = ReportTitle_TextBox.Text;
             }
-
-            ReportConfig.LastModified = DateTime.Now;
         }
         public void LoadFromReportConfiguration()
         {

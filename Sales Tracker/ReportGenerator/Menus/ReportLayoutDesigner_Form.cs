@@ -125,16 +125,9 @@ namespace Sales_Tracker.ReportGenerator
         // Form event handlers
         private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && Visible)
             {
-                if (Visible)
-                {
-                    OnStepActivated();
-                }
-                else
-                {
-                    OnStepDeactivated();
-                }
+                OnStepActivated();
             }
         }
         private void ReportLayoutDesigner_Form_Resize(object sender, EventArgs e)
@@ -483,55 +476,160 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public void UpdateReportConfiguration()
-        {
-            if (ReportConfig == null) { return; }
-
-            // Configuration is updated in real-time as elements are moved
-            ReportConfig.LastModified = DateTime.Now;
-        }
-        public void LoadFromReportConfiguration()
-        {
-            if (ReportConfig == null) { return; }
-
-            PerformUpdate(() =>
-            {
-                // Auto-generate elements from template if no elements exist
-                if (ReportConfig.Elements.Count == 0 && !string.IsNullOrEmpty(ReportConfig.TemplateName))
-                {
-                    ReportConfiguration template = ReportTemplates.CreateFromTemplate(ReportConfig.TemplateName);
-
-                    // Copy elements from template to current configuration
-                    foreach (ReportElement element in template.Elements)
-                    {
-                        ReportConfig.AddElement(element.Clone());
-                    }
-                }
-                else if (ReportConfig.Elements.Count == 0 && ReportConfig.Filters.SelectedChartTypes.Count > 0)
-                {
-                    GenerateElementsFromTemplate();
-                }
-
-                Canvas_Panel.Invalidate();
-            });
-        }
 
         /// <summary>
         /// Called when the form becomes active (user navigates to this step).
         /// </summary>
         public void OnStepActivated()
         {
-            LoadFromReportConfiguration();
+            if (ReportConfig == null)
+            {
+                NotifyParentValidationChanged();
+                return;
+            }
+
+            PerformUpdate(SynchronizeCanvasWithSelection);
             NotifyParentValidationChanged();
         }
 
         /// <summary>
-        /// Called when the form becomes inactive (user navigates away from this step).
+        /// Synchronizes the canvas elements with the current chart selection.
         /// </summary>
-        public void OnStepDeactivated()
+        private void SynchronizeCanvasWithSelection()
         {
-            UpdateReportConfiguration();
+            // Check if selected charts have changed
+            List<MainMenu_Form.ChartDataType> currentSelectedCharts = ReportConfig.Filters.SelectedChartTypes;
+
+            // Get existing chart elements
+            List<ReportElement> existingChartElements = ReportConfig.Elements
+                .Where(e => e.Type == ReportElementType.Chart && e.Data is MainMenu_Form.ChartDataType)
+                .ToList();
+
+            // Extract chart types from existing elements
+            HashSet<MainMenu_Form.ChartDataType> existingChartTypes = [.. existingChartElements.Select(e => (MainMenu_Form.ChartDataType)e.Data)];
+
+            // Find charts that were removed from selection
+            List<ReportElement> elementsToRemove = existingChartElements
+                .Where(e => !currentSelectedCharts.Contains((MainMenu_Form.ChartDataType)e.Data))
+                .ToList();
+
+            // Find newly selected charts that don't have elements
+            List<MainMenu_Form.ChartDataType> chartsToAdd = currentSelectedCharts
+                .Where(ct => !existingChartTypes.Contains(ct))
+                .ToList();
+
+            // Remove elements for deselected charts
+            foreach (ReportElement element in elementsToRemove)
+            {
+                ReportConfig.RemoveElement(element.Id);
+            }
+
+            // Add elements for newly selected charts
+            if (chartsToAdd.Count > 0)
+            {
+                AddNewChartElements(chartsToAdd);
+            }
+
+            // If no elements exist at all, generate from template or selected charts
+            if (ReportConfig.Elements.Count == 0)
+            {
+                if (!string.IsNullOrEmpty(ReportConfig.TemplateName))
+                {
+                    LoadElementsFromTemplate(currentSelectedCharts);
+                }
+                else if (currentSelectedCharts.Count > 0)
+                {
+                    // Generate elements for all selected charts
+                    GenerateElementsFromTemplate();
+                }
+            }
+
+            Canvas_Panel.Invalidate();
         }
+
+        /// <summary>
+        /// Loads elements from a template, filtered by selected charts.
+        /// </summary>
+        private void LoadElementsFromTemplate(List<MainMenu_Form.ChartDataType> selectedCharts)
+        {
+            ReportConfiguration template = ReportTemplates.CreateFromTemplate(ReportConfig.TemplateName);
+
+            // Only add chart elements that match selected charts
+            foreach (ReportElement element in template.Elements)
+            {
+                if (element.Type == ReportElementType.Chart && element.Data is MainMenu_Form.ChartDataType chartType)
+                {
+                    if (selectedCharts.Contains(chartType))
+                    {
+                        ReportConfig.AddElement(element.Clone());
+                    }
+                }
+                else
+                {
+                    // Add non-chart elements from template
+                    ReportConfig.AddElement(element.Clone());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds new chart elements to the canvas for the specified chart types.
+        /// </summary>
+        private void AddNewChartElements(List<MainMenu_Form.ChartDataType> chartTypes)
+        {
+            if (chartTypes == null || chartTypes.Count == 0) return;
+
+            // Find a good position for new charts (avoid overlap)
+            int x = 50;
+            int y = 50;
+            const int chartWidth = 350;
+            const int chartHeight = 250;
+            const int spacing = 20;
+
+            // Get existing element bounds to avoid overlap
+            List<Rectangle> existingBounds = ReportConfig.Elements
+                .Where(e => e.IsVisible)
+                .Select(e => e.Bounds)
+                .ToList();
+
+            foreach (MainMenu_Form.ChartDataType chartType in chartTypes)
+            {
+                // Find a non-overlapping position
+                Rectangle proposedBounds = new(x, y, chartWidth, chartHeight);
+
+                while (existingBounds.Any(b => b.IntersectsWith(proposedBounds)))
+                {
+                    x += chartWidth + spacing;
+                    if (x + chartWidth > Canvas_Panel.Width - 50)
+                    {
+                        x = 50;
+                        y += chartHeight + spacing;
+                    }
+                    proposedBounds = new Rectangle(x, y, chartWidth, chartHeight);
+                }
+
+                // Create the new element
+                ReportElement element = new()
+                {
+                    Type = ReportElementType.Chart,
+                    Data = chartType,
+                    DisplayName = GetChartDisplayName(chartType),
+                    Bounds = proposedBounds
+                };
+
+                ReportConfig.AddElement(element);
+                existingBounds.Add(proposedBounds);
+
+                // Move to next position for the next chart
+                x += chartWidth + spacing;
+                if (x + chartWidth > Canvas_Panel.Width - 50)
+                {
+                    x = 50;
+                    y += chartHeight + spacing;
+                }
+            }
+        }
+
         private void GenerateElementsFromTemplate()
         {
             if (ReportConfig?.Filters?.SelectedChartTypes == null) { return; }

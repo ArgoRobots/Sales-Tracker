@@ -50,7 +50,7 @@ namespace Sales_Tracker.ReportGenerator
             Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.Orientation);
 
             // Calculate dimensions based on DPI
-            float scaleFactor = _exportSettings.DPI / 96f; // 96 DPI is standard
+            float scaleFactor = _exportSettings.DPI / 96f;  // 96 DPI is standard
             int exportWidth = (int)(pageSize.Width * scaleFactor);
             int exportHeight = (int)(pageSize.Height * scaleFactor);
 

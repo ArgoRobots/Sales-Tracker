@@ -133,11 +133,6 @@
         public string Description { get; set; }
 
         /// <summary>
-        /// Last modified timestamp.
-        /// </summary>
-        public DateTime LastModified { get; set; } = DateTime.Now;
-
-        /// <summary>
         /// Page margins in pixels.
         /// </summary>
         public Margins PageMargins { get; set; } = new Margins(40);
@@ -179,7 +174,6 @@
             {
                 element.ZOrder = Elements.Count;
                 Elements.Add(element);
-                LastModified = DateTime.Now;
             }
         }
 
@@ -192,7 +186,6 @@
             if (element != null)
             {
                 Elements.Remove(element);
-                LastModified = DateTime.Now;
                 return true;
             }
             return false;

@@ -105,16 +105,9 @@ namespace Sales_Tracker.ReportGenerator
         // Form event handlers
         private void ReportPreviewExport_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && Visible)
             {
-                if (Visible)
-                {
-                    OnStepActivated();
-                }
-                else
-                {
-                    OnStepDeactivated();
-                }
+                OnStepActivated();
             }
         }
         private void ReportPreviewExport_Form_Resize(object sender, EventArgs e)
@@ -447,14 +440,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public void UpdateReportConfiguration()
-        {
-            if (ReportConfig == null) { return; }
-
-            // Update page settings
-            UpdateReportConfigFromPageSettings();
-            ReportConfig.LastModified = DateTime.Now;
-        }
         public void LoadFromReportConfiguration()
         {
             if (ReportConfig == null) { return; }
@@ -486,14 +471,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             LoadFromReportConfiguration();
             NotifyParentValidationChanged();
-        }
-
-        /// <summary>
-        /// Called when the form becomes inactive (user navigates away from this step).
-        /// </summary>
-        public void OnStepDeactivated()
-        {
-            UpdateReportConfiguration();
         }
 
         // Helper methods for base functionality
