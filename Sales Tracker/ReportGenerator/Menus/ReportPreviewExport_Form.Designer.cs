@@ -105,7 +105,7 @@
             RightSettings_Panel.Location = new Point(961, 0);
             RightSettings_Panel.Margin = new Padding(4, 5, 4, 5);
             RightSettings_Panel.Name = "RightSettings_Panel";
-            RightSettings_Panel.Padding = new Padding(14, 28, 28, 14);
+            RightSettings_Panel.Padding = new Padding(7, 28, 28, 14);
             RightSettings_Panel.ShadowDecoration.CustomizableEdges = customizableEdges22;
             RightSettings_Panel.Size = new Size(540, 900);
             RightSettings_Panel.TabIndex = 1;
@@ -124,12 +124,12 @@
             PageSettings_GroupBox.CustomizableEdges = customizableEdges5;
             PageSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             PageSettings_GroupBox.ForeColor = Color.White;
-            PageSettings_GroupBox.Location = new Point(14, 28);
+            PageSettings_GroupBox.Location = new Point(7, 28);
             PageSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             PageSettings_GroupBox.Name = "PageSettings_GroupBox";
             PageSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             PageSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            PageSettings_GroupBox.Size = new Size(498, 223);
+            PageSettings_GroupBox.Size = new Size(505, 223);
             PageSettings_GroupBox.TabIndex = 0;
             PageSettings_GroupBox.Text = "Page Settings";
             // 
@@ -221,12 +221,12 @@
             ExportSettings_GroupBox.CustomizableEdges = customizableEdges19;
             ExportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ExportSettings_GroupBox.ForeColor = Color.White;
-            ExportSettings_GroupBox.Location = new Point(14, 271);
+            ExportSettings_GroupBox.Location = new Point(7, 271);
             ExportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ExportSettings_GroupBox.Name = "ExportSettings_GroupBox";
             ExportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ExportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            ExportSettings_GroupBox.Size = new Size(498, 615);
+            ExportSettings_GroupBox.Size = new Size(505, 615);
             ExportSettings_GroupBox.TabIndex = 1;
             ExportSettings_GroupBox.Text = "Export Settings";
             // 
@@ -362,7 +362,7 @@
             ExportPath_TextBox.ReadOnly = true;
             ExportPath_TextBox.SelectedText = "";
             ExportPath_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ExportPath_TextBox.Size = new Size(295, 50);
+            ExportPath_TextBox.Size = new Size(302, 50);
             ExportPath_TextBox.TabIndex = 1;
             // 
             // BrowseExportPath_Button
@@ -376,7 +376,7 @@
             BrowseExportPath_Button.FillColor = Color.White;
             BrowseExportPath_Button.Font = new Font("Segoe UI", 9F);
             BrowseExportPath_Button.ForeColor = Color.Black;
-            BrowseExportPath_Button.Location = new Point(328, 91);
+            BrowseExportPath_Button.Location = new Point(335, 91);
             BrowseExportPath_Button.Margin = new Padding(4, 5, 4, 5);
             BrowseExportPath_Button.Name = "BrowseExportPath_Button";
             BrowseExportPath_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -438,7 +438,7 @@
             Quality_TrackBar.Margin = new Padding(4, 5, 4, 5);
             Quality_TrackBar.Minimum = 1;
             Quality_TrackBar.Name = "Quality_TrackBar";
-            Quality_TrackBar.Size = new Size(455, 38);
+            Quality_TrackBar.Size = new Size(462, 38);
             Quality_TrackBar.TabIndex = 9;
             Quality_TrackBar.ThumbColor = Color.FromArgb(94, 148, 255);
             Quality_TrackBar.Value = 95;
@@ -451,7 +451,7 @@
             Quality_ValueLabel.BackColor = Color.Transparent;
             Quality_ValueLabel.Font = new Font("Segoe UI", 9.5F);
             Quality_ValueLabel.ForeColor = SystemColors.ControlText;
-            Quality_ValueLabel.Location = new Point(435, 307);
+            Quality_ValueLabel.Location = new Point(442, 307);
             Quality_ValueLabel.Margin = new Padding(4, 0, 4, 0);
             Quality_ValueLabel.Name = "Quality_ValueLabel";
             Quality_ValueLabel.Size = new Size(48, 25);
@@ -467,7 +467,7 @@
             LeftPreview_Panel.Location = new Point(0, 0);
             LeftPreview_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftPreview_Panel.Name = "LeftPreview_Panel";
-            LeftPreview_Panel.Padding = new Padding(28, 28, 14, 14);
+            LeftPreview_Panel.Padding = new Padding(28, 28, 7, 14);
             LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges32;
             LeftPreview_Panel.Size = new Size(960, 900);
             LeftPreview_Panel.TabIndex = 0;
@@ -491,7 +491,7 @@
             Preview_GroupBox.Name = "Preview_GroupBox";
             Preview_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            Preview_GroupBox.Size = new Size(918, 858);
+            Preview_GroupBox.Size = new Size(925, 858);
             Preview_GroupBox.TabIndex = 0;
             Preview_GroupBox.Text = "Report Preview";
             // 
@@ -503,7 +503,7 @@
             Preview_PictureBox.Location = new Point(21, 83);
             Preview_PictureBox.Margin = new Padding(4, 5, 4, 5);
             Preview_PictureBox.Name = "Preview_PictureBox";
-            Preview_PictureBox.Size = new Size(875, 689);
+            Preview_PictureBox.Size = new Size(882, 689);
             Preview_PictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             Preview_PictureBox.TabIndex = 0;
             Preview_PictureBox.TabStop = false;

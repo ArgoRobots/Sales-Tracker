@@ -492,7 +492,6 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Safely updates UI controls without triggering events.
         /// </summary>
-        /// <param name="updateAction">Action to perform during update</param>
         private void PerformUpdate(Action updateAction)
         {
             if (updateAction == null) { return; }

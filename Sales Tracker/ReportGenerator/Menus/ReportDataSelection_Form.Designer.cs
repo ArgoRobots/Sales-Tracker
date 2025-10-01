@@ -99,7 +99,7 @@
             Right_Panel.Location = new Point(900, 0);
             Right_Panel.Margin = new Padding(4, 5, 4, 5);
             Right_Panel.Name = "Right_Panel";
-            Right_Panel.Padding = new Padding(14, 28, 28, 14);
+            Right_Panel.Padding = new Padding(7, 28, 28, 14);
             Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Right_Panel.Size = new Size(600, 900);
             Right_Panel.TabIndex = 1;
@@ -125,12 +125,12 @@
             Filters_GroupBox.CustomizableEdges = customizableEdges11;
             Filters_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Filters_GroupBox.ForeColor = Color.White;
-            Filters_GroupBox.Location = new Point(14, 192);
+            Filters_GroupBox.Location = new Point(7, 192);
             Filters_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Filters_GroupBox.Name = "Filters_GroupBox";
             Filters_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Filters_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Filters_GroupBox.Size = new Size(558, 697);
+            Filters_GroupBox.Size = new Size(565, 697);
             Filters_GroupBox.TabIndex = 1;
             Filters_GroupBox.Text = "Data Filters";
             // 
@@ -329,12 +329,12 @@
             ReportSettings_GroupBox.CustomizableEdges = customizableEdges15;
             ReportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ReportSettings_GroupBox.ForeColor = Color.White;
-            ReportSettings_GroupBox.Location = new Point(14, 28);
+            ReportSettings_GroupBox.Location = new Point(7, 28);
             ReportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ReportSettings_GroupBox.Name = "ReportSettings_GroupBox";
             ReportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ReportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            ReportSettings_GroupBox.Size = new Size(558, 150);
+            ReportSettings_GroupBox.Size = new Size(565, 150);
             ReportSettings_GroupBox.TabIndex = 0;
             ReportSettings_GroupBox.Text = "Report Settings";
             // 
@@ -366,7 +366,7 @@
             ReportTitle_TextBox.PlaceholderText = "Enter report title";
             ReportTitle_TextBox.SelectedText = "";
             ReportTitle_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ReportTitle_TextBox.Size = new Size(300, 50);
+            ReportTitle_TextBox.Size = new Size(307, 50);
             ReportTitle_TextBox.TabIndex = 1;
             ReportTitle_TextBox.TextChanged += ReportTitle_TextBox_TextChanged;
             // 
@@ -380,7 +380,7 @@
             Left_Panel.Location = new Point(0, 0);
             Left_Panel.Margin = new Padding(4, 5, 4, 5);
             Left_Panel.Name = "Left_Panel";
-            Left_Panel.Padding = new Padding(28, 28, 14, 14);
+            Left_Panel.Padding = new Padding(28, 28, 7, 14);
             Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Left_Panel.Size = new Size(900, 900);
             Left_Panel.TabIndex = 0;
@@ -402,7 +402,7 @@
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            ChartSelection_GroupBox.Size = new Size(858, 692);
+            ChartSelection_GroupBox.Size = new Size(865, 692);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
             // 
@@ -463,7 +463,7 @@
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Template_GroupBox.Size = new Size(858, 150);
+            Template_GroupBox.Size = new Size(865, 150);
             Template_GroupBox.TabIndex = 1;
             Template_GroupBox.Text = "Report Templates";
             // 

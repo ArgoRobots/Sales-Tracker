@@ -150,11 +150,6 @@ namespace Sales_Tracker.Theme
                         panel.BackColor = CustomColors.MainBackground;
                         break;
 
-                    case GroupBox groupBox:
-                        groupBox.BackColor = CustomColors.MainBackground;
-                        groupBox.ForeColor = CustomColors.Text;
-                        break;
-
                     case Guna2TrackBar guna2TrackBar:
                         guna2TrackBar.ThumbColor = CustomColors.AccentBlue;
                         break;

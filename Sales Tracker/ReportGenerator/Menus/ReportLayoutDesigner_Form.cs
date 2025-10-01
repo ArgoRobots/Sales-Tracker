@@ -11,6 +11,7 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportLayoutDesigner_Form : Form
     {
         // Properties
+        private static ReportLayoutDesigner_Form _instance;
         private int _initialFormWidth;
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
@@ -54,10 +55,14 @@ namespace Sales_Tracker.ReportGenerator
             Top, Bottom, Left, Right
         }
 
+        // Getters
+        public static ReportLayoutDesigner_Form Instance => _instance;
+
         // Init.
         public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
         {
             InitializeComponent();
+            _instance = this;
             ParentReportForm = parentForm;
 
             SetupCanvas();
@@ -601,7 +606,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private int CreateElementSpecificControls(int yPosition)
         {
-            if (_selectedElement == null) return yPosition;
+            if (_selectedElement == null) { return yPosition; }
 
             // Let the element create its own specific controls
             // We'll need to modify the element classes to support this caching approach
@@ -942,7 +947,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private BaseElement? GetElementAtPoint(Point point)
         {
-            if (ReportConfig?.Elements == null) return null;
+            if (ReportConfig?.Elements == null) { return null; }
 
             // Check elements in reverse Z-order (top to bottom)
             IOrderedEnumerable<BaseElement> sortedElements = ReportConfig.Elements

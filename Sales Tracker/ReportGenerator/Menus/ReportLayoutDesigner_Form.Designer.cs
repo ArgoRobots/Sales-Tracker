@@ -46,7 +46,6 @@
             ElementProperties_Label = new Label();
             PropertiesContainer_Panel = new Panel();
             Tools_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
-            ElementsTitle_Label = new Label();
             ToolsContainer_Panel = new Panel();
             RightCanvas_Panel.SuspendLayout();
             Canvas_GroupBox.SuspendLayout();
@@ -64,7 +63,7 @@
             RightCanvas_Panel.Location = new Point(380, 0);
             RightCanvas_Panel.Margin = new Padding(4, 5, 4, 5);
             RightCanvas_Panel.Name = "RightCanvas_Panel";
-            RightCanvas_Panel.Padding = new Padding(14, 28, 28, 14);
+            RightCanvas_Panel.Padding = new Padding(7, 28, 28, 14);
             RightCanvas_Panel.ShadowDecoration.CustomizableEdges = customizableEdges4;
             RightCanvas_Panel.Size = new Size(1120, 900);
             RightCanvas_Panel.TabIndex = 1;
@@ -80,12 +79,12 @@
             Canvas_GroupBox.CustomizableEdges = customizableEdges1;
             Canvas_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Canvas_GroupBox.ForeColor = Color.White;
-            Canvas_GroupBox.Location = new Point(14, 28);
+            Canvas_GroupBox.Location = new Point(7, 28);
             Canvas_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Canvas_GroupBox.Name = "Canvas_GroupBox";
             Canvas_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Canvas_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Canvas_GroupBox.Size = new Size(1078, 858);
+            Canvas_GroupBox.Size = new Size(1085, 858);
             Canvas_GroupBox.TabIndex = 0;
             Canvas_GroupBox.Text = "Report Canvas - Drag elements to arrange layout";
             // 
@@ -97,7 +96,7 @@
             Canvas_Panel.Location = new Point(21, 83);
             Canvas_Panel.Margin = new Padding(4, 5, 4, 5);
             Canvas_Panel.Name = "Canvas_Panel";
-            Canvas_Panel.Size = new Size(1034, 749);
+            Canvas_Panel.Size = new Size(1041, 749);
             Canvas_Panel.TabIndex = 0;
             // 
             // LeftTools_Panel
@@ -110,7 +109,7 @@
             LeftTools_Panel.Location = new Point(0, 0);
             LeftTools_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftTools_Panel.Name = "LeftTools_Panel";
-            LeftTools_Panel.Padding = new Padding(28, 28, 14, 14);
+            LeftTools_Panel.Padding = new Padding(28, 28, 7, 14);
             LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
             LeftTools_Panel.Size = new Size(380, 900);
             LeftTools_Panel.TabIndex = 0;
@@ -127,12 +126,12 @@
             Properties_GroupBox.CustomizableEdges = customizableEdges5;
             Properties_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Properties_GroupBox.ForeColor = Color.White;
-            Properties_GroupBox.Location = new Point(28, 581);
+            Properties_GroupBox.Location = new Point(28, 448);
             Properties_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Properties_GroupBox.Name = "Properties_GroupBox";
-            Properties_GroupBox.Padding = new Padding(14, 17, 14, 17);
+            Properties_GroupBox.Padding = new Padding(0, 17, 0, 10);
             Properties_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Properties_GroupBox.Size = new Size(338, 305);
+            Properties_GroupBox.Size = new Size(345, 438);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
             // 
@@ -142,7 +141,7 @@
             ElementProperties_Label.BackColor = Color.Transparent;
             ElementProperties_Label.Font = new Font("Segoe UI", 9F);
             ElementProperties_Label.ForeColor = SystemColors.ControlText;
-            ElementProperties_Label.Location = new Point(18, 57);
+            ElementProperties_Label.Location = new Point(4, 45);
             ElementProperties_Label.Margin = new Padding(4, 0, 4, 0);
             ElementProperties_Label.Name = "ElementProperties_Label";
             ElementProperties_Label.Size = new Size(173, 25);
@@ -154,10 +153,10 @@
             PropertiesContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PropertiesContainer_Panel.AutoScroll = true;
             PropertiesContainer_Panel.BackColor = Color.Transparent;
-            PropertiesContainer_Panel.Location = new Point(14, 87);
+            PropertiesContainer_Panel.Location = new Point(0, 75);
             PropertiesContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             PropertiesContainer_Panel.Name = "PropertiesContainer_Panel";
-            PropertiesContainer_Panel.Size = new Size(309, 201);
+            PropertiesContainer_Panel.Size = new Size(345, 353);
             PropertiesContainer_Panel.TabIndex = 1;
             // 
             // Tools_GroupBox
@@ -166,7 +165,6 @@
             Tools_GroupBox.BackColor = Color.Transparent;
             Tools_GroupBox.BorderRadius = 8;
             Tools_GroupBox.BorderThickness = 0;
-            Tools_GroupBox.Controls.Add(ElementsTitle_Label);
             Tools_GroupBox.Controls.Add(ToolsContainer_Panel);
             Tools_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             Tools_GroupBox.CustomizableEdges = customizableEdges7;
@@ -177,32 +175,19 @@
             Tools_GroupBox.Name = "Tools_GroupBox";
             Tools_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Tools_GroupBox.Size = new Size(338, 533);
+            Tools_GroupBox.Size = new Size(345, 400);
             Tools_GroupBox.TabIndex = 0;
             Tools_GroupBox.Text = "Report Elements";
-            // 
-            // ElementsTitle_Label
-            // 
-            ElementsTitle_Label.AutoSize = true;
-            ElementsTitle_Label.BackColor = Color.Transparent;
-            ElementsTitle_Label.Font = new Font("Segoe UI", 9F);
-            ElementsTitle_Label.ForeColor = SystemColors.ControlText;
-            ElementsTitle_Label.Location = new Point(18, 57);
-            ElementsTitle_Label.Margin = new Padding(4, 0, 4, 0);
-            ElementsTitle_Label.Name = "ElementsTitle_Label";
-            ElementsTitle_Label.Size = new Size(266, 25);
-            ElementsTitle_Label.TabIndex = 0;
-            ElementsTitle_Label.Text = "Click to add elements to canvas:";
             // 
             // ToolsContainer_Panel
             // 
             ToolsContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ToolsContainer_Panel.AutoScroll = true;
             ToolsContainer_Panel.BackColor = Color.Transparent;
-            ToolsContainer_Panel.Location = new Point(14, 87);
+            ToolsContainer_Panel.Location = new Point(14, 54);
             ToolsContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             ToolsContainer_Panel.Name = "ToolsContainer_Panel";
-            ToolsContainer_Panel.Size = new Size(309, 430);
+            ToolsContainer_Panel.Size = new Size(316, 332);
             ToolsContainer_Panel.TabIndex = 1;
             // 
             // ReportLayoutDesigner_Form
@@ -223,7 +208,6 @@
             Properties_GroupBox.ResumeLayout(false);
             Properties_GroupBox.PerformLayout();
             Tools_GroupBox.ResumeLayout(false);
-            Tools_GroupBox.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -231,12 +215,11 @@
         private Guna.UI2.WinForms.Guna2Panel LeftTools_Panel;
         private Guna.UI2.WinForms.Guna2Panel RightCanvas_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Tools_GroupBox;
-        private System.Windows.Forms.Panel ToolsContainer_Panel;
-        private System.Windows.Forms.Label ElementsTitle_Label;
         private Guna.UI2.WinForms.Guna2GroupBox Properties_GroupBox;
         private System.Windows.Forms.Label ElementProperties_Label;
-        private System.Windows.Forms.Panel PropertiesContainer_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox Canvas_GroupBox;
         private System.Windows.Forms.Panel Canvas_Panel;
+        public Panel ToolsContainer_Panel;
+        public Panel PropertiesContainer_Panel;
     }
 }
