@@ -1152,10 +1152,5 @@ namespace Sales_Tracker.ReportGenerator
                 _isUpdating = false;
             }
         }
-
-        private void Properties_GroupBox_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

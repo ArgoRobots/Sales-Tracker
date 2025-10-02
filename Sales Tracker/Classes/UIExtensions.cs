@@ -33,5 +33,44 @@
                 return func();
             }
         }
+
+        /// <summary>
+        /// Extension method to disable control scrolling and forward to parent panel.
+        /// </summary>
+        public static void DisableScrollAndForwardToPanel(this Control control)
+        {
+            void handler(object? sender, MouseEventArgs e)
+            {
+                // Find parent scrollable panel
+                Panel? panel = control.Parent as Panel;
+                while (panel != null && !panel.AutoScroll)
+                {
+                    panel = panel.Parent as Panel;
+                }
+
+                if (panel != null)
+                {
+                    // Forward scroll to panel
+                    int newValue = panel.VerticalScroll.Value - e.Delta;
+                    panel.VerticalScroll.Value = Math.Clamp(newValue,
+                        panel.VerticalScroll.Minimum,
+                        panel.VerticalScroll.Maximum);
+                    panel.PerformLayout();
+
+                    // Mark as handled
+                    if (e is HandledMouseEventArgs args)
+                    {
+                        args.Handled = true;
+                    }
+                }
+            }
+
+            // Attach to main control and all children (for Guna2 controls)
+            control.MouseWheel += handler;
+            foreach (Control child in control.Controls)
+            {
+                child.MouseWheel += handler;
+            }
+        }
     }
 }

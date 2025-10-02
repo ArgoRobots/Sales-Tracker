@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -139,6 +140,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Value = value
             };
 
+            numericUpDown.DisableScrollAndForwardToPanel();
+
             numericUpDown.ValueChanged += (s, e) => onChange(numericUpDown.Value);
             container.Controls.Add(numericUpDown);
             return numericUpDown;
@@ -166,6 +169,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     onChange(comboBox.SelectedItem.ToString());
                 }
             };
+
+            comboBox.DisableScrollAndForwardToPanel();
 
             container.Controls.Add(comboBox);
             return comboBox;
@@ -213,6 +218,5 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return checkBox;
         }
-
     }
 }

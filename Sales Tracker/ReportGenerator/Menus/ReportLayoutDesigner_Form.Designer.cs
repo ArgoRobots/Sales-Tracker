@@ -136,7 +136,6 @@
             Properties_GroupBox.Size = new Size(345, 438);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
-            Properties_GroupBox.Click += Properties_GroupBox_Click;
             // 
             // Properties_Separator
             // 
