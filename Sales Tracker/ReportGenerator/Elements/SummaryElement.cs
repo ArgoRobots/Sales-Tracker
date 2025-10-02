@@ -94,68 +94,44 @@
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            // Checkboxes for included metrics
-            AddPropertyLabel(container, "Include:", yPosition);
-            yPosition += 20;
+            // Section header for included metrics
+            AddPropertyLabel(container, "Include:", yPosition, true);
+            yPosition += 25;
 
-            CheckBox salesCheck = new()
-            {
-                Text = "Total Sales",
-                Checked = ShowTotalSales,
-                Location = new Point(85, yPosition),
-                Size = new Size(150, 20)
-            };
-            salesCheck.CheckedChanged += (s, e) =>
-            {
-                ShowTotalSales = salesCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(salesCheck);
+            // Total Sales checkbox with clickable label
+            AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,
+                value =>
+                {
+                    ShowTotalSales = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight;
 
-            CheckBox transactionsCheck = new()
-            {
-                Text = "Total Transactions",
-                Checked = ShowTotalTransactions,
-                Location = new Point(85, yPosition),
-                Size = new Size(150, 20)
-            };
-            transactionsCheck.CheckedChanged += (s, e) =>
-            {
-                ShowTotalTransactions = transactionsCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(transactionsCheck);
+            // Total Transactions checkbox
+            AddPropertyCheckBoxWithLabel(container, "Total Transactions", ShowTotalTransactions, yPosition,
+                value =>
+                {
+                    ShowTotalTransactions = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight;
 
-            CheckBox avgValueCheck = new()
-            {
-                Text = "Average Value",
-                Checked = ShowAverageValue,
-                Location = new Point(85, yPosition),
-                Size = new Size(150, 20)
-            };
-            avgValueCheck.CheckedChanged += (s, e) =>
-            {
-                ShowAverageValue = avgValueCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(avgValueCheck);
+            // Average Value checkbox
+            AddPropertyCheckBoxWithLabel(container, "Average Value", ShowAverageValue, yPosition,
+                value =>
+                {
+                    ShowAverageValue = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight;
 
-            CheckBox growthCheck = new()
-            {
-                Text = "Growth Rate",
-                Checked = ShowGrowthRate,
-                Location = new Point(85, yPosition),
-                Size = new Size(150, 20)
-            };
-            growthCheck.CheckedChanged += (s, e) =>
-            {
-                ShowGrowthRate = growthCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(growthCheck);
+            // Growth Rate checkbox
+            AddPropertyCheckBoxWithLabel(container, "Growth Rate", ShowGrowthRate, yPosition,
+                value =>
+                {
+                    ShowGrowthRate = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight + 10;
 
             return yPosition;

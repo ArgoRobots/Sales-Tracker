@@ -43,6 +43,7 @@
             Canvas_Panel = new Panel();
             LeftTools_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Properties_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
+            Properties_Separator = new Guna.UI2.WinForms.Guna2Separator();
             ElementProperties_Label = new Label();
             PropertiesContainer_Panel = new Panel();
             Tools_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
@@ -120,6 +121,7 @@
             Properties_GroupBox.BackColor = Color.Transparent;
             Properties_GroupBox.BorderRadius = 8;
             Properties_GroupBox.BorderThickness = 0;
+            Properties_GroupBox.Controls.Add(Properties_Separator);
             Properties_GroupBox.Controls.Add(ElementProperties_Label);
             Properties_GroupBox.Controls.Add(PropertiesContainer_Panel);
             Properties_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
@@ -134,6 +136,14 @@
             Properties_GroupBox.Size = new Size(345, 438);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
+            Properties_GroupBox.Click += Properties_GroupBox_Click;
+            // 
+            // Properties_Separator
+            // 
+            Properties_Separator.Location = new Point(0, 74);
+            Properties_Separator.Name = "Properties_Separator";
+            Properties_Separator.Size = new Size(345, 3);
+            Properties_Separator.TabIndex = 2;
             // 
             // ElementProperties_Label
             // 
@@ -221,5 +231,6 @@
         private System.Windows.Forms.Panel Canvas_Panel;
         public Panel ToolsContainer_Panel;
         public Panel PropertiesContainer_Panel;
+        private Guna.UI2.WinForms.Guna2Separator Properties_Separator;
     }
 }

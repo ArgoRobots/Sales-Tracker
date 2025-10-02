@@ -67,8 +67,6 @@
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            const int rowHeight = 35;
-
             // Date format
             AddPropertyLabel(container, "Format:", yPosition);
             AddPropertyComboBox(container, DateFormat, yPosition,
@@ -78,7 +76,7 @@
                     DateFormat = value;
                     onPropertyChanged();
                 });
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
@@ -87,7 +85,7 @@
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 24);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             return yPosition;
         }

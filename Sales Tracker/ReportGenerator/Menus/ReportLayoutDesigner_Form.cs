@@ -444,17 +444,19 @@ namespace Sales_Tracker.ReportGenerator
                 yPosition += BaseElement.RowHeight * 5;
 
                 // Add element-specific properties
-                yPosition = CreateElementSpecificControls(yPosition);
-
-                // Z-Order controls
-                CreateZOrderControls(yPosition);
+                CreateElementSpecificControls(yPosition);
 
                 // Only set the theme of it's controls, not the panel itself
                 List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
                 ThemeManager.SetThemeForControls(controls);
+
+                // Find all checkboxes inside PropertiesContainer_Panel
+                foreach (Guna2CustomCheckBox cb in PropertiesContainer_Panel.Controls.OfType<Guna2CustomCheckBox>())
+                {
+                    cb.UncheckedState.FillColor = CustomColors.MainBackground;
+                }
             }
 
-            // Update control values
             UpdatePropertyValues();
         }
 
@@ -562,36 +564,6 @@ namespace Sales_Tracker.ReportGenerator
                 PropertiesContainer_Panel,
                 yPosition,
                 OnPropertyChanged);
-        }
-
-        /// <summary>
-        /// Creates Z-order controls.
-        /// </summary>
-        private void CreateZOrderControls(int yPosition)
-        {
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Layer:", yPosition);
-
-            Guna2Button bringToFrontBtn = new()
-            {
-                Text = "Front",
-                Size = new Size(60, 25),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 8)
-            };
-            bringToFrontBtn.Click += (s, e) => BringElementToFront(_selectedElement);
-            PropertiesContainer_Panel.Controls.Add(bringToFrontBtn);
-
-            Guna2Button sendToBackBtn = new()
-            {
-                Text = "Back",
-                Size = new Size(60, 25),
-                Location = new Point(150, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 8)
-            };
-            sendToBackBtn.Click += (s, e) => SendElementToBack(_selectedElement);
-            PropertiesContainer_Panel.Controls.Add(sendToBackBtn);
         }
 
         /// <summary>
@@ -1179,6 +1151,11 @@ namespace Sales_Tracker.ReportGenerator
             {
                 _isUpdating = false;
             }
+        }
+
+        private void Properties_GroupBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

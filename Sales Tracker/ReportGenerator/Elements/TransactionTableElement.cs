@@ -63,35 +63,21 @@
             yPosition += RowHeight;
 
             // Show headers checkbox
-            AddPropertyLabel(container, "Headers:", yPosition);
-            CheckBox headersCheck = new()
-            {
-                Checked = ShowHeaders,
-                Location = new Point(85, yPosition),
-                Size = new Size(20, 20)
-            };
-            headersCheck.CheckedChanged += (s, e) =>
-            {
-                ShowHeaders = headersCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(headersCheck);
+            AddPropertyCheckBoxWithLabel(container, "Headers", ShowHeaders, yPosition,
+                value =>
+                {
+                    ShowHeaders = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight;
 
             // Alternate row colors checkbox
-            AddPropertyLabel(container, "Alt Colors:", yPosition);
-            CheckBox altColorsCheck = new()
-            {
-                Checked = AlternateRowColors,
-                Location = new Point(85, yPosition),
-                Size = new Size(20, 20)
-            };
-            altColorsCheck.CheckedChanged += (s, e) =>
-            {
-                AlternateRowColors = altColorsCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(altColorsCheck);
+            AddPropertyCheckBoxWithLabel(container, "Alt Colors", AlternateRowColors, yPosition,
+                value =>
+                {
+                    AlternateRowColors = value;
+                    onPropertyChanged();
+                });
             yPosition += RowHeight;
 
             return yPosition;

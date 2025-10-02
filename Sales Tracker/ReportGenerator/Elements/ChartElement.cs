@@ -352,8 +352,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            const int rowHeight = 35;
-
             // Chart type selector
             AddPropertyLabel(container, "Chart:", yPosition);
             AddPropertyComboBox(container, ChartType.ToString(), yPosition,
@@ -363,39 +361,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
                     onPropertyChanged();
                 });
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Show legend checkbox
-            AddPropertyLabel(container, "Legend:", yPosition);
-            CheckBox legendCheck = new()
-            {
-                Checked = ShowLegend,
-                Location = new Point(85, yPosition),
-                Size = new Size(20, 20)
-            };
-            legendCheck.CheckedChanged += (s, e) =>
-            {
-                ShowLegend = legendCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(legendCheck);
-            yPosition += rowHeight;
+            AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
+                value =>
+                {
+                    ShowLegend = value;
+                    onPropertyChanged();
+                });
+            yPosition += RowHeight;
 
             // Show title checkbox
-            AddPropertyLabel(container, "Title:", yPosition);
-            CheckBox titleCheck = new()
-            {
-                Checked = ShowTitle,
-                Location = new Point(85, yPosition),
-                Size = new Size(20, 20)
-            };
-            titleCheck.CheckedChanged += (s, e) =>
-            {
-                ShowTitle = titleCheck.Checked;
-                onPropertyChanged();
-            };
-            container.Controls.Add(titleCheck);
-            yPosition += rowHeight;
+            AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
+                value =>
+                {
+                    ShowTitle = value;
+                    onPropertyChanged();
+                });
+            yPosition += RowHeight;
 
             return yPosition;
         }
