@@ -2,6 +2,7 @@
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Charts;
+using Sales_Tracker.DataClasses;
 using SkiaSharp;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -39,19 +40,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Control chartControl = GetChartControl();
 
-                // Load data if chart is empty
-                if (chartControl is CartesianChart cartesian && (cartesian.Series == null || !cartesian.Series.Any()))
-                {
-                    LoadChartData(ChartType);
-                }
-                else if (chartControl is PieChart pie && (pie.Series == null || !pie.Series.Any()))
-                {
-                    LoadChartData(ChartType);
-                }
-                else if (chartControl is GeoMap geo && (geo.Series == null || !geo.Series.Any()))
-                {
-                    LoadChartData(ChartType);
-                }
+                LoadChartData(ChartType, config);
 
                 // Generate server-side image
                 if (chartControl != null && chartControl is CartesianChart cartesianChart)
@@ -96,94 +85,195 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
             }
         }
-        private static void LoadChartData(MainMenu_Form.ChartDataType chartType)
+        private static void LoadChartData(MainMenu_Form.ChartDataType chartType, ReportConfiguration config = null)
         {
             MainMenu_Form mainForm = MainMenu_Form.Instance;
             bool isLine = mainForm.LineChart_ToggleSwitch.Checked;
 
-            switch (chartType)
+            // Store current filter values
+            DateTime? originalFromDate = mainForm.SortFromDate;
+            DateTime? originalToDate = mainForm.SortToDate;
+            TimeSpan? originalTimeSpan = mainForm.SortTimeSpan;
+
+            try
             {
-                case MainMenu_Form.ChartDataType.TotalSales:
-                    LoadChart.LoadTotalsIntoChart(mainForm.Sale_DataGridView, mainForm.TotalSales_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.TotalPurchases:
-                    LoadChart.LoadTotalsIntoChart(mainForm.Purchase_DataGridView, mainForm.TotalPurchases_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.DistributionOfSales:
-                    LoadChart.LoadDistributionIntoChart(mainForm.Sale_DataGridView, mainForm.DistributionOfSales_Chart, PieChartGrouping.Top12);
-                    break;
-                case MainMenu_Form.ChartDataType.DistributionOfPurchases:
-                    LoadChart.LoadDistributionIntoChart(mainForm.Purchase_DataGridView, mainForm.DistributionOfPurchases_Chart, PieChartGrouping.Top12);
-                    break;
-                case MainMenu_Form.ChartDataType.Profits:
-                    LoadChart.LoadProfitsIntoChart(mainForm.Profits_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.CountriesOfOrigin:
-                    LoadChart.LoadCountriesOfOriginChart(mainForm.CountriesOfOrigin_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
-                    LoadChart.LoadCompaniesOfOriginChart(mainForm.CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.CountriesOfDestination:
-                    LoadChart.LoadCountriesOfDestinationChart(mainForm.CountriesOfDestination_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.Accountants:
-                    LoadChart.LoadAccountantsIntoChart(mainForm.Accountants_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
-                    LoadChart.LoadSalesVsExpensesChart(mainForm.TotalExpensesVsSales_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.AverageTransactionValue:
-                    LoadChart.LoadAverageTransactionValueChart(mainForm.AverageTransactionValue_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.TotalTransactions:
-                    LoadChart.LoadTotalTransactionsChart(mainForm.TotalTransactions_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.AverageShippingCosts:
-                    LoadChart.LoadAverageShippingCostsChart(mainForm.AverageShippingCosts_Chart, isLine, includeZeroShipping: true);
-                    break;
-                case MainMenu_Form.ChartDataType.GrowthRates:
-                    LoadChart.LoadGrowthRateChart(mainForm.GrowthRates_Chart);
-                    break;
-                case MainMenu_Form.ChartDataType.ReturnsOverTime:
-                    LoadChart.LoadReturnsOverTimeChart(mainForm.ReturnsOverTime_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.ReturnReasons:
-                    LoadChart.LoadReturnReasonsChart(mainForm.ReturnReasons_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
-                    LoadChart.LoadReturnFinancialImpactChart(mainForm.ReturnFinancialImpact_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.ReturnsByCategory:
-                    LoadChart.LoadReturnsByCategoryChart(mainForm.ReturnsByCategory_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.ReturnsByProduct:
-                    LoadChart.LoadReturnsByProductChart(mainForm.ReturnsByProduct_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
-                    LoadChart.LoadPurchaseVsSaleReturnsChart(mainForm.PurchaseVsSaleReturns_Chart);
-                    break;
-                case MainMenu_Form.ChartDataType.WorldMap:
-                    LoadChart.LoadWorldMapChart(mainForm.WorldMap_GeoMap, MainMenu_Form.GeoMapDataType.Combined);
-                    break;
-                case MainMenu_Form.ChartDataType.LossesOverTime:
-                    LoadChart.LoadLossesOverTimeChart(mainForm.LossesOverTime_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.LossReasons:
-                    LoadChart.LoadLossReasonsChart(mainForm.LossReasons_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.LossFinancialImpact:
-                    LoadChart.LoadLossFinancialImpactChart(mainForm.LossFinancialImpact_Chart, isLine);
-                    break;
-                case MainMenu_Form.ChartDataType.LossesByCategory:
-                    LoadChart.LoadLossesByCategoryChart(mainForm.LossesByCategory_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.LossesByProduct:
-                    LoadChart.LoadLossesByProductChart(mainForm.LossesByProduct_Chart, PieChartGrouping.Top8);
-                    break;
-                case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
-                    LoadChart.LoadPurchaseVsSaleLossesChart(mainForm.PurchaseVsSaleLosses_Chart);
-                    break;
+                // Apply date filters from report configuration if provided
+                if (config?.Filters != null)
+                {
+                    // Set the date range filters on MainMenu_Form
+                    mainForm.SortFromDate = config.Filters.StartDate;
+                    mainForm.SortToDate = config.Filters.EndDate;
+                    mainForm.SortTimeSpan = null;  // Clear timespan when using custom date range
+
+                    // Apply filters to both DataGridViews based on transaction type
+                    if (config.Filters.TransactionType == TransactionType.Sales ||
+                        config.Filters.TransactionType == TransactionType.Both)
+                    {
+                        ApplyDateFiltersToDataGridView(mainForm.Sale_DataGridView, config.Filters);
+                    }
+
+                    if (config.Filters.TransactionType == TransactionType.Purchases ||
+                        config.Filters.TransactionType == TransactionType.Both)
+                    {
+                        ApplyDateFiltersToDataGridView(mainForm.Purchase_DataGridView, config.Filters);
+                    }
+                }
+
+                // Load the chart with filtered data
+                switch (chartType)
+                {
+                    case MainMenu_Form.ChartDataType.TotalSales:
+                        LoadChart.LoadTotalsIntoChart(mainForm.Sale_DataGridView, mainForm.TotalSales_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.TotalPurchases:
+                        LoadChart.LoadTotalsIntoChart(mainForm.Purchase_DataGridView, mainForm.TotalPurchases_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                        LoadChart.LoadDistributionIntoChart(mainForm.Sale_DataGridView, mainForm.DistributionOfSales_Chart, PieChartGrouping.Top12);
+                        break;
+                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                        LoadChart.LoadDistributionIntoChart(mainForm.Purchase_DataGridView, mainForm.DistributionOfPurchases_Chart, PieChartGrouping.Top12);
+                        break;
+                    case MainMenu_Form.ChartDataType.Profits:
+                        LoadChart.LoadProfitsIntoChart(mainForm.Profits_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.CountriesOfOrigin:
+                        LoadChart.LoadCountriesOfOriginChart(mainForm.CountriesOfOrigin_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
+                        LoadChart.LoadCompaniesOfOriginChart(mainForm.CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.CountriesOfDestination:
+                        LoadChart.LoadCountriesOfDestinationChart(mainForm.CountriesOfDestination_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.Accountants:
+                        LoadChart.LoadAccountantsIntoChart(mainForm.Accountants_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                        LoadChart.LoadSalesVsExpensesChart(mainForm.TotalExpensesVsSales_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.AverageTransactionValue:
+                        LoadChart.LoadAverageTransactionValueChart(mainForm.AverageTransactionValue_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.TotalTransactions:
+                        LoadChart.LoadTotalTransactionsChart(mainForm.TotalTransactions_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.AverageShippingCosts:
+                        LoadChart.LoadAverageShippingCostsChart(mainForm.AverageShippingCosts_Chart, isLine, includeZeroShipping: true);
+                        break;
+                    case MainMenu_Form.ChartDataType.GrowthRates:
+                        LoadChart.LoadGrowthRateChart(mainForm.GrowthRates_Chart);
+                        break;
+                    case MainMenu_Form.ChartDataType.ReturnsOverTime:
+                        LoadChart.LoadReturnsOverTimeChart(mainForm.ReturnsOverTime_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.ReturnReasons:
+                        LoadChart.LoadReturnReasonsChart(mainForm.ReturnReasons_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
+                        LoadChart.LoadReturnFinancialImpactChart(mainForm.ReturnFinancialImpact_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.ReturnsByCategory:
+                        LoadChart.LoadReturnsByCategoryChart(mainForm.ReturnsByCategory_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.ReturnsByProduct:
+                        LoadChart.LoadReturnsByProductChart(mainForm.ReturnsByProduct_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
+                        LoadChart.LoadPurchaseVsSaleReturnsChart(mainForm.PurchaseVsSaleReturns_Chart);
+                        break;
+                    case MainMenu_Form.ChartDataType.WorldMap:
+                        LoadChart.LoadWorldMapChart(mainForm.WorldMap_GeoMap, MainMenu_Form.GeoMapDataType.Combined);
+                        break;
+                    case MainMenu_Form.ChartDataType.LossesOverTime:
+                        LoadChart.LoadLossesOverTimeChart(mainForm.LossesOverTime_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.LossReasons:
+                        LoadChart.LoadLossReasonsChart(mainForm.LossReasons_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.LossFinancialImpact:
+                        LoadChart.LoadLossFinancialImpactChart(mainForm.LossFinancialImpact_Chart, isLine);
+                        break;
+                    case MainMenu_Form.ChartDataType.LossesByCategory:
+                        LoadChart.LoadLossesByCategoryChart(mainForm.LossesByCategory_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.LossesByProduct:
+                        LoadChart.LoadLossesByProductChart(mainForm.LossesByProduct_Chart, PieChartGrouping.Top8);
+                        break;
+                    case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
+                        LoadChart.LoadPurchaseVsSaleLossesChart(mainForm.PurchaseVsSaleLosses_Chart);
+                        break;
+                }
+            }
+            finally
+            {
+                // Restore original filter values
+                mainForm.SortFromDate = originalFromDate;
+                mainForm.SortToDate = originalToDate;
+                mainForm.SortTimeSpan = originalTimeSpan;
+
+                // Reset DataGridView visibility to show all rows
+                foreach (DataGridViewRow row in mainForm.Sale_DataGridView.Rows)
+                {
+                    row.Visible = true;
+                }
+                foreach (DataGridViewRow row in mainForm.Purchase_DataGridView.Rows)
+                {
+                    row.Visible = true;
+                }
+            }
+        }
+        private static void ApplyDateFiltersToDataGridView(DataGridView dataGridView, ReportFilters filters)
+        {
+            if (filters.StartDate == null || filters.EndDate == null)
+            {
+                // If no date range specified, show all rows
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    row.Visible = true;
+                }
+                return;
+            }
+
+            DateTime startDate = filters.StartDate.Value;
+            DateTime endDate = filters.EndDate.Value;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                bool shouldShow = false;
+
+                // Parse the date from the row
+                if (row.Cells[ReadOnlyVariables.Date_column].Value != null &&
+                    DateTime.TryParse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime rowDate))
+                {
+                    // Check if date is within range
+                    if (rowDate >= startDate && rowDate <= endDate)
+                    {
+                        shouldShow = true;
+
+                        // Check for returns filter
+                        if (!filters.IncludeReturns)
+                        {
+                            // Check if the transaction is returned (fully or partially)
+                            if (ReturnProduct.ReturnManager.IsTransactionReturned(row))
+                            {
+                                shouldShow = false;
+                            }
+                        }
+
+                        // Check for losses filter
+                        if (shouldShow && !filters.IncludeLosses)
+                        {
+                            // Check if the transaction is lost (fully or partially)
+                            if (LostProduct.LostManager.IsTransactionLost(row))
+                            {
+                                shouldShow = false;
+                            }
+                        }
+                    }
+                }
+
+                row.Visible = shouldShow;
             }
         }
         private Bitmap GenerateCartesianChartImage(CartesianChart sourceChart)
