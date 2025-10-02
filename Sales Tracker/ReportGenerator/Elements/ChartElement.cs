@@ -1,5 +1,6 @@
 ﻿using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
+using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.DataClasses;
@@ -12,6 +13,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class ChartElement : BaseElement
     {
+        private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
         public MainMenu_Form.ChartDataType ChartType { get; set; } = MainMenu_Form.ChartDataType.TotalSales;
         public bool ShowLegend { get; set; } = true;
         public bool ShowTitle { get; set; } = true;
@@ -40,7 +42,22 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Control chartControl = GetChartControl();
 
-                LoadChartData(ChartType, config);
+                // Check if we need to reload the chart data based on filter changes
+                bool needsReload = NeedsChartReload(ChartType, config);
+
+                // Load data if chart is empty or if filters have changed
+                if (chartControl is CartesianChart cartesian && (cartesian.Series == null || !cartesian.Series.Any() || needsReload))
+                {
+                    LoadChartData(ChartType, config);
+                }
+                else if (chartControl is PieChart pie && (pie.Series == null || !pie.Series.Any() || needsReload))
+                {
+                    LoadChartData(ChartType, config);
+                }
+                else if (chartControl is GeoMap geo && (geo.Series == null || !geo.Series.Any() || needsReload))
+                {
+                    LoadChartData(ChartType, config);
+                }
 
                 // Generate server-side image
                 if (chartControl != null && chartControl is CartesianChart cartesianChart)
@@ -85,38 +102,74 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
             }
         }
+        private static bool NeedsChartReload(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
+        {
+            // Get the current filter configuration
+            DateTime? currentStartDate = config?.Filters?.StartDate;
+            DateTime? currentEndDate = config?.Filters?.EndDate;
+            bool currentIncludeReturns = config?.Filters?.IncludeReturns ?? true;
+            bool currentIncludeLosses = config?.Filters?.IncludeLosses ?? true;
+
+            // Check if we have a previously loaded configuration for this chart type
+            if (_lastLoadedConfig.TryGetValue(chartType, out var lastConfig))
+            {
+                // Compare configurations - if they differ, we need to reload
+                return lastConfig.StartDate != currentStartDate ||
+                       lastConfig.EndDate != currentEndDate ||
+                       lastConfig.IncludeReturns != currentIncludeReturns ||
+                       lastConfig.IncludeLosses != currentIncludeLosses;
+            }
+
+            // If no previous configuration exists, we need to load
+            return true;
+        }
         private static void LoadChartData(MainMenu_Form.ChartDataType chartType, ReportConfiguration config = null)
         {
             MainMenu_Form mainForm = MainMenu_Form.Instance;
             bool isLine = mainForm.LineChart_ToggleSwitch.Checked;
 
-            // Store current filter values
-            DateTime? originalFromDate = mainForm.SortFromDate;
-            DateTime? originalToDate = mainForm.SortToDate;
-            TimeSpan? originalTimeSpan = mainForm.SortTimeSpan;
+            // Store original visibility states to restore later
+            Dictionary<DataGridViewRow, bool> salesRowVisibility = [];
+            Dictionary<DataGridViewRow, bool> purchaseRowVisibility = [];
 
             try
             {
                 // Apply date filters from report configuration if provided
                 if (config?.Filters != null)
                 {
-                    // Set the date range filters on MainMenu_Form
-                    mainForm.SortFromDate = config.Filters.StartDate;
-                    mainForm.SortToDate = config.Filters.EndDate;
-                    mainForm.SortTimeSpan = null;  // Clear timespan when using custom date range
+                    // Update the tracking dictionary with the current configuration
+                    _lastLoadedConfig[chartType] = (
+                        config.Filters.StartDate,
+                        config.Filters.EndDate,
+                        config.Filters.IncludeReturns,
+                        config.Filters.IncludeLosses
+                    );
 
-                    // Apply filters to both DataGridViews based on transaction type
+                    // Store original visibility and apply filters temporarily
                     if (config.Filters.TransactionType == TransactionType.Sales ||
                         config.Filters.TransactionType == TransactionType.Both)
                     {
-                        ApplyDateFiltersToDataGridView(mainForm.Sale_DataGridView, config.Filters);
+                        foreach (DataGridViewRow row in mainForm.Sale_DataGridView.Rows)
+                        {
+                            salesRowVisibility[row] = row.Visible;
+                            row.Visible = ShouldIncludeRow(row, config.Filters);
+                        }
                     }
 
                     if (config.Filters.TransactionType == TransactionType.Purchases ||
                         config.Filters.TransactionType == TransactionType.Both)
                     {
-                        ApplyDateFiltersToDataGridView(mainForm.Purchase_DataGridView, config.Filters);
+                        foreach (DataGridViewRow row in mainForm.Purchase_DataGridView.Rows)
+                        {
+                            purchaseRowVisibility[row] = row.Visible;
+                            row.Visible = ShouldIncludeRow(row, config.Filters);
+                        }
                     }
+                }
+                else
+                {
+                    // If no config provided, clear the tracking for this chart type
+                    _lastLoadedConfig.Remove(chartType);
                 }
 
                 // Load the chart with filtered data
@@ -207,74 +260,49 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
             finally
             {
-                // Restore original filter values
-                mainForm.SortFromDate = originalFromDate;
-                mainForm.SortToDate = originalToDate;
-                mainForm.SortTimeSpan = originalTimeSpan;
-
-                // Reset DataGridView visibility to show all rows
-                foreach (DataGridViewRow row in mainForm.Sale_DataGridView.Rows)
+                // Always restore original visibility states to avoid affecting the UI
+                foreach (KeyValuePair<DataGridViewRow, bool> kvp in salesRowVisibility)
                 {
-                    row.Visible = true;
+                    kvp.Key.Visible = kvp.Value;
                 }
-                foreach (DataGridViewRow row in mainForm.Purchase_DataGridView.Rows)
+                foreach (KeyValuePair<DataGridViewRow, bool> kvp in purchaseRowVisibility)
                 {
-                    row.Visible = true;
+                    kvp.Key.Visible = kvp.Value;
                 }
             }
         }
-        private static void ApplyDateFiltersToDataGridView(DataGridView dataGridView, ReportFilters filters)
+        private static bool ShouldIncludeRow(DataGridViewRow row, ReportFilters filters)
         {
-            if (filters.StartDate == null || filters.EndDate == null)
+            // Check date range
+            if (filters.StartDate != null && filters.EndDate != null)
             {
-                // If no date range specified, show all rows
-                foreach (DataGridViewRow row in dataGridView.Rows)
-                {
-                    row.Visible = true;
-                }
-                return;
-            }
-
-            DateTime startDate = filters.StartDate.Value;
-            DateTime endDate = filters.EndDate.Value;
-
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                bool shouldShow = false;
-
-                // Parse the date from the row
                 if (row.Cells[ReadOnlyVariables.Date_column].Value != null &&
                     DateTime.TryParse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime rowDate))
                 {
-                    // Check if date is within range
-                    if (rowDate >= startDate && rowDate <= endDate)
+                    if (rowDate < filters.StartDate.Value || rowDate > filters.EndDate.Value)
                     {
-                        shouldShow = true;
-
-                        // Check for returns filter
-                        if (!filters.IncludeReturns)
-                        {
-                            // Check if the transaction is returned (fully or partially)
-                            if (ReturnProduct.ReturnManager.IsTransactionReturned(row))
-                            {
-                                shouldShow = false;
-                            }
-                        }
-
-                        // Check for losses filter
-                        if (shouldShow && !filters.IncludeLosses)
-                        {
-                            // Check if the transaction is lost (fully or partially)
-                            if (LostProduct.LostManager.IsTransactionLost(row))
-                            {
-                                shouldShow = false;
-                            }
-                        }
+                        return false;
                     }
                 }
-
-                row.Visible = shouldShow;
+                else
+                {
+                    return false;  // Exclude rows with invalid dates
+                }
             }
+
+            // Check returns filter
+            if (!filters.IncludeReturns && ReturnProduct.ReturnManager.IsTransactionReturned(row))
+            {
+                return false;
+            }
+
+            // Check losses filter  
+            if (!filters.IncludeLosses && LostProduct.LostManager.IsTransactionLost(row))
+            {
+                return false;
+            }
+
+            return true;
         }
         private Bitmap GenerateCartesianChartImage(CartesianChart sourceChart)
         {
@@ -285,13 +313,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
-            // Copy title if ShowTitle is enabled
+            // Show title if enabled
             if (ShowTitle)
             {
                 // Get the title text based on chart type
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
 
-                skChart.Title = new LiveChartsCore.SkiaSharpView.VisualElements.LabelVisual
+                skChart.Title = new LabelVisual
                 {
                     Text = titleText,
                     TextSize = 14,
@@ -326,13 +354,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
-            // Copy title if ShowTitle is enabled
+            // Show title if enabled
             if (ShowTitle)
             {
                 // Get the title text based on chart type
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
 
-                skChart.Title = new LiveChartsCore.SkiaSharpView.VisualElements.LabelVisual
+                skChart.Title = new LabelVisual
                 {
                     Text = titleText,
                     TextSize = 14,
