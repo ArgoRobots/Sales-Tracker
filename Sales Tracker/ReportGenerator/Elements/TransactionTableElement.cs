@@ -199,12 +199,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     if (!decimal.TryParse(row.Cells[ReadOnlyVariables.Total_column].Value.ToString(), out total))
                     {
-                        total = 0;  // Set to 0 if parsing fails
+                        total = 0;
                     }
                 }
 
-                bool isReturn = total < 0;
-                bool isLoss = false; // Would need additional logic to determine losses based on Note or other indicators
+                // Use the existing managers to check return and loss status
+                bool isReturn = ReturnProduct.ReturnManager.IsTransactionReturned(row);
+                bool isLoss = LostProduct.LostManager.IsTransactionLost(row);
 
                 // Check filters for returns and losses
                 if (isReturn && !(config?.Filters?.IncludeReturns ?? true))
@@ -216,6 +217,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     continue;
                 }
 
+                // Determine status text
+                string status = "Normal";
+                if (isReturn && isLoss)
+                {
+                    status = "Return/Loss";
+                }
+                else if (isReturn)
+                {
+                    bool isPartialReturn = ReturnProduct.ReturnManager.IsTransactionPartiallyReturned(row);
+                    status = isPartialReturn ? "Partial Return" : "Return";
+                }
+                else if (isLoss)
+                {
+                    bool isPartialLoss = LostProduct.LostManager.IsTransactionPartiallyLost(row);
+                    status = isPartialLoss ? "Partial Loss" : "Loss";
+                }
+
                 TransactionData transaction = new()
                 {
                     Date = date,
@@ -225,7 +243,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Quantity = ParseDecimal(row.Cells[ReadOnlyVariables.TotalItems_column].Value),
                     UnitPrice = ParseDecimal(row.Cells[ReadOnlyVariables.PricePerUnit_column].Value),
                     Total = Math.Abs(total),
-                    Status = isReturn ? "Return" : (isLoss ? "Loss" : "Normal"),
+                    Status = status,
                     Accountant = row.Cells[ReadOnlyVariables.Accountant_column].Value?.ToString() ?? "",
                     Shipping = ParseDecimal(row.Cells[ReadOnlyVariables.Shipping_column].Value),
                     IsReturn = isReturn,
