@@ -221,7 +221,7 @@
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 5, 4, 5);
-            MinimumSize = new Size(1500, 1100);
+            MinimumSize = new Size(1300, 900);
             Name = "ReportGenerator_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
