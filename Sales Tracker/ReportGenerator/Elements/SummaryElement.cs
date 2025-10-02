@@ -96,7 +96,7 @@
         {
             // Section header for included metrics
             AddPropertyLabel(container, "Include:", yPosition, true);
-            yPosition += 25;
+            yPosition += 35;
 
             // Total Sales checkbox with clickable label
             AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,

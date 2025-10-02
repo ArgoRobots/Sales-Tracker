@@ -65,7 +65,7 @@
                 }
             }
 
-            // Attach to main control and all children (for Guna2 controls)
+            // Attach to main control and all children (some Guna controls have children controls)
             control.MouseWheel += handler;
             foreach (Control child in control.Controls)
             {

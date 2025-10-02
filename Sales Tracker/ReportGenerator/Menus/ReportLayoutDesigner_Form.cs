@@ -822,6 +822,7 @@ namespace Sales_Tracker.ReportGenerator
             if (element != null)
             {
                 ReportConfig?.AddElement(element);
+                SelectElement(element);
                 Canvas_Panel.Invalidate();
                 NotifyParentValidationChanged();
             }

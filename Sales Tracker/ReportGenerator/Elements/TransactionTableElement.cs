@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.ReportGenerator.Elements
+﻿using Guna.UI2.WinForms;
+
+namespace Sales_Tracker.ReportGenerator.Elements
 {
     /// <summary>
     /// Transaction table element for displaying tabular data.
@@ -55,11 +57,12 @@
         {
             // Max rows
             AddPropertyLabel(container, "Max Rows:", yPosition);
-            AddPropertyNumericUpDown(container, MaxRows, yPosition, value =>
+            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(container, MaxRows, yPosition, value =>
             {
                 MaxRows = (int)value;
                 onPropertyChanged();
             }, 1, 100);
+            numericUpDown.Left = 110;  // Shift it over to make space for the label
             yPosition += RowHeight;
 
             // Show headers checkbox

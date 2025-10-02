@@ -44,7 +44,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// Gets the height of each row for the element in the designer.
         /// </summary>
         public static byte RowHeight { get; } = 55;
-        public static byte CheckBoxRowHeight { get; } = 45;
+        public static byte CheckBoxRowHeight { get; } = 40;
 
         private const int ControlHeight = 45;
 
@@ -97,7 +97,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Text = text,
                 Font = new Font("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular),
                 ForeColor = CustomColors.Text,
-                Location = new Point(10, yPosition + 3),
+                Location = new Point(10, yPosition + 8),
                 AutoSize = true
             };
 
@@ -186,15 +186,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             int yPosition,
             Action<bool> onChange)
         {
-            int checkBoxY = yPosition + 2;
-
             // Add the checkbox
             Guna2CustomCheckBox checkBox = new()
             {
                 Checked = isChecked,
-                Location = new Point(10, checkBoxY),
+                Location = new Point(10, yPosition + 6),
                 Size = new Size(22, 22),
-                Padding = new Padding(5),
                 Animated = true
             };
 
@@ -208,13 +205,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Font = new Font("Segoe UI", 9),
                 ForeColor = CustomColors.Text,
                 Location = new Point(checkBox.Right + 5, yPosition),
+                Padding = new Padding(5),
                 AutoSize = true
             };
 
-            container.Controls.Add(label);
-
             // Clicking the label toggles the checkbox
             label.Click += (s, e) => { checkBox.Checked = !checkBox.Checked; };
+            container.Controls.Add(label);
 
             return checkBox;
         }
