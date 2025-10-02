@@ -395,7 +395,7 @@ namespace Sales_Tracker.ReportGenerator
 
                     // Copy page settings
                     ReportConfig.PageSize = template.PageSize;
-                    ReportConfig.Orientation = template.Orientation;
+                    ReportConfig.PageOrientation = template.PageOrientation;
                     ReportConfig.ShowHeader = template.ShowHeader;
                     ReportConfig.ShowFooter = template.ShowFooter;
                     ReportConfig.ShowPageNumbers = template.ShowPageNumbers;

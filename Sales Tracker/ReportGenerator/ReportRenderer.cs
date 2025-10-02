@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         public Bitmap RenderToPreview(int maxWidth = 800, int maxHeight = 600)
         {
-            Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.Orientation);
+            Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.PageOrientation);
 
             // Calculate preview scale to fit within max dimensions
             float scaleX = (float)maxWidth / pageSize.Width;
@@ -47,7 +47,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         public void ExportReport()
         {
-            Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.Orientation);
+            Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.PageOrientation);
 
             // Calculate dimensions based on DPI
             float scaleFactor = _exportSettings.DPI / 96f;  // 96 DPI is standard

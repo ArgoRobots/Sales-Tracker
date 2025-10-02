@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Comprehensive monthly sales performance analysis",
                 TemplateName = "Monthly Sales Report",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Landscape,
+                PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -54,7 +54,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Complete financial performance summary",
                 TemplateName = "Financial Overview",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Landscape,
+                PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -88,7 +88,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Detailed business performance metrics and trends",
                 TemplateName = "Performance Analysis",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Portrait,
+                PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -122,7 +122,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Analysis of product returns and inventory losses",
                 TemplateName = "Returns Analysis",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Portrait,
+                PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -159,7 +159,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Geographic distribution of sales and purchases",
                 TemplateName = "Geographic Analysis",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Landscape,
+                PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -187,7 +187,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             TemplateLayoutHelper.LayoutContext context = new()
             {
-                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
             };
 
             // Date range element
@@ -237,7 +237,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             TemplateLayoutHelper.LayoutContext context = new()
             {
-                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
             };
 
             // Date range
@@ -287,7 +287,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             TemplateLayoutHelper.LayoutContext context = new()
             {
-                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
             };
 
             // Date range
@@ -336,7 +336,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             TemplateLayoutHelper.LayoutContext context = new()
             {
-                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
             };
 
             // Date range
@@ -400,7 +400,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             TemplateLayoutHelper.LayoutContext context = new()
             {
-                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
             };
 
             // Date range
