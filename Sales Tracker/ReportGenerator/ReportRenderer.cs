@@ -1,6 +1,5 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
-using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
@@ -109,7 +108,7 @@ namespace Sales_Tracker.ReportGenerator
             );
 
             using (Font titleFont = new("Segoe UI", 18, FontStyle.Bold))
-            using (SolidBrush titleBrush = new(CustomColors.Text))
+            using (SolidBrush titleBrush = new(Color.Black))
             {
                 StringFormat titleFormat = new()
                 {
@@ -121,7 +120,7 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             // Draw separator line
-            using Pen pen = new(CustomColors.ControlBorder, 1);
+            using Pen pen = new(Color.LightGray, 1);
             graphics.DrawLine(pen,
                 headerRect.Left, headerRect.Bottom + 5,
                 headerRect.Right, headerRect.Bottom + 5);

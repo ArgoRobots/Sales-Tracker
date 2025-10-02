@@ -13,7 +13,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         TopByAmount,     // Top N highest value transactions
         BottomByAmount,  // Bottom N lowest value transactions  
         ReturnsOnly,     // Only returned items
-        LossesOnly      // Only lost items
+        LossesOnly       // Only lost items
     }
 
     /// <summary>
@@ -159,10 +159,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, config));
             }
 
-            // Apply data selection filter
-            allTransactions = ApplyDataSelection(allTransactions);
-
             // Sort transactions
+            allTransactions = ApplyDataSelection(allTransactions);
             allTransactions = SortTransactions(allTransactions);
 
             // Limit to MaxRows
