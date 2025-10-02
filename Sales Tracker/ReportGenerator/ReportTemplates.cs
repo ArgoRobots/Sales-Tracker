@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator
                 Description = "Comprehensive monthly sales performance analysis",
                 TemplateName = "Monthly Sales Report",
                 PageSize = PageSize.A4,
-                Orientation = PageOrientation.Portrait,
+                Orientation = PageOrientation.Landscape,
                 ShowHeader = true,
                 ShowFooter = true,
                 ShowPageNumbers = true
@@ -185,242 +185,261 @@ namespace Sales_Tracker.ReportGenerator
         // Element addition methods
         private static void AddSalesReportElements(ReportConfiguration config)
         {
-            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation);
-            int margin = 40;
-            int headerHeight = 80;
-            int footerHeight = 50;
-            int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
+            TemplateLayoutHelper.LayoutContext context = new()
+            {
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+            };
 
             // Date range element
             config.AddElement(new DateRangeElement
             {
                 DisplayName = "Report Period",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 30),
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
 
-            // Sales total chart (top half, left)
+            // Create a 2x2 grid for charts
+            Rectangle[,] grid = TemplateLayoutHelper.CreateGrid(context, 2, 2);
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalSales,
                 DisplayName = "Total Sales",
-                Bounds = new Rectangle(margin, headerHeight + margin + 40, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
+                Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
-            // Sales distribution chart (top half, right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
                 DisplayName = "Sales Distribution",
-                Bounds = new Rectangle((pageSize.Width / 2) + (margin / 2), headerHeight + margin + 40, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
+                Bounds = grid[0, 1],
                 ZOrder = 2
             });
 
-            // Growth rates chart (bottom half, left)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.GrowthRates,
                 DisplayName = "Growth Rates",
-                Bounds = new Rectangle(margin, headerHeight + margin + availableHeight / 2 + 20, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
+                Bounds = grid[1, 0],
                 ZOrder = 3
             });
 
-            // Average order value chart (bottom half, right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
-                Bounds = new Rectangle((pageSize.Width / 2) + (margin / 2), headerHeight + margin + availableHeight / 2 + 20, (pageSize.Width - margin * 3) / 2, availableHeight / 2 - 20),
+                Bounds = grid[1, 1],
                 ZOrder = 4
             });
         }
         private static void AddFinancialOverviewElements(ReportConfiguration config)
         {
-            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation);
-            int margin = 40;
-            int headerHeight = 80;
-            int footerHeight = 50;
-            int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
-            int chartWidth = (pageSize.Width - margin * 3) / 2;
-            int chartHeight = (availableHeight - 30) / 2;
+            TemplateLayoutHelper.LayoutContext context = new()
+            {
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+            };
 
             // Date range
             config.AddElement(new DateRangeElement
             {
                 DisplayName = "Report Period",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 30),
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
 
-            // Sales vs Expenses (top left)
+            // Create 2x2 grid for charts
+            Rectangle[,] grid = TemplateLayoutHelper.CreateGrid(context, 2, 2);
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
                 DisplayName = "Sales vs Expenses",
-                Bounds = new Rectangle(margin, headerHeight + margin + 40, chartWidth, chartHeight),
+                Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
-            // Total Profits (top right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.Profits,
                 DisplayName = "Total Profits",
-                Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 40, chartWidth, chartHeight),
+                Bounds = grid[0, 1],
                 ZOrder = 2
             });
 
-            // Total Sales (bottom left)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalSales,
                 DisplayName = "Total Sales",
-                Bounds = new Rectangle(margin, headerHeight + margin + 50 + chartHeight, chartWidth, chartHeight),
+                Bounds = grid[1, 0],
                 ZOrder = 3
             });
 
-            // Total Purchases (bottom right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
                 DisplayName = "Total Purchases",
-                Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 50 + chartHeight, chartWidth, chartHeight),
+                Bounds = grid[1, 1],
                 ZOrder = 4
             });
         }
         private static void AddPerformanceAnalysisElements(ReportConfiguration config)
         {
-            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation);
-            int margin = 40;
-            int headerHeight = 80;
-            int footerHeight = 50;
-            int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
-
-            // Summary section
-            config.AddElement(new SummaryElement
+            TemplateLayoutHelper.LayoutContext context = new()
             {
-                DisplayName = "Performance Summary",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 90),
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+            };
+
+            // Date range
+            config.AddElement(new DateRangeElement
+            {
+                DisplayName = "Report Period",
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
 
-            // Growth rates chart (top)
+            // Create vertical stack: summary (15%), then 3 equal charts
+            Rectangle[] stack = TemplateLayoutHelper.CreateVerticalStack(context, 0.15f, 0.28f, 0.28f, 0.29f);
+
+            config.AddElement(new SummaryElement
+            {
+                DisplayName = "Performance Summary",
+                Bounds = stack[0],
+                ZOrder = 1
+            });
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.GrowthRates,
                 DisplayName = "Growth Rates",
-                Bounds = new Rectangle(margin, headerHeight + margin + 90, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
-                ZOrder = 1
+                Bounds = stack[1],
+                ZOrder = 2
             });
 
-            // Average order value (middle)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
                 DisplayName = "Average Order Value",
-                Bounds = new Rectangle(margin, headerHeight + margin + 100 + (availableHeight - 100) / 3, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
-                ZOrder = 2
+                Bounds = stack[2],
+                ZOrder = 3
             });
 
-            // Returns over time (bottom)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
                 DisplayName = "Returns Over Time",
-                Bounds = new Rectangle(margin, headerHeight + margin + 110 + 2 * (availableHeight - 100) / 3, pageSize.Width - (margin * 2), (availableHeight - 100) / 3),
-                ZOrder = 3
+                Bounds = stack[3],
+                ZOrder = 4
             });
         }
         private static void AddReturnsAnalysisElements(ReportConfiguration config)
         {
-            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation);
-            int margin = 40;
-            int headerHeight = 80;
-            int footerHeight = 50;
-            int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
-            int chartWidth = (pageSize.Width - margin * 3) / 2;
-            int chartHeight = availableHeight / 3;
+            TemplateLayoutHelper.LayoutContext context = new()
+            {
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+            };
 
-            // Returns over time (top, full width)
+            // Date range
+            config.AddElement(new DateRangeElement
+            {
+                DisplayName = "Report Period",
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
+                ZOrder = 0
+            });
+
+            // Mixed layout: full-width chart at top, then 2x2 grid
+            Rectangle[] topStack = TemplateLayoutHelper.CreateVerticalStack(context, 0.33f, 0.67f);
+
+            // Use the top portion for the full-width chart
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
                 DisplayName = "Returns Over Time",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), chartHeight),
-                ZOrder = 0
+                Bounds = topStack[0],
+                ZOrder = 1
             });
 
-            // Return reasons (middle left)
+            // Create a 2x2 grid in the bottom portion
+            Rectangle bottomArea = topStack[1];
+            int gridWidth = (bottomArea.Width - context.ElementSpacing) / 2;
+            int gridHeight = (bottomArea.Height - context.ElementSpacing) / 2;
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnReasons,
                 DisplayName = "Return Reasons",
-                Bounds = new Rectangle(margin, headerHeight + margin + chartHeight + 10, chartWidth, chartHeight),
-                ZOrder = 1
+                Bounds = new Rectangle(bottomArea.X, bottomArea.Y, gridWidth, gridHeight),
+                ZOrder = 2
             });
 
-            // Return financial impact (middle right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnFinancialImpact,
                 DisplayName = "Financial Impact",
-                Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + chartHeight + 10, chartWidth, chartHeight),
-                ZOrder = 2
+                Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y, gridWidth, gridHeight),
+                ZOrder = 3
             });
 
-            // Losses over time (bottom left)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.LossesOverTime,
                 DisplayName = "Losses Over Time",
-                Bounds = new Rectangle(margin, headerHeight + margin + 2 * chartHeight + 20, chartWidth, chartHeight),
-                ZOrder = 3
+                Bounds = new Rectangle(bottomArea.X, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
+                ZOrder = 4
             });
 
-            // Loss reasons (bottom right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.LossReasons,
                 DisplayName = "Loss Reasons",
-                Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + 2 * chartHeight + 20, chartWidth, chartHeight),
-                ZOrder = 4
+                Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
+                ZOrder = 5
             });
         }
         private static void AddGeographicAnalysisElements(ReportConfiguration config)
         {
-            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation);
-            int margin = 40;
-            int headerHeight = 80;
-            int footerHeight = 50;
-            int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
-            int chartWidth = (pageSize.Width - margin * 3) / 2;
+            TemplateLayoutHelper.LayoutContext context = new()
+            {
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.Orientation)
+            };
 
-            // World map (top, full width)
+            // Date range
+            config.AddElement(new DateRangeElement
+            {
+                DisplayName = "Report Period",
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
+                ZOrder = 0
+            });
+
+            // Create vertical split: map (50%), then bottom grid (50%)
+            Rectangle[] stack = TemplateLayoutHelper.CreateVerticalStack(context, 0.5f, 0.5f);
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.WorldMap,
                 DisplayName = "World Map",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), availableHeight / 2),
-                ZOrder = 0
+                Bounds = stack[0],
+                ZOrder = 1
             });
 
-            // Countries of origin (bottom left)
+            // Split bottom area into 2 columns
+            Rectangle bottomArea = stack[1];
+            int colWidth = (bottomArea.Width - context.ElementSpacing) / 2;
+
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.CountriesOfOrigin,
                 DisplayName = "Countries of Origin",
-                Bounds = new Rectangle(margin, headerHeight + margin + availableHeight / 2 + 10, chartWidth, availableHeight / 2 - 10),
-                ZOrder = 1
+                Bounds = new Rectangle(bottomArea.X, bottomArea.Y, colWidth, bottomArea.Height),
+                ZOrder = 2
             });
 
-            // Countries of destination (bottom right)
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.CountriesOfDestination,
                 DisplayName = "Countries of Destination",
-                Bounds = new Rectangle(margin * 2 + chartWidth, headerHeight + margin + availableHeight / 2 + 10, chartWidth, availableHeight / 2 - 10),
-                ZOrder = 2
+                Bounds = new Rectangle(bottomArea.X + colWidth + context.ElementSpacing, bottomArea.Y, colWidth, bottomArea.Height),
+                ZOrder = 3
             });
         }
 

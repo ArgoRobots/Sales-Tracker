@@ -16,6 +16,7 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
         private CustomCheckListBox ChartSelection_CheckedListBox;
+        private bool _isApplyingTemplate = false;
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -230,12 +231,24 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && !_isApplyingTemplate)
             {
+                // If a non-custom template is selected and user makes changes, switch to custom
+                if (Template_ComboBox.SelectedIndex > 0)
+                {
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = 0; // Switch to Custom Report
+                        if (ReportConfig != null)
+                        {
+                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                        }
+                    });
+                }
+
                 // Check if the window handle has been created before using BeginInvoke
                 if (IsHandleCreated && Visible)
                 {
-                    // Use BeginInvoke to ensure the checked state is updated before validation
                     BeginInvoke(new Action(() =>
                     {
                         NotifyParentValidationChanged();
@@ -245,30 +258,91 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating && Template_ComboBox.SelectedIndex > 0)
+            if (!_isUpdating && Template_ComboBox.SelectedIndex >= 0)
             {
-                ApplyTemplate(Template_ComboBox.SelectedItem?.ToString());
+                string templateName = Template_ComboBox.SelectedItem?.ToString();
+
+                if (Template_ComboBox.SelectedIndex == 0)
+                {
+                    // Custom Report selected - don't apply any template
+                    if (ReportConfig != null)
+                    {
+                        ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                    }
+                }
+                else
+                {
+                    // Apply the selected template
+                    ApplyTemplate(templateName);
+                }
             }
         }
         private void DateRange_Changed(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && !_isApplyingTemplate)
             {
+                // Switch to custom if template was selected
+                if (Template_ComboBox.SelectedIndex > 0)
+                {
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = 0;
+                        if (ReportConfig != null)
+                        {
+                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                        }
+                    });
+                }
+
                 ValidateDateRange();
                 NotifyParentValidationChanged();
             }
         }
         private void FilterChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && !_isApplyingTemplate)
             {
+                // Switch to custom if template was selected
+                if (Template_ComboBox.SelectedIndex > 0)
+                {
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = 0;
+                        if (ReportConfig != null)
+                        {
+                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                        }
+                    });
+                }
+
                 NotifyParentValidationChanged();
             }
         }
         private void ReportTitle_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && !_isApplyingTemplate)
             {
+                // Switch to custom if template was selected and title differs from template title
+                if (Template_ComboBox.SelectedIndex > 0)
+                {
+                    string selectedTemplate = Template_ComboBox.SelectedItem?.ToString();
+                    if (!string.IsNullOrEmpty(selectedTemplate))
+                    {
+                        var templateConfig = ReportTemplates.CreateFromTemplate(selectedTemplate);
+                        if (ReportTitle_TextBox.Text != templateConfig.Title)
+                        {
+                            PerformUpdate(() =>
+                            {
+                                Template_ComboBox.SelectedIndex = 0;
+                                if (ReportConfig != null)
+                                {
+                                    ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                                }
+                            });
+                        }
+                    }
+                }
+
                 NotifyParentValidationChanged();
             }
         }
@@ -301,37 +375,72 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (string.IsNullOrEmpty(templateName)) { return; }
 
-            // Create a new report configuration from the template
-            ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
-
-            // Apply the template settings to the form controls
-            PerformUpdate(() =>
+            _isApplyingTemplate = true;
+            try
             {
-                // Update chart selection
-                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
+                // Create a new report configuration from the template
+                ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
+
+                // Apply the template configuration to the parent's report config
+                if (ReportConfig != null && ParentReportForm != null)
                 {
-                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
-                    bool isSelected = template.Filters.SelectedChartTypes.Contains(chartType);
-                    ChartSelection_CheckedListBox.SetItemChecked(i, isSelected);
+                    // Clear existing elements
+                    ReportConfig.Elements.Clear();
+
+                    // Copy all template elements
+                    foreach (var element in template.Elements)
+                    {
+                        ReportConfig.AddElement(element.Clone());
+                    }
+
+                    // Copy page settings
+                    ReportConfig.PageSize = template.PageSize;
+                    ReportConfig.Orientation = template.Orientation;
+                    ReportConfig.ShowHeader = template.ShowHeader;
+                    ReportConfig.ShowFooter = template.ShowFooter;
+                    ReportConfig.ShowPageNumbers = template.ShowPageNumbers;
+                    ReportConfig.BackgroundColor = template.BackgroundColor;
+                    ReportConfig.PageMargins = template.PageMargins;
+
+                    // Copy template metadata
+                    ReportConfig.TemplateName = template.TemplateName;
+                    ReportConfig.Description = template.Description;
                 }
 
-                // Update report title
-                ReportTitle_TextBox.Text = template.Title;
+                // Apply the template settings to the form controls
+                PerformUpdate(() =>
+                {
+                    // Update chart selection
+                    for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
+                    {
+                        MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                        bool isSelected = template.Filters.SelectedChartTypes.Contains(chartType);
+                        ChartSelection_CheckedListBox.SetItemChecked(i, isSelected);
+                    }
 
-                // Update transaction type
-                TransactionType_ComboBox.SelectedIndex = (int)template.Filters.TransactionType;
+                    // Update report title
+                    ReportTitle_TextBox.Text = template.Title;
 
-                // Update date range
-                if (template.Filters.StartDate.HasValue)
-                    StartDate_DateTimePicker.Value = template.Filters.StartDate.Value;
+                    // Update transaction type
+                    TransactionType_ComboBox.SelectedIndex = (int)template.Filters.TransactionType;
 
-                if (template.Filters.EndDate.HasValue)
-                    EndDate_DateTimePicker.Value = template.Filters.EndDate.Value;
+                    // Update date range
+                    StartDate_DateTimePicker.Value = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
 
-                // Update includes
-                IncludeReturns_CheckBox.Checked = template.Filters.IncludeReturns;
-                IncludeLosses_CheckBox.Checked = template.Filters.IncludeLosses;
-            });
+                    EndDate_DateTimePicker.Value = template.Filters.EndDate ?? DateTime.Now;
+
+                    // Update includes
+                    IncludeReturns_CheckBox.Checked = template.Filters.IncludeReturns;
+                    IncludeLosses_CheckBox.Checked = template.Filters.IncludeLosses;
+                });
+
+                // Force the layout designer to refresh if it's visible
+                ParentReportForm?.OnChildFormValidationChanged();
+            }
+            finally
+            {
+                _isApplyingTemplate = false;
+            }
         }
 
         // Form implementation methods
