@@ -301,12 +301,8 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new SummaryElement
             {
                 DisplayName = "Performance Summary",
-                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 80),
-                ZOrder = 0,
-                ShowTotalSales = true,
-                ShowTotalTransactions = true,
-                ShowAverageValue = true,
-                ShowGrowthRate = true
+                Bounds = new Rectangle(margin, headerHeight + margin, pageSize.Width - (margin * 2), 90),
+                ZOrder = 0
             });
 
             // Growth rates chart (top)

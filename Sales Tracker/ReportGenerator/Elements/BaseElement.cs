@@ -189,10 +189,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Add the checkbox
             Guna2CustomCheckBox checkBox = new()
             {
-                Checked = isChecked,
                 Location = new Point(10, yPosition + 6),
                 Size = new Size(22, 22),
-                Animated = true
+                Animated = true,
+                Checked = isChecked  // This must be set after 'Animated' because Guna is bugged
             };
 
             checkBox.CheckedChanged += (s, e) => onChange(checkBox.Checked);
