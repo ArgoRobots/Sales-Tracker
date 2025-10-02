@@ -146,7 +146,7 @@ namespace Sales_Tracker.ReportGenerator
             if (_config.ShowPageNumbers)
             {
                 StringFormat rightFormat = new() { Alignment = StringAlignment.Far };
-                graphics.DrawString("Page 1", footerFont, footerBrush, footerRect, rightFormat);
+                graphics.DrawString($"Page {_config.CurrentPageNumber}", footerFont, footerBrush, footerRect, rightFormat);
             }
         }
         private void SaveBitmap(Bitmap bitmap)

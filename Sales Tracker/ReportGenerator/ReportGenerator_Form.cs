@@ -165,6 +165,19 @@ namespace Sales_Tracker.ReportGenerator
             ProgressValue_Label.Text = $"{_currentStep + 1} / {_totalSteps}";
         }
 
+        // Form event handlers
+        private void ReportGenerator_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideBlankLoadingPanel(this);
+        }
+        private void ReportGenerator_Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Clean up child forms
+            _dataSelectionForm?.Dispose();
+            _layoutDesignerForm?.Dispose();
+            _previewExportForm?.Dispose();
+        }
+
         // Event handlers
         private void Previous_Button_Click(object sender, EventArgs e)
         {
@@ -194,17 +207,6 @@ namespace Sales_Tracker.ReportGenerator
                 DialogResult = DialogResult.Cancel;
                 Close();
             }
-        }
-        private void ReportGenerator_Form_Shown(object sender, EventArgs e)
-        {
-            LoadingPanel.HideBlankLoadingPanel(this);
-        }
-        private void ReportGenerator_Form_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Clean up child forms
-            _dataSelectionForm?.Dispose();
-            _layoutDesignerForm?.Dispose();
-            _previewExportForm?.Dispose();
         }
 
         // Validation and completion

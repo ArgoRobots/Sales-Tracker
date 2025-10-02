@@ -131,6 +131,8 @@ namespace Sales_Tracker.ReportGenerator
             // Position the right panel
             RightSettings_Panel.Left = LeftPreview_Panel.Width;
         }
+
+        // Event handlers
         private void BrowseExportPath_Button_Click(object sender, EventArgs e)
         {
             using SaveFileDialog saveDialog = new();
@@ -222,6 +224,16 @@ namespace Sales_Tracker.ReportGenerator
                 GeneratePreview();
             }
         }
+        private void PageNumber_NumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_isUpdating && ReportConfig != null)
+            {
+                // Update the page number in the configuration
+                ReportConfig.CurrentPageNumber = (int)PageNumber_NumericUpDown.Value;
+
+                GeneratePreview();
+            }
+        }
 
         // Preview generation
         private void GeneratePreview()
@@ -234,7 +246,6 @@ namespace Sales_Tracker.ReportGenerator
                     return;
                 }
 
-                // Update report configuration with current page settings
                 UpdateReportConfigFromPageSettings();
 
                 // Create renderer and generate preview
@@ -251,7 +262,7 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     Image oldImage = _zoomableViewer.Image;
                     _zoomableViewer.Image = previewImage;
-                    oldImage.Dispose(); // Dispose after setting new image
+                    oldImage.Dispose();  // Dispose after setting new image
                 }
                 else
                 {
@@ -483,6 +494,8 @@ namespace Sales_Tracker.ReportGenerator
                 // Load page settings
                 PageSize_ComboBox.SelectedIndex = (int)ReportConfig.PageSize;
                 Orientation_ComboBox.SelectedIndex = (int)ReportConfig.Orientation;
+
+                PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
 
                 // Set default export path if not set
                 if (string.IsNullOrEmpty(ExportPath_TextBox.Text))

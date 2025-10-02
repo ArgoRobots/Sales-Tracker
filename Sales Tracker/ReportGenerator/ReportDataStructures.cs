@@ -82,6 +82,11 @@ namespace Sales_Tracker.ReportGenerator
         public bool ShowFooter { get; set; } = true;
 
         /// <summary>
+        /// Current page number for display in footer.
+        /// </summary>
+        public int CurrentPageNumber { get; set; } = 1;
+
+        /// <summary>
         /// Gets elements sorted by Z-order (for rendering).
         /// </summary>
         public List<BaseElement> GetElementsByZOrder()

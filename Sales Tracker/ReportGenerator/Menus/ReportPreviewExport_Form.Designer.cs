@@ -28,38 +28,40 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges53 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges54 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges51 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges52 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges41 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges42 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges43 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges44 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges45 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges46 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges47 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges48 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges49 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges50 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges63 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges64 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges61 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges62 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges55 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges56 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges57 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges58 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges59 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges60 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             RightSettings_Panel = new Guna.UI2.WinForms.Guna2Panel();
             PageSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             PageSize_Label = new Label();
@@ -67,6 +69,8 @@
             Orientation_Label = new Label();
             Orientation_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ExportSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
+            PageNumber_Label = new Label();
+            PageNumber_NumericUpDown = new Guna.UI2.WinForms.Guna2NumericUpDown();
             IncludeFooter_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             IncludeFooter_Label = new Label();
             IncludeHeader_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
@@ -91,6 +95,7 @@
             RightSettings_Panel.SuspendLayout();
             PageSettings_GroupBox.SuspendLayout();
             ExportSettings_GroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)PageNumber_NumericUpDown).BeginInit();
             LeftPreview_Panel.SuspendLayout();
             Preview_GroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Preview_PictureBox).BeginInit();
@@ -101,13 +106,13 @@
             RightSettings_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RightSettings_Panel.Controls.Add(PageSettings_GroupBox);
             RightSettings_Panel.Controls.Add(ExportSettings_GroupBox);
-            RightSettings_Panel.CustomizableEdges = customizableEdges53;
+            RightSettings_Panel.CustomizableEdges = customizableEdges23;
             RightSettings_Panel.FillColor = Color.Transparent;
             RightSettings_Panel.Location = new Point(961, 0);
             RightSettings_Panel.Margin = new Padding(4, 5, 4, 5);
             RightSettings_Panel.Name = "RightSettings_Panel";
             RightSettings_Panel.Padding = new Padding(7, 28, 28, 14);
-            RightSettings_Panel.ShadowDecoration.CustomizableEdges = customizableEdges54;
+            RightSettings_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
             RightSettings_Panel.Size = new Size(540, 900);
             RightSettings_Panel.TabIndex = 1;
             // 
@@ -122,14 +127,14 @@
             PageSettings_GroupBox.Controls.Add(Orientation_Label);
             PageSettings_GroupBox.Controls.Add(Orientation_ComboBox);
             PageSettings_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            PageSettings_GroupBox.CustomizableEdges = customizableEdges37;
+            PageSettings_GroupBox.CustomizableEdges = customizableEdges5;
             PageSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             PageSettings_GroupBox.ForeColor = Color.White;
             PageSettings_GroupBox.Location = new Point(7, 28);
             PageSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             PageSettings_GroupBox.Name = "PageSettings_GroupBox";
             PageSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            PageSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            PageSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             PageSettings_GroupBox.Size = new Size(505, 223);
             PageSettings_GroupBox.TabIndex = 0;
             PageSettings_GroupBox.Text = "Page Settings";
@@ -151,7 +156,7 @@
             // 
             PageSize_ComboBox.BackColor = Color.Transparent;
             PageSize_ComboBox.BorderRadius = 2;
-            PageSize_ComboBox.CustomizableEdges = customizableEdges33;
+            PageSize_ComboBox.CustomizableEdges = customizableEdges1;
             PageSize_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             PageSize_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             PageSize_ComboBox.FocusedColor = Color.Empty;
@@ -161,7 +166,7 @@
             PageSize_ComboBox.Location = new Point(145, 77);
             PageSize_ComboBox.Margin = new Padding(4, 5, 4, 5);
             PageSize_ComboBox.Name = "PageSize_ComboBox";
-            PageSize_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            PageSize_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             PageSize_ComboBox.Size = new Size(296, 50);
             PageSize_ComboBox.TabIndex = 1;
             PageSize_ComboBox.SelectedIndexChanged += PageSettings_Changed;
@@ -183,7 +188,7 @@
             // 
             Orientation_ComboBox.BackColor = Color.Transparent;
             Orientation_ComboBox.BorderRadius = 2;
-            Orientation_ComboBox.CustomizableEdges = customizableEdges35;
+            Orientation_ComboBox.CustomizableEdges = customizableEdges3;
             Orientation_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             Orientation_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Orientation_ComboBox.FocusedColor = Color.Empty;
@@ -193,7 +198,7 @@
             Orientation_ComboBox.Location = new Point(145, 138);
             Orientation_ComboBox.Margin = new Padding(4, 5, 4, 5);
             Orientation_ComboBox.Name = "Orientation_ComboBox";
-            Orientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            Orientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Orientation_ComboBox.Size = new Size(296, 50);
             Orientation_ComboBox.TabIndex = 3;
             Orientation_ComboBox.SelectedIndexChanged += PageSettings_Changed;
@@ -204,6 +209,8 @@
             ExportSettings_GroupBox.BackColor = Color.Transparent;
             ExportSettings_GroupBox.BorderRadius = 8;
             ExportSettings_GroupBox.BorderThickness = 0;
+            ExportSettings_GroupBox.Controls.Add(PageNumber_Label);
+            ExportSettings_GroupBox.Controls.Add(PageNumber_NumericUpDown);
             ExportSettings_GroupBox.Controls.Add(IncludeFooter_CheckBox);
             ExportSettings_GroupBox.Controls.Add(IncludeFooter_Label);
             ExportSettings_GroupBox.Controls.Add(IncludeHeader_CheckBox);
@@ -219,17 +226,43 @@
             ExportSettings_GroupBox.Controls.Add(Quality_TrackBar);
             ExportSettings_GroupBox.Controls.Add(Quality_ValueLabel);
             ExportSettings_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            ExportSettings_GroupBox.CustomizableEdges = customizableEdges51;
+            ExportSettings_GroupBox.CustomizableEdges = customizableEdges21;
             ExportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ExportSettings_GroupBox.ForeColor = Color.White;
             ExportSettings_GroupBox.Location = new Point(7, 271);
             ExportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ExportSettings_GroupBox.Name = "ExportSettings_GroupBox";
             ExportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            ExportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges52;
+            ExportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             ExportSettings_GroupBox.Size = new Size(505, 615);
             ExportSettings_GroupBox.TabIndex = 1;
             ExportSettings_GroupBox.Text = "Export Settings";
+            // 
+            // PageNumber_Label
+            // 
+            PageNumber_Label.AutoSize = true;
+            PageNumber_Label.BackColor = Color.Transparent;
+            PageNumber_Label.Font = new Font("Segoe UI", 9.5F);
+            PageNumber_Label.ForeColor = Color.Black;
+            PageNumber_Label.Location = new Point(23, 527);
+            PageNumber_Label.Name = "PageNumber_Label";
+            PageNumber_Label.Size = new Size(128, 25);
+            PageNumber_Label.TabIndex = 28;
+            PageNumber_Label.Text = "Page number:";
+            // 
+            // PageNumber_NumericUpDown
+            // 
+            PageNumber_NumericUpDown.BackColor = Color.Transparent;
+            PageNumber_NumericUpDown.CustomizableEdges = customizableEdges7;
+            PageNumber_NumericUpDown.Font = new Font("Segoe UI", 9F);
+            PageNumber_NumericUpDown.Location = new Point(158, 514);
+            PageNumber_NumericUpDown.Margin = new Padding(4, 5, 4, 5);
+            PageNumber_NumericUpDown.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
+            PageNumber_NumericUpDown.Name = "PageNumber_NumericUpDown";
+            PageNumber_NumericUpDown.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            PageNumber_NumericUpDown.Size = new Size(120, 50);
+            PageNumber_NumericUpDown.TabIndex = 27;
+            PageNumber_NumericUpDown.ValueChanged += PageNumber_NumericUpDown_ValueChanged;
             // 
             // IncludeFooter_CheckBox
             // 
@@ -239,10 +272,10 @@
             IncludeFooter_CheckBox.CheckedState.BorderRadius = 2;
             IncludeFooter_CheckBox.CheckedState.BorderThickness = 0;
             IncludeFooter_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            IncludeFooter_CheckBox.CustomizableEdges = customizableEdges39;
-            IncludeFooter_CheckBox.Location = new Point(25, 438);
+            IncludeFooter_CheckBox.CustomizableEdges = customizableEdges9;
+            IncludeFooter_CheckBox.Location = new Point(25, 413);
             IncludeFooter_CheckBox.Name = "IncludeFooter_CheckBox";
-            IncludeFooter_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            IncludeFooter_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             IncludeFooter_CheckBox.Size = new Size(20, 20);
             IncludeFooter_CheckBox.TabIndex = 26;
             IncludeFooter_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -257,7 +290,7 @@
             IncludeFooter_Label.BackColor = Color.Transparent;
             IncludeFooter_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeFooter_Label.ForeColor = Color.Black;
-            IncludeFooter_Label.Location = new Point(43, 431);
+            IncludeFooter_Label.Location = new Point(43, 406);
             IncludeFooter_Label.Name = "IncludeFooter_Label";
             IncludeFooter_Label.Padding = new Padding(5);
             IncludeFooter_Label.Size = new Size(140, 35);
@@ -273,10 +306,10 @@
             IncludeHeader_CheckBox.CheckedState.BorderRadius = 2;
             IncludeHeader_CheckBox.CheckedState.BorderThickness = 0;
             IncludeHeader_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            IncludeHeader_CheckBox.CustomizableEdges = customizableEdges41;
-            IncludeHeader_CheckBox.Location = new Point(25, 403);
+            IncludeHeader_CheckBox.CustomizableEdges = customizableEdges11;
+            IncludeHeader_CheckBox.Location = new Point(25, 378);
             IncludeHeader_CheckBox.Name = "IncludeHeader_CheckBox";
-            IncludeHeader_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges42;
+            IncludeHeader_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             IncludeHeader_CheckBox.Size = new Size(20, 20);
             IncludeHeader_CheckBox.TabIndex = 24;
             IncludeHeader_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -291,7 +324,7 @@
             IncludeHeader_Label.BackColor = Color.Transparent;
             IncludeHeader_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeHeader_Label.ForeColor = Color.Black;
-            IncludeHeader_Label.Location = new Point(43, 396);
+            IncludeHeader_Label.Location = new Point(43, 371);
             IncludeHeader_Label.Name = "IncludeHeader_Label";
             IncludeHeader_Label.Padding = new Padding(5);
             IncludeHeader_Label.Size = new Size(148, 35);
@@ -307,10 +340,10 @@
             OpenAfterExport_CheckBox.CheckedState.BorderRadius = 2;
             OpenAfterExport_CheckBox.CheckedState.BorderThickness = 0;
             OpenAfterExport_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            OpenAfterExport_CheckBox.CustomizableEdges = customizableEdges43;
-            OpenAfterExport_CheckBox.Location = new Point(25, 473);
+            OpenAfterExport_CheckBox.CustomizableEdges = customizableEdges13;
+            OpenAfterExport_CheckBox.Location = new Point(25, 448);
             OpenAfterExport_CheckBox.Name = "OpenAfterExport_CheckBox";
-            OpenAfterExport_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges44;
+            OpenAfterExport_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             OpenAfterExport_CheckBox.Size = new Size(20, 20);
             OpenAfterExport_CheckBox.TabIndex = 22;
             OpenAfterExport_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -325,7 +358,7 @@
             OpenAfterExport_Label.BackColor = Color.Transparent;
             OpenAfterExport_Label.Font = new Font("Segoe UI", 9.5F);
             OpenAfterExport_Label.ForeColor = Color.Black;
-            OpenAfterExport_Label.Location = new Point(43, 466);
+            OpenAfterExport_Label.Location = new Point(43, 441);
             OpenAfterExport_Label.Name = "OpenAfterExport_Label";
             OpenAfterExport_Label.Padding = new Padding(5);
             OpenAfterExport_Label.Size = new Size(171, 35);
@@ -352,7 +385,7 @@
             ExportPath_TextBox.BackColor = Color.Transparent;
             ExportPath_TextBox.BorderRadius = 2;
             ExportPath_TextBox.Cursor = Cursors.IBeam;
-            ExportPath_TextBox.CustomizableEdges = customizableEdges45;
+            ExportPath_TextBox.CustomizableEdges = customizableEdges15;
             ExportPath_TextBox.DefaultText = "";
             ExportPath_TextBox.Font = new Font("Segoe UI", 9F);
             ExportPath_TextBox.ForeColor = Color.Black;
@@ -362,7 +395,7 @@
             ExportPath_TextBox.PlaceholderText = "Select export location";
             ExportPath_TextBox.ReadOnly = true;
             ExportPath_TextBox.SelectedText = "";
-            ExportPath_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges46;
+            ExportPath_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             ExportPath_TextBox.Size = new Size(302, 50);
             ExportPath_TextBox.TabIndex = 1;
             // 
@@ -373,14 +406,14 @@
             BrowseExportPath_Button.BorderColor = Color.LightGray;
             BrowseExportPath_Button.BorderRadius = 2;
             BrowseExportPath_Button.BorderThickness = 1;
-            BrowseExportPath_Button.CustomizableEdges = customizableEdges47;
+            BrowseExportPath_Button.CustomizableEdges = customizableEdges17;
             BrowseExportPath_Button.FillColor = Color.White;
             BrowseExportPath_Button.Font = new Font("Segoe UI", 9F);
             BrowseExportPath_Button.ForeColor = Color.Black;
             BrowseExportPath_Button.Location = new Point(335, 91);
             BrowseExportPath_Button.Margin = new Padding(4, 5, 4, 5);
             BrowseExportPath_Button.Name = "BrowseExportPath_Button";
-            BrowseExportPath_Button.ShadowDecoration.CustomizableEdges = customizableEdges48;
+            BrowseExportPath_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             BrowseExportPath_Button.Size = new Size(154, 50);
             BrowseExportPath_Button.TabIndex = 2;
             BrowseExportPath_Button.Text = "Browse";
@@ -392,7 +425,7 @@
             ExportFormat_Label.BackColor = Color.Transparent;
             ExportFormat_Label.Font = new Font("Segoe UI", 9.5F);
             ExportFormat_Label.ForeColor = SystemColors.ControlText;
-            ExportFormat_Label.Location = new Point(25, 177);
+            ExportFormat_Label.Location = new Point(25, 167);
             ExportFormat_Label.Margin = new Padding(4, 0, 4, 0);
             ExportFormat_Label.Name = "ExportFormat_Label";
             ExportFormat_Label.Size = new Size(134, 25);
@@ -403,17 +436,17 @@
             // 
             ExportFormat_ComboBox.BackColor = Color.Transparent;
             ExportFormat_ComboBox.BorderRadius = 2;
-            ExportFormat_ComboBox.CustomizableEdges = customizableEdges49;
+            ExportFormat_ComboBox.CustomizableEdges = customizableEdges19;
             ExportFormat_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             ExportFormat_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             ExportFormat_ComboBox.FocusedColor = Color.Empty;
             ExportFormat_ComboBox.Font = new Font("Segoe UI", 9F);
             ExportFormat_ComboBox.ForeColor = Color.Black;
             ExportFormat_ComboBox.ItemHeight = 44;
-            ExportFormat_ComboBox.Location = new Point(23, 207);
+            ExportFormat_ComboBox.Location = new Point(23, 197);
             ExportFormat_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ExportFormat_ComboBox.Name = "ExportFormat_ComboBox";
-            ExportFormat_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges50;
+            ExportFormat_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             ExportFormat_ComboBox.Size = new Size(280, 50);
             ExportFormat_ComboBox.TabIndex = 4;
             ExportFormat_ComboBox.SelectedIndexChanged += ExportSettings_Changed;
@@ -424,7 +457,7 @@
             Quality_Label.BackColor = Color.Transparent;
             Quality_Label.Font = new Font("Segoe UI", 9.5F);
             Quality_Label.ForeColor = SystemColors.ControlText;
-            Quality_Label.Location = new Point(25, 307);
+            Quality_Label.Location = new Point(25, 282);
             Quality_Label.Margin = new Padding(4, 0, 4, 0);
             Quality_Label.Name = "Quality_Label";
             Quality_Label.Size = new Size(76, 25);
@@ -435,7 +468,7 @@
             // 
             Quality_TrackBar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Quality_TrackBar.BackColor = Color.Transparent;
-            Quality_TrackBar.Location = new Point(25, 341);
+            Quality_TrackBar.Location = new Point(25, 316);
             Quality_TrackBar.Margin = new Padding(4, 5, 4, 5);
             Quality_TrackBar.Minimum = 1;
             Quality_TrackBar.Name = "Quality_TrackBar";
@@ -452,7 +485,7 @@
             Quality_ValueLabel.BackColor = Color.Transparent;
             Quality_ValueLabel.Font = new Font("Segoe UI", 9.5F);
             Quality_ValueLabel.ForeColor = SystemColors.ControlText;
-            Quality_ValueLabel.Location = new Point(442, 307);
+            Quality_ValueLabel.Location = new Point(442, 282);
             Quality_ValueLabel.Margin = new Padding(4, 0, 4, 0);
             Quality_ValueLabel.Name = "Quality_ValueLabel";
             Quality_ValueLabel.Size = new Size(48, 25);
@@ -463,13 +496,13 @@
             // 
             LeftPreview_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftPreview_Panel.Controls.Add(Preview_GroupBox);
-            LeftPreview_Panel.CustomizableEdges = customizableEdges63;
+            LeftPreview_Panel.CustomizableEdges = customizableEdges33;
             LeftPreview_Panel.FillColor = Color.Transparent;
             LeftPreview_Panel.Location = new Point(0, 0);
             LeftPreview_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftPreview_Panel.Name = "LeftPreview_Panel";
             LeftPreview_Panel.Padding = new Padding(28, 28, 7, 14);
-            LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges64;
+            LeftPreview_Panel.ShadowDecoration.CustomizableEdges = customizableEdges34;
             LeftPreview_Panel.Size = new Size(960, 900);
             LeftPreview_Panel.TabIndex = 0;
             // 
@@ -485,14 +518,14 @@
             Preview_GroupBox.Controls.Add(ZoomOut_Button);
             Preview_GroupBox.Controls.Add(FitToWindow_Button);
             Preview_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Preview_GroupBox.CustomizableEdges = customizableEdges61;
+            Preview_GroupBox.CustomizableEdges = customizableEdges31;
             Preview_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Preview_GroupBox.ForeColor = Color.White;
             Preview_GroupBox.Location = new Point(28, 28);
             Preview_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Preview_GroupBox.Name = "Preview_GroupBox";
             Preview_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges62;
+            Preview_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Preview_GroupBox.Size = new Size(925, 858);
             Preview_GroupBox.TabIndex = 0;
             Preview_GroupBox.Text = "Report Preview";
@@ -530,14 +563,14 @@
             ZoomIn_Button.BorderColor = Color.LightGray;
             ZoomIn_Button.BorderRadius = 2;
             ZoomIn_Button.BorderThickness = 1;
-            ZoomIn_Button.CustomizableEdges = customizableEdges55;
+            ZoomIn_Button.CustomizableEdges = customizableEdges25;
             ZoomIn_Button.FillColor = Color.White;
             ZoomIn_Button.Font = new Font("Segoe UI", 18F);
             ZoomIn_Button.ForeColor = Color.Black;
             ZoomIn_Button.Location = new Point(144, 789);
             ZoomIn_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomIn_Button.Name = "ZoomIn_Button";
-            ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges56;
+            ZoomIn_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
             ZoomIn_Button.Size = new Size(115, 50);
             ZoomIn_Button.TabIndex = 1;
             ZoomIn_Button.Text = "+";
@@ -549,14 +582,14 @@
             ZoomOut_Button.BorderColor = Color.LightGray;
             ZoomOut_Button.BorderRadius = 2;
             ZoomOut_Button.BorderThickness = 1;
-            ZoomOut_Button.CustomizableEdges = customizableEdges57;
+            ZoomOut_Button.CustomizableEdges = customizableEdges27;
             ZoomOut_Button.FillColor = Color.White;
             ZoomOut_Button.Font = new Font("Segoe UI", 18F);
             ZoomOut_Button.ForeColor = Color.Black;
             ZoomOut_Button.Location = new Point(21, 789);
             ZoomOut_Button.Margin = new Padding(4, 5, 4, 5);
             ZoomOut_Button.Name = "ZoomOut_Button";
-            ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges58;
+            ZoomOut_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
             ZoomOut_Button.Size = new Size(115, 50);
             ZoomOut_Button.TabIndex = 2;
             ZoomOut_Button.Text = "-";
@@ -568,14 +601,14 @@
             FitToWindow_Button.BorderColor = Color.LightGray;
             FitToWindow_Button.BorderRadius = 2;
             FitToWindow_Button.BorderThickness = 1;
-            FitToWindow_Button.CustomizableEdges = customizableEdges59;
+            FitToWindow_Button.CustomizableEdges = customizableEdges29;
             FitToWindow_Button.FillColor = Color.White;
             FitToWindow_Button.Font = new Font("Segoe UI", 9F);
             FitToWindow_Button.ForeColor = Color.Black;
             FitToWindow_Button.Location = new Point(267, 789);
             FitToWindow_Button.Margin = new Padding(4, 5, 4, 5);
             FitToWindow_Button.Name = "FitToWindow_Button";
-            FitToWindow_Button.ShadowDecoration.CustomizableEdges = customizableEdges60;
+            FitToWindow_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
             FitToWindow_Button.Size = new Size(200, 50);
             FitToWindow_Button.TabIndex = 3;
             FitToWindow_Button.Text = "Fit to window";
@@ -597,6 +630,7 @@
             PageSettings_GroupBox.PerformLayout();
             ExportSettings_GroupBox.ResumeLayout(false);
             ExportSettings_GroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)PageNumber_NumericUpDown).EndInit();
             LeftPreview_Panel.ResumeLayout(false);
             Preview_GroupBox.ResumeLayout(false);
             Preview_GroupBox.PerformLayout();
@@ -633,5 +667,7 @@
         public Guna.UI2.WinForms.Guna2CustomCheckBox IncludeHeader_CheckBox;
         private Label IncludeHeader_Label;
         private Label ZoomStatus_Label;
+        private Label PageNumber_Label;
+        private Guna.UI2.WinForms.Guna2NumericUpDown PageNumber_NumericUpDown;
     }
 }
