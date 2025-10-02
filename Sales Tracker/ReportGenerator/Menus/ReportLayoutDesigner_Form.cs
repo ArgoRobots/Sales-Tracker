@@ -359,11 +359,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (e.KeyCode == Keys.Delete && _selectedElement != null)
             {
-                ReportConfig?.RemoveElement(_selectedElement.Id);
-                _selectedElement = null;
-                Canvas_Panel.Invalidate();
-                HidePropertiesPanel();
-                NotifyParentValidationChanged();
+                DeleteSelected(sender, e);
             }
         }
 
@@ -944,6 +940,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (_selectedElement != null)
             {
+                // If deleting a chart element, also remove it from SelectedChartTypes
+                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
+                {
+                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
+                }
+
                 ReportConfig?.RemoveElement(_selectedElement.Id);
                 _selectedElement = null;
                 Canvas_Panel.Invalidate();
