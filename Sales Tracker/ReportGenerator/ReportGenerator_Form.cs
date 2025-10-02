@@ -74,8 +74,8 @@ namespace Sales_Tracker.ReportGenerator
             ReportDataSelection_Form.Instance.IncludeReturns_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
             ReportDataSelection_Form.Instance.IncludeLosses_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
 
-            ReportLayoutDesigner_Form.Instance.PropertiesContainer_Panel.BackColor = CustomColors.ControlBack;
             ReportLayoutDesigner_Form.Instance.ToolsContainer_Panel.BackColor = CustomColors.ControlBack;
+            ReportLayoutDesigner_Form.Instance.PropertiesContainer_Panel.BackColor = CustomColors.ControlBack;
 
             ReportPreviewExport_Form.Instance.IncludeHeader_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
             ReportPreviewExport_Form.Instance.IncludeFooter_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;

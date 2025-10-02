@@ -1,4 +1,8 @@
-﻿namespace Sales_Tracker.ReportGenerator.Elements
+﻿using Guna.UI2.WinForms;
+using Guna.UI2.WinForms.Enums;
+using Sales_Tracker.Theme;
+
+namespace Sales_Tracker.ReportGenerator.Elements
 {
     /// <summary>
     /// Text label element for displaying text content.
@@ -10,7 +14,7 @@
         public float FontSize { get; set; } = 12f;
         public FontStyle FontStyle { get; set; } = FontStyle.Regular;
         public Color TextColor { get; set; } = Color.Black;
-        public StringAlignment Alignment { get; set; } = StringAlignment.Near;
+        public StringAlignment Alignment { get; set; } = StringAlignment.Center;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
         public override ReportElementType GetElementType() => ReportElementType.TextLabel;
@@ -80,8 +84,6 @@
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            const int rowHeight = 35;
-
             // Text content
             AddPropertyLabel(container, "Text:", yPosition);
             AddPropertyTextBox(container, Text, yPosition, value =>
@@ -89,7 +91,7 @@
                 Text = value;
                 onPropertyChanged();
             });
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
@@ -100,7 +102,7 @@
                     FontFamily = value;
                     onPropertyChanged();
                 });
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
@@ -109,12 +111,12 @@
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 72);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
-            // Font style checkboxes
+            // Font style toggle buttons
             AddPropertyLabel(container, "Style:", yPosition);
-            AddFontStyleCheckBoxes(container, yPosition, onPropertyChanged);
-            yPosition += rowHeight;
+            AddFontStyleToggleButtons(container, yPosition, onPropertyChanged);
+            yPosition += RowHeight;
 
             // Text alignment
             AddPropertyLabel(container, "Align:", yPosition);
@@ -123,70 +125,183 @@
                 value =>
                 {
                     Alignment = Enum.Parse<StringAlignment>(value);
-                    onPropertyChanged();
+                    AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+                        ["Left", "Center", "Right"],
+                        value =>
+                        {
+                            Alignment = DisplayTextToAlignment(value);
+                            onPropertyChanged();
+                        });
+                    yPosition += RowHeight;
+
+                    // Vertical alignment
+                    AddPropertyLabel(container, "V-Align:", yPosition);
+                    AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+                        ["Top", "Middle", "Bottom"],
+                        value =>
+                        {
+                            VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                            onPropertyChanged();
+                        });
+                    yPosition += RowHeight;
+
+                    // Text color
+                    AddPropertyLabel(container, "Color:", yPosition);
+                    AddColorPicker(container, yPosition, onPropertyChanged);
+                    yPosition += RowHeight;
                 });
-            yPosition += rowHeight;
-
-            // Text color
-            AddPropertyLabel(container, "Color:", yPosition);
-            AddColorPicker(container, yPosition, onPropertyChanged);
-            yPosition += rowHeight;
-
             return yPosition;
         }
-        private void AddFontStyleCheckBoxes(Panel container, int yPosition, Action onPropertyChanged)
+        private static string AlignmentToDisplayText(StringAlignment alignment)
         {
-            CheckBox boldCheck = new()
+            return alignment switch
             {
+                StringAlignment.Near => "Left",
+                StringAlignment.Center => "Center",
+                StringAlignment.Far => "Right",
+                _ => "Center"
+            };
+        }
+        private static StringAlignment DisplayTextToAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Left" => StringAlignment.Near,
+                "Center" => StringAlignment.Center,
+                "Right" => StringAlignment.Far,
+                _ => StringAlignment.Center
+            };
+        }
+        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
+        {
+            return alignment switch
+            {
+                StringAlignment.Near => "Top",
+                StringAlignment.Center => "Middle",
+                StringAlignment.Far => "Bottom",
+                _ => "Middle"
+            };
+        }
+        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Top" => StringAlignment.Near,
+                "Middle" => StringAlignment.Center,
+                "Bottom" => StringAlignment.Far,
+                _ => StringAlignment.Center
+            };
+        }
+        private void AddFontStyleToggleButtons(Panel container, int yPosition, Action onPropertyChanged)
+        {
+            int xPosition = 85;
+            const int buttonWidth = 35;
+            const int buttonHeight = 30;
+            const int spacing = 5;
+
+            // Calculate vertical position to center with label
+            int buttonY = yPosition + 2;
+
+            // Bold button
+            Guna2Button boldButton = new()
+            {
+                Size = new Size(buttonWidth, buttonHeight),
+                Location = new Point(xPosition, buttonY),
                 Text = "B",
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Size = new Size(35, 20),
-                Location = new Point(85, yPosition),
-                Checked = FontStyle.HasFlag(FontStyle.Bold)
+                BorderRadius = 2,
+                ButtonMode = ButtonMode.ToogleButton,
+                Checked = FontStyle.HasFlag(FontStyle.Bold),
+                FillColor = Color.White,
+                ForeColor = Color.Black,
+                CheckedState =
+                {
+                    FillColor = CustomColors.AccentBlue,
+                    ForeColor = Color.White
+                }
             };
-            boldCheck.CheckedChanged += (s, e) =>
+            boldButton.CheckedChanged += (s, e) =>
             {
-                UpdateFontStyle(boldCheck, FontStyle.Bold);
+                if (boldButton.Checked)
+                {
+                    FontStyle |= FontStyle.Bold;
+                }
+                else
+                {
+                    FontStyle &= ~FontStyle.Bold;
+                }
+
                 onPropertyChanged();
             };
-            container.Controls.Add(boldCheck);
+            container.Controls.Add(boldButton);
+            xPosition += buttonWidth + spacing;
 
-            CheckBox italicCheck = new()
+            // Italic button
+            Guna2Button italicButton = new()
             {
+                Size = new Size(buttonWidth, buttonHeight),
+                Location = new Point(xPosition, buttonY),
                 Text = "I",
                 Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                Size = new Size(35, 20),
-                Location = new Point(125, yPosition),
-                Checked = FontStyle.HasFlag(FontStyle.Italic)
+                BorderRadius = 2,
+                ButtonMode = ButtonMode.ToogleButton,
+                Checked = FontStyle.HasFlag(FontStyle.Italic),
+                FillColor = Color.White,
+                ForeColor = Color.Black,
+                CheckedState =
+                {
+                    FillColor = CustomColors.AccentBlue,
+                    ForeColor = Color.White
+                }
             };
-            italicCheck.CheckedChanged += (s, e) =>
+            italicButton.CheckedChanged += (s, e) =>
             {
-                UpdateFontStyle(italicCheck, FontStyle.Italic);
+                if (italicButton.Checked)
+                {
+                    FontStyle |= FontStyle.Italic;
+                }
+                else
+                {
+                    FontStyle &= ~FontStyle.Italic;
+                }
+
                 onPropertyChanged();
             };
-            container.Controls.Add(italicCheck);
+            container.Controls.Add(italicButton);
+            xPosition += buttonWidth + spacing;
 
-            CheckBox underlineCheck = new()
+            // Underline button
+            Guna2Button underlineButton = new()
             {
+                Size = new Size(buttonWidth, buttonHeight),
+                Location = new Point(xPosition, buttonY),
                 Text = "U",
                 Font = new Font("Segoe UI", 9, FontStyle.Underline),
-                Size = new Size(35, 20),
-                Location = new Point(165, yPosition),
-                Checked = FontStyle.HasFlag(FontStyle.Underline)
+                BorderRadius = 2,
+                ButtonMode = ButtonMode.ToogleButton,
+                Checked = FontStyle.HasFlag(FontStyle.Underline),
+                FillColor = Color.White,
+                ForeColor = Color.Black,
+                CheckedState =
+                {
+                    FillColor = CustomColors.AccentBlue,
+                    ForeColor = Color.White
+                }
             };
-            underlineCheck.CheckedChanged += (s, e) =>
+            underlineButton.CheckedChanged += (s, e) =>
             {
-                UpdateFontStyle(underlineCheck, FontStyle.Underline);
+                if (underlineButton.Checked)
+                {
+                    FontStyle |= FontStyle.Underline;
+                }
+                else
+                {
+                    FontStyle &= ~FontStyle.Underline;
+                }
+
                 onPropertyChanged();
             };
-            container.Controls.Add(underlineCheck);
-        }
-        private void UpdateFontStyle(CheckBox checkBox, FontStyle style)
-        {
-            if (checkBox.Checked)
-                FontStyle |= style;
-            else
-                FontStyle &= ~style;
+            container.Controls.Add(underlineButton);
         }
         private void AddColorPicker(Panel container, int yPosition, Action onPropertyChanged)
         {

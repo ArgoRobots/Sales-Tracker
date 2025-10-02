@@ -94,8 +94,6 @@
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            const int rowHeight = 25;
-
             // Checkboxes for included metrics
             AddPropertyLabel(container, "Include:", yPosition);
             yPosition += 20;
@@ -113,7 +111,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(salesCheck);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             CheckBox transactionsCheck = new()
             {
@@ -128,7 +126,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(transactionsCheck);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             CheckBox avgValueCheck = new()
             {
@@ -143,7 +141,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(avgValueCheck);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             CheckBox growthCheck = new()
             {
@@ -158,7 +156,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(growthCheck);
-            yPosition += rowHeight + 10;
+            yPosition += RowHeight + 10;
 
             return yPosition;
         }

@@ -53,8 +53,6 @@
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            const int rowHeight = 35;
-
             // Max rows
             AddPropertyLabel(container, "Max Rows:", yPosition);
             AddPropertyNumericUpDown(container, MaxRows, yPosition, value =>
@@ -62,7 +60,7 @@
                 MaxRows = (int)value;
                 onPropertyChanged();
             }, 1, 100);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Show headers checkbox
             AddPropertyLabel(container, "Headers:", yPosition);
@@ -78,7 +76,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(headersCheck);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             // Alternate row colors checkbox
             AddPropertyLabel(container, "Alt Colors:", yPosition);
@@ -94,7 +92,7 @@
                 onPropertyChanged();
             };
             container.Controls.Add(altColorsCheck);
-            yPosition += rowHeight;
+            yPosition += RowHeight;
 
             return yPosition;
         }

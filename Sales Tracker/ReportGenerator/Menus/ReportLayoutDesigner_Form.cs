@@ -438,28 +438,20 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Create new property controls
                 int yPosition = 10;
-                const int rowHeight = 35;
 
                 // Create common property controls
                 CreateCommonPropertyControls(yPosition);
-                yPosition += rowHeight * 5;
+                yPosition += BaseElement.RowHeight * 5;
 
                 // Add element-specific properties
                 yPosition = CreateElementSpecificControls(yPosition);
 
-                // Add separator
-                yPosition += 10;
-                Panel separator = new()
-                {
-                    BackColor = CustomColors.ControlBorder,
-                    Location = new Point(10, yPosition),
-                    Size = new Size(PropertiesContainer_Panel.Width - 20, 1)
-                };
-                PropertiesContainer_Panel.Controls.Add(separator);
-                yPosition += 15;
-
                 // Z-Order controls
                 CreateZOrderControls(yPosition);
+
+                // Only set the theme of it's controls, not the panel itself
+                List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
+                ThemeManager.SetThemeForControls(controls);
             }
 
             // Update control values
@@ -472,131 +464,87 @@ namespace Sales_Tracker.ReportGenerator
         private void CreateCommonPropertyControls(int startY)
         {
             int yPosition = startY;
-            const int rowHeight = 35;
 
             // Name property
-            Label nameLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Name:", yPosition);
-            Guna2TextBox nameTextBox = new()
-            {
-                Size = new Size(180, 26),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 9)
-            };
-            nameTextBox.TextChanged += (s, e) =>
-            {
-                if (_selectedElement != null)
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Name:", yPosition);
+            Guna2TextBox nameTextBox = BaseElement.AddPropertyTextBox(PropertiesContainer_Panel, _selectedElement?.DisplayName ?? "", yPosition,
+                value =>
                 {
-                    _selectedElement.DisplayName = nameTextBox.Text;
-                    Canvas_Panel.Invalidate();
-                    NotifyParentValidationChanged();
-                }
-            };
-            PropertiesContainer_Panel.Controls.Add(nameTextBox);
+                    if (_selectedElement != null)
+                    {
+                        _selectedElement.DisplayName = value;
+                        Canvas_Panel.Invalidate();
+                        NotifyParentValidationChanged();
+                    }
+                });
             _propertyControls["Name"] = nameTextBox;
             _updateActions["Name"] = () => nameTextBox.Text = _selectedElement?.DisplayName ?? "";
-            yPosition += rowHeight;
+            yPosition += BaseElement.RowHeight;
 
             // X position
-            Label xLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "X:", yPosition);
-            Guna2NumericUpDown xNumeric = new()
-            {
-                Size = new Size(100, 26),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 9),
-                Minimum = 0,
-                Maximum = 9999
-            };
-            xNumeric.ValueChanged += (s, e) =>
-            {
-                if (_selectedElement != null)
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "X:", yPosition);
+            Guna2NumericUpDown xNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.X ?? 0, yPosition,
+                value =>
                 {
-                    Rectangle bounds = _selectedElement.Bounds;
-                    bounds.X = (int)xNumeric.Value;
-                    _selectedElement.Bounds = bounds;
-                    Canvas_Panel.Invalidate();
-                }
-            };
-            PropertiesContainer_Panel.Controls.Add(xNumeric);
+                    if (_selectedElement != null)
+                    {
+                        Rectangle bounds = _selectedElement.Bounds;
+                        bounds.X = (int)value;
+                        _selectedElement.Bounds = bounds;
+                        Canvas_Panel.Invalidate();
+                    }
+                }, 0, 9999);
             _propertyControls["X"] = xNumeric;
             _updateActions["X"] = () => xNumeric.Value = _selectedElement?.Bounds.X ?? 0;
-            yPosition += rowHeight;
+            yPosition += BaseElement.RowHeight;
 
             // Y position
-            Label yLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Y:", yPosition);
-            Guna2NumericUpDown yNumeric = new()
-            {
-                Size = new Size(100, 26),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 9),
-                Minimum = 0,
-                Maximum = 9999
-            };
-            yNumeric.ValueChanged += (s, e) =>
-            {
-                if (_selectedElement != null)
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Y:", yPosition);
+            Guna2NumericUpDown yNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Y ?? 0, yPosition,
+                value =>
                 {
-                    Rectangle bounds = _selectedElement.Bounds;
-                    bounds.Y = (int)yNumeric.Value;
-                    _selectedElement.Bounds = bounds;
-                    Canvas_Panel.Invalidate();
-                }
-            };
-            PropertiesContainer_Panel.Controls.Add(yNumeric);
+                    if (_selectedElement != null)
+                    {
+                        Rectangle bounds = _selectedElement.Bounds;
+                        bounds.Y = (int)value;
+                        _selectedElement.Bounds = bounds;
+                        Canvas_Panel.Invalidate();
+                    }
+                }, 0, 9999);
             _propertyControls["Y"] = yNumeric;
             _updateActions["Y"] = () => yNumeric.Value = _selectedElement?.Bounds.Y ?? 0;
-            yPosition += rowHeight;
+            yPosition += BaseElement.RowHeight;
 
             // Width
-            Label widthLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Width:", yPosition);
-            Guna2NumericUpDown widthNumeric = new()
-            {
-                Size = new Size(100, 26),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 9),
-                Minimum = 50,
-                Maximum = 9999
-            };
-            widthNumeric.ValueChanged += (s, e) =>
-            {
-                if (_selectedElement != null)
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Width:", yPosition);
+            Guna2NumericUpDown widthNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Width ?? 100, yPosition,
+                value =>
                 {
-                    Rectangle bounds = _selectedElement.Bounds;
-                    bounds.Width = Math.Max(50, (int)widthNumeric.Value);
-                    _selectedElement.Bounds = bounds;
-                    Canvas_Panel.Invalidate();
-                }
-            };
-            PropertiesContainer_Panel.Controls.Add(widthNumeric);
+                    if (_selectedElement != null)
+                    {
+                        Rectangle bounds = _selectedElement.Bounds;
+                        bounds.Width = Math.Max(50, (int)value);
+                        _selectedElement.Bounds = bounds;
+                        Canvas_Panel.Invalidate();
+                    }
+                }, 50, 9999);
             _propertyControls["Width"] = widthNumeric;
             _updateActions["Width"] = () => widthNumeric.Value = _selectedElement?.Bounds.Width ?? 100;
-            yPosition += rowHeight;
+            yPosition += BaseElement.RowHeight;
 
             // Height
-            Label heightLabel = BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Height:", yPosition);
-            Guna2NumericUpDown heightNumeric = new()
-            {
-                Size = new Size(100, 26),
-                Location = new Point(85, yPosition),
-                BorderRadius = 2,
-                Font = new Font("Segoe UI", 9),
-                Minimum = 30,
-                Maximum = 9999
-            };
-            heightNumeric.ValueChanged += (s, e) =>
-            {
-                if (_selectedElement != null)
+            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Height:", yPosition);
+            Guna2NumericUpDown heightNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Height ?? 100, yPosition,
+                value =>
                 {
-                    Rectangle bounds = _selectedElement.Bounds;
-                    bounds.Height = Math.Max(30, (int)heightNumeric.Value);
-                    _selectedElement.Bounds = bounds;
-                    Canvas_Panel.Invalidate();
-                }
-            };
-            PropertiesContainer_Panel.Controls.Add(heightNumeric);
+                    if (_selectedElement != null)
+                    {
+                        Rectangle bounds = _selectedElement.Bounds;
+                        bounds.Height = Math.Max(30, (int)value);
+                        _selectedElement.Bounds = bounds;
+                        Canvas_Panel.Invalidate();
+                    }
+                }, 30, 9999);
             _propertyControls["Height"] = heightNumeric;
             _updateActions["Height"] = () => heightNumeric.Value = _selectedElement?.Bounds.Height ?? 100;
         }
@@ -658,7 +606,7 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             // Update all registered property controls
-            foreach (var updateAction in _updateActions.Values)
+            foreach (Action updateAction in _updateActions.Values)
             {
                 updateAction?.Invoke();
             }
@@ -698,7 +646,7 @@ namespace Sales_Tracker.ReportGenerator
             if (ReportConfig?.Elements == null || element == null) { return; }
 
             // Shift all other elements up by 1
-            foreach (var e in ReportConfig.Elements.Where(e => e != element))
+            foreach (BaseElement? e in ReportConfig.Elements.Where(e => e != element))
             {
                 e.ZOrder++;
             }

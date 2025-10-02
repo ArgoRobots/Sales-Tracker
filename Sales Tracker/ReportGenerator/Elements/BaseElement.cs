@@ -39,6 +39,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public bool IsVisible { get; set; } = true;
 
+        /// <summary>
+        /// Gets the height of each row for the element in the designer.
+        /// </summary>
+        public static byte RowHeight { get; } = 45;
+
         // Abstract methods
         /// <summary>
         /// Gets the element type.
@@ -89,7 +94,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Font = new Font("Segoe UI", 9),
                 ForeColor = CustomColors.Text,
                 Location = new Point(10, yPosition + 3),
-                Size = new Size(70, 20)
+                AutoSize = true
             };
             container.Controls.Add(label);
             return label;
@@ -103,11 +108,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2TextBox textBox = new()
             {
                 Text = value,
-                Size = new Size(180, 26),
+                Size = new Size(180, 35),
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9)
             };
+
             textBox.TextChanged += (s, e) => onChange(textBox.Text);
             container.Controls.Add(textBox);
             return textBox;
@@ -120,7 +126,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Guna2NumericUpDown numericUpDown = new()
             {
-                Size = new Size(100, 26),
+                Size = new Size(100, 35),
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
@@ -128,6 +134,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Maximum = max,
                 Value = value
             };
+
             numericUpDown.ValueChanged += (s, e) => onChange(numericUpDown.Value);
             container.Controls.Add(numericUpDown);
             return numericUpDown;
@@ -140,19 +147,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Guna2ComboBox comboBox = new()
             {
-                Size = new Size(180, 26),
+                Size = new Size(180, 35),
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
-                Font = new Font("Segoe UI", 9),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Font = new Font("Segoe UI", 9)
             };
             comboBox.Items.AddRange(items);
             comboBox.SelectedItem = value;
             comboBox.SelectedIndexChanged += (s, e) =>
             {
                 if (comboBox.SelectedItem != null)
+                {
                     onChange(comboBox.SelectedItem.ToString());
+                }
             };
+
             container.Controls.Add(comboBox);
             return comboBox;
         }
