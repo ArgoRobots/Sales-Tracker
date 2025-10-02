@@ -139,6 +139,7 @@
             // 
             // Properties_Separator
             // 
+            Properties_Separator.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Properties_Separator.Location = new Point(0, 74);
             Properties_Separator.Name = "Properties_Separator";
             Properties_Separator.Size = new Size(345, 3);
