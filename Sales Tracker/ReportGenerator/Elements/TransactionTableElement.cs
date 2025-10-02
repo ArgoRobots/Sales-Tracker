@@ -69,7 +69,7 @@
                     ShowHeaders = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             // Alternate row colors checkbox
             AddPropertyCheckBoxWithLabel(container, "Alt Colors", AlternateRowColors, yPosition,
@@ -78,7 +78,7 @@
                     AlternateRowColors = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             return yPosition;
         }

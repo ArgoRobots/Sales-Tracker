@@ -105,7 +105,7 @@
                     ShowTotalSales = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
             AddPropertyCheckBoxWithLabel(container, "Total Transactions", ShowTotalTransactions, yPosition,
@@ -114,7 +114,7 @@
                     ShowTotalTransactions = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             // Average Value checkbox
             AddPropertyCheckBoxWithLabel(container, "Average Value", ShowAverageValue, yPosition,
@@ -123,7 +123,7 @@
                     ShowAverageValue = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             // Growth Rate checkbox
             AddPropertyCheckBoxWithLabel(container, "Growth Rate", ShowGrowthRate, yPosition,
@@ -132,7 +132,7 @@
                     ShowGrowthRate = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight + 10;
+            yPosition += CheckBoxRowHeight + 10;
 
             return yPosition;
         }

@@ -201,7 +201,7 @@ namespace Sales_Tracker.Theme
                         break;
 
                     case Guna2GroupBox guna2GroupBox:
-                        guna2GroupBox.ForeColor = CustomColors.Text;
+                        guna2GroupBox.ForeColor = Color.White;  // Always white since the border is blue
                         guna2GroupBox.FillColor = CustomColors.ControlBack;
                         guna2GroupBox.CustomBorderColor = CustomColors.AccentBlue;
                         break;

@@ -37,7 +37,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
-                // Get and ensure chart is loaded with data
                 Control chartControl = GetChartControl();
 
                 // Load data if chart is empty
@@ -54,9 +53,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     LoadChartData(ChartType);
                 }
 
+                // Generate server-side image
                 if (chartControl != null && chartControl is CartesianChart cartesianChart)
                 {
-                    // Generate server-side image from CartesianChart
                     using Bitmap chartImage = GenerateCartesianChartImage(cartesianChart);
                     if (chartImage != null)
                     {
@@ -65,7 +64,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
                 else if (chartControl != null && chartControl is PieChart pieChart)
                 {
-                    // Generate server-side image from PieChart
                     using Bitmap chartImage = GeneratePieChartImage(pieChart);
                     if (chartImage != null)
                     {
@@ -74,7 +72,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
                 else if (chartControl != null && chartControl is GeoMap geoMap)
                 {
-                    // Generate server-side image from GeoMap
                     using Bitmap chartImage = GenerateGeoMapImage(geoMap);
                     if (chartImage != null)
                     {
@@ -370,7 +367,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowLegend = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
             AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
@@ -379,7 +376,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowTitle = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += CheckBoxRowHeight;
 
             return yPosition;
         }
