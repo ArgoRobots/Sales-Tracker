@@ -139,7 +139,7 @@ namespace Sales_Tracker.ReportGenerator
 
             // Left side - generation date
             StringFormat leftFormat = new() { Alignment = StringAlignment.Near };
-            graphics.DrawString($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}",
+            graphics.DrawString($"Generated: {DateTime.Now:yyyy-MM-dd hh:mm tt}",
                 footerFont, footerBrush, footerRect, leftFormat);
 
             // Right side - page number (if enabled)
