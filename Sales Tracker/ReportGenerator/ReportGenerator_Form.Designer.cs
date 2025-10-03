@@ -1,4 +1,5 @@
-﻿namespace Sales_Tracker.ReportGenerator
+﻿
+namespace Sales_Tracker.ReportGenerator
 {
     partial class ReportGenerator_Form
     {
@@ -58,7 +59,7 @@
             StepTitle_Label.AutoSize = true;
             StepTitle_Label.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             StepTitle_Label.ForeColor = Color.Black;
-            StepTitle_Label.Location = new Point(32, 18);
+            StepTitle_Label.Location = new Point(32, 13);
             StepTitle_Label.Margin = new Padding(6, 0, 6, 0);
             StepTitle_Label.Name = "StepTitle_Label";
             StepTitle_Label.Size = new Size(235, 45);
@@ -71,7 +72,7 @@
             Progress_ProgressBar.BorderRadius = 8;
             Progress_ProgressBar.CustomizableEdges = customizableEdges1;
             Progress_ProgressBar.FillColor = Color.White;
-            Progress_ProgressBar.Location = new Point(1144, 24);
+            Progress_ProgressBar.Location = new Point(1144, 19);
             Progress_ProgressBar.Margin = new Padding(6, 5, 6, 5);
             Progress_ProgressBar.Name = "Progress_ProgressBar";
             Progress_ProgressBar.ProgressColor = Color.FromArgb(94, 148, 255);
@@ -88,7 +89,7 @@
             ProgressValue_Label.AutoSize = true;
             ProgressValue_Label.Font = new Font("Segoe UI", 10F);
             ProgressValue_Label.ForeColor = Color.Black;
-            ProgressValue_Label.Location = new Point(1373, 26);
+            ProgressValue_Label.Location = new Point(1373, 21);
             ProgressValue_Label.Margin = new Padding(6, 0, 6, 0);
             ProgressValue_Label.Name = "ProgressValue_Label";
             ProgressValue_Label.Size = new Size(52, 28);
@@ -186,11 +187,11 @@
             Content_Panel.CustomizableEdges = customizableEdges9;
             Content_Panel.Dock = DockStyle.Fill;
             Content_Panel.FillColor = SystemColors.Control;
-            Content_Panel.Location = new Point(0, 80);
+            Content_Panel.Location = new Point(0, 70);
             Content_Panel.Margin = new Padding(6, 5, 6, 5);
             Content_Panel.Name = "Content_Panel";
             Content_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            Content_Panel.Size = new Size(1478, 884);
+            Content_Panel.Size = new Size(1478, 894);
             Content_Panel.TabIndex = 1;
             // 
             // Top_Panel
@@ -206,7 +207,7 @@
             Top_Panel.Margin = new Padding(6, 5, 6, 5);
             Top_Panel.Name = "Top_Panel";
             Top_Panel.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Top_Panel.Size = new Size(1478, 80);
+            Top_Panel.Size = new Size(1478, 70);
             Top_Panel.TabIndex = 0;
             // 
             // ReportGenerator_Form

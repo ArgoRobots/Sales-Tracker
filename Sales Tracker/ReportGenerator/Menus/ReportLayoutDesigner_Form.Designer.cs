@@ -28,17 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             RightCanvas_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            MakeSameSize_Button = new Guna.UI2.WinForms.Guna2Button();
+            MakeSameHeight_Button = new Guna.UI2.WinForms.Guna2Button();
+            MakeSameWidth_Button = new Guna.UI2.WinForms.Guna2Button();
+            DistributeVertically_Button = new Guna.UI2.WinForms.Guna2Button();
+            DistributeHorizontally_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignBottom_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignMiddle_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignTop_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignRight_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignCenter_Button = new Guna.UI2.WinForms.Guna2Button();
+            AlignLeft_Button = new Guna.UI2.WinForms.Guna2Button();
             Canvas_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             Canvas_Panel = new Panel();
             LeftTools_Panel = new Guna.UI2.WinForms.Guna2Panel();
@@ -58,16 +91,258 @@
             // RightCanvas_Panel
             // 
             RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RightCanvas_Panel.Controls.Add(MakeSameSize_Button);
+            RightCanvas_Panel.Controls.Add(MakeSameHeight_Button);
+            RightCanvas_Panel.Controls.Add(MakeSameWidth_Button);
+            RightCanvas_Panel.Controls.Add(DistributeVertically_Button);
+            RightCanvas_Panel.Controls.Add(DistributeHorizontally_Button);
+            RightCanvas_Panel.Controls.Add(AlignBottom_Button);
+            RightCanvas_Panel.Controls.Add(AlignMiddle_Button);
+            RightCanvas_Panel.Controls.Add(AlignTop_Button);
+            RightCanvas_Panel.Controls.Add(AlignRight_Button);
+            RightCanvas_Panel.Controls.Add(AlignCenter_Button);
+            RightCanvas_Panel.Controls.Add(AlignLeft_Button);
             RightCanvas_Panel.Controls.Add(Canvas_GroupBox);
-            RightCanvas_Panel.CustomizableEdges = customizableEdges3;
+            RightCanvas_Panel.CustomizableEdges = customizableEdges25;
             RightCanvas_Panel.FillColor = Color.Transparent;
             RightCanvas_Panel.Location = new Point(380, 0);
             RightCanvas_Panel.Margin = new Padding(4, 5, 4, 5);
             RightCanvas_Panel.Name = "RightCanvas_Panel";
-            RightCanvas_Panel.Padding = new Padding(7, 28, 28, 14);
-            RightCanvas_Panel.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            RightCanvas_Panel.Padding = new Padding(7, 60, 28, 14);
+            RightCanvas_Panel.ShadowDecoration.CustomizableEdges = customizableEdges26;
             RightCanvas_Panel.Size = new Size(1120, 900);
             RightCanvas_Panel.TabIndex = 1;
+            // 
+            // MakeSameSize_Button
+            // 
+            MakeSameSize_Button.BorderColor = Color.LightGray;
+            MakeSameSize_Button.BorderRadius = 4;
+            MakeSameSize_Button.BorderThickness = 1;
+            MakeSameSize_Button.CustomizableEdges = customizableEdges1;
+            MakeSameSize_Button.DisabledState.BorderColor = Color.DarkGray;
+            MakeSameSize_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            MakeSameSize_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            MakeSameSize_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            MakeSameSize_Button.FillColor = Color.White;
+            MakeSameSize_Button.Font = new Font("Segoe UI", 9F);
+            MakeSameSize_Button.ForeColor = Color.Black;
+            MakeSameSize_Button.Location = new Point(552, 14);
+            MakeSameSize_Button.Name = "MakeSameSize_Button";
+            MakeSameSize_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            MakeSameSize_Button.Size = new Size(40, 40);
+            MakeSameSize_Button.TabIndex = 10;
+            MakeSameSize_Button.Text = "□";
+            MakeSameSize_Button.Click += MakeSameSize_Button_Click;
+            // 
+            // MakeSameHeight_Button
+            // 
+            MakeSameHeight_Button.BorderColor = Color.LightGray;
+            MakeSameHeight_Button.BorderRadius = 4;
+            MakeSameHeight_Button.BorderThickness = 1;
+            MakeSameHeight_Button.CustomizableEdges = customizableEdges3;
+            MakeSameHeight_Button.DisabledState.BorderColor = Color.DarkGray;
+            MakeSameHeight_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            MakeSameHeight_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            MakeSameHeight_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            MakeSameHeight_Button.FillColor = Color.White;
+            MakeSameHeight_Button.Font = new Font("Segoe UI", 9F);
+            MakeSameHeight_Button.ForeColor = Color.Black;
+            MakeSameHeight_Button.Location = new Point(506, 14);
+            MakeSameHeight_Button.Name = "MakeSameHeight_Button";
+            MakeSameHeight_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            MakeSameHeight_Button.Size = new Size(40, 40);
+            MakeSameHeight_Button.TabIndex = 9;
+            MakeSameHeight_Button.Text = "H";
+            MakeSameHeight_Button.Click += MakeSameHeight_Button_Click;
+            // 
+            // MakeSameWidth_Button
+            // 
+            MakeSameWidth_Button.BorderColor = Color.LightGray;
+            MakeSameWidth_Button.BorderRadius = 4;
+            MakeSameWidth_Button.BorderThickness = 1;
+            MakeSameWidth_Button.CustomizableEdges = customizableEdges5;
+            MakeSameWidth_Button.DisabledState.BorderColor = Color.DarkGray;
+            MakeSameWidth_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            MakeSameWidth_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            MakeSameWidth_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            MakeSameWidth_Button.FillColor = Color.White;
+            MakeSameWidth_Button.Font = new Font("Segoe UI", 9F);
+            MakeSameWidth_Button.ForeColor = Color.Black;
+            MakeSameWidth_Button.Location = new Point(460, 14);
+            MakeSameWidth_Button.Name = "MakeSameWidth_Button";
+            MakeSameWidth_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            MakeSameWidth_Button.Size = new Size(40, 40);
+            MakeSameWidth_Button.TabIndex = 8;
+            MakeSameWidth_Button.Text = "W";
+            MakeSameWidth_Button.Click += MakeSameWidth_Button_Click;
+            // 
+            // DistributeVertically_Button
+            // 
+            DistributeVertically_Button.BorderColor = Color.LightGray;
+            DistributeVertically_Button.BorderRadius = 4;
+            DistributeVertically_Button.BorderThickness = 1;
+            DistributeVertically_Button.CustomizableEdges = customizableEdges7;
+            DistributeVertically_Button.DisabledState.BorderColor = Color.DarkGray;
+            DistributeVertically_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            DistributeVertically_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            DistributeVertically_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            DistributeVertically_Button.FillColor = Color.White;
+            DistributeVertically_Button.Font = new Font("Segoe UI", 9F);
+            DistributeVertically_Button.ForeColor = Color.Black;
+            DistributeVertically_Button.Location = new Point(390, 14);
+            DistributeVertically_Button.Name = "DistributeVertically_Button";
+            DistributeVertically_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            DistributeVertically_Button.Size = new Size(40, 40);
+            DistributeVertically_Button.TabIndex = 7;
+            DistributeVertically_Button.Text = "=";
+            DistributeVertically_Button.Click += DistributeVertically_Button_Click;
+            // 
+            // DistributeHorizontally_Button
+            // 
+            DistributeHorizontally_Button.BorderColor = Color.LightGray;
+            DistributeHorizontally_Button.BorderRadius = 4;
+            DistributeHorizontally_Button.BorderThickness = 1;
+            DistributeHorizontally_Button.CustomizableEdges = customizableEdges9;
+            DistributeHorizontally_Button.DisabledState.BorderColor = Color.DarkGray;
+            DistributeHorizontally_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            DistributeHorizontally_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            DistributeHorizontally_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            DistributeHorizontally_Button.FillColor = Color.White;
+            DistributeHorizontally_Button.Font = new Font("Segoe UI", 9F);
+            DistributeHorizontally_Button.ForeColor = Color.Black;
+            DistributeHorizontally_Button.Location = new Point(344, 14);
+            DistributeHorizontally_Button.Name = "DistributeHorizontally_Button";
+            DistributeHorizontally_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            DistributeHorizontally_Button.Size = new Size(40, 40);
+            DistributeHorizontally_Button.TabIndex = 6;
+            DistributeHorizontally_Button.Text = "|||";
+            DistributeHorizontally_Button.Click += DistributeHorizontally_Button_Click;
+            // 
+            // AlignBottom_Button
+            // 
+            AlignBottom_Button.BorderColor = Color.LightGray;
+            AlignBottom_Button.BorderRadius = 4;
+            AlignBottom_Button.BorderThickness = 1;
+            AlignBottom_Button.CustomizableEdges = customizableEdges11;
+            AlignBottom_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignBottom_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignBottom_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignBottom_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignBottom_Button.FillColor = Color.White;
+            AlignBottom_Button.Font = new Font("Segoe UI", 9F);
+            AlignBottom_Button.ForeColor = Color.Black;
+            AlignBottom_Button.Location = new Point(273, 14);
+            AlignBottom_Button.Name = "AlignBottom_Button";
+            AlignBottom_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            AlignBottom_Button.Size = new Size(40, 40);
+            AlignBottom_Button.TabIndex = 5;
+            AlignBottom_Button.Text = "⬇";
+            AlignBottom_Button.Click += AlignBottom_Button_Click;
+            // 
+            // AlignMiddle_Button
+            // 
+            AlignMiddle_Button.BorderColor = Color.LightGray;
+            AlignMiddle_Button.BorderRadius = 4;
+            AlignMiddle_Button.BorderThickness = 1;
+            AlignMiddle_Button.CustomizableEdges = customizableEdges13;
+            AlignMiddle_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignMiddle_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignMiddle_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignMiddle_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignMiddle_Button.FillColor = Color.White;
+            AlignMiddle_Button.Font = new Font("Segoe UI", 9F);
+            AlignMiddle_Button.ForeColor = Color.Black;
+            AlignMiddle_Button.Location = new Point(227, 14);
+            AlignMiddle_Button.Name = "AlignMiddle_Button";
+            AlignMiddle_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            AlignMiddle_Button.Size = new Size(40, 40);
+            AlignMiddle_Button.TabIndex = 4;
+            AlignMiddle_Button.Text = "↕";
+            AlignMiddle_Button.Click += AlignMiddle_Button_Click;
+            // 
+            // AlignTop_Button
+            // 
+            AlignTop_Button.BorderColor = Color.LightGray;
+            AlignTop_Button.BorderRadius = 4;
+            AlignTop_Button.BorderThickness = 1;
+            AlignTop_Button.CustomizableEdges = customizableEdges15;
+            AlignTop_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignTop_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignTop_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignTop_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignTop_Button.FillColor = Color.White;
+            AlignTop_Button.Font = new Font("Segoe UI", 9F);
+            AlignTop_Button.ForeColor = Color.Black;
+            AlignTop_Button.Location = new Point(181, 14);
+            AlignTop_Button.Name = "AlignTop_Button";
+            AlignTop_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AlignTop_Button.Size = new Size(40, 40);
+            AlignTop_Button.TabIndex = 3;
+            AlignTop_Button.Text = "⬆";
+            AlignTop_Button.Click += AlignTop_Button_Click;
+            // 
+            // AlignRight_Button
+            // 
+            AlignRight_Button.BorderColor = Color.LightGray;
+            AlignRight_Button.BorderRadius = 4;
+            AlignRight_Button.BorderThickness = 1;
+            AlignRight_Button.CustomizableEdges = customizableEdges17;
+            AlignRight_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignRight_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignRight_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignRight_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignRight_Button.FillColor = Color.White;
+            AlignRight_Button.Font = new Font("Segoe UI", 9F);
+            AlignRight_Button.ForeColor = Color.Black;
+            AlignRight_Button.Location = new Point(120, 14);
+            AlignRight_Button.Name = "AlignRight_Button";
+            AlignRight_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            AlignRight_Button.Size = new Size(40, 40);
+            AlignRight_Button.TabIndex = 2;
+            AlignRight_Button.Text = "➡";
+            AlignRight_Button.Click += AlignRight_Button_Click;
+            // 
+            // AlignCenter_Button
+            // 
+            AlignCenter_Button.BorderColor = Color.LightGray;
+            AlignCenter_Button.BorderRadius = 4;
+            AlignCenter_Button.BorderThickness = 1;
+            AlignCenter_Button.CustomizableEdges = customizableEdges19;
+            AlignCenter_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignCenter_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignCenter_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignCenter_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignCenter_Button.FillColor = Color.White;
+            AlignCenter_Button.Font = new Font("Segoe UI", 9F);
+            AlignCenter_Button.ForeColor = Color.Black;
+            AlignCenter_Button.Location = new Point(74, 14);
+            AlignCenter_Button.Name = "AlignCenter_Button";
+            AlignCenter_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            AlignCenter_Button.Size = new Size(40, 40);
+            AlignCenter_Button.TabIndex = 1;
+            AlignCenter_Button.Text = "↔";
+            AlignCenter_Button.Click += AlignCenter_Button_Click;
+            // 
+            // AlignLeft_Button
+            // 
+            AlignLeft_Button.BorderColor = Color.LightGray;
+            AlignLeft_Button.BorderRadius = 4;
+            AlignLeft_Button.BorderThickness = 1;
+            AlignLeft_Button.CustomizableEdges = customizableEdges21;
+            AlignLeft_Button.DisabledState.BorderColor = Color.DarkGray;
+            AlignLeft_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AlignLeft_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AlignLeft_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AlignLeft_Button.FillColor = Color.White;
+            AlignLeft_Button.Font = new Font("Segoe UI", 9F);
+            AlignLeft_Button.ForeColor = Color.Black;
+            AlignLeft_Button.Location = new Point(28, 14);
+            AlignLeft_Button.Name = "AlignLeft_Button";
+            AlignLeft_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            AlignLeft_Button.Size = new Size(40, 40);
+            AlignLeft_Button.TabIndex = 0;
+            AlignLeft_Button.Text = "⬅";
+            AlignLeft_Button.Click += AlignLeft_Button_Click;
             // 
             // Canvas_GroupBox
             // 
@@ -77,15 +352,15 @@
             Canvas_GroupBox.BorderThickness = 0;
             Canvas_GroupBox.Controls.Add(Canvas_Panel);
             Canvas_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Canvas_GroupBox.CustomizableEdges = customizableEdges1;
+            Canvas_GroupBox.CustomizableEdges = customizableEdges23;
             Canvas_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Canvas_GroupBox.ForeColor = Color.White;
-            Canvas_GroupBox.Location = new Point(7, 28);
+            Canvas_GroupBox.Location = new Point(7, 60);
             Canvas_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Canvas_GroupBox.Name = "Canvas_GroupBox";
             Canvas_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Canvas_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Canvas_GroupBox.Size = new Size(1085, 858);
+            Canvas_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            Canvas_GroupBox.Size = new Size(1085, 826);
             Canvas_GroupBox.TabIndex = 0;
             Canvas_GroupBox.Text = "Report Canvas - Drag elements to arrange layout";
             // 
@@ -97,7 +372,7 @@
             Canvas_Panel.Location = new Point(21, 83);
             Canvas_Panel.Margin = new Padding(4, 5, 4, 5);
             Canvas_Panel.Name = "Canvas_Panel";
-            Canvas_Panel.Size = new Size(1041, 749);
+            Canvas_Panel.Size = new Size(1041, 717);
             Canvas_Panel.TabIndex = 0;
             // 
             // LeftTools_Panel
@@ -105,13 +380,13 @@
             LeftTools_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftTools_Panel.Controls.Add(Properties_GroupBox);
             LeftTools_Panel.Controls.Add(Tools_GroupBox);
-            LeftTools_Panel.CustomizableEdges = customizableEdges9;
+            LeftTools_Panel.CustomizableEdges = customizableEdges31;
             LeftTools_Panel.FillColor = Color.Transparent;
             LeftTools_Panel.Location = new Point(0, 0);
             LeftTools_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftTools_Panel.Name = "LeftTools_Panel";
-            LeftTools_Panel.Padding = new Padding(28, 28, 7, 14);
-            LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            LeftTools_Panel.Padding = new Padding(28, 14, 7, 14);
+            LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges32;
             LeftTools_Panel.Size = new Size(380, 900);
             LeftTools_Panel.TabIndex = 0;
             // 
@@ -125,15 +400,15 @@
             Properties_GroupBox.Controls.Add(ElementProperties_Label);
             Properties_GroupBox.Controls.Add(PropertiesContainer_Panel);
             Properties_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Properties_GroupBox.CustomizableEdges = customizableEdges5;
+            Properties_GroupBox.CustomizableEdges = customizableEdges27;
             Properties_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Properties_GroupBox.ForeColor = Color.White;
-            Properties_GroupBox.Location = new Point(28, 448);
+            Properties_GroupBox.Location = new Point(28, 434);
             Properties_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Properties_GroupBox.Name = "Properties_GroupBox";
             Properties_GroupBox.Padding = new Padding(0, 17, 0, 10);
-            Properties_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Properties_GroupBox.Size = new Size(345, 438);
+            Properties_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            Properties_GroupBox.Size = new Size(345, 452);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
             // 
@@ -166,7 +441,7 @@
             PropertiesContainer_Panel.Location = new Point(0, 75);
             PropertiesContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             PropertiesContainer_Panel.Name = "PropertiesContainer_Panel";
-            PropertiesContainer_Panel.Size = new Size(345, 353);
+            PropertiesContainer_Panel.Size = new Size(345, 367);
             PropertiesContainer_Panel.TabIndex = 1;
             // 
             // Tools_GroupBox
@@ -177,14 +452,14 @@
             Tools_GroupBox.BorderThickness = 0;
             Tools_GroupBox.Controls.Add(ToolsContainer_Panel);
             Tools_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Tools_GroupBox.CustomizableEdges = customizableEdges7;
+            Tools_GroupBox.CustomizableEdges = customizableEdges29;
             Tools_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Tools_GroupBox.ForeColor = Color.White;
-            Tools_GroupBox.Location = new Point(28, 28);
+            Tools_GroupBox.Location = new Point(28, 14);
             Tools_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Tools_GroupBox.Name = "Tools_GroupBox";
             Tools_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Tools_GroupBox.Size = new Size(345, 400);
             Tools_GroupBox.TabIndex = 0;
             Tools_GroupBox.Text = "Report Elements";
@@ -232,5 +507,16 @@
         public Panel ToolsContainer_Panel;
         public Panel PropertiesContainer_Panel;
         private Guna.UI2.WinForms.Guna2Separator Properties_Separator;
+        private Guna.UI2.WinForms.Guna2Button AlignRight_Button;
+        private Guna.UI2.WinForms.Guna2Button AlignCenter_Button;
+        private Guna.UI2.WinForms.Guna2Button AlignLeft_Button;
+        private Guna.UI2.WinForms.Guna2Button AlignBottom_Button;
+        private Guna.UI2.WinForms.Guna2Button AlignMiddle_Button;
+        private Guna.UI2.WinForms.Guna2Button AlignTop_Button;
+        private Guna.UI2.WinForms.Guna2Button DistributeVertically_Button;
+        private Guna.UI2.WinForms.Guna2Button DistributeHorizontally_Button;
+        private Guna.UI2.WinForms.Guna2Button MakeSameSize_Button;
+        private Guna.UI2.WinForms.Guna2Button MakeSameHeight_Button;
+        private Guna.UI2.WinForms.Guna2Button MakeSameWidth_Button;
     }
 }

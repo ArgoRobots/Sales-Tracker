@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ReportGenerator
@@ -26,6 +27,10 @@ namespace Sales_Tracker.ReportGenerator
         private Timer _propertyUpdateTimer;
         private Bitmap _gridCache = null;
         private Size _lastCanvasSize = Size.Empty;
+        private readonly List<BaseElement> _selectedElements = [];
+        private bool _isMultiSelecting = false;
+        private Rectangle _selectionRectangle;
+        private Point _selectionStartPoint;
 
         // Property controls caching
         private string _currentElementId = null;
@@ -68,6 +73,7 @@ namespace Sales_Tracker.ReportGenerator
             SetupCanvas();
             SetupToolsPanel();
             StoreInitialSizes();
+            SetToolTips();
         }
         private void SetupCanvas()
         {
@@ -108,7 +114,7 @@ namespace Sales_Tracker.ReportGenerator
         private void SetupToolsPanel()
         {
             int yPosition = 20;
-            const int buttonHeight = 40;
+            const int buttonHeight = 35;
             const int spacing = 10;
 
             // Add element buttons
@@ -126,31 +132,6 @@ namespace Sales_Tracker.ReportGenerator
 
             AddToolButton("Table", "Add transaction table", yPosition, AddTableElement);
             yPosition += buttonHeight + spacing;
-
-            // Add separator
-            yPosition += 20;
-            Label separator = new()
-            {
-                Text = "Layout Tools",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = CustomColors.Text,
-                Location = new Point(15, yPosition),
-                Size = new Size(200, 20)
-            };
-            ToolsContainer_Panel.Controls.Add(separator);
-            yPosition += 30;
-
-            // Layout tools
-            AddToolButton("Align Left", "Align selected elements to the left", yPosition, AlignLeft);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Align Center", "Center selected elements horizontally", yPosition, AlignCenter);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Align Right", "Align selected elements to the right", yPosition, AlignRight);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Delete", "Delete selected element", yPosition, DeleteSelected);
         }
         private void AddToolButton(string text, string tooltip, int yPosition, EventHandler clickHandler)
         {
@@ -176,6 +157,20 @@ namespace Sales_Tracker.ReportGenerator
             _initialFormWidth = Width;
             _initialLeftPanelWidth = LeftTools_Panel.Width;
             _initialRightPanelWidth = RightCanvas_Panel.Width;
+        }
+        private void SetToolTips()
+        {
+            CustomTooltip.SetToolTip(AlignLeft_Button, "", "Align left");
+            CustomTooltip.SetToolTip(AlignCenter_Button, "", "Align center");
+            CustomTooltip.SetToolTip(AlignRight_Button, "", "Align right");
+            CustomTooltip.SetToolTip(AlignTop_Button, "", "Align top");
+            CustomTooltip.SetToolTip(AlignMiddle_Button, "", "Align middle");
+            CustomTooltip.SetToolTip(AlignBottom_Button, "", "Align bottom");
+            CustomTooltip.SetToolTip(DistributeHorizontally_Button, "", "Distribute horizontally");
+            CustomTooltip.SetToolTip(DistributeVertically_Button, "", "Distribute vertically");
+            CustomTooltip.SetToolTip(MakeSameWidth_Button, "", "Make same width");
+            CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "make same height");
+            CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
         }
 
         // Form event handlers
@@ -206,6 +201,63 @@ namespace Sales_Tracker.ReportGenerator
 
             // Position the right panel
             RightCanvas_Panel.Left = LeftTools_Panel.Width;
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Multi-selection shortcuts
+            if (keyData == (Keys.Control | Keys.A))
+            {
+                SelectAllElements();
+                return true;
+            }
+
+            // Duplicate shortcut
+            if (keyData == (Keys.Control | Keys.D))
+            {
+                DuplicateSelected();
+                return true;
+            }
+
+            // Delete shortcut
+            if (keyData == Keys.Delete)
+            {
+                DeleteSelected();
+                return true;
+            }
+
+            // Alignment shortcuts
+            if (keyData == (Keys.Control | Keys.Left))
+            {
+                AlignSelectedLeft();
+                return true;
+            }
+
+            if (keyData == (Keys.Control | Keys.Right))
+            {
+                AlignSelectedRight();
+                return true;
+            }
+
+            if (keyData == (Keys.Control | Keys.Up))
+            {
+                AlignSelectedTop();
+                return true;
+            }
+
+            if (keyData == (Keys.Control | Keys.Down))
+            {
+                AlignSelectedBottom();
+                return true;
+            }
+
+            // Grid toggle
+            if (keyData == (Keys.Control | Keys.G))
+            {
+                ToggleSnapToGrid();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         // Canvas event handlers
@@ -247,19 +299,42 @@ namespace Sales_Tracker.ReportGenerator
             // Draw only visible elements
             Rectangle clipRect = e.ClipRectangle;
             DrawVisibleElements(e.Graphics, clipRect);
-            DrawSelection(e.Graphics);
+
+            // Draw selection (now handles both single and multi-selection)
+            DrawMultiSelection(e.Graphics);
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
-            // Ensure canvas has focus to receive keyboard events
             Canvas_Panel.Focus();
 
             if (e.Button == MouseButtons.Left)
             {
-                // Check if clicking on a resize handle
-                if (_selectedElement != null)
+                bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                bool shiftPressed = (ModifierKeys & Keys.Shift) == Keys.Shift;
+
+                // Check for resize handles on any selected element
+                if (_selectedElements.Count > 0)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(e.Location);
+                    foreach (BaseElement element in _selectedElements)
+                    {
+                        ResizeHandle handle = GetResizeHandleAt(e.Location, element);
+                        if (handle != ResizeHandle.None)
+                        {
+                            _isResizing = true;
+                            _activeResizeHandle = handle;
+                            _selectedElement = element;
+                            _originalBounds = element.Bounds;
+                            _lastElementBounds = element.Bounds;
+                            _dragStartPoint = e.Location;
+                            _deferPropertyUpdate = true;
+                            return;
+                        }
+                    }
+                }
+                // Also check single selected element for backward compatibility
+                else if (_selectedElement != null)
+                {
+                    ResizeHandle handle = GetResizeHandleAt(e.Location, _selectedElement);
                     if (handle != ResizeHandle.None)
                     {
                         _isResizing = true;
@@ -272,83 +347,204 @@ namespace Sales_Tracker.ReportGenerator
                     }
                 }
 
-                // Check if clicking on an element
                 BaseElement clickedElement = GetElementAtPoint(e.Location);
-                if (clickedElement != null)
+
+                if (shiftPressed && !ctrlPressed)
                 {
-                    SelectElement(clickedElement);
-                    _isDragging = true;
-                    _dragStartPoint = e.Location;
-                    _lastElementBounds = clickedElement.Bounds;
-                    _deferPropertyUpdate = true;
+                    // Start rectangle selection
+                    _isMultiSelecting = true;
+                    _selectionStartPoint = e.Location;
+                    _selectionRectangle = new Rectangle(e.Location, Size.Empty);
                 }
-                else
+                else if (clickedElement != null)
                 {
-                    ClearSelection();
+                    if (ctrlPressed)
+                    {
+                        // Toggle selection
+                        if (_selectedElements.Contains(clickedElement))
+                        {
+                            clickedElement.IsSelected = false;
+                            _selectedElements.Remove(clickedElement);
+                            if (_selectedElement == clickedElement)
+                                _selectedElement = _selectedElements.FirstOrDefault();
+                        }
+                        else
+                        {
+                            SelectElement(clickedElement, true);
+                        }
+                    }
+                    else
+                    {
+                        // Single selection or start drag
+                        if (!_selectedElements.Contains(clickedElement))
+                        {
+                            SelectElement(clickedElement);
+                        }
+                        _isDragging = true;
+                        _dragStartPoint = e.Location;
+                    }
+                }
+                else if (!ctrlPressed && !shiftPressed)
+                {
+                    ClearAllSelections();
                 }
             }
         }
         private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_selectedElement != null)
+            // Handle cursor changes for resize handles when not dragging
+            if (!_isResizing && !_isDragging && !_isMultiSelecting)
             {
-                // Update cursor based on hover over resize handles
-                if (!_isResizing && !_isDragging)
+                Cursor newCursor = Cursors.Default;
+
+                // Check resize handles on selected elements
+                if (_selectedElements.Count > 0)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(e.Location);
-                    Cursor newCursor = GetCursorForHandle(handle);
-                    if (Canvas_Panel.Cursor != newCursor)
+                    foreach (BaseElement element in _selectedElements)
                     {
-                        Canvas_Panel.Cursor = newCursor;
+                        ResizeHandle handle = GetResizeHandleAt(e.Location, element);
+                        if (handle != ResizeHandle.None)
+                        {
+                            newCursor = GetCursorForHandle(handle);
+                            break;
+                        }
                     }
                 }
-
-                // Handle resizing
-                if (_isResizing)
+                else if (_selectedElement != null)
                 {
-                    ResizeElement(e.Location);
+                    ResizeHandle handle = GetResizeHandleAt(e.Location, _selectedElement);
+                    newCursor = GetCursorForHandle(handle);
                 }
-                // Handle dragging
-                else if (_isDragging)
-                {
-                    int deltaX = e.X - _dragStartPoint.X;
-                    int deltaY = e.Y - _dragStartPoint.Y;
 
-                    // Update element position
-                    Rectangle newBounds = _selectedElement.Bounds;
+                if (Canvas_Panel.Cursor != newCursor)
+                    Canvas_Panel.Cursor = newCursor;
+            }
+
+            // Handle multi-selection rectangle
+            if (_isMultiSelecting)
+            {
+                // Update selection rectangle
+                int x = Math.Min(_selectionStartPoint.X, e.X);
+                int y = Math.Min(_selectionStartPoint.Y, e.Y);
+                int width = Math.Abs(e.X - _selectionStartPoint.X);
+                int height = Math.Abs(e.Y - _selectionStartPoint.Y);
+
+                Rectangle oldRect = _selectionRectangle;
+                _selectionRectangle = new Rectangle(x, y, width, height);
+
+                // Invalidate both old and new rectangles
+                oldRect.Inflate(2, 2);
+                Rectangle newRect = _selectionRectangle;
+                newRect.Inflate(2, 2);
+                Canvas_Panel.Invalidate(oldRect);
+                Canvas_Panel.Invalidate(newRect);
+
+                UpdateSelectionFromRectangle();
+            }
+            // Handle resizing
+            else if (_isResizing && _selectedElement != null)
+            {
+                ResizeElement(e.Location);
+            }
+            // Handle dragging multiple elements
+            else if (_isDragging && _selectedElements.Count > 0)
+            {
+                // Move all selected elements together
+                int deltaX = e.X - _dragStartPoint.X;
+                int deltaY = e.Y - _dragStartPoint.Y;
+
+                bool canMove = true;
+
+                // Check if all elements can move
+                foreach (BaseElement element in _selectedElements)
+                {
+                    Rectangle newBounds = element.Bounds;
                     newBounds.X += deltaX;
                     newBounds.Y += deltaY;
 
-                    // Keep within canvas bounds
-                    if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
-                        newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
+                    if (newBounds.X < 0 || newBounds.Right > Canvas_Panel.Width ||
+                        newBounds.Y < 0 || newBounds.Bottom > Canvas_Panel.Height)
                     {
-                        // Invalidate only the affected regions
-                        InvalidateElementRegion(_selectedElement.Bounds);
-                        _selectedElement.Bounds = newBounds;
-                        InvalidateElementRegion(newBounds);
-
-                        _dragStartPoint = e.Location;
-
-                        // Defer property panel update
-                        _propertyUpdateTimer.Stop();
-                        _propertyUpdateTimer.Start();
+                        canMove = false;
+                        break;
                     }
+                }
+
+                if (canMove)
+                {
+                    foreach (BaseElement element in _selectedElements)
+                    {
+                        Rectangle oldBounds = element.Bounds;
+                        Rectangle newBounds = element.Bounds;
+                        newBounds.X += deltaX;
+                        newBounds.Y += deltaY;
+
+                        // Apply grid snapping if enabled
+                        if (_snapToGrid)
+                        {
+                            newBounds = SnapToGrid(newBounds);
+                        }
+
+                        element.Bounds = newBounds;
+
+                        InvalidateElementRegion(oldBounds);
+                        InvalidateElementRegion(newBounds);
+                    }
+                    _dragStartPoint = e.Location;
+
+                    // Defer property update
+                    _propertyUpdateTimer.Stop();
+                    _propertyUpdateTimer.Start();
+                }
+            }
+            // Handle dragging single element (backward compatibility)
+            else if (_isDragging && _selectedElement != null)
+            {
+                int deltaX = e.X - _dragStartPoint.X;
+                int deltaY = e.Y - _dragStartPoint.Y;
+
+                Rectangle newBounds = _selectedElement.Bounds;
+                newBounds.X += deltaX;
+                newBounds.Y += deltaY;
+
+                // Keep within canvas bounds
+                if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
+                    newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
+                {
+                    InvalidateElementRegion(_selectedElement.Bounds);
+                    _selectedElement.Bounds = newBounds;
+                    InvalidateElementRegion(newBounds);
+
+                    _dragStartPoint = e.Location;
+
+                    // Defer property panel update
+                    _propertyUpdateTimer.Stop();
+                    _propertyUpdateTimer.Start();
                 }
             }
         }
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
-            bool wasInteracting = _isDragging || _isResizing;
+            bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
 
             _isDragging = false;
             _isResizing = false;
+            _isMultiSelecting = false;  // Reset multi-selecting flag
             _activeResizeHandle = ResizeHandle.None;
             Canvas_Panel.Cursor = Cursors.Default;
             _deferPropertyUpdate = false;
 
+            // Clear selection rectangle
+            if (_selectionRectangle.Width > 0 || _selectionRectangle.Height > 0)
+            {
+                Rectangle clearRect = _selectionRectangle;
+                clearRect.Inflate(2, 2);
+                Canvas_Panel.Invalidate(clearRect);
+                _selectionRectangle = Rectangle.Empty;
+            }
+
             // Update properties panel once at the end
-            if (wasInteracting && _selectedElement != null)
+            if (wasInteracting && (_selectedElement != null || _selectedElements.Count > 0))
             {
                 _propertyUpdateTimer.Stop();
                 UpdatePropertyValues();
@@ -363,49 +559,527 @@ namespace Sales_Tracker.ReportGenerator
             }
         }
 
-        // Canvas methods
-        private void SelectElement(BaseElement element)
+        // Tool event handlers
+        private void AddChartElement(object sender, EventArgs e)
         {
-            if (_selectedElement == element) { return; }
-
-            Rectangle? oldSelectionBounds = null;
+            CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
+        }
+        private void AddTextElement(object sender, EventArgs e)
+        {
+            CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
+        }
+        private void AddDateRangeElement(object sender, EventArgs e)
+        {
+            CreateElementAtLocation(ReportElementType.DateRange, new Point(50, 280));
+        }
+        private void AddSummaryElement(object sender, EventArgs e)
+        {
+            CreateElementAtLocation(ReportElementType.Summary, new Point(50, 320));
+        }
+        private void AddTableElement(object sender, EventArgs e)
+        {
+            CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
+        }
+        private void DeleteSelected(object sender, EventArgs e)
+        {
             if (_selectedElement != null)
             {
-                _selectedElement.IsSelected = false;
-                oldSelectionBounds = _selectedElement.Bounds;
-            }
+                // If deleting a chart element, also remove it from SelectedChartTypes
+                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
+                {
+                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
+                }
 
-            _selectedElement = element;
-            element.IsSelected = true;
-
-            // Invalidate only the selection regions
-            if (oldSelectionBounds.HasValue)
-            {
-                InvalidateElementRegion(oldSelectionBounds.Value);
-            }
-            InvalidateElementRegion(element.Bounds);
-
-            if (!_deferPropertyUpdate)
-            {
-                // Create or show property controls for this element
-                CreateOrShowPropertiesPanel();
+                ReportConfig?.RemoveElement(_selectedElement.Id);
+                _selectedElement = null;
+                Canvas_Panel.Invalidate();
+                HidePropertiesPanel();
+                NotifyParentValidationChanged();
             }
         }
-        private void ClearSelection()
+
+        // Alignment Tools
+        private void AlignSelectedLeft()
         {
-            if (_selectedElement != null)
+            if (_selectedElements.Count < 2) { return; }
+
+            int leftMost = _selectedElements.Min(e => e.Bounds.X);
+
+            foreach (BaseElement element in _selectedElements)
             {
-                Rectangle oldBounds = _selectedElement.Bounds;
-                _selectedElement.IsSelected = false;
-                _selectedElement = null;
+                Rectangle bounds = element.Bounds;
+                bounds.X = leftMost;
+                element.Bounds = bounds;
+            }
 
-                InvalidateElementRegion(oldBounds);
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void AlignSelectedCenter()
+        {
+            if (_selectedElements.Count < 2) { return; }
 
-                if (!_deferPropertyUpdate)
+            // Find the center of all selected elements
+            int leftMost = _selectedElements.Min(e => e.Bounds.X);
+            int rightMost = _selectedElements.Max(e => e.Bounds.Right);
+            int centerX = (leftMost + rightMost) / 2;
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.X = centerX - bounds.Width / 2;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void AlignSelectedRight()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            int rightMost = _selectedElements.Max(e => e.Bounds.Right);
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.X = rightMost - bounds.Width;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void AlignSelectedTop()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            int topMost = _selectedElements.Min(e => e.Bounds.Y);
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Y = topMost;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void AlignSelectedMiddle()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            // Find the vertical center of all selected elements
+            int topMost = _selectedElements.Min(e => e.Bounds.Y);
+            int bottomMost = _selectedElements.Max(e => e.Bounds.Bottom);
+            int centerY = (topMost + bottomMost) / 2;
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Y = centerY - bounds.Height / 2;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void AlignSelectedBottom()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            int bottomMost = _selectedElements.Max(e => e.Bounds.Bottom);
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Y = bottomMost - bounds.Height;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+
+        // Distribution Tools
+        private void DistributeHorizontally()
+        {
+            if (_selectedElements.Count < 3) { return; }
+
+            // Sort elements by X position
+            List<BaseElement> sortedElements = _selectedElements.OrderBy(e => e.Bounds.X).ToList();
+
+            int leftMost = sortedElements.First().Bounds.X;
+            int rightMost = sortedElements.Last().Bounds.Right;
+            int totalWidth = sortedElements.Sum(e => e.Bounds.Width);
+            int totalSpace = rightMost - leftMost - totalWidth;
+
+            if (sortedElements.Count > 1)
+            {
+                float spacing = (float)totalSpace / (sortedElements.Count - 1);
+                float currentX = leftMost;
+
+                foreach (BaseElement element in sortedElements)
                 {
-                    HidePropertiesPanel();
+                    Rectangle bounds = element.Bounds;
+                    bounds.X = (int)currentX;
+                    element.Bounds = bounds;
+                    currentX += bounds.Width + spacing;
                 }
             }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void DistributeVertically()
+        {
+            if (_selectedElements.Count < 3) { return; }
+
+            // Sort elements by Y position
+            List<BaseElement> sortedElements = _selectedElements.OrderBy(e => e.Bounds.Y).ToList();
+
+            int topMost = sortedElements.First().Bounds.Y;
+            int bottomMost = sortedElements.Last().Bounds.Bottom;
+            int totalHeight = sortedElements.Sum(e => e.Bounds.Height);
+            int totalSpace = bottomMost - topMost - totalHeight;
+
+            if (sortedElements.Count > 1)
+            {
+                float spacing = (float)totalSpace / (sortedElements.Count - 1);
+                float currentY = topMost;
+
+                foreach (BaseElement element in sortedElements)
+                {
+                    Rectangle bounds = element.Bounds;
+                    bounds.Y = (int)currentY;
+                    element.Bounds = bounds;
+                    currentY += bounds.Height + spacing;
+                }
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+
+        // Sizing Tools
+        private void MakeSameWidth()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            // Use the first selected element's width as the reference
+            int referenceWidth = _selectedElements.First().Bounds.Width;
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Width = referenceWidth;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void MakeSameHeight()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            // Use the first selected element's height as the reference
+            int referenceHeight = _selectedElements.First().Bounds.Height;
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Height = referenceHeight;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void MakeSameSize()
+        {
+            if (_selectedElements.Count < 2) { return; }
+
+            // Use the first selected element's size as the reference
+            Size referenceSize = _selectedElements.First().Bounds.Size;
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                Rectangle bounds = element.Bounds;
+                bounds.Size = referenceSize;
+                element.Bounds = bounds;
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+
+        // Z-Order Tools
+        private void BringElementToFront()
+        {
+            if (_selectedElements.Count == 0 || ReportConfig?.Elements == null) { return; }
+
+            int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
+
+            foreach (BaseElement? element in _selectedElements.OrderBy(e => e.ZOrder))
+            {
+                element.ZOrder = ++maxZOrder;
+            }
+
+            Canvas_Panel.Invalidate();
+        }
+        private void SendElementToBack()
+        {
+            if (_selectedElements.Count == 0 || ReportConfig?.Elements == null) { return; }
+
+            // Shift all non-selected elements up
+            int shiftAmount = _selectedElements.Count;
+            foreach (BaseElement? element in ReportConfig.Elements.Where(e => !_selectedElements.Contains(e)))
+            {
+                element.ZOrder += shiftAmount;
+            }
+
+            // Set selected elements to bottom
+            int zOrder = 0;
+            foreach (BaseElement? element in _selectedElements.OrderBy(e => e.ZOrder))
+            {
+                element.ZOrder = zOrder++;
+            }
+
+            Canvas_Panel.Invalidate();
+        }
+
+        // Grid Snapping
+        private const int GRID_SIZE = 10;
+        private bool _snapToGrid = false;
+        private void ToggleSnapToGrid()
+        {
+            _snapToGrid = !_snapToGrid;
+        }
+        private Point SnapToGrid(Point point)
+        {
+            if (!_snapToGrid) { return point; }
+
+            int x = (point.X / GRID_SIZE) * GRID_SIZE;
+            int y = (point.Y / GRID_SIZE) * GRID_SIZE;
+            return new Point(x, y);
+        }
+        private Rectangle SnapToGrid(Rectangle rect)
+        {
+            if (!_snapToGrid) { return rect; }
+
+            Point snappedLocation = SnapToGrid(rect.Location);
+            int width = ((rect.Width + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
+            int height = ((rect.Height + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
+
+            return new Rectangle(snappedLocation, new Size(width, height));
+        }
+        private void DuplicateSelected()
+        {
+            if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
+
+            List<BaseElement> duplicates = [];
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                BaseElement duplicate = element.Clone();
+
+                // Offset the duplicate slightly
+                Rectangle bounds = duplicate.Bounds;
+                bounds.Offset(20, 20);
+                duplicate.Bounds = bounds;
+
+                ReportConfig.AddElement(duplicate);
+                duplicates.Add(duplicate);
+            }
+
+            // Select the duplicated elements
+            ClearAllSelections();
+            foreach (BaseElement duplicate in duplicates)
+            {
+                SelectElement(duplicate, true);
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void DeleteSelected()
+        {
+            if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
+
+            foreach (BaseElement? element in _selectedElements.ToList())
+            {
+                // If deleting a chart element, also remove it from SelectedChartTypes
+                if (element is ChartElement chartElement)
+                {
+                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
+                }
+
+                ReportConfig.RemoveElement(element.Id);
+            }
+
+            ClearAllSelections();
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void UpdatePropertiesForSelection()
+        {
+            if (_selectedElements.Count == 0)
+            {
+                HidePropertiesPanel();
+            }
+            else if (_selectedElements.Count == 1)
+            {
+                CreateOrShowPropertiesPanel();
+            }
+            else
+            {
+                // Show multi-selection info
+                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+                ElementProperties_Label.Visible = true;
+
+                PropertiesContainer_Panel.Controls.Clear();
+
+                Label infoLabel = new()
+                {
+                    Text = $"{_selectedElements.Count} elements selected.\n\nUse the layout tools to align, distribute, or resize them.",
+                    Location = new Point(10, 10),
+                    Size = new Size(PropertiesContainer_Panel.Width - 20, 60),
+                    Font = new Font("Segoe UI", 9),
+                    ForeColor = CustomColors.Text
+                };
+                PropertiesContainer_Panel.Controls.Add(infoLabel);
+            }
+        }
+        private void DrawMultiSelection(Graphics g)
+        {
+            if (_selectedElements.Count > 1)
+            {
+                // Draw selection rectangles for all selected elements
+                using Pen pen = new(CustomColors.AccentBlue, 1);
+                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+
+                foreach (BaseElement element in _selectedElements)
+                {
+                    g.DrawRectangle(pen, element.Bounds);
+                }
+
+                // Draw a bounding box around all selected elements
+                if (_selectedElements.Count > 0)
+                {
+                    int minX = _selectedElements.Min(e => e.Bounds.X);
+                    int minY = _selectedElements.Min(e => e.Bounds.Y);
+                    int maxX = _selectedElements.Max(e => e.Bounds.Right);
+                    int maxY = _selectedElements.Max(e => e.Bounds.Bottom);
+
+                    Rectangle boundingBox = new(minX, minY, maxX - minX, maxY - minY);
+
+                    using Pen boundingPen = new(CustomColors.AccentBlue, 2);
+                    boundingPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    g.DrawRectangle(boundingPen, boundingBox);
+                }
+            }
+            else if (_selectedElement != null)
+            {
+                // Single selection - draw handles
+                DrawSelection(g);
+            }
+
+            // Draw selection rectangle if multi-selecting
+            if (_isMultiSelecting)
+            {
+                using Pen selectionPen = new(CustomColors.AccentBlue, 1);
+                selectionPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawRectangle(selectionPen, _selectionRectangle);
+
+                using SolidBrush selectionBrush = new(Color.FromArgb(30, CustomColors.AccentBlue));
+                g.FillRectangle(selectionBrush, _selectionRectangle);
+            }
+        }
+
+        // Alignment tool event handlers
+        private void AlignLeft_Button_Click(object sender, EventArgs e) => AlignSelectedLeft();
+        private void AlignCenter_Button_Click(object sender, EventArgs e) => AlignSelectedCenter();
+        private void AlignRight_Button_Click(object sender, EventArgs e) => AlignSelectedRight();
+        private void AlignTop_Button_Click(object sender, EventArgs e) => AlignSelectedTop();
+        private void AlignMiddle_Button_Click(object sender, EventArgs e) => AlignSelectedMiddle();
+        private void AlignBottom_Button_Click(object sender, EventArgs e) => AlignSelectedBottom();
+        private void DistributeHorizontally_Button_Click(object sender, EventArgs e) => DistributeHorizontally();
+        private void DistributeVertically_Button_Click(object sender, EventArgs e) => DistributeVertically();
+        private void MakeSameWidth_Button_Click(object sender, EventArgs e) => MakeSameWidth();
+        private void MakeSameHeight_Button_Click(object sender, EventArgs e) => MakeSameHeight();
+        private void MakeSameSize_Button_Click(object sender, EventArgs e) => MakeSameSize();
+
+        // Canvas methods
+        private void SelectElement(BaseElement element, bool addToSelection = false)
+        {
+            if (element == null) { return; }
+
+            if (!addToSelection && !_isMultiSelecting)
+            {
+                // Clear existing selection
+                foreach (BaseElement el in _selectedElements)
+                {
+                    el.IsSelected = false;
+                }
+                _selectedElements.Clear();
+            }
+
+            if (!_selectedElements.Contains(element))
+            {
+                element.IsSelected = true;
+                _selectedElements.Add(element);
+                _selectedElement = element; // Keep compatibility with single selection
+            }
+
+            Canvas_Panel.Invalidate();
+            UpdatePropertiesForSelection();
+        }
+        private void ClearAllSelections()
+        {
+            foreach (BaseElement element in _selectedElements)
+            {
+                element.IsSelected = false;
+            }
+            _selectedElements.Clear();
+            _selectedElement = null;
+            Canvas_Panel.Invalidate();
+            HidePropertiesPanel();
+        }
+        private void UpdateSelectionFromRectangle()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                bool wasSelected = element.IsSelected;
+                bool shouldSelect = _selectionRectangle.IntersectsWith(element.Bounds);
+
+                if (shouldSelect && !_selectedElements.Contains(element))
+                {
+                    element.IsSelected = true;
+                    _selectedElements.Add(element);
+                }
+                else if (!shouldSelect && !wasSelected)
+                {
+                    element.IsSelected = false;
+                    _selectedElements.Remove(element);
+                }
+            }
+        }
+        private void SelectAllElements()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            ClearAllSelections();
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                SelectElement(element, true);
+            }
+
+            Canvas_Panel.Invalidate();
         }
 
         /// <summary>
@@ -601,26 +1275,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             NotifyParentValidationChanged();
         }
-        private void BringElementToFront(BaseElement element)
-        {
-            if (ReportConfig?.Elements == null || element == null) { return; }
-
-            int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
-            element.ZOrder = maxZOrder + 1;
-            Canvas_Panel.Invalidate();
-        }
-        private void SendElementToBack(BaseElement element)
-        {
-            if (ReportConfig?.Elements == null || element == null) { return; }
-
-            // Shift all other elements up by 1
-            foreach (BaseElement? e in ReportConfig.Elements.Where(e => e != element))
-            {
-                e.ZOrder++;
-            }
-            element.ZOrder = 0;
-            Canvas_Panel.Invalidate();
-        }
         private void InvalidateElementRegion(Rectangle bounds)
         {
             // Inflate the bounds slightly to include borders and handles
@@ -692,12 +1346,12 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Resize element methods
-        private ResizeHandle GetResizeHandleAt(Point point)
+        private static ResizeHandle GetResizeHandleAt(Point point, BaseElement element)
         {
-            if (_selectedElement == null) { return ResizeHandle.None; }
+            if (element == null) { return ResizeHandle.None; }
 
             const int handleSize = 8;
-            Rectangle bounds = _selectedElement.Bounds;
+            Rectangle bounds = element.Bounds;
 
             // Corner handles
             if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
@@ -730,12 +1384,9 @@ namespace Sales_Tracker.ReportGenerator
             {
                 return ResizeHandle.Top;
             }
-            if (new Rectangle(bounds.Left + handleSize, bounds.Bottom - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.Bottom;
-            }
-
-            return ResizeHandle.None;
+            return new Rectangle(bounds.Left + handleSize, bounds.Bottom - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point)
+                ? ResizeHandle.Bottom
+                : ResizeHandle.None;
         }
         private static Cursor GetCursorForHandle(ResizeHandle handle)
         {
@@ -880,78 +1531,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return null;
-        }
-
-        // Tool event handlers
-        private void AddChartElement(object sender, EventArgs e)
-        {
-            CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
-        }
-        private void AddTextElement(object sender, EventArgs e)
-        {
-            CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
-        }
-        private void AddDateRangeElement(object sender, EventArgs e)
-        {
-            CreateElementAtLocation(ReportElementType.DateRange, new Point(50, 280));
-        }
-        private void AddSummaryElement(object sender, EventArgs e)
-        {
-            CreateElementAtLocation(ReportElementType.Summary, new Point(50, 320));
-        }
-        private void AddTableElement(object sender, EventArgs e)
-        {
-            CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
-        }
-        private void AlignLeft(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.X = 20;
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-                UpdatePropertyValues();
-            }
-        }
-        private void AlignCenter(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.X = (Canvas_Panel.Width - bounds.Width) / 2;
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-                UpdatePropertyValues();
-            }
-        }
-        private void AlignRight(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                Rectangle bounds = _selectedElement.Bounds;
-                bounds.X = Canvas_Panel.Width - bounds.Width - 20;
-                _selectedElement.Bounds = bounds;
-                Canvas_Panel.Invalidate();
-                UpdatePropertyValues();
-            }
-        }
-        private void DeleteSelected(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                // If deleting a chart element, also remove it from SelectedChartTypes
-                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
-                {
-                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
-                }
-
-                ReportConfig?.RemoveElement(_selectedElement.Id);
-                _selectedElement = null;
-                Canvas_Panel.Invalidate();
-                HidePropertiesPanel();
-                NotifyParentValidationChanged();
-            }
         }
 
         // Form implementation methods

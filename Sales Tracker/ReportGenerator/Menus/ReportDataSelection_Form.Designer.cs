@@ -99,7 +99,7 @@
             Right_Panel.Location = new Point(900, 0);
             Right_Panel.Margin = new Padding(4, 5, 4, 5);
             Right_Panel.Name = "Right_Panel";
-            Right_Panel.Padding = new Padding(7, 28, 28, 14);
+            Right_Panel.Padding = new Padding(7, 14, 28, 14);
             Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Right_Panel.Size = new Size(600, 900);
             Right_Panel.TabIndex = 1;
@@ -125,12 +125,12 @@
             Filters_GroupBox.CustomizableEdges = customizableEdges11;
             Filters_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Filters_GroupBox.ForeColor = Color.White;
-            Filters_GroupBox.Location = new Point(7, 192);
+            Filters_GroupBox.Location = new Point(7, 178);
             Filters_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Filters_GroupBox.Name = "Filters_GroupBox";
             Filters_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Filters_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Filters_GroupBox.Size = new Size(565, 697);
+            Filters_GroupBox.Size = new Size(565, 711);
             Filters_GroupBox.TabIndex = 1;
             Filters_GroupBox.Text = "Data Filters";
             // 
@@ -329,7 +329,7 @@
             ReportSettings_GroupBox.CustomizableEdges = customizableEdges15;
             ReportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ReportSettings_GroupBox.ForeColor = Color.White;
-            ReportSettings_GroupBox.Location = new Point(7, 28);
+            ReportSettings_GroupBox.Location = new Point(7, 14);
             ReportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ReportSettings_GroupBox.Name = "ReportSettings_GroupBox";
             ReportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
@@ -380,7 +380,7 @@
             Left_Panel.Location = new Point(0, 0);
             Left_Panel.Margin = new Padding(4, 5, 4, 5);
             Left_Panel.Name = "Left_Panel";
-            Left_Panel.Padding = new Padding(28, 28, 7, 14);
+            Left_Panel.Padding = new Padding(28, 14, 7, 14);
             Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Left_Panel.Size = new Size(900, 900);
             Left_Panel.TabIndex = 0;
@@ -397,12 +397,12 @@
             ChartSelection_GroupBox.CustomizableEdges = customizableEdges23;
             ChartSelection_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ChartSelection_GroupBox.ForeColor = Color.White;
-            ChartSelection_GroupBox.Location = new Point(28, 28);
+            ChartSelection_GroupBox.Location = new Point(28, 14);
             ChartSelection_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            ChartSelection_GroupBox.Size = new Size(865, 692);
+            ChartSelection_GroupBox.Size = new Size(865, 706);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
             // 
@@ -417,7 +417,7 @@
             SelectAll_Button.FillColor = Color.White;
             SelectAll_Button.Font = new Font("Segoe UI", 9F);
             SelectAll_Button.ForeColor = Color.Black;
-            SelectAll_Button.Location = new Point(18, 630);
+            SelectAll_Button.Location = new Point(18, 644);
             SelectAll_Button.Margin = new Padding(4, 5, 4, 5);
             SelectAll_Button.Name = "SelectAll_Button";
             SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -437,7 +437,7 @@
             SelectNone_Button.FillColor = Color.White;
             SelectNone_Button.Font = new Font("Segoe UI", 9F);
             SelectNone_Button.ForeColor = Color.Black;
-            SelectNone_Button.Location = new Point(176, 630);
+            SelectNone_Button.Location = new Point(176, 644);
             SelectNone_Button.Margin = new Padding(4, 5, 4, 5);
             SelectNone_Button.Name = "SelectNone_Button";
             SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
