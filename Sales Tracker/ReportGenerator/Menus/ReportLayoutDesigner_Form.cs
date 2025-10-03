@@ -74,6 +74,7 @@ namespace Sales_Tracker.ReportGenerator
             SetupCanvas();
             StoreInitialSizes();
             SetToolTips();
+            UpdateLayoutButtonStates();
         }
         private void SetupCanvas()
         {
@@ -520,7 +521,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (e.KeyCode == Keys.Delete && _selectedElement != null)
             {
-                DeleteSelected(sender, e);
+                DeleteSelected();
             }
         }
 
@@ -798,6 +799,34 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
         }
 
+        /// <summary>
+        /// Updates the enabled state of layout buttons based on the number of selected elements.
+        /// </summary>
+        private void UpdateLayoutButtonStates()
+        {
+            int selectedCount = _selectedElements.Count;
+
+            // Alignment buttons require at least 2 selected elements
+            bool canAlign = selectedCount >= 2;
+            AlignLeft_Button.Enabled = canAlign;
+            AlignCenter_Button.Enabled = canAlign;
+            AlignRight_Button.Enabled = canAlign;
+            AlignTop_Button.Enabled = canAlign;
+            AlignMiddle_Button.Enabled = canAlign;
+            AlignBottom_Button.Enabled = canAlign;
+
+            // Distribution buttons require at least 3 selected elements
+            bool canDistribute = selectedCount >= 3;
+            DistributeHorizontally_Button.Enabled = canDistribute;
+            DistributeVertically_Button.Enabled = canDistribute;
+
+            // Size buttons require at least 2 selected elements
+            bool canResize = selectedCount >= 2;
+            MakeSameWidth_Button.Enabled = canResize;
+            MakeSameHeight_Button.Enabled = canResize;
+            MakeSameSize_Button.Enabled = canResize;
+        }
+
         // Grid Snapping
         private const int GRID_SIZE = 10;
         private bool _snapToGrid = false;
@@ -822,54 +851,6 @@ namespace Sales_Tracker.ReportGenerator
             int height = ((rect.Height + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
 
             return new Rectangle(snappedLocation, new Size(width, height));
-        }
-        private void DuplicateSelected()
-        {
-            if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
-
-            List<BaseElement> duplicates = [];
-
-            foreach (BaseElement element in _selectedElements)
-            {
-                BaseElement duplicate = element.Clone();
-
-                // Offset the duplicate slightly
-                Rectangle bounds = duplicate.Bounds;
-                bounds.Offset(20, 20);
-                duplicate.Bounds = bounds;
-
-                ReportConfig.AddElement(duplicate);
-                duplicates.Add(duplicate);
-            }
-
-            // Select the duplicated elements
-            ClearAllSelections();
-            foreach (BaseElement duplicate in duplicates)
-            {
-                SelectElement(duplicate, true);
-            }
-
-            Canvas_Panel.Invalidate();
-            OnPropertyChanged();
-        }
-        private void DeleteSelected()
-        {
-            if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
-
-            foreach (BaseElement? element in _selectedElements.ToList())
-            {
-                // If deleting a chart element, also remove it from SelectedChartTypes
-                if (element is ChartElement chartElement)
-                {
-                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
-                }
-
-                ReportConfig.RemoveElement(element.Id);
-            }
-
-            ClearAllSelections();
-            Canvas_Panel.Invalidate();
-            OnPropertyChanged();
         }
 
         // Selection
@@ -896,6 +877,7 @@ namespace Sales_Tracker.ReportGenerator
 
             Canvas_Panel.Invalidate();
             UpdatePropertiesForSelection();
+            UpdateLayoutButtonStates();
         }
         private void SelectAllElements()
         {
@@ -909,6 +891,7 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             Canvas_Panel.Invalidate();
+            UpdateLayoutButtonStates();
         }
         private void DrawMultiSelection(Graphics g)
         {
@@ -973,10 +956,12 @@ namespace Sales_Tracker.ReportGenerator
             {
                 element.IsSelected = false;
             }
+
             _selectedElements.Clear();
             _selectedElement = null;
             Canvas_Panel.Invalidate();
             HidePropertiesPanel();
+            UpdateLayoutButtonStates();
         }
         private void UpdatePropertiesForSelection()
         {
@@ -1026,6 +1011,8 @@ namespace Sales_Tracker.ReportGenerator
                     _selectedElements.Remove(element);
                 }
             }
+
+            UpdateLayoutButtonStates();
         }
 
         // Alignment tool event handlers
@@ -1438,6 +1425,77 @@ namespace Sales_Tracker.ReportGenerator
                 _ => null
             };
         }
+        private void DuplicateSelected()
+        {
+            if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
+
+            List<BaseElement> duplicates = [];
+
+            foreach (BaseElement element in _selectedElements)
+            {
+                BaseElement duplicate = element.Clone();
+
+                // Offset the duplicate slightly
+                Rectangle bounds = duplicate.Bounds;
+                bounds.Offset(20, 20);
+                duplicate.Bounds = bounds;
+
+                ReportConfig.AddElement(duplicate);
+                duplicates.Add(duplicate);
+            }
+
+            // Select the duplicated elements
+            ClearAllSelections();
+            foreach (BaseElement duplicate in duplicates)
+            {
+                SelectElement(duplicate, true);
+            }
+
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
+        private void DeleteSelected()
+        {
+            // Handle both old single-selection and multi-selection
+            if (_selectedElements.Count == 0 && _selectedElement == null)
+            {
+                return;
+            }
+
+            if (ReportConfig == null)
+            {
+                return;
+            }
+
+            // Collect all elements to delete
+            List<BaseElement> elementsToDelete = [];
+
+            if (_selectedElements.Count > 0)
+            {
+                elementsToDelete.AddRange(_selectedElements);
+            }
+            else if (_selectedElement != null)
+            {
+                elementsToDelete.Add(_selectedElement);
+            }
+
+            // Delete all selected elements
+            foreach (BaseElement element in elementsToDelete)
+            {
+                // If deleting a chart element, also remove it from SelectedChartTypes
+                if (element is ChartElement chartElement)
+                {
+                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
+                }
+
+                ReportConfig.RemoveElement(element.Id);
+            }
+
+            // Clear selection
+            ClearAllSelections();
+            Canvas_Panel.Invalidate();
+            OnPropertyChanged();
+        }
         private MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
@@ -1461,23 +1519,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return null;
-        }
-        private void DeleteSelected(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                // If deleting a chart element, also remove it from SelectedChartTypes
-                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
-                {
-                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
-                }
-
-                ReportConfig?.RemoveElement(_selectedElement.Id);
-                _selectedElement = null;
-                Canvas_Panel.Invalidate();
-                HidePropertiesPanel();
-                NotifyParentValidationChanged();
-            }
         }
 
         // Form implementation methods
