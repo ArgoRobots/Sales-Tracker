@@ -72,7 +72,6 @@ namespace Sales_Tracker.ReportGenerator
             ParentReportForm = parentForm;
 
             SetupCanvas();
-            SetupToolsPanel();
             StoreInitialSizes();
             SetToolTips();
         }
@@ -112,47 +111,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
             };
         }
-        private void SetupToolsPanel()
-        {
-            int yPosition = 20;
-            const int buttonHeight = 35;
-            const int spacing = 10;
-
-            // Add element buttons
-            AddToolButton("Chart Element", "Add a chart to the report", yPosition, AddChartElement);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Text Label", "Add a text label", yPosition, AddTextElement);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Date Range", "Add date range display", yPosition, AddDateRangeElement);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Summary", "Add summary statistics", yPosition, AddSummaryElement);
-            yPosition += buttonHeight + spacing;
-
-            AddToolButton("Table", "Add transaction table", yPosition, AddTableElement);
-            yPosition += buttonHeight + spacing;
-        }
-        private void AddToolButton(string text, string tooltip, int yPosition, EventHandler clickHandler)
-        {
-            Guna2Button button = new()
-            {
-                Text = text,
-                Size = new Size(200, 35),
-                Location = new Point(15, yPosition),
-                BorderRadius = 6,
-                FillColor = CustomColors.AccentBlue,
-                Font = new Font("Segoe UI", 9),
-                ForeColor = CustomColors.Text
-            };
-
-            button.Click += clickHandler;
-            ToolsContainer_Panel.Controls.Add(button);
-
-            ToolTip toolTip = new();
-            toolTip.SetToolTip(button, tooltip);
-        }
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
@@ -161,6 +119,12 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetToolTips()
         {
+            CustomTooltip.SetToolTip(AddChartElement_Button, "", "Add a chart to the report");
+            CustomTooltip.SetToolTip(AddTableElement_Button, "", "Add a text label");
+            CustomTooltip.SetToolTip(AddDateElement_Button, "", "Add date range display");
+            CustomTooltip.SetToolTip(AddSummaryElement_Button, "", "Add summary statistics");
+            CustomTooltip.SetToolTip(AddTableElement_Button, "", "Add transaction table");
+
             CustomTooltip.SetToolTip(AlignLeft_Button, "", "Align left");
             CustomTooltip.SetToolTip(AlignCenter_Button, "", "Align center");
             CustomTooltip.SetToolTip(AlignRight_Button, "", "Align right");
@@ -301,7 +265,7 @@ namespace Sales_Tracker.ReportGenerator
             Rectangle clipRect = e.ClipRectangle;
             DrawVisibleElements(e.Graphics, clipRect);
 
-            // Draw selection (now handles both single and multi-selection)
+            // Draw selection
             DrawMultiSelection(e.Graphics);
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
@@ -938,7 +902,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 // Show multi-selection info
                 ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
-                ElementProperties_Label.Visible = true;
 
                 PropertiesContainer_Panel.Controls.Clear();
 
@@ -976,7 +939,7 @@ namespace Sales_Tracker.ReportGenerator
 
                     Rectangle boundingBox = new(minX, minY, maxX - minX, maxY - minY);
 
-                    using Pen boundingPen = new(CustomColors.AccentBlue, 2);
+                    using Pen boundingPen = new(CustomColors.AccentBlue, 3);
                     boundingPen.DashStyle = DashStyle.Dot;
                     g.DrawRectangle(boundingPen, boundingBox);
                 }
@@ -1031,7 +994,7 @@ namespace Sales_Tracker.ReportGenerator
             {
                 element.IsSelected = true;
                 _selectedElements.Add(element);
-                _selectedElement = element; // Keep compatibility with single selection
+                _selectedElement = element;
             }
 
             Canvas_Panel.Invalidate();
@@ -1095,7 +1058,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
-            ElementProperties_Label.Visible = true;
 
             // Check if we need to create new controls
             if (_currentElementId != _selectedElement.Id)
@@ -1261,7 +1223,6 @@ namespace Sales_Tracker.ReportGenerator
         private void HidePropertiesPanel()
         {
             ElementProperties_Label.Text = "No element selected";
-            ElementProperties_Label.Visible = true;
             PropertiesContainer_Panel.Controls.Clear();
             _propertyControls.Clear();
             _updateActions.Clear();
