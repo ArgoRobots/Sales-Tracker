@@ -687,7 +687,6 @@
             Shown += MainMenu_form_Shown;
             ResizeBegin += MainMenu_Form_ResizeBegin;
             Click += CloseAllPanels;
-            KeyDown += MainMenu_form_KeyDown;
             Resize += MainMenu_form_Resize;
             MainTop_Panel.ResumeLayout(false);
             MainTop_Panel.PerformLayout();

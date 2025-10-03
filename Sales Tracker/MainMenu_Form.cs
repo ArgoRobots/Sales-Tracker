@@ -716,6 +716,7 @@ namespace Sales_Tracker
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Handle menu navigation keys
             if (keyData is Keys.Up or Keys.Down or Keys.Right or Keys.Left or Keys.Enter)
             {
                 foreach (Guna2Panel panel in GetMenus())
@@ -727,41 +728,46 @@ namespace Sales_Tracker
                     }
                 }
             }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-        private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control)
+
+            // Ctrl+S (Save)
+            if (keyData == (Keys.Control | Keys.S))
             {
-                switch (e.KeyCode)
-                {
-                    case Keys.S:
-                        if (e.Shift)  // Save as
-                        {
-                            ArgoCompany.SaveAs();
-                        }
-                        else  // Save
-                        {
-                            CustomControls.SaveAll();
-                        }
-                        break;
-
-                    case Keys.E:  // Export
-                        Tools.OpenForm(new Export_Form());
-                        break;
-
-                    case Keys.L:  // Open logs
-                        Tools.OpenForm(new Log_Form());
-                        break;
-                }
+                CustomControls.SaveAll();
+                return true;
             }
-            else if (e.Alt & e.KeyCode == Keys.F4)  // Close program
+
+            // Ctrl+Shift+S (Save As)
+            if (keyData == (Keys.Control | Keys.Shift | Keys.S))
+            {
+                ArgoCompany.SaveAs();
+                return true;
+            }
+
+            // Ctrl+E (Export)
+            if (keyData == (Keys.Control | Keys.E))
+            {
+                Tools.OpenForm(new Export_Form());
+                return true;
+            }
+
+            // Ctrl+L (Open logs)
+            if (keyData == (Keys.Control | Keys.L))
+            {
+                Tools.OpenForm(new Log_Form());
+                return true;
+            }
+
+            // Alt+F4 (Close program)
+            if (keyData == (Keys.Alt | Keys.F4))
             {
                 if (!ArgoCompany.AskUserToSave())
                 {
-                    e.Handled = true;
+                    return true;  // Prevent closing
                 }
+                // Let it close if AskUserToSave returns true
             }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
