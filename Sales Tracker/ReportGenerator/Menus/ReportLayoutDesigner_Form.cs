@@ -545,25 +545,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
         }
-        private void DeleteSelected(object sender, EventArgs e)
-        {
-            if (_selectedElement != null)
-            {
-                // If deleting a chart element, also remove it from SelectedChartTypes
-                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
-                {
-                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
-                }
 
-                ReportConfig?.RemoveElement(_selectedElement.Id);
-                _selectedElement = null;
-                Canvas_Panel.Invalidate();
-                HidePropertiesPanel();
-                NotifyParentValidationChanged();
-            }
-        }
-
-        // Alignment Tools
+        // Alignment tool methods
         private void AlignSelectedLeft()
         {
             if (_selectedElements.Count < 2) { return; }
@@ -667,7 +650,7 @@ namespace Sales_Tracker.ReportGenerator
             OnPropertyChanged();
         }
 
-        // Distribution Tools
+        // Distribution tool methods
         private void DistributeHorizontally()
         {
             if (_selectedElements.Count < 3) { return; }
@@ -727,7 +710,7 @@ namespace Sales_Tracker.ReportGenerator
             OnPropertyChanged();
         }
 
-        // Sizing Tools
+        // Sizing tool methods
         private void MakeSameWidth()
         {
             if (_selectedElements.Count < 2) { return; }
@@ -780,7 +763,7 @@ namespace Sales_Tracker.ReportGenerator
             OnPropertyChanged();
         }
 
-        // Z-Order Tools
+        // Z-Order tool methods
         private void BringElementToFront()
         {
             if (_selectedElements.Count == 0 || ReportConfig?.Elements == null) { return; }
@@ -888,33 +871,44 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
-        private void UpdatePropertiesForSelection()
+
+        // Selection
+        private void SelectElement(BaseElement element, bool addToSelection = false)
         {
-            if (_selectedElements.Count == 0)
-            {
-                HidePropertiesPanel();
-            }
-            else if (_selectedElements.Count == 1)
-            {
-                CreateOrShowPropertiesPanel();
-            }
-            else
-            {
-                // Show multi-selection info
-                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+            if (element == null) { return; }
 
-                PropertiesContainer_Panel.Controls.Clear();
-
-                Label infoLabel = new()
+            if (!addToSelection && !_isMultiSelecting)
+            {
+                // Clear existing selection
+                foreach (BaseElement el in _selectedElements)
                 {
-                    Text = $"{_selectedElements.Count} elements selected.\n\nUse the layout tools to align, distribute, or resize them.",
-                    Location = new Point(10, 10),
-                    Size = new Size(PropertiesContainer_Panel.Width - 20, 60),
-                    Font = new Font("Segoe UI", 9),
-                    ForeColor = CustomColors.Text
-                };
-                PropertiesContainer_Panel.Controls.Add(infoLabel);
+                    el.IsSelected = false;
+                }
+                _selectedElements.Clear();
             }
+
+            if (!_selectedElements.Contains(element))
+            {
+                element.IsSelected = true;
+                _selectedElements.Add(element);
+                _selectedElement = element;
+            }
+
+            Canvas_Panel.Invalidate();
+            UpdatePropertiesForSelection();
+        }
+        private void SelectAllElements()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            ClearAllSelections();
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                SelectElement(element, true);
+            }
+
+            Canvas_Panel.Invalidate();
         }
         private void DrawMultiSelection(Graphics g)
         {
@@ -961,44 +955,17 @@ namespace Sales_Tracker.ReportGenerator
                 g.FillRectangle(selectionBrush, _selectionRectangle);
             }
         }
-
-        // Alignment tool event handlers
-        private void AlignLeft_Button_Click(object sender, EventArgs e) => AlignSelectedLeft();
-        private void AlignCenter_Button_Click(object sender, EventArgs e) => AlignSelectedCenter();
-        private void AlignRight_Button_Click(object sender, EventArgs e) => AlignSelectedRight();
-        private void AlignTop_Button_Click(object sender, EventArgs e) => AlignSelectedTop();
-        private void AlignMiddle_Button_Click(object sender, EventArgs e) => AlignSelectedMiddle();
-        private void AlignBottom_Button_Click(object sender, EventArgs e) => AlignSelectedBottom();
-        private void DistributeHorizontally_Button_Click(object sender, EventArgs e) => DistributeHorizontally();
-        private void DistributeVertically_Button_Click(object sender, EventArgs e) => DistributeVertically();
-        private void MakeSameWidth_Button_Click(object sender, EventArgs e) => MakeSameWidth();
-        private void MakeSameHeight_Button_Click(object sender, EventArgs e) => MakeSameHeight();
-        private void MakeSameSize_Button_Click(object sender, EventArgs e) => MakeSameSize();
-
-        // Canvas methods
-        private void SelectElement(BaseElement element, bool addToSelection = false)
+        private void DrawSelection(Graphics g)
         {
-            if (element == null) { return; }
-
-            if (!addToSelection && !_isMultiSelecting)
+            if (_selectedElement != null)
             {
-                // Clear existing selection
-                foreach (BaseElement el in _selectedElements)
-                {
-                    el.IsSelected = false;
-                }
-                _selectedElements.Clear();
-            }
+                using Pen pen = new(CustomColors.AccentBlue);
+                pen.DashStyle = DashStyle.Solid;
+                pen.Width = 3;
+                g.DrawRectangle(pen, _selectedElement.Bounds);
 
-            if (!_selectedElements.Contains(element))
-            {
-                element.IsSelected = true;
-                _selectedElements.Add(element);
-                _selectedElement = element;
+                DrawResizeHandles(g, _selectedElement.Bounds);
             }
-
-            Canvas_Panel.Invalidate();
-            UpdatePropertiesForSelection();
         }
         private void ClearAllSelections()
         {
@@ -1010,6 +977,34 @@ namespace Sales_Tracker.ReportGenerator
             _selectedElement = null;
             Canvas_Panel.Invalidate();
             HidePropertiesPanel();
+        }
+        private void UpdatePropertiesForSelection()
+        {
+            if (_selectedElements.Count == 0)
+            {
+                HidePropertiesPanel();
+            }
+            else if (_selectedElements.Count == 1)
+            {
+                CreateOrShowPropertiesPanel();
+            }
+            else
+            {
+                // Show multi-selection info
+                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+
+                PropertiesContainer_Panel.Controls.Clear();
+
+                Label infoLabel = new()
+                {
+                    Text = $"{_selectedElements.Count} elements selected.\n\nUse the layout tools to align, distribute, or resize them.",
+                    Location = new Point(10, 10),
+                    Size = new Size(PropertiesContainer_Panel.Width - 20, 60),
+                    Font = new Font("Segoe UI", 9),
+                    ForeColor = CustomColors.Text
+                };
+                PropertiesContainer_Panel.Controls.Add(infoLabel);
+            }
         }
         private void UpdateSelectionFromRectangle()
         {
@@ -1032,23 +1027,21 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
-        private void SelectAllElements()
-        {
-            if (ReportConfig?.Elements == null) { return; }
 
-            ClearAllSelections();
+        // Alignment tool event handlers
+        private void AlignLeft_Button_Click(object sender, EventArgs e) => AlignSelectedLeft();
+        private void AlignCenter_Button_Click(object sender, EventArgs e) => AlignSelectedCenter();
+        private void AlignRight_Button_Click(object sender, EventArgs e) => AlignSelectedRight();
+        private void AlignTop_Button_Click(object sender, EventArgs e) => AlignSelectedTop();
+        private void AlignMiddle_Button_Click(object sender, EventArgs e) => AlignSelectedMiddle();
+        private void AlignBottom_Button_Click(object sender, EventArgs e) => AlignSelectedBottom();
+        private void DistributeHorizontally_Button_Click(object sender, EventArgs e) => DistributeHorizontally();
+        private void DistributeVertically_Button_Click(object sender, EventArgs e) => DistributeVertically();
+        private void MakeSameWidth_Button_Click(object sender, EventArgs e) => MakeSameWidth();
+        private void MakeSameHeight_Button_Click(object sender, EventArgs e) => MakeSameHeight();
+        private void MakeSameSize_Button_Click(object sender, EventArgs e) => MakeSameSize();
 
-            foreach (BaseElement element in ReportConfig.Elements)
-            {
-                SelectElement(element, true);
-            }
-
-            Canvas_Panel.Invalidate();
-        }
-
-        /// <summary>
-        /// Creates property controls if they don't exist, or shows existing ones.
-        /// </summary>
+        // Property panel methods
         private void CreateOrShowPropertiesPanel()
         {
             if (_selectedElement == null)
@@ -1092,10 +1085,6 @@ namespace Sales_Tracker.ReportGenerator
 
             UpdatePropertyValues();
         }
-
-        /// <summary>
-        /// Creates common property controls that all elements have.
-        /// </summary>
         private void CreateCommonPropertyControls(int startY)
         {
             int yPosition = startY;
@@ -1183,10 +1172,6 @@ namespace Sales_Tracker.ReportGenerator
             _propertyControls["Height"] = heightNumeric;
             _updateActions["Height"] = () => heightNumeric.Value = _selectedElement?.Bounds.Height ?? 100;
         }
-
-        /// <summary>
-        /// Creates element-specific property controls.
-        /// </summary>
         private int CreateElementSpecificControls(int yPosition)
         {
             if (_selectedElement == null) { return yPosition; }
@@ -1198,10 +1183,6 @@ namespace Sales_Tracker.ReportGenerator
                 yPosition,
                 OnPropertyChanged);
         }
-
-        /// <summary>
-        /// Updates the values of existing property controls.
-        /// </summary>
         private void UpdatePropertyValues()
         {
             if (_selectedElement == null || _currentElementId != _selectedElement.Id)
@@ -1216,10 +1197,6 @@ namespace Sales_Tracker.ReportGenerator
                 updateAction?.Invoke();
             }
         }
-
-        /// <summary>
-        /// Hides the properties panel when no element is selected.
-        /// </summary>
         private void HidePropertiesPanel()
         {
             ElementProperties_Label.Text = "No element selected";
@@ -1233,6 +1210,8 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             TriggerPreviewRefresh();
         }
+
+        // Canvas methods
         private void TriggerPreviewRefresh()
         {
             NotifyParentValidationChanged();
@@ -1284,84 +1263,8 @@ namespace Sales_Tracker.ReportGenerator
                 g.DrawLine(pen, 0, y, Canvas_Panel.Width, y);
             }
         }
-        private void DrawSelection(Graphics g)
-        {
-            if (_selectedElement != null)
-            {
-                using Pen pen = new(CustomColors.AccentBlue);
-                pen.DashStyle = DashStyle.Solid;
-                pen.Width = 3;
-                g.DrawRectangle(pen, _selectedElement.Bounds);
-
-                DrawResizeHandles(g, _selectedElement.Bounds);
-            }
-        }
-        private static void DrawResizeHandles(Graphics g, Rectangle bounds)
-        {
-            const int handleSize = 12;
-            using SolidBrush brush = new(CustomColors.AccentBlue);
-
-            // Corner handles
-            g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize);
-            g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize);
-            g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
-            g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
-        }
 
         // Resize element methods
-        private static ResizeHandle GetResizeHandleAt(Point point, BaseElement element)
-        {
-            if (element == null) { return ResizeHandle.None; }
-
-            const int handleSize = 8;
-            Rectangle bounds = element.Bounds;
-
-            // Corner handles
-            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.TopLeft;
-            }
-            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.TopRight;
-            }
-            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.BottomLeft;
-            }
-            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.BottomRight;
-            }
-
-            // Edge handles
-            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
-            {
-                return ResizeHandle.Left;
-            }
-            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
-            {
-                return ResizeHandle.Right;
-            }
-            if (new Rectangle(bounds.Left + handleSize, bounds.Top - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point))
-            {
-                return ResizeHandle.Top;
-            }
-            return new Rectangle(bounds.Left + handleSize, bounds.Bottom - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point)
-                ? ResizeHandle.Bottom
-                : ResizeHandle.None;
-        }
-        private static Cursor GetCursorForHandle(ResizeHandle handle)
-        {
-            return handle switch
-            {
-                ResizeHandle.TopLeft or ResizeHandle.BottomRight => Cursors.SizeNWSE,
-                ResizeHandle.TopRight or ResizeHandle.BottomLeft => Cursors.SizeNESW,
-                ResizeHandle.Left or ResizeHandle.Right => Cursors.SizeWE,
-                ResizeHandle.Top or ResizeHandle.Bottom => Cursors.SizeNS,
-                _ => Cursors.Default
-            };
-        }
         private void ResizeElement(Point currentPoint)
         {
             if (_selectedElement == null) { return; }
@@ -1423,6 +1326,70 @@ namespace Sales_Tracker.ReportGenerator
                 _propertyUpdateTimer.Stop();
                 _propertyUpdateTimer.Start();
             }
+        }
+        private static void DrawResizeHandles(Graphics g, Rectangle bounds)
+        {
+            const int handleSize = 12;
+            using SolidBrush brush = new(CustomColors.AccentBlue);
+
+            // Corner handles
+            g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize);
+            g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize);
+            g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
+            g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
+        }
+        private static ResizeHandle GetResizeHandleAt(Point point, BaseElement element)
+        {
+            if (element == null) { return ResizeHandle.None; }
+
+            const int handleSize = 8;
+            Rectangle bounds = element.Bounds;
+
+            // Corner handles
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.TopLeft;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.TopRight;
+            }
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.BottomLeft;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.BottomRight;
+            }
+
+            // Edge handles
+            if (new Rectangle(bounds.Left - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
+            {
+                return ResizeHandle.Left;
+            }
+            if (new Rectangle(bounds.Right - handleSize / 2, bounds.Top + handleSize, handleSize, bounds.Height - 2 * handleSize).Contains(point))
+            {
+                return ResizeHandle.Right;
+            }
+            if (new Rectangle(bounds.Left + handleSize, bounds.Top - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point))
+            {
+                return ResizeHandle.Top;
+            }
+            return new Rectangle(bounds.Left + handleSize, bounds.Bottom - handleSize / 2, bounds.Width - 2 * handleSize, handleSize).Contains(point)
+                ? ResizeHandle.Bottom
+                : ResizeHandle.None;
+        }
+        private static Cursor GetCursorForHandle(ResizeHandle handle)
+        {
+            return handle switch
+            {
+                ResizeHandle.TopLeft or ResizeHandle.BottomRight => Cursors.SizeNWSE,
+                ResizeHandle.TopRight or ResizeHandle.BottomLeft => Cursors.SizeNESW,
+                ResizeHandle.Left or ResizeHandle.Right => Cursors.SizeWE,
+                ResizeHandle.Top or ResizeHandle.Bottom => Cursors.SizeNS,
+                _ => Cursors.Default
+            };
         }
 
         // Element management
@@ -1495,6 +1462,23 @@ namespace Sales_Tracker.ReportGenerator
 
             return null;
         }
+        private void DeleteSelected(object sender, EventArgs e)
+        {
+            if (_selectedElement != null)
+            {
+                // If deleting a chart element, also remove it from SelectedChartTypes
+                if (_selectedElement is ChartElement chartElement && ReportConfig != null)
+                {
+                    ReportConfig.Filters.SelectedChartTypes.Remove(chartElement.ChartType);
+                }
+
+                ReportConfig?.RemoveElement(_selectedElement.Id);
+                _selectedElement = null;
+                Canvas_Panel.Invalidate();
+                HidePropertiesPanel();
+                NotifyParentValidationChanged();
+            }
+        }
 
         // Form implementation methods
         public bool IsValidForNextStep()
@@ -1516,10 +1500,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-
-        /// <summary>
-        /// Synchronizes the canvas elements with the current chart selection.
-        /// </summary>
         private void SynchronizeCanvasWithSelection()
         {
             // Check if selected charts have changed
@@ -1676,8 +1656,6 @@ namespace Sales_Tracker.ReportGenerator
                 _ => chartType.ToString()
             };
         }
-
-        // Helper methods
         private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
