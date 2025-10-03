@@ -2,6 +2,7 @@
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ReportGenerator
@@ -958,7 +959,7 @@ namespace Sales_Tracker.ReportGenerator
             {
                 // Draw selection rectangles for all selected elements
                 using Pen pen = new(CustomColors.AccentBlue, 1);
-                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                pen.DashStyle = DashStyle.Dash;
 
                 foreach (BaseElement element in _selectedElements)
                 {
@@ -976,7 +977,7 @@ namespace Sales_Tracker.ReportGenerator
                     Rectangle boundingBox = new(minX, minY, maxX - minX, maxY - minY);
 
                     using Pen boundingPen = new(CustomColors.AccentBlue, 2);
-                    boundingPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    boundingPen.DashStyle = DashStyle.Dot;
                     g.DrawRectangle(boundingPen, boundingBox);
                 }
             }
@@ -990,7 +991,7 @@ namespace Sales_Tracker.ReportGenerator
             if (_isMultiSelecting)
             {
                 using Pen selectionPen = new(CustomColors.AccentBlue, 1);
-                selectionPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                selectionPen.DashStyle = DashStyle.Dash;
                 g.DrawRectangle(selectionPen, _selectionRectangle);
 
                 using SolidBrush selectionBrush = new(Color.FromArgb(30, CustomColors.AccentBlue));
@@ -1308,7 +1309,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             const int gridSize = 20;
             using Pen pen = new(CustomColors.ControlBorder, 1);
-            pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+            pen.DashStyle = DashStyle.Dot;
 
             // Draw vertical lines
             for (int x = 0; x < Canvas_Panel.Width; x += gridSize)
@@ -1327,7 +1328,8 @@ namespace Sales_Tracker.ReportGenerator
             if (_selectedElement != null)
             {
                 using Pen pen = new(CustomColors.AccentBlue);
-                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                pen.DashStyle = DashStyle.Solid;
+                pen.Width = 3;
                 g.DrawRectangle(pen, _selectedElement.Bounds);
 
                 DrawResizeHandles(g, _selectedElement.Bounds);
@@ -1335,7 +1337,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static void DrawResizeHandles(Graphics g, Rectangle bounds)
         {
-            const int handleSize = 8;
+            const int handleSize = 12;
             using SolidBrush brush = new(CustomColors.AccentBlue);
 
             // Corner handles

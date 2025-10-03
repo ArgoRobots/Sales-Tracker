@@ -120,36 +120,31 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Text alignment
             AddPropertyLabel(container, "Align:", yPosition);
-            AddPropertyComboBox(container, Alignment.ToString(), yPosition,
-                ["Near", "Center", "Far"],
+            AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+                ["Left", "Center", "Right"],
                 value =>
                 {
-                    Alignment = Enum.Parse<StringAlignment>(value);
-                    AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
-                        ["Left", "Center", "Right"],
-                        value =>
-                        {
-                            Alignment = DisplayTextToAlignment(value);
-                            onPropertyChanged();
-                        });
-                    yPosition += RowHeight;
-
-                    // Vertical alignment
-                    AddPropertyLabel(container, "V-Align:", yPosition);
-                    AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
-                        ["Top", "Middle", "Bottom"],
-                        value =>
-                        {
-                            VerticalAlignment = DisplayTextToVerticalAlignment(value);
-                            onPropertyChanged();
-                        });
-                    yPosition += RowHeight;
-
-                    // Text color
-                    AddPropertyLabel(container, "Color:", yPosition);
-                    AddColorPicker(container, yPosition, onPropertyChanged);
-                    yPosition += RowHeight;
+                    Alignment = DisplayTextToAlignment(value);
+                    onPropertyChanged();
                 });
+            yPosition += RowHeight;
+
+            // Vertical alignment
+            AddPropertyLabel(container, "V-Align:", yPosition);
+            AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+                ["Top", "Middle", "Bottom"],
+                value =>
+                {
+                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                    onPropertyChanged();
+                });
+            yPosition += RowHeight;
+
+            // Text color
+            AddPropertyLabel(container, "Color:", yPosition);
+            AddColorPicker(container, yPosition, onPropertyChanged);
+            yPosition += RowHeight;
+
             return yPosition;
         }
         private static string AlignmentToDisplayText(StringAlignment alignment)
