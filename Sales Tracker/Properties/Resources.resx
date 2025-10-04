@@ -154,9 +154,6 @@
   <data name="EditBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit - black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="EditWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Edit - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Error" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -258,5 +255,74 @@
   </data>
   <data name="ViewWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EditWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Edit - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignMiddleWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignVerticalWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignTopWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignTopWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignMiddleBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignVerticalBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignTopBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignTopBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignBottomBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignBottomBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignBottomWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignBottomWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignCenterBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignCenterBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignCenterWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignCenterWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ALignLeftBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ALignLeftBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ALignLeftWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ALignLeftWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignRightBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignRightBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AlignRightWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AlignRightWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameHeightBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameHeightBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameSizeBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameSizeBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameWidthBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameWidthBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameHeightWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameHeightWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameWidthWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameWidthWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SameSizeWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SameSizeWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DistributeHorizontallyBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DistributeHorizontallyBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DistributeHorizontallyWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DistributeHorizontallyWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DistributeVerticallyBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DistributeVerticallyBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DistributeVerticallyWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DistributeVerticallyWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

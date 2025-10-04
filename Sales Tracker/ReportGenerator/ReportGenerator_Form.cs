@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -84,6 +85,41 @@ namespace Sales_Tracker.ReportGenerator
             ThemeManager.MakeGButtonBluePrimary(Previous_Button);
             ThemeManager.MakeGButtonBluePrimary(Next_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
+
+            if (ThemeManager.IsDarkTheme())
+            {
+                ReportLayoutDesigner_Form.Instance.AlignLeft_Button.Image = Resources.ALignLeftWhite;
+                ReportLayoutDesigner_Form.Instance.AlignCenter_Button.Image = Resources.AlignCenterWhite;
+                ReportLayoutDesigner_Form.Instance.AlignRight_Button.Image = Resources.AlignRightWhite;
+
+                ReportLayoutDesigner_Form.Instance.AlignTop_Button.Image = Resources.AlignTopWhite;
+                ReportLayoutDesigner_Form.Instance.AlignMiddle_Button.Image = Resources.AlignMiddleWhite;
+                ReportLayoutDesigner_Form.Instance.AlignBottom_Button.Image = Resources.AlignBottomWhite;
+
+                ReportLayoutDesigner_Form.Instance.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyWhite;
+                ReportLayoutDesigner_Form.Instance.DistributeVertically_Button.Image = Resources.DistributeVerticallyWhite;
+
+                ReportLayoutDesigner_Form.Instance.MakeSameWidth_Button.Image = Resources.SameWidthWhite;
+                ReportLayoutDesigner_Form.Instance.MakeSameHeight_Button.Image = Resources.SameHeightWhite;
+                ReportLayoutDesigner_Form.Instance.MakeSameSize_Button.Image = Resources.SameSizeWhite;
+            }
+            else
+            {
+                ReportLayoutDesigner_Form.Instance.AlignLeft_Button.Image = Resources.ALignLeftBlack;
+                ReportLayoutDesigner_Form.Instance.AlignCenter_Button.Image = Resources.AlignCenterBlack;
+                ReportLayoutDesigner_Form.Instance.AlignRight_Button.Image = Resources.AlignRightBlack;
+
+                ReportLayoutDesigner_Form.Instance.AlignTop_Button.Image = Resources.AlignTopBlack;
+                ReportLayoutDesigner_Form.Instance.AlignMiddle_Button.Image = Resources.AlignMiddleBlack;
+                ReportLayoutDesigner_Form.Instance.AlignBottom_Button.Image = Resources.AlignBottomBlack;
+
+                ReportLayoutDesigner_Form.Instance.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyBlack;
+                ReportLayoutDesigner_Form.Instance.DistributeVertically_Button.Image = Resources.DistributeVerticallyBlack;
+
+                ReportLayoutDesigner_Form.Instance.MakeSameWidth_Button.Image = Resources.SameWidthBlack;
+                ReportLayoutDesigner_Form.Instance.MakeSameHeight_Button.Image = Resources.SameHeightBlack;
+                ReportLayoutDesigner_Form.Instance.MakeSameSize_Button.Image = Resources.SameSizeBlack;
+            }
         }
         private void SetAccessibleDescriptions()
         {

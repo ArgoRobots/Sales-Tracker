@@ -979,16 +979,6 @@ namespace Sales_Tracker.ReportGenerator
                 ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
 
                 PropertiesContainer_Panel.Controls.Clear();
-
-                Label infoLabel = new()
-                {
-                    Text = $"{_selectedElements.Count} elements selected.\n\nUse the layout tools to align, distribute, or resize them.",
-                    Location = new Point(10, 10),
-                    Size = new Size(PropertiesContainer_Panel.Width - 20, 60),
-                    Font = new Font("Segoe UI", 9),
-                    ForeColor = CustomColors.Text
-                };
-                PropertiesContainer_Panel.Controls.Add(infoLabel);
             }
         }
         private void UpdateSelectionFromRectangle()
