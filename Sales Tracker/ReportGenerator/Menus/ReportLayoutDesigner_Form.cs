@@ -950,13 +950,10 @@ namespace Sales_Tracker.ReportGenerator
             else if (_selectedElement != null)
             {
                 // Draw selection rectangle for the selected element
-                if (_isMultiSelecting)
+                DrawSelectionForElement(g, _selectedElement);
+
+                if (!_isMultiSelecting)
                 {
-                    DrawSelectionForElement(g, _selectedElement);
-                }
-                else
-                {
-                    DrawSelectionForElement(g, _selectedElement);
                     DrawResizeHandles(g, _selectedElement.Bounds);
                 }
             }

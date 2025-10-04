@@ -520,7 +520,7 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         /// <summary>
-        /// Safely updates UI controls without triggering events
+        /// Safely updates UI controls without triggering events.
         /// </summary>
         private void PerformUpdate(Action updateAction)
         {
