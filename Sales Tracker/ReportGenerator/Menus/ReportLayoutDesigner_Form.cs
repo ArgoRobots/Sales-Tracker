@@ -227,6 +227,8 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Canvas event handlers
+        private Point _mouseDownPoint;
+        private const int DRAG_THRESHOLD = 5;
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(ReportElementType)))
@@ -262,12 +264,11 @@ namespace Sales_Tracker.ReportGenerator
                 e.Graphics.DrawImage(_gridCache, 0, 0);
             }
 
-            // Draw only visible elements
+            // Draw elements
             Rectangle clipRect = e.ClipRectangle;
             DrawVisibleElements(e.Graphics, clipRect);
 
-            // Draw selection
-            DrawMultiSelection(e.Graphics);
+            DrawSelection(e.Graphics);
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -276,7 +277,6 @@ namespace Sales_Tracker.ReportGenerator
             if (e.Button == MouseButtons.Left)
             {
                 bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
-                bool shiftPressed = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
                 // Check for resize handles on any selected element
                 if (_selectedElements.Count > 0)
@@ -297,7 +297,7 @@ namespace Sales_Tracker.ReportGenerator
                         }
                     }
                 }
-                // Also check single selected element for backward compatibility
+                // Check single selected element
                 else if (_selectedElement != null)
                 {
                     ResizeHandle handle = GetResizeHandleAt(e.Location, _selectedElement);
@@ -315,14 +315,7 @@ namespace Sales_Tracker.ReportGenerator
 
                 BaseElement clickedElement = GetElementAtPoint(e.Location);
 
-                if (shiftPressed && !ctrlPressed)
-                {
-                    // Start rectangle selection
-                    _isMultiSelecting = true;
-                    _selectionStartPoint = e.Location;
-                    _selectionRectangle = new Rectangle(e.Location, Size.Empty);
-                }
-                else if (clickedElement != null)
+                if (clickedElement != null)
                 {
                     if (ctrlPressed)
                     {
@@ -332,7 +325,13 @@ namespace Sales_Tracker.ReportGenerator
                             clickedElement.IsSelected = false;
                             _selectedElements.Remove(clickedElement);
                             if (_selectedElement == clickedElement)
+                            {
                                 _selectedElement = _selectedElements.FirstOrDefault();
+                            }
+
+                            Canvas_Panel.Invalidate();
+                            UpdatePropertiesForSelection();
+                            UpdateLayoutButtonStates();
                         }
                         else
                         {
@@ -350,9 +349,10 @@ namespace Sales_Tracker.ReportGenerator
                         _dragStartPoint = e.Location;
                     }
                 }
-                else if (!ctrlPressed && !shiftPressed)
+                else
                 {
-                    ClearAllSelections();
+                    // Clicked on empty area
+                    _mouseDownPoint = e.Location;
                 }
             }
         }
@@ -383,7 +383,33 @@ namespace Sales_Tracker.ReportGenerator
                 }
 
                 if (Canvas_Panel.Cursor != newCursor)
+                {
                     Canvas_Panel.Cursor = newCursor;
+                }
+
+                // Check if we should start rectangle selection from mouse down on empty area
+                if (e.Button == MouseButtons.Left && !_isDragging && !_isMultiSelecting &&
+                    _mouseDownPoint != Point.Empty && GetElementAtPoint(_mouseDownPoint) == null)
+                {
+                    // Check if mouse has moved beyond threshold
+                    int deltaX = Math.Abs(e.X - _mouseDownPoint.X);
+                    int deltaY = Math.Abs(e.Y - _mouseDownPoint.Y);
+
+                    if (deltaX > DRAG_THRESHOLD || deltaY > DRAG_THRESHOLD)
+                    {
+                        // Start rectangle selection
+                        bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                        if (!ctrlPressed)
+                        {
+                            ClearAllSelections();
+                        }
+
+                        _isMultiSelecting = true;
+                        _selectionStartPoint = _mouseDownPoint;
+                        _selectionRectangle = new Rectangle(_mouseDownPoint, Size.Empty);
+                        _mouseDownPoint = Point.Empty;  // Clear to prevent re-triggering
+                    }
+                }
             }
 
             // Handle multi-selection rectangle
@@ -398,11 +424,15 @@ namespace Sales_Tracker.ReportGenerator
                 Rectangle oldRect = _selectionRectangle;
                 _selectionRectangle = new Rectangle(x, y, width, height);
 
-                // Invalidate both old and new rectangles
-                oldRect.Inflate(2, 2);
+                // Invalidate the selection rectangle areas
+                if (oldRect.Width > 0 || oldRect.Height > 0)
+                {
+                    oldRect.Inflate(2, 2);
+                    Canvas_Panel.Invalidate(oldRect);
+                }
+
                 Rectangle newRect = _selectionRectangle;
                 newRect.Inflate(2, 2);
-                Canvas_Panel.Invalidate(oldRect);
                 Canvas_Panel.Invalidate(newRect);
 
                 UpdateSelectionFromRectangle();
@@ -463,7 +493,7 @@ namespace Sales_Tracker.ReportGenerator
                     _propertyUpdateTimer.Start();
                 }
             }
-            // Handle dragging single element (backward compatibility)
+            // Handle dragging single element
             else if (_isDragging && _selectedElement != null)
             {
                 int deltaX = e.X - _dragStartPoint.X;
@@ -493,10 +523,21 @@ namespace Sales_Tracker.ReportGenerator
         {
             bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
 
+            // If mouse up on empty area without dragging (small movement), clear selections
+            if (e.Button == MouseButtons.Left && _mouseDownPoint != Point.Empty && !_isMultiSelecting)
+            {
+                bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                if (!ctrlPressed)
+                {
+                    ClearAllSelections();
+                }
+            }
+
             _isDragging = false;
             _isResizing = false;
-            _isMultiSelecting = false;  // Reset multi-selecting flag
+            _isMultiSelecting = false;
             _activeResizeHandle = ResizeHandle.None;
+            _mouseDownPoint = Point.Empty;
             Canvas_Panel.Cursor = Cursors.Default;
             _deferPropertyUpdate = false;
 
@@ -507,6 +548,12 @@ namespace Sales_Tracker.ReportGenerator
                 clearRect.Inflate(2, 2);
                 Canvas_Panel.Invalidate(clearRect);
                 _selectionRectangle = Rectangle.Empty;
+            }
+
+            // Force full invalidation after multi-select to show resize handles for single selection
+            if (wasInteracting)
+            {
+                Canvas_Panel.Invalidate();
             }
 
             // Update properties panel once at the end
@@ -893,44 +940,31 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             UpdateLayoutButtonStates();
         }
-        private void DrawMultiSelection(Graphics g)
+        private void DrawSelection(Graphics g)
         {
             if (_selectedElements.Count > 1)
             {
                 // Draw selection rectangles for all selected elements
-                using Pen pen = new(CustomColors.AccentBlue, 1);
-                pen.DashStyle = DashStyle.Dash;
-
-                foreach (BaseElement element in _selectedElements)
-                {
-                    g.DrawRectangle(pen, element.Bounds);
-                }
-
-                // Draw a bounding box around all selected elements
-                if (_selectedElements.Count > 0)
-                {
-                    int minX = _selectedElements.Min(e => e.Bounds.X);
-                    int minY = _selectedElements.Min(e => e.Bounds.Y);
-                    int maxX = _selectedElements.Max(e => e.Bounds.Right);
-                    int maxY = _selectedElements.Max(e => e.Bounds.Bottom);
-
-                    Rectangle boundingBox = new(minX, minY, maxX - minX, maxY - minY);
-
-                    using Pen boundingPen = new(CustomColors.AccentBlue, 3);
-                    boundingPen.DashStyle = DashStyle.Dot;
-                    g.DrawRectangle(boundingPen, boundingBox);
-                }
+                DrawSelectionForElement(g, _selectedElements.ToArray());
             }
             else if (_selectedElement != null)
             {
-                // Single selection - draw handles
-                DrawSelection(g);
+                // Draw selection rectangle for the selected element
+                if (_isMultiSelecting)
+                {
+                    DrawSelectionForElement(g, _selectedElement);
+                }
+                else
+                {
+                    DrawSelectionForElement(g, _selectedElement);
+                    DrawResizeHandles(g, _selectedElement.Bounds);
+                }
             }
 
-            // Draw selection rectangle if multi-selecting
+            // Draw selection rectangle if clicking and draging for multi-select
             if (_isMultiSelecting)
             {
-                using Pen selectionPen = new(CustomColors.AccentBlue, 1);
+                using Pen selectionPen = new(CustomColors.AccentBlue, 2);
                 selectionPen.DashStyle = DashStyle.Dash;
                 g.DrawRectangle(selectionPen, _selectionRectangle);
 
@@ -938,16 +972,13 @@ namespace Sales_Tracker.ReportGenerator
                 g.FillRectangle(selectionBrush, _selectionRectangle);
             }
         }
-        private void DrawSelection(Graphics g)
+        private static void DrawSelectionForElement(Graphics g, params BaseElement[] elements)
         {
-            if (_selectedElement != null)
+            foreach (BaseElement element in elements)
             {
-                using Pen pen = new(CustomColors.AccentBlue);
+                using Pen pen = new(CustomColors.AccentBlue, 3);
                 pen.DashStyle = DashStyle.Solid;
-                pen.Width = 3;
-                g.DrawRectangle(pen, _selectedElement.Bounds);
-
-                DrawResizeHandles(g, _selectedElement.Bounds);
+                g.DrawRectangle(pen, element.Bounds);
             }
         }
         private void ClearAllSelections()
@@ -985,24 +1016,52 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (ReportConfig?.Elements == null) { return; }
 
+            // Track which elements should be selected based on rectangle intersection
+            HashSet<BaseElement> elementsInRectangle = [];
+
             foreach (BaseElement element in ReportConfig.Elements)
             {
-                bool wasSelected = element.IsSelected;
-                bool shouldSelect = _selectionRectangle.IntersectsWith(element.Bounds);
-
-                if (shouldSelect && !_selectedElements.Contains(element))
+                if (_selectionRectangle.IntersectsWith(element.Bounds))
                 {
-                    element.IsSelected = true;
-                    _selectedElements.Add(element);
-                }
-                else if (!shouldSelect && !wasSelected)
-                {
-                    element.IsSelected = false;
-                    _selectedElements.Remove(element);
+                    elementsInRectangle.Add(element);
                 }
             }
 
+            // Process elements that should be selected but aren't
+            foreach (BaseElement element in elementsInRectangle)
+            {
+                if (!_selectedElements.Contains(element))
+                {
+                    element.IsSelected = true;
+                    _selectedElements.Add(element);
+                    InvalidateElementRegion(element.Bounds);
+                }
+            }
+
+            // Process elements that should be unselected
+            List<BaseElement> toRemove = _selectedElements
+                .Where(e => !elementsInRectangle.Contains(e))
+                .ToList();
+
+            foreach (BaseElement element in toRemove)
+            {
+                element.IsSelected = false;
+                _selectedElements.Remove(element);
+                InvalidateElementRegion(element.Bounds);
+            }
+
+            // Update the primary selected element
+            if (_selectedElements.Count > 0 && !_selectedElements.Contains(_selectedElement))
+            {
+                _selectedElement = _selectedElements.First();
+            }
+            else if (_selectedElements.Count == 0)
+            {
+                _selectedElement = null;
+            }
+
             UpdateLayoutButtonStates();
+            UpdatePropertiesForSelection();
         }
 
         // Alignment tool event handlers
