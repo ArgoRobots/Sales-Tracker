@@ -35,19 +35,13 @@ namespace Tests
                 {
                     "fr", new Dictionary<string, string>
                     {
-                        { "str_thepurchase{0}alreadyexistswouldyouliketoaddthispu", "Le {0} d’achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
-                        { "str_amountcharged{0}{1}{2}isnotequaltothetotalpriceoft", "Le montant facturé ({0}{1} {2}) n’est pas égal au prix total de l’achat ({3}{4} {5}). La différence sera prise en compte." },
+                        { "str_thepurchase{0}alreadyexistswouldyouliketoaddthispu", "Le {0} d'achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
+                        { "str_amountcharged{0}{1}{2}isnotequaltothetotalpriceoft", "Le montant facturé ({0}{1} {2}) n'est pas égal au prix total de l'achat ({3}{4} {5}). La différence sera prise en compte." },
                     }
                 }
             };
 
-            var combinedCache = new
-            {
-                TranslationCache = translationCache,
-                StringControlCache = new Dictionary<string, string?>()
-            };
-
-            string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(translationCache, Formatting.Indented);
             File.WriteAllText(Directories.Translations_file, jsonContent);
         }
 
@@ -104,9 +98,9 @@ namespace Tests
             Dictionary<string, string> testCases = new()
             {
                 { "The purchase #{0} already exists. Would you like to add this purchase anyways?",
-                  "Le {0} d’achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
+                  "Le {0} d'achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
                 { "Amount charged ({0}{1} {2}) is not equal to the total price of the purchase ({3}{4} {5}). The difference will be accounted for.",
-                  "Le montant facturé ({0}{1} {2}) n’est pas égal au prix total de l’achat ({3}{4} {5}). La différence sera prise en compte." }
+                  "Le montant facturé ({0}{1} {2}) n'est pas égal au prix total de l'achat ({3}{4} {5}). La différence sera prise en compte." }
             };
 
             // Act & Assert

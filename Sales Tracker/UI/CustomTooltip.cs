@@ -54,5 +54,19 @@ namespace Sales_Tracker.UI
             tooltip.ToolTipTitle = title;
             tooltip.SetToolTip(control, message);
         }
+
+        /// <summary>
+        /// Updates all existing tooltips to match the current theme colors.
+        /// </summary>
+        public static void UpdateAllToolTipThemes()
+        {
+            foreach (Guna2HtmlToolTip tooltip in _tooltips.Values)
+            {
+                tooltip.TitleForeColor = CustomColors.Text;
+                tooltip.BackColor = CustomColors.ControlBack;
+                tooltip.ForeColor = CustomColors.Text;
+                tooltip.BorderColor = CustomColors.ControlPanelBorder;
+            }
+        }
     }
 }
