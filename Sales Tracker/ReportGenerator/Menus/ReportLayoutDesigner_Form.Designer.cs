@@ -144,7 +144,7 @@
             MakeSameSize_Button.ForeColor = Color.Black;
             MakeSameSize_Button.Image = Properties.Resources.SameSizeBlack;
             MakeSameSize_Button.ImageSize = new Size(22, 22);
-            MakeSameSize_Button.Location = new Point(552, 14);
+            MakeSameSize_Button.Location = new Point(530, 14);
             MakeSameSize_Button.Name = "MakeSameSize_Button";
             MakeSameSize_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             MakeSameSize_Button.Size = new Size(40, 40);
@@ -166,7 +166,7 @@
             MakeSameHeight_Button.ForeColor = Color.Black;
             MakeSameHeight_Button.Image = Properties.Resources.SameHeightBlack;
             MakeSameHeight_Button.ImageSize = new Size(22, 22);
-            MakeSameHeight_Button.Location = new Point(506, 14);
+            MakeSameHeight_Button.Location = new Point(484, 14);
             MakeSameHeight_Button.Name = "MakeSameHeight_Button";
             MakeSameHeight_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             MakeSameHeight_Button.Size = new Size(40, 40);
@@ -188,7 +188,7 @@
             MakeSameWidth_Button.ForeColor = Color.Black;
             MakeSameWidth_Button.Image = Properties.Resources.SameWidthBlack;
             MakeSameWidth_Button.ImageSize = new Size(22, 22);
-            MakeSameWidth_Button.Location = new Point(460, 14);
+            MakeSameWidth_Button.Location = new Point(438, 14);
             MakeSameWidth_Button.Name = "MakeSameWidth_Button";
             MakeSameWidth_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             MakeSameWidth_Button.Size = new Size(40, 40);
@@ -210,7 +210,7 @@
             DistributeVertically_Button.ForeColor = Color.Black;
             DistributeVertically_Button.Image = Properties.Resources.DistributeVerticallyBlack;
             DistributeVertically_Button.ImageSize = new Size(22, 22);
-            DistributeVertically_Button.Location = new Point(390, 14);
+            DistributeVertically_Button.Location = new Point(378, 14);
             DistributeVertically_Button.Name = "DistributeVertically_Button";
             DistributeVertically_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             DistributeVertically_Button.Size = new Size(40, 40);
@@ -232,7 +232,7 @@
             DistributeHorizontally_Button.ForeColor = Color.Black;
             DistributeHorizontally_Button.Image = Properties.Resources.DistributeHorizontallyBlack;
             DistributeHorizontally_Button.ImageSize = new Size(22, 22);
-            DistributeHorizontally_Button.Location = new Point(344, 14);
+            DistributeHorizontally_Button.Location = new Point(332, 14);
             DistributeHorizontally_Button.Name = "DistributeHorizontally_Button";
             DistributeHorizontally_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             DistributeHorizontally_Button.Size = new Size(40, 40);
@@ -254,7 +254,7 @@
             AlignBottom_Button.ForeColor = Color.Black;
             AlignBottom_Button.Image = Properties.Resources.AlignBottomBlack;
             AlignBottom_Button.ImageSize = new Size(22, 22);
-            AlignBottom_Button.Location = new Point(273, 14);
+            AlignBottom_Button.Location = new Point(272, 14);
             AlignBottom_Button.Name = "AlignBottom_Button";
             AlignBottom_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             AlignBottom_Button.Size = new Size(40, 40);
@@ -276,7 +276,7 @@
             AlignMiddle_Button.ForeColor = Color.Black;
             AlignMiddle_Button.Image = Properties.Resources.AlignMiddleBlack;
             AlignMiddle_Button.ImageSize = new Size(22, 22);
-            AlignMiddle_Button.Location = new Point(227, 14);
+            AlignMiddle_Button.Location = new Point(226, 14);
             AlignMiddle_Button.Name = "AlignMiddle_Button";
             AlignMiddle_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             AlignMiddle_Button.Size = new Size(40, 40);
@@ -298,7 +298,7 @@
             AlignTop_Button.ForeColor = Color.Black;
             AlignTop_Button.Image = Properties.Resources.AlignTopBlack;
             AlignTop_Button.ImageSize = new Size(22, 22);
-            AlignTop_Button.Location = new Point(181, 14);
+            AlignTop_Button.Location = new Point(180, 14);
             AlignTop_Button.Name = "AlignTop_Button";
             AlignTop_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             AlignTop_Button.Size = new Size(40, 40);
@@ -396,10 +396,10 @@
             Canvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Canvas_Panel.BackColor = Color.White;
             Canvas_Panel.BorderStyle = BorderStyle.FixedSingle;
-            Canvas_Panel.Location = new Point(21, 83);
+            Canvas_Panel.Location = new Point(21, 62);
             Canvas_Panel.Margin = new Padding(4, 5, 4, 5);
             Canvas_Panel.Name = "Canvas_Panel";
-            Canvas_Panel.Size = new Size(1041, 717);
+            Canvas_Panel.Size = new Size(1046, 742);
             Canvas_Panel.TabIndex = 0;
             // 
             // LeftTools_Panel
@@ -430,12 +430,12 @@
             Properties_GroupBox.CustomizableEdges = customizableEdges27;
             Properties_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Properties_GroupBox.ForeColor = Color.White;
-            Properties_GroupBox.Location = new Point(28, 378);
+            Properties_GroupBox.Location = new Point(28, 370);
             Properties_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Properties_GroupBox.Name = "Properties_GroupBox";
             Properties_GroupBox.Padding = new Padding(0, 17, 0, 10);
             Properties_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Properties_GroupBox.Size = new Size(345, 503);
+            Properties_GroupBox.Size = new Size(345, 511);
             Properties_GroupBox.TabIndex = 1;
             Properties_GroupBox.Text = "Element Properties";
             // 
@@ -468,7 +468,7 @@
             PropertiesContainer_Panel.Location = new Point(0, 75);
             PropertiesContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             PropertiesContainer_Panel.Name = "PropertiesContainer_Panel";
-            PropertiesContainer_Panel.Size = new Size(345, 418);
+            PropertiesContainer_Panel.Size = new Size(345, 426);
             PropertiesContainer_Panel.TabIndex = 1;
             // 
             // Tools_GroupBox
@@ -487,7 +487,7 @@
             Tools_GroupBox.Name = "Tools_GroupBox";
             Tools_GroupBox.Padding = new Padding(14, 17, 14, 17);
             Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges40;
-            Tools_GroupBox.Size = new Size(345, 350);
+            Tools_GroupBox.Size = new Size(345, 342);
             Tools_GroupBox.TabIndex = 0;
             Tools_GroupBox.Text = "Report Elements";
             // 
@@ -501,7 +501,7 @@
             ToolsContainer_Panel.Controls.Add(AddDateElement_Button);
             ToolsContainer_Panel.Controls.Add(AddLabelElement_Button);
             ToolsContainer_Panel.Controls.Add(AddChartElement_Button);
-            ToolsContainer_Panel.Location = new Point(14, 54);
+            ToolsContainer_Panel.Location = new Point(14, 50);
             ToolsContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             ToolsContainer_Panel.Name = "ToolsContainer_Panel";
             ToolsContainer_Panel.Size = new Size(316, 281);
