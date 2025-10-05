@@ -640,10 +640,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCost, SortAndGroupData(allData, grouping));
         }
-        public static ChartData LoadProfitsIntoChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadProfitsIntoChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("Profits");
@@ -712,9 +719,15 @@ namespace Sales_Tracker.Charts
         }
 
         // Statistics charts
-        public static ChartData LoadCountriesOfOriginChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfOriginChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
@@ -781,9 +794,15 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCompaniesOfOriginChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCompaniesOfOriginChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
@@ -850,9 +869,15 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(companyCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCountriesOfDestinationChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfDestinationChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView);
             string label = LanguageManager.TranslateString("# of items");
@@ -919,14 +944,21 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadWorldMapChart(GeoMap geoMap, MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined)
+        public static ChartData LoadWorldMapChart(
+            GeoMap geoMap,
+            MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
+
             Guna2DataGridView[] dataGridViews = dataType switch
             {
-                MainMenu_Form.GeoMapDataType.PurchasesOnly => [MainMenu_Form.Instance.Purchase_DataGridView],
-                MainMenu_Form.GeoMapDataType.SalesOnly => [MainMenu_Form.Instance.Sale_DataGridView],
-                MainMenu_Form.GeoMapDataType.Combined => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView],
-                _ => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView]
+                MainMenu_Form.GeoMapDataType.PurchasesOnly => [purchasesDataGridView],
+                MainMenu_Form.GeoMapDataType.SalesOnly => [salesDataGridView],
+                MainMenu_Form.GeoMapDataType.Combined => [salesDataGridView, purchasesDataGridView],
+                _ => [salesDataGridView, purchasesDataGridView]
             };
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
@@ -993,12 +1025,19 @@ namespace Sales_Tracker.Charts
             double totalValue = countryData.Values.Sum();
             return new ChartData(totalValue, countryData);
         }
-        public static ChartData LoadAccountantsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadAccountantsIntoChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView[] dataGridViews = [
-                MainMenu_Form.Instance.Sale_DataGridView,
-                MainMenu_Form.Instance.Purchase_DataGridView
-            ];
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
+
+            Guna2DataGridView[] dataGridViews = [salesDataGridView, purchasesDataGridView];
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridViews);
             string label = LanguageManager.TranslateString("# of transactions");
@@ -1017,14 +1056,14 @@ namespace Sales_Tracker.Charts
             List<PieSeries<double>> dataset = [];
             Dictionary<string, int> accountantCounts = [];
 
-            foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
             {
-                if (!DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView))
+                if (!DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(dataGridView))
                 {
                     continue;
                 }
 
-                foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+                foreach (DataGridViewRow row in dataGridView.Rows)
                 {
                     if (!IsRowValid(row)) { continue; }
 
@@ -1057,10 +1096,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(accountantCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static SalesExpensesChartData LoadSalesVsExpensesChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadSalesVsExpensesChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateString("Total expenses");
@@ -1118,10 +1164,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(expensesByDate, salesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadAverageTransactionValueChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadAverageTransactionValueChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(purchasesDataGridView, salesDataGridView);
             string purchaseLabel = LanguageManager.TranslateString("Average purchase value");
@@ -1189,10 +1242,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(avgPurchasesByDate, avgSalesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadTotalTransactionsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadTotalTransactionsChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsExcludingReturnedOrLost(salesDataGridView, purchasesDataGridView);
             string purchasesLabel = LanguageManager.TranslateString("Purchases");
@@ -1248,10 +1308,18 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadAverageShippingCostsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, bool includeZeroShipping = false)
+        public static SalesExpensesChartData LoadAverageShippingCostsChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            bool includeZeroShipping = false,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(salesDataGridView, purchasesDataGridView);
             string purchaseLabel = LanguageManager.TranslateString("Purchases");
@@ -1329,10 +1397,16 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(avgPurchaseShipping, avgSalesShipping, sortedDates);
         }
-        public static SalesExpensesChartData LoadGrowthRateChart(CartesianChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadGrowthRateChart(
+            CartesianChart chart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateString("Expenses growth %");
@@ -1477,10 +1551,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
         }
-        public static SalesExpensesChartData LoadReturnsOverTimeChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadReturnsOverTimeChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string purchaseReturnsLabel = LanguageManager.TranslateString("Purchase returns");
@@ -1557,10 +1638,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchaseReturnsDouble, saleReturnsDouble, sortedDates);
         }
-        public static SalesExpensesChartData LoadReturnFinancialImpactChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadReturnFinancialImpactChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string purchaseReturnValueLabel = LanguageManager.TranslateString("Purchase return value");
@@ -1651,10 +1739,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchaseReturnValueByDate, saleReturnValueByDate, sortedDates);
         }
-        public static ChartCountData LoadReturnReasonsChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnReasonsChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
@@ -1711,10 +1806,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(reasonCounts, grouping));
         }
-        public static ChartCountData LoadReturnsByCategoryChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnsByCategoryChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
@@ -1788,10 +1890,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(categoryCounts, grouping));
         }
-        public static ChartCountData LoadReturnsByProductChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnsByProductChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
@@ -1865,10 +1974,16 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(productCounts, grouping));
         }
-        public static ChartCountData LoadPurchaseVsSaleReturnsChart(PieChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadPurchaseVsSaleReturnsChart(
+            PieChart chart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
@@ -1917,10 +2032,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(returnCounts);
         }
-        public static SalesExpensesChartData LoadLossesOverTimeChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadLossesOverTimeChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string purchaseLossesLabel = LanguageManager.TranslateString("Purchase losses");
@@ -1997,10 +2119,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchaseLossesDouble, saleLossesDouble, sortedDates);
         }
-        public static SalesExpensesChartData LoadLossFinancialImpactChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadLossFinancialImpactChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string purchaseLossValueLabel = LanguageManager.TranslateString("Purchase loss value");
@@ -2091,10 +2220,17 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchaseLossValueByDate, saleLossValueByDate, sortedDates);
         }
-        public static ChartCountData LoadLossReasonsChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadLossReasonsChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of losses");
@@ -2151,10 +2287,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(reasonCounts, grouping));
         }
-        public static ChartCountData LoadLossesByCategoryChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadLossesByCategoryChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of losses");
@@ -2228,10 +2371,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(categoryCounts, grouping));
         }
-        public static ChartCountData LoadLossesByProductChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadLossesByProductChart(
+            PieChart chart,
+            PieChartGrouping grouping,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of losses");
@@ -2305,10 +2455,16 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(productCounts, grouping));
         }
-        public static ChartCountData LoadPurchaseVsSaleLossesChart(PieChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadPurchaseVsSaleLossesChart(
+            PieChart chart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true,
+            Guna2DataGridView purchasesDataGridView = null,
+            Guna2DataGridView salesDataGridView = null)
         {
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            purchasesDataGridView ??= MainMenu_Form.Instance.Purchase_DataGridView;
+            salesDataGridView ??= MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForLoss(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of losses");
@@ -2470,7 +2626,7 @@ namespace Sales_Tracker.Charts
 
             if (cell.Value == null)
             {
-                Log.Error_DataGridViewCellIsEmpty(cell.DataGridView.Name);
+                Log.Error_DataGridViewCellIsEmpty(cell);
                 return false;
             }
 

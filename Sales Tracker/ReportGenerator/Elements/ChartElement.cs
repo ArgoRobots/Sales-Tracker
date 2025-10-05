@@ -19,8 +19,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
         // Properties for chart rendering independent from MainMenu_Form
         private Control _chartControl;
-        private Guna2DataGridView _salesDataGridView;
-        private Guna2DataGridView _purchasesDataGridView;
 
         public MainMenu_Form.ChartDataType ChartType { get; set; } = MainMenu_Form.ChartDataType.TotalSales;
         public bool ShowLegend { get; set; } = true;
@@ -130,8 +128,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             try
             {
-                CreateIndependentDataGridViews(config);
-
                 // Update the tracking dictionary with the current configuration
                 if (config?.Filters != null)
                 {
@@ -149,149 +145,172 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 CreateIndependentChartControl(chartType);
 
-                // Load the chart with filtered data using the independent controls
+                Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+                Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
+                // Load charts with independent DataGridViews
                 switch (chartType)
                 {
                     case MainMenu_Form.ChartDataType.TotalSales:
-                        LoadChart.LoadTotalsIntoChart(_salesDataGridView, (CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadTotalsIntoChart(salesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
+
                     case MainMenu_Form.ChartDataType.TotalPurchases:
-                        LoadChart.LoadTotalsIntoChart(_purchasesDataGridView, (CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadTotalsIntoChart(purchasesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
+
                     case MainMenu_Form.ChartDataType.DistributionOfSales:
-                        LoadChart.LoadDistributionIntoChart(_salesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
+                        LoadChart.LoadDistributionIntoChart(salesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
+
                     case MainMenu_Form.ChartDataType.DistributionOfPurchases:
-                        LoadChart.LoadDistributionIntoChart(_purchasesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
+                        LoadChart.LoadDistributionIntoChart(purchasesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
+
                     case MainMenu_Form.ChartDataType.Profits:
-                        LoadChart.LoadProfitsIntoChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadProfitsIntoChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.CountriesOfOrigin:
-                        LoadChart.LoadCountriesOfOriginChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadCountriesOfOriginChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
-                        LoadChart.LoadCompaniesOfOriginChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadCompaniesOfOriginChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.CountriesOfDestination:
-                        LoadChart.LoadCountriesOfDestinationChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadCountriesOfDestinationChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.Accountants:
-                        LoadChart.LoadAccountantsIntoChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadAccountantsIntoChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
-                        LoadChart.LoadSalesVsExpensesChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadSalesVsExpensesChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.AverageTransactionValue:
-                        LoadChart.LoadAverageTransactionValueChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadAverageTransactionValueChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.TotalTransactions:
-                        LoadChart.LoadTotalTransactionsChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadTotalTransactionsChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.AverageShippingCosts:
-                        LoadChart.LoadAverageShippingCostsChart((CartesianChart)_chartControl, isLine, includeZeroShipping: true);
+                        LoadChart.LoadAverageShippingCostsChart((CartesianChart)_chartControl, isLine,
+                            includeZeroShipping: true,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.GrowthRates:
-                        LoadChart.LoadGrowthRateChart((CartesianChart)_chartControl);
+                        LoadChart.LoadGrowthRateChart((CartesianChart)_chartControl,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.ReturnsOverTime:
-                        LoadChart.LoadReturnsOverTimeChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadReturnsOverTimeChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.ReturnReasons:
-                        LoadChart.LoadReturnReasonsChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadReturnReasonsChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
-                        LoadChart.LoadReturnFinancialImpactChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadReturnFinancialImpactChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.ReturnsByCategory:
-                        LoadChart.LoadReturnsByCategoryChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadReturnsByCategoryChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.ReturnsByProduct:
-                        LoadChart.LoadReturnsByProductChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadReturnsByProductChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
-                        LoadChart.LoadPurchaseVsSaleReturnsChart((PieChart)_chartControl);
+                        LoadChart.LoadPurchaseVsSaleReturnsChart((PieChart)_chartControl,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.WorldMap:
-                        LoadChart.LoadWorldMapChart((GeoMap)_chartControl, MainMenu_Form.GeoMapDataType.Combined);
+                        LoadChart.LoadWorldMapChart((GeoMap)_chartControl, MainMenu_Form.GeoMapDataType.Combined,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.LossesOverTime:
-                        LoadChart.LoadLossesOverTimeChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadLossesOverTimeChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.LossReasons:
-                        LoadChart.LoadLossReasonsChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadLossReasonsChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.LossFinancialImpact:
-                        LoadChart.LoadLossFinancialImpactChart((CartesianChart)_chartControl, isLine);
+                        LoadChart.LoadLossFinancialImpactChart((CartesianChart)_chartControl, isLine,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.LossesByCategory:
-                        LoadChart.LoadLossesByCategoryChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadLossesByCategoryChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.LossesByProduct:
-                        LoadChart.LoadLossesByProductChart((PieChart)_chartControl, PieChartGrouping.Top8);
+                        LoadChart.LoadLossesByProductChart((PieChart)_chartControl, PieChartGrouping.Top8,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
+
                     case MainMenu_Form.ChartDataType.PurchaseVsSaleLosses:
-                        LoadChart.LoadPurchaseVsSaleLossesChart((PieChart)_chartControl);
+                        LoadChart.LoadPurchaseVsSaleLossesChart((PieChart)_chartControl,
+                            purchasesDataGridView: purchasesDataGridView,
+                            salesDataGridView: salesDataGridView);
                         break;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Log.Write(0, "Error loading chart data for ChartElement");
-            }
-        }
-        private void CreateIndependentDataGridViews(ReportConfiguration config)
-        {
-            MainMenu_Form mainForm = MainMenu_Form.Instance;
-
-            // Dispose old grids if they exist
-            _salesDataGridView?.Dispose();
-            _purchasesDataGridView?.Dispose();
-
-            // Create new independent grids
-            _salesDataGridView = new Guna2DataGridView();
-            _purchasesDataGridView = new Guna2DataGridView();
-
-            // Copy column structure and data from main form's grids
-            CopyGridData(mainForm.Sale_DataGridView, _salesDataGridView, config);
-            CopyGridData(mainForm.Purchase_DataGridView, _purchasesDataGridView, config);
-        }
-        private static void CopyGridData(DataGridView sourceGrid, Guna2DataGridView targetGrid, ReportConfiguration config)
-        {
-            // Copy columns
-            foreach (DataGridViewColumn sourceColumn in sourceGrid.Columns)
-            {
-                DataGridViewColumn newColumn = (DataGridViewColumn)sourceColumn.Clone();
-                targetGrid.Columns.Add(newColumn);
-            }
-
-            // Copy rows with filtering
-            foreach (DataGridViewRow sourceRow in sourceGrid.Rows)
-            {
-                if (sourceRow.IsNewRow) { continue; }
-
-                // Apply filters
-                if (!ShouldIncludeRow(sourceRow, config?.Filters))
-                {
-                    continue;
-                }
-
-                // Create array of cell values - ONLY for the columns we actually added
-                object[] cellValues = new object[targetGrid.Columns.Count];
-                for (int i = 0; i < targetGrid.Columns.Count && i < sourceRow.Cells.Count; i++)
-                {
-                    cellValues[i] = sourceRow.Cells[i].Value;
-                }
-
-                // Add row with values all at once
-                targetGrid.Rows.Add(cellValues);
+                Log.Write(0, $"Error loading chart data for ChartElement: {ex.Message}");
             }
         }
         private void CreateIndependentChartControl(MainMenu_Form.ChartDataType chartType)
         {
-            // Dispose old chart if it exists
-            _chartControl?.Dispose();
-
             // Determine chart type and create appropriate control
             if (IsCartesianChartType(chartType))
             {

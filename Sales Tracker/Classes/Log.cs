@@ -404,14 +404,14 @@ namespace Sales_Tracker.Classes
 
         // DataGridView errors
         public static void Error_DataGridViewCellIsEmpty(
-            string dataGridViewName,
+            DataGridViewCell cell,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-d3g7c4: Cell is empty in DataGridView:'{0}'.",
+            Error("Error-d3g7c4: Cell is empty in '{0}' in column '{1}'.",
                 "",
                 ErrorCategory.DataGridView,
                 lineNumber,
-                dataGridViewName);
+                cell.DataGridView.Name, cell.OwningColumn.Name);
         }
         public static void Error_RowIsOutOfRange(
             [CallerLineNumber] int lineNumber = 0)
