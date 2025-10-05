@@ -509,6 +509,7 @@
             // 
             // AddTableElement_Button
             // 
+            AddTableElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AddTableElement_Button.Animated = true;
             AddTableElement_Button.BorderColor = Color.DimGray;
             AddTableElement_Button.BorderRadius = 2;
@@ -532,6 +533,7 @@
             // 
             // AddSummaryElement_Button
             // 
+            AddSummaryElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AddSummaryElement_Button.Animated = true;
             AddSummaryElement_Button.BorderColor = Color.DimGray;
             AddSummaryElement_Button.BorderRadius = 2;
@@ -555,6 +557,7 @@
             // 
             // AddDateElement_Button
             // 
+            AddDateElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AddDateElement_Button.Animated = true;
             AddDateElement_Button.BorderColor = Color.DimGray;
             AddDateElement_Button.BorderRadius = 2;
@@ -578,6 +581,7 @@
             // 
             // AddLabelElement_Button
             // 
+            AddLabelElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AddLabelElement_Button.Animated = true;
             AddLabelElement_Button.BorderColor = Color.DimGray;
             AddLabelElement_Button.BorderRadius = 2;
@@ -601,6 +605,7 @@
             // 
             // AddChartElement_Button
             // 
+            AddChartElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AddChartElement_Button.Animated = true;
             AddChartElement_Button.BorderColor = Color.DimGray;
             AddChartElement_Button.BorderRadius = 2;

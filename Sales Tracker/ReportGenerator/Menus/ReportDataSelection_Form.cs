@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Charts;
 using Sales_Tracker.Language;
+using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -328,7 +329,7 @@ namespace Sales_Tracker.ReportGenerator
                     string selectedTemplate = Template_ComboBox.SelectedItem?.ToString();
                     if (!string.IsNullOrEmpty(selectedTemplate))
                     {
-                        var templateConfig = ReportTemplates.CreateFromTemplate(selectedTemplate);
+                        ReportConfiguration templateConfig = ReportTemplates.CreateFromTemplate(selectedTemplate);
                         if (ReportTitle_TextBox.Text != templateConfig.Title)
                         {
                             PerformUpdate(() =>
@@ -388,7 +389,7 @@ namespace Sales_Tracker.ReportGenerator
                     ReportConfig.Elements.Clear();
 
                     // Copy all template elements
-                    foreach (var element in template.Elements)
+                    foreach (BaseElement element in template.Elements)
                     {
                         ReportConfig.AddElement(element.Clone());
                     }
