@@ -77,14 +77,59 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupChartSelection()
         {
-            // Populate chart selection with all available chart types
-            ChartSelection_CheckedListBox.Items.Clear();
+            // Overview Section
+            ChartSelection_CheckedListBox.AddSection("Overview");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.SalesVsExpenses, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalProfits, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalTransactions, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AverageTransactionValue, false);
 
-            foreach (MainMenu_Form.ChartDataType chartType in Enum.GetValues<MainMenu_Form.ChartDataType>())
-            {
-                string displayName = TranslatedChartTitles.GetChartDisplayName(chartType);
-                ChartSelection_CheckedListBox.Items.Add(displayName, false);
-            }
+            // Financial Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Financial");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalRevenue, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalExpenses, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.RevenueDistribution, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ExpensesDistribution, false);
+
+            // Geographic Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Geographic Analysis");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.WorldMap, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CountriesOfOrigin, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CountriesOfDestination, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CompaniesOfOrigin, false);
+
+            // Performance Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Performance");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.GrowthRates, false);
+
+            // Operational Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Operational");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AccountantsTransactions, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AverageShippingCosts, false);
+
+            // Returns Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Returns Analysis");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsOverTime, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnReasons, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnFinancialImpact, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsByCategory, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsByProduct, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.PurchaseVsSaleReturns, false);
+
+            // Lost Products Section
+            ChartSelection_CheckedListBox.AddSpacer(10);
+            ChartSelection_CheckedListBox.AddSection("Lost Products");
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesOverTime, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossReasons, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossFinancialImpact, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesByCategory, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesByProduct, false);
+            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.PurchaseVsSaleLosses, false);
         }
         private void SetupFilterControls()
         {
@@ -239,7 +284,7 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     PerformUpdate(() =>
                     {
-                        Template_ComboBox.SelectedIndex = 0; // Switch to Custom Report
+                        Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
                         if (ReportConfig != null)
                         {
                             ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;

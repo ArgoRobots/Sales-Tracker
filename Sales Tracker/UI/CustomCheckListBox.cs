@@ -107,6 +107,54 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
+        /// Adds a section header separator to the control.
+        /// </summary>
+        public void AddSection(string sectionTitle)
+        {
+            // Create section header panel
+            Panel sectionPanel = new()
+            {
+                Dock = DockStyle.Top,
+                Height = 40,
+                BackColor = Color.Transparent,
+                Padding = new Padding(5, 8, 5, 5)
+            };
+
+            // Create section label
+            Label sectionLabel = new()
+            {
+                Text = sectionTitle,
+                AutoSize = false,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleLeft,
+                BackColor = Color.Transparent
+            };
+
+            sectionPanel.Controls.Add(sectionLabel);
+
+            // Add to container
+            _containerPanel.Controls.Add(sectionPanel);
+            sectionPanel.BringToFront();
+        }
+
+        /// <summary>
+        /// Adds a small spacing separator.
+        /// </summary>
+        public void AddSpacer(int height = 10)
+        {
+            Panel spacer = new()
+            {
+                Dock = DockStyle.Top,
+                Height = height,
+                BackColor = Color.Transparent
+            };
+
+            _containerPanel.Controls.Add(spacer);
+            spacer.BringToFront();
+        }
+
+        /// <summary>
         /// Clears all items from the control.
         /// </summary>
         public void Clear()
@@ -262,18 +310,7 @@ namespace Sales_Tracker.UI
 
             _items.Add(item);
 
-            // Fix the display order (items are added in reverse due to DockStyle.Top)
-            ReorderItems();
-
             return text;
-        }
-        private void ReorderItems()
-        {
-            // Adjust Z-order so items appear in the correct order
-            for (int i = _items.Count - 1; i >= 0; i--)
-            {
-                _items[i].Panel.BringToFront();
-            }
         }
         private void OnCheckBoxCheckedChanged(CheckItem item)
         {
@@ -381,7 +418,6 @@ namespace Sales_Tracker.UI
             public void CopyTo(Array array, int index)
             {
                 ArgumentNullException.ThrowIfNull(array);
-
                 ArgumentOutOfRangeException.ThrowIfNegative(index);
 
                 if (array.Rank != 1)
@@ -531,7 +567,6 @@ namespace Sales_Tracker.UI
             public void CopyTo(Array array, int index)
             {
                 ArgumentNullException.ThrowIfNull(array);
-
                 ArgumentOutOfRangeException.ThrowIfNegative(index);
 
                 if (array.Rank != 1)
