@@ -450,6 +450,7 @@
             ExportFormat_ComboBox.Size = new Size(280, 50);
             ExportFormat_ComboBox.TabIndex = 4;
             ExportFormat_ComboBox.SelectedIndexChanged += ExportSettings_Changed;
+            ExportFormat_ComboBox.SelectedIndexChanged += ExportFormat_ComboBox_SelectedIndexChanged;
             // 
             // Quality_Label
             // 

@@ -284,8 +284,6 @@ namespace Sales_Tracker.ReportGenerator
     {
         PNG,
         JPG,
-        PDF,
-        Excel,
-        PowerPoint
+        PDF
     }
 }

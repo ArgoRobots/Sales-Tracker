@@ -90,6 +90,7 @@ namespace Sales_Tracker.ReportGenerator
             ExportFormat_ComboBox.Items.Clear();
             ExportFormat_ComboBox.Items.Add("PNG Image (*.png)");
             ExportFormat_ComboBox.Items.Add("JPEG Image (*.jpg)");
+            ExportFormat_ComboBox.Items.Add("PDF Image (*.pdf)");
             ExportFormat_ComboBox.SelectedIndex = 0;
 
             // Setup quality slider (controls both resolution and compression)
@@ -143,10 +144,15 @@ namespace Sales_Tracker.ReportGenerator
                 saveDialog.Filter = "PNG Image|*.png|All Files|*.*";
                 saveDialog.DefaultExt = "png";
             }
-            else
+            else if (ExportFormat_ComboBox.SelectedIndex == 1)
             {
                 saveDialog.Filter = "JPEG Image|*.jpg|All Files|*.*";
                 saveDialog.DefaultExt = "jpg";
+            }
+            else if (ExportFormat_ComboBox.SelectedIndex == 2)
+            {
+                saveDialog.Filter = "PDF Document|*.pdf|All Files|*.*";
+                saveDialog.DefaultExt = "pdf";
             }
 
             // Set default filename
@@ -232,6 +238,29 @@ namespace Sales_Tracker.ReportGenerator
                 ReportConfig.CurrentPageNumber = (int)PageNumber_NumericUpDown.Value;
 
                 GeneratePreview();
+            }
+        }
+        private void ExportFormat_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isUpdating)
+            {
+                UpdateExportSettingsFromUI();
+
+                // Update file extension when format changes
+                if (!string.IsNullOrEmpty(ExportPath_TextBox.Text))
+                {
+                    string currentPath = ExportPath_TextBox.Text;
+                    string newExtension = ExportFormat_ComboBox.SelectedIndex switch
+                    {
+                        0 => ".png",
+                        1 => ".jpg",
+                        2 => ".pdf",
+                        _ => ".png"
+                    };
+
+                    string newPath = Path.ChangeExtension(currentPath, newExtension);
+                    ExportPath_TextBox.Text = newPath;
+                }
             }
         }
 
@@ -382,7 +411,13 @@ namespace Sales_Tracker.ReportGenerator
         private void UpdateExportSettingsFromUI()
         {
             _exportSettings.FilePath = ExportPath_TextBox.Text;
-            _exportSettings.Format = ExportFormat_ComboBox.SelectedIndex == 0 ? ExportFormat.PNG : ExportFormat.JPG;
+            _exportSettings.Format = ExportFormat_ComboBox.SelectedIndex switch
+            {
+                0 => ExportFormat.PNG,
+                1 => ExportFormat.JPG,
+                2 => ExportFormat.PDF,
+                _ => ExportFormat.PNG
+            };
 
             // Map quality slider to both DPI and compression quality
             int quality = Quality_TrackBar.Value;

@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
+using SkiaSharp;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
@@ -47,6 +48,19 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         public void ExportReport()
         {
+            if (_exportSettings.Format == ExportFormat.PDF)
+            {
+                ExportToPdf();
+            }
+            else
+            {
+                ExportToImage();
+            }
+        }
+
+        // Private export methods
+        private void ExportToImage()
+        {
             Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.PageOrientation);
 
             // Calculate dimensions based on DPI
@@ -63,6 +77,39 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             SaveBitmap(bitmap);
+        }
+        private void ExportToPdf()
+        {
+            Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.PageOrientation);
+
+            string? directory = Path.GetDirectoryName(_exportSettings.FilePath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            string fileName = Directories.GetNewFileNameIfItAlreadyExists(_exportSettings.FilePath);
+
+            // Create PDF document using SkiaSharp
+            using SKDocument document = SKDocument.CreatePdf(fileName);
+            using SKCanvas canvas = document.BeginPage(pageSize.Width, pageSize.Height);
+
+            // Create a Bitmap to render GDI+ content
+            using Bitmap bitmap = new(pageSize.Width, pageSize.Height);
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                SetupGraphics(graphics);
+                RenderReport(graphics, pageSize);
+            }
+
+            // Convert System.Drawing.Bitmap to SKBitmap
+            using SKBitmap skBitmap = BitmapToSKBitmap(bitmap);
+
+            // Draw the bitmap onto the PDF canvas
+            canvas.DrawBitmap(skBitmap, 0, 0);
+
+            document.EndPage();
+            document.Close();
         }
 
         // Private rendering methods
@@ -152,7 +199,7 @@ namespace Sales_Tracker.ReportGenerator
         private void SaveBitmap(Bitmap bitmap)
         {
             string? directory = Path.GetDirectoryName(_exportSettings.FilePath);
-            if (!Directory.Exists(directory))
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
@@ -186,6 +233,21 @@ namespace Sales_Tracker.ReportGenerator
             ImageCodecInfo? codec = codecs.FirstOrDefault(c => c.MimeType == mimeType);
 
             return codec ?? throw new ArgumentException($"Encoder for MIME type '{mimeType}' not found.");
+        }
+        private static SKBitmap BitmapToSKBitmap(Bitmap bitmap)
+        {
+            SKBitmap skBitmap = new(bitmap.Width, bitmap.Height);
+
+            using (MemoryStream stream = new())
+            {
+                bitmap.Save(stream, ImageFormat.Png);
+                stream.Position = 0;
+
+                using SKImage skImage = SKImage.FromEncodedData(stream);
+                skImage.ScalePixels(skBitmap.PeekPixels(), new SKSamplingOptions(SKCubicResampler.Mitchell));
+            }
+
+            return skBitmap;
         }
     }
 }

@@ -13,7 +13,6 @@
             public int FooterHeight { get; set; } = 50;
             public int ElementSpacing { get; set; } = 10;
             public int DateRangeHeight { get; set; } = 30;
-
             public int ContentTop => HeaderHeight + Margin;
             public int ContentWidth => PageSize.Width - (Margin * 2);
             public int ContentHeight => PageSize.Height - HeaderHeight - FooterHeight - (Margin * 2);
