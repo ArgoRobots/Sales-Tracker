@@ -5,20 +5,35 @@
     /// with hover and click functionalities for the image. The image can display a message box
     /// when clicked, making it interactive for guiding users with additional information.
     /// </summary>
-    internal class DataGridViewImageHeaderCell(Image image, string headerText, string messageBoxText) : DataGridViewColumnHeaderCell
+    internal class DataGridViewImageHeaderCell : DataGridViewColumnHeaderCell
     {
         // Properties
         private bool _isImageHovered = false;
         private static readonly Color _hoverBackgroundColor = Color.FromArgb(187, 187, 187);
         private const byte _padding = 3;
-        private readonly Image _headerImage = new Bitmap(image, new Size(28, 28));
+        private Image _headerImage;
         private readonly short _imageOffsetX = -20;
         private readonly byte _imageOffsetY = 5;
-        private readonly string _messageBoxText = messageBoxText;
+        private string _messageBoxText;
 
         // Getters and setters
-        public string HeaderText { get; set; } = headerText;
+        public string HeaderText { get; set; }
 
+        // Parameterless constructor for cloning
+        public DataGridViewImageHeaderCell()
+        {
+            _headerImage = null;
+            _messageBoxText = "";
+            HeaderText = "";
+        }
+        public DataGridViewImageHeaderCell(Image image, string headerText, string messageBoxText)
+        {
+            _headerImage = image != null ? new Bitmap(image, new Size(28, 28)) : null;
+            _messageBoxText = messageBoxText;
+            HeaderText = headerText;
+        }
+
+        // Methods
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates dataGridViewElementState, object? value, object? formattedValue, string? errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
             // Exclude default text painting
@@ -122,6 +137,14 @@
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
+        }
+        public override object Clone()
+        {
+            DataGridViewImageHeaderCell clone = (DataGridViewImageHeaderCell)base.Clone();
+            clone._headerImage = _headerImage != null ? new Bitmap(_headerImage) : null;
+            clone._messageBoxText = _messageBoxText;
+            clone.HeaderText = HeaderText;
+            return clone;
         }
     }
 }

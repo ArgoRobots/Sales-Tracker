@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
+using Sales_Tracker.ReportGenerator;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Theme;
@@ -62,7 +63,8 @@ namespace Sales_Tracker.Classes
                     value => settings.AnimateButtons = value);
 
                 Settings_Form.Instance.AnimateButtons();
-                Export_Form.Instance.AnimateButtons();
+                ReportGenerator_Form.Instance?.AnimateButtons();
+                Export_Form.Instance?.AnimateButtons();
                 Log_Form.Instance?.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
                 Receipts_Form.Instance?.AnimateButtons();

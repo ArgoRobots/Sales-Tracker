@@ -14,12 +14,15 @@ namespace Sales_Tracker.ReportGenerator
     public partial class ReportGenerator_Form : BaseForm
     {
         // Properties
+        private static ReportGenerator_Form _instance;
         private ReportDataSelection_Form _dataSelectionForm;
         private ReportLayoutDesigner_Form _layoutDesignerForm;
         private ReportPreviewExport_Form _previewExportForm;
         private int _currentStep = 0;
         private const byte _totalSteps = 3;
 
+        // Getters
+        public static ReportGenerator_Form Instance => _instance;
         public ReportConfiguration CurrentReportConfiguration { get; private set; }
 
         public enum ReportStep
@@ -33,6 +36,7 @@ namespace Sales_Tracker.ReportGenerator
         public ReportGenerator_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             CurrentReportConfiguration = new ReportConfiguration();
             InitializeChildForms();
@@ -44,6 +48,7 @@ namespace Sales_Tracker.ReportGenerator
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
             SetAccessibleDescriptions();
+            AnimateButtons();
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -86,45 +91,51 @@ namespace Sales_Tracker.ReportGenerator
             ThemeManager.MakeGButtonBluePrimary(Next_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
 
+            ReportLayoutDesigner_Form form = ReportLayoutDesigner_Form.Instance;
+
             if (ThemeManager.IsDarkTheme())
             {
-                ReportLayoutDesigner_Form.Instance.AlignLeft_Button.Image = Resources.ALignLeftWhite;
-                ReportLayoutDesigner_Form.Instance.AlignCenter_Button.Image = Resources.AlignCenterWhite;
-                ReportLayoutDesigner_Form.Instance.AlignRight_Button.Image = Resources.AlignRightWhite;
+                form.AlignLeft_Button.Image = Resources.ALignLeftWhite;
+                form.AlignCenter_Button.Image = Resources.AlignCenterWhite;
+                form.AlignRight_Button.Image = Resources.AlignRightWhite;
 
-                ReportLayoutDesigner_Form.Instance.AlignTop_Button.Image = Resources.AlignTopWhite;
-                ReportLayoutDesigner_Form.Instance.AlignMiddle_Button.Image = Resources.AlignMiddleWhite;
-                ReportLayoutDesigner_Form.Instance.AlignBottom_Button.Image = Resources.AlignBottomWhite;
+                form.AlignTop_Button.Image = Resources.AlignTopWhite;
+                form.AlignMiddle_Button.Image = Resources.AlignMiddleWhite;
+                form.AlignBottom_Button.Image = Resources.AlignBottomWhite;
 
-                ReportLayoutDesigner_Form.Instance.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyWhite;
-                ReportLayoutDesigner_Form.Instance.DistributeVertically_Button.Image = Resources.DistributeVerticallyWhite;
+                form.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyWhite;
+                form.DistributeVertically_Button.Image = Resources.DistributeVerticallyWhite;
 
-                ReportLayoutDesigner_Form.Instance.MakeSameWidth_Button.Image = Resources.SameWidthWhite;
-                ReportLayoutDesigner_Form.Instance.MakeSameHeight_Button.Image = Resources.SameHeightWhite;
-                ReportLayoutDesigner_Form.Instance.MakeSameSize_Button.Image = Resources.SameSizeWhite;
+                form.MakeSameWidth_Button.Image = Resources.SameWidthWhite;
+                form.MakeSameHeight_Button.Image = Resources.SameHeightWhite;
+                form.MakeSameSize_Button.Image = Resources.SameSizeWhite;
             }
             else
             {
-                ReportLayoutDesigner_Form.Instance.AlignLeft_Button.Image = Resources.ALignLeftBlack;
-                ReportLayoutDesigner_Form.Instance.AlignCenter_Button.Image = Resources.AlignCenterBlack;
-                ReportLayoutDesigner_Form.Instance.AlignRight_Button.Image = Resources.AlignRightBlack;
+                form.AlignLeft_Button.Image = Resources.ALignLeftBlack;
+                form.AlignCenter_Button.Image = Resources.AlignCenterBlack;
+                form.AlignRight_Button.Image = Resources.AlignRightBlack;
 
-                ReportLayoutDesigner_Form.Instance.AlignTop_Button.Image = Resources.AlignTopBlack;
-                ReportLayoutDesigner_Form.Instance.AlignMiddle_Button.Image = Resources.AlignMiddleBlack;
-                ReportLayoutDesigner_Form.Instance.AlignBottom_Button.Image = Resources.AlignBottomBlack;
+                form.AlignTop_Button.Image = Resources.AlignTopBlack;
+                form.AlignMiddle_Button.Image = Resources.AlignMiddleBlack;
+                form.AlignBottom_Button.Image = Resources.AlignBottomBlack;
 
-                ReportLayoutDesigner_Form.Instance.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyBlack;
-                ReportLayoutDesigner_Form.Instance.DistributeVertically_Button.Image = Resources.DistributeVerticallyBlack;
+                form.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyBlack;
+                form.DistributeVertically_Button.Image = Resources.DistributeVerticallyBlack;
 
-                ReportLayoutDesigner_Form.Instance.MakeSameWidth_Button.Image = Resources.SameWidthBlack;
-                ReportLayoutDesigner_Form.Instance.MakeSameHeight_Button.Image = Resources.SameHeightBlack;
-                ReportLayoutDesigner_Form.Instance.MakeSameSize_Button.Image = Resources.SameSizeBlack;
+                form.MakeSameWidth_Button.Image = Resources.SameWidthBlack;
+                form.MakeSameHeight_Button.Image = Resources.SameHeightBlack;
+                form.MakeSameSize_Button.Image = Resources.SameSizeBlack;
             }
         }
         private void SetAccessibleDescriptions()
         {
             StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             ProgressValue_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+        }
+        public void AnimateButtons()
+        {
+            CustomControls.AnimateButtons([Previous_Button, Next_Button, Cancel_Button]);
         }
 
         // Navigation methods

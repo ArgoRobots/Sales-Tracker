@@ -112,7 +112,6 @@ namespace Sales_Tracker.ReportGenerator
             // Previous_Button
             // 
             Previous_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            Previous_Button.Animated = true;
             Previous_Button.BorderColor = Color.DimGray;
             Previous_Button.BorderRadius = 2;
             Previous_Button.BorderThickness = 1;
@@ -136,7 +135,6 @@ namespace Sales_Tracker.ReportGenerator
             // Next_Button
             // 
             Next_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            Next_Button.Animated = true;
             Next_Button.BorderColor = Color.DimGray;
             Next_Button.BorderRadius = 2;
             Next_Button.BorderThickness = 1;
@@ -160,7 +158,6 @@ namespace Sales_Tracker.ReportGenerator
             // Cancel_Button
             // 
             Cancel_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            Cancel_Button.Animated = true;
             Cancel_Button.BorderColor = Color.DimGray;
             Cancel_Button.BorderRadius = 2;
             Cancel_Button.BorderThickness = 1;

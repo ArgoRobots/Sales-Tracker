@@ -177,7 +177,6 @@ namespace Sales_Tracker.Charts
                     LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, true, directory);
                     break;
 
-                // Add Lost Products export cases
                 case MainMenu_Form.ChartDataType.LossesOverTime:
                     LoadChart.LoadLossesOverTimeChart(MainMenu_Form.Instance.LossesOverTime_Chart, isLine, true, directory);
                     break;

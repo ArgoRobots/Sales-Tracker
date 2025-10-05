@@ -618,15 +618,15 @@ namespace Sales_Tracker.Charts
             // Combine all data into one dictionary
             if (totalShipping != 0)
             {
-                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Shipping], totalShipping);
+                allData.Add(LanguageManager.TranslateString("Shipping"), totalShipping);
             }
             if (totalTax != 0)
             {
-                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Tax], totalTax);
+                allData.Add(LanguageManager.TranslateString("Tax"), totalTax);
             }
             if (totalFee != 0)
             {
-                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Fee], totalFee);
+                allData.Add(LanguageManager.TranslateString("Fee"), totalFee);
             }
 
             // Pie chart processing
@@ -2470,7 +2470,7 @@ namespace Sales_Tracker.Charts
 
             if (cell.Value == null)
             {
-                Log.Error_DataGridViewCellIsEmpty(MainMenu_Form.Instance.SelectedDataGridView.Name);
+                Log.Error_DataGridViewCellIsEmpty(cell.DataGridView.Name);
                 return false;
             }
 
