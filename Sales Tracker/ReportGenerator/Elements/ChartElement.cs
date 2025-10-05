@@ -7,6 +7,8 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.GridView;
 using SkiaSharp;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -145,10 +147,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 CreateIndependentChartControl(chartType);
 
-                Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
-                Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+                // Create filtered clones of the DataGridViews
+                Guna2DataGridView salesDataGridView = CreateFilteredDataGridView(
+                    MainMenu_Form.Instance.Sale_DataGridView,
+                    config?.Filters?.StartDate,
+                    config?.Filters?.EndDate);
 
-                // Load charts with independent DataGridViews
+                Guna2DataGridView purchasesDataGridView = CreateFilteredDataGridView(
+                    MainMenu_Form.Instance.Purchase_DataGridView,
+                    config?.Filters?.StartDate,
+                    config?.Filters?.EndDate);
+
+                // Load charts with filtered DataGridViews
                 switch (chartType)
                 {
                     case MainMenu_Form.ChartDataType.TotalSales:
@@ -308,6 +318,65 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Log.Write(0, $"Error loading chart data for ChartElement: {ex.Message}");
             }
+        }
+        private static Guna2DataGridView CreateFilteredDataGridView(Guna2DataGridView sourceGrid, DateTime? startDate, DateTime? endDate)
+        {
+            // Create new DataGridView
+            Guna2DataGridView filteredGrid = new();
+
+            // Determine if this is a purchase or sale grid and initialize with appropriate columns
+            bool isPurchaseGrid = sourceGrid == MainMenu_Form.Instance.Purchase_DataGridView;
+
+            if (isPurchaseGrid)
+            {
+                DataGridViewManager.InitializeDataGridView(
+                    filteredGrid,
+                    "FilteredPurchases_DataGridView",
+                    MainMenu_Form.Instance.PurchaseColumnHeaders,
+                    null,
+                    MainMenu_Form.Instance
+                );
+            }
+            else
+            {
+                DataGridViewManager.InitializeDataGridView(
+                    filteredGrid,
+                    "FilteredSales_DataGridView",
+                    MainMenu_Form.Instance.SalesColumnHeaders,
+                    null,
+                    MainMenu_Form.Instance
+                );
+            }
+
+            // Get date range
+            DateTime filterStart = startDate ?? DateTime.MinValue;
+            DateTime filterEnd = endDate ?? DateTime.MaxValue;
+
+            // Copy rows that fall within date range
+            foreach (DataGridViewRow sourceRow in sourceGrid.Rows)
+            {
+                if (sourceRow.Cells[ReadOnlyVariables.Date_column].Value != null &&
+                    DateTime.TryParse(sourceRow.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime rowDate))
+                {
+                    // Check if row is within date range
+                    if (rowDate >= filterStart && rowDate <= filterEnd)
+                    {
+                        DataGridViewRow newRow = (DataGridViewRow)sourceRow.Clone();
+
+                        // Copy cell values
+                        for (int i = 0; i < sourceRow.Cells.Count; i++)
+                        {
+                            newRow.Cells[i].Value = sourceRow.Cells[i].Value;
+                        }
+
+                        newRow.Tag = sourceRow.Tag;
+
+                        filteredGrid.Rows.Add(newRow);
+                    }
+                }
+            }
+
+            return filteredGrid;
         }
         private void CreateIndependentChartControl(MainMenu_Form.ChartDataType chartType)
         {
