@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
@@ -429,8 +430,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
 
             skChart.LegendPosition = ShowLegend
-                ? LiveChartsCore.Measure.LegendPosition.Top
-                : LiveChartsCore.Measure.LegendPosition.Hidden;
+                ? LegendPosition.Top
+                : LegendPosition.Hidden;
 
             skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
             skChart.LegendTextSize = 12;
@@ -470,8 +471,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
 
             skChart.LegendPosition = ShowLegend
-                ? LiveChartsCore.Measure.LegendPosition.Right
-                : LiveChartsCore.Measure.LegendPosition.Hidden;
+                ? LegendPosition.Right
+                : LegendPosition.Hidden;
 
             skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
             skChart.LegendTextSize = 12;
