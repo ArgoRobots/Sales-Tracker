@@ -5,7 +5,6 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
-using Sales_Tracker.DataClasses;
 using SkiaSharp;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -17,7 +16,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     {
         private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
 
-        // Properties for chart rendering independent from MainMenu_Form
+        // Properties
         private Control _chartControl;
 
         public MainMenu_Form.ChartDataType ChartType { get; set; } = MainMenu_Form.ChartDataType.TotalSales;
@@ -47,7 +46,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
-                // Check if we need to reload the chart data based on filter changes
                 bool needsReload = NeedsChartReload(ChartType, config);
 
                 // Load data if chart is empty or if filters have changed
@@ -362,29 +360,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsGeoMapType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is MainMenu_Form.ChartDataType.WorldMap;
-        }
-        private static bool ShouldIncludeRow(DataGridViewRow row, ReportFilters filters)
-        {
-            if (filters == null) { return true; }
-
-            // Check date range
-            if (filters.StartDate != null && filters.EndDate != null)
-            {
-                if (row.Cells[ReadOnlyVariables.Date_column].Value != null &&
-                    DateTime.TryParse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime rowDate))
-                {
-                    if (rowDate < filters.StartDate.Value || rowDate > filters.EndDate.Value)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;  // Exclude rows with invalid dates
-                }
-            }
-
-            return true;
         }
 
         // Render chart methods
