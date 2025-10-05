@@ -34,19 +34,19 @@ namespace Sales_Tracker.Charts
 
         // Returns Analysis Charts
         public static string ReturnsOverTime => Translate("Returns over time");
-        public static string ReturnReasons => Translate("Return reasons distribution");
+        public static string ReturnReasons => Translate("Return reasons");
         public static string ReturnFinancialImpact => Translate("Financial impact of returns");
         public static string ReturnsByCategory => Translate("Returns by category");
         public static string ReturnsByProduct => Translate("Returns by product");
         public static string PurchaseVsSaleReturns => Translate("Purchase vs. sale returns");
 
         // Losses Analysis Charts
-        public static string LossesOverTime => LanguageManager.TranslateString("Losses Over Time");
-        public static string LossReasons => LanguageManager.TranslateString("Loss Reasons");
-        public static string LossFinancialImpact => LanguageManager.TranslateString("Loss Financial Impact");
-        public static string LossesByCategory => LanguageManager.TranslateString("Losses by Category");
-        public static string LossesByProduct => LanguageManager.TranslateString("Losses by Product");
-        public static string PurchaseVsSaleLosses => LanguageManager.TranslateString("Purchase vs Sale Losses");
+        public static string LossesOverTime => LanguageManager.TranslateString("Losses over time");
+        public static string LossReasons => LanguageManager.TranslateString("Loss reasons");
+        public static string LossFinancialImpact => LanguageManager.TranslateString("Financial impact of losses");
+        public static string LossesByCategory => LanguageManager.TranslateString("Losses by category");
+        public static string LossesByProduct => LanguageManager.TranslateString("Losses by product");
+        public static string PurchaseVsSaleLosses => LanguageManager.TranslateString("Purchase vs. sale losses");
 
         public static string GetChartDisplayName(MainMenu_Form.ChartDataType chartType)
         {
