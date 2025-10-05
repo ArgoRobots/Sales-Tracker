@@ -15,7 +15,7 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
         private ExportSettings _exportSettings;
-        private ZoomableImageViewer _zoomableViewer;  // Handler for zoom/pan functionality
+        private ZoomableImageViewer _zoomableViewer;
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -298,11 +298,11 @@ namespace Sales_Tracker.ReportGenerator
                     _zoomableViewer.Image = previewImage;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 CustomMessageBox.Show(
-                    LanguageManager.TranslateString($"Preview generation failed: {ex.Message}"),
-                    LanguageManager.TranslateString("Preview Error"),
+                    "Preview Error",
+                    "Preview generation failed",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok
                 );
@@ -353,8 +353,8 @@ namespace Sales_Tracker.ReportGenerator
                 if (ReportConfig == null)
                 {
                     CustomMessageBox.Show(
-                        LanguageManager.TranslateString("No report configuration available for export."),
-                        LanguageManager.TranslateString("Export Error"),
+                        "Export Error",
+                        "No report configuration available for export.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok
                     );
@@ -374,8 +374,8 @@ namespace Sales_Tracker.ReportGenerator
                     renderer.ExportReport();
 
                     CustomMessageBox.Show(
-                        LanguageManager.TranslateString("Report exported successfully!"),
-                        LanguageManager.TranslateString("Export Complete"),
+                        "Export Complete",
+                        "Report exported successfully!",
                         CustomMessageBoxIcon.Info,
                         CustomMessageBoxButtons.Ok
                     );
@@ -397,11 +397,11 @@ namespace Sales_Tracker.ReportGenerator
                     UseWaitCursor = false;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 CustomMessageBox.Show(
-                    LanguageManager.TranslateString($"Export failed: {ex.Message}"),
-                    LanguageManager.TranslateString("Export Error"),
+                    "Export Error",
+                    "Export failed",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok
                 );
@@ -479,8 +479,8 @@ namespace Sales_Tracker.ReportGenerator
             if (string.IsNullOrEmpty(ExportPath_TextBox.Text))
             {
                 CustomMessageBox.Show(
-                    LanguageManager.TranslateString("Please select an export location."),
-                    LanguageManager.TranslateString("No Export Path"),
+                    "No Export Path",
+                    "Please select an export location.",
                     CustomMessageBoxIcon.Info,
                     CustomMessageBoxButtons.Ok
                 );
@@ -494,8 +494,8 @@ namespace Sales_Tracker.ReportGenerator
                 if (!Directory.Exists(directory))
                 {
                     CustomMessageBox.Show(
-                        LanguageManager.TranslateString("The specified export directory does not exist."),
-                        LanguageManager.TranslateString("Invalid Export Path"),
+                        "Invalid Export Path",
+                        "The specified export directory does not exist.",
                         CustomMessageBoxIcon.Info,
                         CustomMessageBoxButtons.Ok
                     );
@@ -507,11 +507,11 @@ namespace Sales_Tracker.ReportGenerator
                 File.WriteAllText(testFile, "test");
                 File.Delete(testFile);
             }
-            catch (Exception ex)
+            catch
             {
                 CustomMessageBox.Show(
-                    LanguageManager.TranslateString($"Cannot write to the specified location: {ex.Message}"),
-                    LanguageManager.TranslateString("Invalid Export Path"),
+                    "Invalid Export Path",
+                    "Cannot write to the specified location",
                     CustomMessageBoxIcon.Exclamation,
                     CustomMessageBoxButtons.Ok
                 );

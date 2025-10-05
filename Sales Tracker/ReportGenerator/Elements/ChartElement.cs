@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using LiveChartsCore.SkiaSharpView.VisualElements;
@@ -396,7 +397,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 skChart.XAxes = sourceChart.XAxes.Select(axis =>
                 {
-                    var newAxis = new LiveChartsCore.SkiaSharpView.Axis
+                    Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
@@ -413,7 +414,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 skChart.YAxes = sourceChart.YAxes.Select(axis =>
                 {
-                    var newAxis = new LiveChartsCore.SkiaSharpView.Axis
+                    Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
