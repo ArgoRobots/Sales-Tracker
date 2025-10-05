@@ -375,7 +375,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Show title if enabled
             if (ShowTitle)
             {
-                // Get the title text based on chart type
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
 
                 skChart.Title = new LabelVisual
@@ -390,6 +389,42 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (sourceChart.Series != null)
             {
                 skChart.Series = sourceChart.Series;
+            }
+
+            // Copy axis configuration with proper SKia paints
+            if (sourceChart.XAxes != null)
+            {
+                skChart.XAxes = sourceChart.XAxes.Select(axis =>
+                {
+                    var newAxis = new LiveChartsCore.SkiaSharpView.Axis
+                    {
+                        Labels = axis.Labels,
+                        Labeler = axis.Labeler,
+                        MinLimit = axis.MinLimit,
+                        MaxLimit = axis.MaxLimit,
+                        LabelsPaint = new SolidColorPaint(SKColors.Black),
+                        TextSize = 11
+                    };
+                    return newAxis;
+                }).ToArray();
+            }
+
+            if (sourceChart.YAxes != null)
+            {
+                skChart.YAxes = sourceChart.YAxes.Select(axis =>
+                {
+                    var newAxis = new LiveChartsCore.SkiaSharpView.Axis
+                    {
+                        Labels = axis.Labels,
+                        Labeler = axis.Labeler,
+                        MinLimit = axis.MinLimit,
+                        MaxLimit = axis.MaxLimit,
+                        LabelsPaint = new SolidColorPaint(SKColors.Black),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightGray),
+                        TextSize = 11
+                    };
+                    return newAxis;
+                }).ToArray();
             }
 
             skChart.LegendPosition = ShowLegend
