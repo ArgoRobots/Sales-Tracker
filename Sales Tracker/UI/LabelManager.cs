@@ -64,7 +64,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         /// <example>
         /// Input text: "Totals: (5 transactions)"
-        /// Output text: "Totals: (6 transactions)"
+        /// Output text: "Total: (6 transactions)"
         /// </example>
         public static void ShowTotalsWithTransactions(Label totalsLabel, DataGridView dataGridView)
         {
