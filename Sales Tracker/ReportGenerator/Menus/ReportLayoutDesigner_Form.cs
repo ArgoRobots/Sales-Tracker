@@ -48,11 +48,6 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
 
-        /// <summary>
-        /// Indicates if the form is currently being loaded/updated programmatically.
-        /// </summary>
-        private bool _isUpdating;
-
         // Resize handle enumeration
         private enum ResizeHandle
         {
@@ -142,7 +137,7 @@ namespace Sales_Tracker.ReportGenerator
         // Form event handlers
         private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating && Visible)
+            if (Visible)
             {
                 if (ReportConfig == null)
                 {
@@ -150,7 +145,6 @@ namespace Sales_Tracker.ReportGenerator
                     return;
                 }
 
-                PerformUpdate(SynchronizeCanvasWithSelection);
                 NotifyParentValidationChanged();
             }
         }
@@ -227,7 +221,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Canvas event handlers
-        private Point _mouseDownPoint;
         private const int DRAG_THRESHOLD = 5;
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
@@ -352,7 +345,7 @@ namespace Sales_Tracker.ReportGenerator
                 else
                 {
                     // Clicked on empty area
-                    _mouseDownPoint = e.Location;
+                    _selectionStartPoint = e.Location;
                 }
             }
         }
@@ -399,10 +392,10 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Check if we should start rectangle selection from mouse down on empty area
                 if (e.Button == MouseButtons.Left && !_isDragging && !_isMultiSelecting &&
-                    _mouseDownPoint != Point.Empty && GetElementAtPoint(_mouseDownPoint) == null)
+                    _selectionStartPoint != Point.Empty && GetElementAtPoint(_selectionStartPoint) == null)
                 {
-                    int deltaX = Math.Abs(e.X - _mouseDownPoint.X);
-                    int deltaY = Math.Abs(e.Y - _mouseDownPoint.Y);
+                    int deltaX = Math.Abs(e.X - _selectionStartPoint.X);
+                    int deltaY = Math.Abs(e.Y - _selectionStartPoint.Y);
 
                     if (deltaX > DRAG_THRESHOLD || deltaY > DRAG_THRESHOLD)
                     {
@@ -413,9 +406,8 @@ namespace Sales_Tracker.ReportGenerator
                         }
 
                         _isMultiSelecting = true;
-                        _selectionStartPoint = _mouseDownPoint;
-                        _selectionRectangle = new Rectangle(_mouseDownPoint, Size.Empty);
-                        _mouseDownPoint = Point.Empty;
+                        _selectionRectangle = new Rectangle(_selectionStartPoint, Size.Empty);
+                        _selectionStartPoint = Point.Empty;
                     }
                 }
             }
@@ -570,7 +562,7 @@ namespace Sales_Tracker.ReportGenerator
             bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
 
             // If mouse up on empty area without dragging (small movement), clear selections
-            if (e.Button == MouseButtons.Left && _mouseDownPoint != Point.Empty && !_isMultiSelecting)
+            if (e.Button == MouseButtons.Left && _selectionStartPoint != Point.Empty && !_isMultiSelecting)
             {
                 bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
                 if (!ctrlPressed)
@@ -583,7 +575,7 @@ namespace Sales_Tracker.ReportGenerator
             _isResizing = false;
             _isMultiSelecting = false;
             _activeResizeHandle = ResizeHandle.None;
-            _mouseDownPoint = Point.Empty;
+            _selectionStartPoint = Point.Empty;
             Canvas_Panel.Cursor = Cursors.Default;
             _deferPropertyUpdate = false;
 
@@ -1287,14 +1279,10 @@ namespace Sales_Tracker.ReportGenerator
         private void OnPropertyChanged()
         {
             Canvas_Panel.Invalidate();
-            TriggerPreviewRefresh();
+            NotifyParentValidationChanged();
         }
 
         // Canvas methods
-        private void TriggerPreviewRefresh()
-        {
-            NotifyParentValidationChanged();
-        }
         private void InvalidateElementRegion(Rectangle bounds)
         {
             // Inflate the bounds slightly to include borders and handles
@@ -1633,139 +1621,9 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        private void SynchronizeCanvasWithSelection()
-        {
-            // Check if selected charts have changed
-            List<MainMenu_Form.ChartDataType> currentSelectedCharts = ReportConfig.Filters.SelectedChartTypes;
-
-            // Get existing chart elements
-            List<ChartElement> existingChartElements = ReportConfig.GetElementsOfType<ChartElement>();
-
-            // Extract chart types from existing elements
-            HashSet<MainMenu_Form.ChartDataType> existingChartTypes = [.. existingChartElements.Select(e => e.ChartType)];
-
-            // Find charts that were removed from selection
-            List<ChartElement> elementsToRemove = existingChartElements
-                .Where(e => !currentSelectedCharts.Contains(e.ChartType))
-                .ToList();
-
-            // Find newly selected charts that don't have elements
-            List<MainMenu_Form.ChartDataType> chartsToAdd = currentSelectedCharts
-                .Where(ct => !existingChartTypes.Contains(ct))
-                .ToList();
-
-            // Remove elements for deselected charts
-            foreach (ChartElement element in elementsToRemove)
-            {
-                // Check if this element was selected
-                if (_selectedElement == element)
-                {
-                    _selectedElement = null;
-                }
-
-                if (_selectedElements.Contains(element))
-                {
-                    element.IsSelected = false;
-                    _selectedElements.Remove(element);
-                }
-
-                ReportConfig.RemoveElement(element.Id);
-            }
-
-            // Clear selection UI if no elements remain selected
-            if (_selectedElements.Count == 0 && _selectedElement == null)
-            {
-                HidePropertiesPanel();
-                UpdateLayoutButtonStates();
-            }
-
-            // Add elements for newly selected charts
-            if (chartsToAdd.Count > 0)
-            {
-                AddNewChartElements(chartsToAdd);
-            }
-
-            Canvas_Panel.Invalidate();
-        }
-        private void AddNewChartElements(List<MainMenu_Form.ChartDataType> chartTypes)
-        {
-            if (chartTypes == null || chartTypes.Count == 0) { return; }
-
-            int x = 50;
-            int y = 50;
-            const int chartWidth = 350;
-            const int chartHeight = 250;
-            const int spacing = 20;
-
-            List<Rectangle> existingBounds = ReportConfig.Elements
-                .Where(e => e.IsVisible)
-                .Select(e => e.Bounds)
-                .ToList();
-
-            foreach (MainMenu_Form.ChartDataType chartType in chartTypes)
-            {
-                Rectangle proposedBounds = new(x, y, chartWidth, chartHeight);
-
-                while (existingBounds.Any(b => b.IntersectsWith(proposedBounds)))
-                {
-                    x += chartWidth + spacing;
-                    if (x + chartWidth > Canvas_Panel.Width - 50)
-                    {
-                        x = 50;
-                        y += chartHeight + spacing;
-                    }
-                    proposedBounds = new Rectangle(x, y, chartWidth, chartHeight);
-                }
-
-                ChartElement element = new()
-                {
-                    ChartType = chartType,
-                    DisplayName = GetChartDisplayName(chartType),
-                    Bounds = proposedBounds
-                };
-
-                ReportConfig.AddElement(element);
-                existingBounds.Add(proposedBounds);
-
-                x += chartWidth + spacing;
-                if (x + chartWidth > Canvas_Panel.Width - 50)
-                {
-                    x = 50;
-                    y += chartHeight + spacing;
-                }
-            }
-        }
-        private static string GetChartDisplayName(MainMenu_Form.ChartDataType chartType)
-        {
-            return chartType switch
-            {
-                MainMenu_Form.ChartDataType.TotalSales => "Total Sales",
-                MainMenu_Form.ChartDataType.TotalPurchases => "Total Purchases",
-                MainMenu_Form.ChartDataType.DistributionOfSales => "Sales Distribution",
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales => "Sales vs Expenses",
-                MainMenu_Form.ChartDataType.GrowthRates => "Growth Rates",
-                MainMenu_Form.ChartDataType.AverageTransactionValue => "Average Order Value",
-                _ => chartType.ToString()
-            };
-        }
         private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
-        }
-        private void PerformUpdate(Action updateAction)
-        {
-            if (updateAction == null) { return; }
-
-            _isUpdating = true;
-
-            try
-            {
-                updateAction();
-            }
-            finally
-            {
-                _isUpdating = false;
-            }
         }
     }
 }

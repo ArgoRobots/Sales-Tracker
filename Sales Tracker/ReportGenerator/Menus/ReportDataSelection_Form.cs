@@ -17,7 +17,6 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialLeftPanelWidth;
         private int _initialRightPanelWidth;
         private CustomCheckListBox ChartSelection_CheckedListBox;
-        private bool _isApplyingTemplate = false;
         private readonly List<MainMenu_Form.ChartDataType> _chartTypeOrder = [];
 
         /// <summary>
@@ -54,7 +53,6 @@ namespace Sales_Tracker.ReportGenerator
             SetupChartSelection();
             SetupFilterControls();
             SetupTemplates();
-            LoadDefaultValues();
             StoreInitialSizes();
         }
         private void InitChartSelectionControl()
@@ -168,25 +166,6 @@ namespace Sales_Tracker.ReportGenerator
             // Select "Custom Report" by default
             Template_ComboBox.SelectedIndex = 0;
         }
-        private void LoadDefaultValues()
-        {
-            // Select some commonly used charts by default
-            MainMenu_Form.ChartDataType[] defaultCharts =
-            [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.DistributionOfSales,
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales
-            ];
-
-            for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
-            {
-                MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
-                if (defaultCharts.Contains(chartType))
-                {
-                    ChartSelection_CheckedListBox.SetItemChecked(i, true);
-                }
-            }
-        }
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
@@ -286,7 +265,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (!_isUpdating && !_isApplyingTemplate)
+            if (!_isUpdating)
             {
                 // If a non-custom template is selected and user makes changes, switch to custom
                 if (Template_ComboBox.SelectedIndex > 0)
@@ -301,19 +280,21 @@ namespace Sales_Tracker.ReportGenerator
                     });
                 }
 
-                // Check if the window handle has been created before using BeginInvoke
-                if (IsHandleCreated && Visible)
+                // Update the report configuration with current selections
+                if (ReportConfig != null)
                 {
-                    BeginInvoke(new Action(() =>
-                    {
-                        NotifyParentValidationChanged();
-                    }));
+                    // Update the selected chart types in filters
+                    ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
+
+                    UpdateElementsFromChartSelection();
                 }
+
+                NotifyParentValidationChanged();
             }
         }
         private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating && Template_ComboBox.SelectedIndex >= 0)
+            if (!_isUpdating)
             {
                 string templateName = Template_ComboBox.SelectedItem?.ToString();
 
@@ -327,14 +308,13 @@ namespace Sales_Tracker.ReportGenerator
                 }
                 else
                 {
-                    // Apply the selected template
                     ApplyTemplate(templateName);
                 }
             }
         }
         private void DateRange_Changed(object sender, EventArgs e)
         {
-            if (!_isUpdating && !_isApplyingTemplate)
+            if (!_isUpdating)
             {
                 // Switch to custom if template was selected
                 if (Template_ComboBox.SelectedIndex > 0)
@@ -355,7 +335,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void FilterChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating && !_isApplyingTemplate)
+            if (!_isUpdating)
             {
                 // Switch to custom if template was selected
                 if (Template_ComboBox.SelectedIndex > 0)
@@ -375,7 +355,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ReportTitle_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating && !_isApplyingTemplate)
+            if (!_isUpdating)
             {
                 // Switch to custom if template was selected and title differs from template title
                 if (Template_ComboBox.SelectedIndex > 0)
@@ -425,15 +405,14 @@ namespace Sales_Tracker.ReportGenerator
             IncludeReturns_CheckBox.Checked = !IncludeReturns_CheckBox.Checked;
         }
 
-        // Template application
+        // Event handler helper methods
         private void ApplyTemplate(string templateName)
         {
             if (string.IsNullOrEmpty(templateName)) { return; }
 
-            _isApplyingTemplate = true;
+            _isUpdating = true;
             try
             {
-                // Create a new report configuration from the template
                 ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
 
                 // Apply the template configuration to the parent's report config
@@ -456,6 +435,14 @@ namespace Sales_Tracker.ReportGenerator
                     ReportConfig.ShowPageNumbers = template.ShowPageNumbers;
                     ReportConfig.BackgroundColor = template.BackgroundColor;
                     ReportConfig.PageMargins = template.PageMargins;
+
+                    // Copy filters from template
+                    ReportConfig.Filters.SelectedChartTypes = [.. template.Filters.SelectedChartTypes];
+                    ReportConfig.Filters.TransactionType = template.Filters.TransactionType;
+                    ReportConfig.Filters.StartDate = template.Filters.StartDate;
+                    ReportConfig.Filters.EndDate = template.Filters.EndDate;
+                    ReportConfig.Filters.IncludeReturns = template.Filters.IncludeReturns;
+                    ReportConfig.Filters.IncludeLosses = template.Filters.IncludeLosses;
 
                     // Copy template metadata
                     ReportConfig.TemplateName = template.TemplateName;
@@ -489,12 +476,52 @@ namespace Sales_Tracker.ReportGenerator
                     IncludeLosses_CheckBox.Checked = template.Filters.IncludeLosses;
                 });
 
-                // Force the layout designer to refresh if it's visible
+                // Force the layout designer to refresh
                 ParentReportForm?.OnChildFormValidationChanged();
             }
             finally
             {
-                _isApplyingTemplate = false;
+                _isUpdating = false;
+            }
+        }
+
+        /// <summary>
+        /// Updates the ReportConfig.Elements collection based on current chart selections.
+        /// </summary>
+        private void UpdateElementsFromChartSelection()
+        {
+            if (ReportConfig == null) { return; }
+
+            List<MainMenu_Form.ChartDataType> selectedCharts = GetSelectedChartTypes();
+            ReportConfig.Elements.Clear();
+
+            const int chartWidth = 350;
+            const int chartHeight = 250;
+            const int spacing = 20;
+            const int startX = 50;
+            const int startY = 50;
+            const int columns = 2;
+
+            int row = 0, col = 0;
+
+            foreach (MainMenu_Form.ChartDataType chartType in selectedCharts)
+            {
+                int x = startX + (col * (chartWidth + spacing));
+                int y = startY + (row * (chartHeight + spacing));
+
+                ChartElement newChartElement = new()
+                {
+                    ChartType = chartType,
+                    Bounds = new Rectangle(x, y, chartWidth, chartHeight)
+                };
+                ReportConfig.AddElement(newChartElement);
+
+                col++;
+                if (col >= columns)
+                {
+                    col = 0;
+                    row++;
+                }
             }
         }
 

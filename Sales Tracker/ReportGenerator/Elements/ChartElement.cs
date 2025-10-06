@@ -50,10 +50,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
-                bool needsReload = NeedsChartReload(ChartType, config);
-
-                // Load data if chart is empty or if filters have changed
-                if (_chartControl == null || needsReload)
+                if (_chartControl == null)
                 {
                     LoadChartData(ChartType, config);
                 }
@@ -100,27 +97,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
             }
-        }
-        private static bool NeedsChartReload(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
-        {
-            // Get the current filter configuration
-            DateTime? currentStartDate = config?.Filters?.StartDate;
-            DateTime? currentEndDate = config?.Filters?.EndDate;
-            bool currentIncludeReturns = config?.Filters?.IncludeReturns ?? true;
-            bool currentIncludeLosses = config?.Filters?.IncludeLosses ?? true;
-
-            // Check if we have a previously loaded configuration for this chart type
-            if (_lastLoadedConfig.TryGetValue(chartType, out var lastConfig))
-            {
-                // Compare configurations - if they differ, we need to reload
-                return lastConfig.StartDate != currentStartDate ||
-                       lastConfig.EndDate != currentEndDate ||
-                       lastConfig.IncludeReturns != currentIncludeReturns ||
-                       lastConfig.IncludeLosses != currentIncludeLosses;
-            }
-
-            // If no previous configuration exists, we need to load
-            return true;
         }
 
         // Load chart methods
