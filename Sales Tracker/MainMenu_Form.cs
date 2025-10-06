@@ -1231,7 +1231,7 @@ namespace Sales_Tracker
         //    Rental_DataGridView.Visible = true;
         //    Purchase_DataGridView.Visible = false;
         //    Sale_DataGridView.Visible = false;
-            
+
         //    // TODO: Create Rentals Charts
         //    SaleTotals_Chart.Visible = false;
         //    SaleDistribution_Chart.Visible = false;
@@ -2331,10 +2331,6 @@ namespace Sales_Tracker
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
                 Rental_DataGridView,
-                PurchaseTotals_Chart,
-                PurchaseDistribution_Chart,
-                SaleTotals_Chart,
-                SaleDistribution_Chart,
                 Profits_Chart,
                 Total_Panel
             ];
