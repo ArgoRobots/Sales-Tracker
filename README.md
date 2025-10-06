@@ -13,6 +13,7 @@
 - **Mark products as lost**: Track lost or damaged products with detailed loss reasons and analytics.
 - **Receipts**: Attach receipts to your transactions and keep them organized.
 - **Custom date ranges**: Filter transactions using custom date ranges.
+- **Report generation:** Create professional, customizable reports with a drag-and-drop layout design, and export to PDF or high-quality images.
 - **Analytics dashboard**: Visualize your data using charts to gain insights into sales trends and performance.
 
 ## Technologies used
