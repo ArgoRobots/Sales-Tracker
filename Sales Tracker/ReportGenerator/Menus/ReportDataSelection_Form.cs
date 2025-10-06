@@ -1,5 +1,4 @@
 ﻿using Sales_Tracker.Charts;
-using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -143,9 +142,9 @@ namespace Sales_Tracker.ReportGenerator
 
             // Setup transaction type
             TransactionType_ComboBox.Items.Clear();
-            TransactionType_ComboBox.Items.Add(LanguageManager.TranslateString("Sales"));
-            TransactionType_ComboBox.Items.Add(LanguageManager.TranslateString("Purchases"));
-            TransactionType_ComboBox.Items.Add(LanguageManager.TranslateString("Both"));
+            TransactionType_ComboBox.Items.Add("Sales");
+            TransactionType_ComboBox.Items.Add("Purchases");
+            TransactionType_ComboBox.Items.Add("Both");
             TransactionType_ComboBox.SelectedIndex = 2;  // Both by default
 
             // Setup includes
@@ -160,7 +159,7 @@ namespace Sales_Tracker.ReportGenerator
             List<string> templates = ReportTemplates.GetAvailableTemplates();
             foreach (string templateName in templates)
             {
-                Template_ComboBox.Items.Add(LanguageManager.TranslateString(templateName));
+                Template_ComboBox.Items.Add(templateName);
             }
 
             // Select "Custom Report" by default
@@ -275,7 +274,7 @@ namespace Sales_Tracker.ReportGenerator
                         Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
                         if (ReportConfig != null)
                         {
-                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                         }
                     });
                 }
@@ -303,7 +302,7 @@ namespace Sales_Tracker.ReportGenerator
                     // Custom Report selected - don't apply any template
                     if (ReportConfig != null)
                     {
-                        ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                     }
                 }
                 else
@@ -324,7 +323,7 @@ namespace Sales_Tracker.ReportGenerator
                         Template_ComboBox.SelectedIndex = 0;
                         if (ReportConfig != null)
                         {
-                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                         }
                     });
                 }
@@ -345,7 +344,7 @@ namespace Sales_Tracker.ReportGenerator
                         Template_ComboBox.SelectedIndex = 0;
                         if (ReportConfig != null)
                         {
-                            ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                         }
                     });
                 }
@@ -371,7 +370,7 @@ namespace Sales_Tracker.ReportGenerator
                                 Template_ComboBox.SelectedIndex = 0;
                                 if (ReportConfig != null)
                                 {
-                                    ReportConfig.TemplateName = ReportTemplates.TemplateNames.Custom;
+                                    ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                                 }
                             });
                         }
@@ -445,7 +444,7 @@ namespace Sales_Tracker.ReportGenerator
                     ReportConfig.Filters.IncludeLosses = template.Filters.IncludeLosses;
 
                     // Copy template metadata
-                    ReportConfig.TemplateName = template.TemplateName;
+                    ReportConfig.Title = template.Title;
                     ReportConfig.Description = template.Description;
                 }
 
@@ -589,7 +588,7 @@ namespace Sales_Tracker.ReportGenerator
             // Update template
             if (Template_ComboBox.SelectedIndex > 0)
             {
-                ReportConfig.TemplateName = Template_ComboBox.SelectedItem?.ToString();
+                ReportConfig.Title = Template_ComboBox.SelectedItem?.ToString();
             }
 
             // Update title if provided
@@ -631,9 +630,9 @@ namespace Sales_Tracker.ReportGenerator
                 ReportTitle_TextBox.Text = ReportConfig.Title;
 
                 // Load template
-                if (!string.IsNullOrEmpty(ReportConfig.TemplateName))
+                if (!string.IsNullOrEmpty(ReportConfig.Title))
                 {
-                    int templateIndex = Template_ComboBox.Items.IndexOf(ReportConfig.TemplateName);
+                    int templateIndex = Template_ComboBox.Items.IndexOf(ReportConfig.Title);
                     if (templateIndex >= 0)
                     {
                         Template_ComboBox.SelectedIndex = templateIndex;
@@ -650,10 +649,10 @@ namespace Sales_Tracker.ReportGenerator
             LoadFromReportConfiguration();
 
             // If template name is set in the configuration, select it in the combobox
-            if (ReportConfig != null && !string.IsNullOrEmpty(ReportConfig.TemplateName))
+            if (ReportConfig != null && !string.IsNullOrEmpty(ReportConfig.Title))
             {
                 int index = Template_ComboBox.Items.IndexOf(
-                    LanguageManager.TranslateString(ReportConfig.TemplateName));
+                    ReportConfig.Title);
                 if (index >= 0)
                 {
                     Template_ComboBox.SelectedIndex = index;

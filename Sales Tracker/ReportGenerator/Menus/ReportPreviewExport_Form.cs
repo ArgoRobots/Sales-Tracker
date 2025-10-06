@@ -81,8 +81,8 @@ namespace Sales_Tracker.ReportGenerator
 
             // Setup orientation combo box
             Orientation_ComboBox.Items.Clear();
-            Orientation_ComboBox.Items.Add(LanguageManager.TranslateString("Portrait"));
-            Orientation_ComboBox.Items.Add(LanguageManager.TranslateString("Landscape"));
+            Orientation_ComboBox.Items.Add("Portrait");
+            Orientation_ComboBox.Items.Add("Landscape");
             Orientation_ComboBox.SelectedIndex = 0;  // Portrait default
         }
         private void SetupExportSettings()

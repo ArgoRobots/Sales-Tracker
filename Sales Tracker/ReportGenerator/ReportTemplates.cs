@@ -18,7 +18,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Title = "Monthly Sales Report",
                 Description = "Comprehensive monthly sales performance analysis",
-                TemplateName = "Monthly Sales Report",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -52,7 +51,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Title = "Financial Overview",
                 Description = "Complete financial performance summary",
-                TemplateName = "Financial Overview",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -86,7 +84,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Title = "Performance Analysis",
                 Description = "Detailed business performance metrics and trends",
-                TemplateName = "Performance Analysis",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -120,7 +117,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Title = "Returns & Losses Analysis",
                 Description = "Analysis of product returns and inventory losses",
-                TemplateName = "Returns Analysis",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -157,7 +153,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 Title = "Geographic Analysis",
                 Description = "Geographic distribution of sales and purchases",
-                TemplateName = "Geographic Analysis",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -483,22 +478,6 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.ReturnsAnalysis => CreateReturnsAnalysisTemplate(),
                 TemplateNames.GeographicAnalysis => CreateGeographicAnalysisTemplate(),
                 _ => new ReportConfiguration()  // Custom report
-            };
-        }
-
-        /// <summary>
-        /// Gets a description for a template.
-        /// </summary>
-        public static string GetTemplateDescription(string templateName)
-        {
-            return templateName switch
-            {
-                TemplateNames.MonthlySales => "Comprehensive monthly sales performance with charts for total sales, distribution, growth, and average order value.",
-                TemplateNames.FinancialOverview => "Complete financial summary including sales vs expenses, profits, and transaction totals in landscape format.",
-                TemplateNames.PerformanceAnalysis => "Detailed business performance metrics showing growth rates, order values, and return trends.",
-                TemplateNames.ReturnsAnalysis => "Analysis of product returns and losses with detailed breakdowns by reasons and financial impact.",
-                TemplateNames.GeographicAnalysis => "Geographic distribution analysis with world map and country-based charts.",
-                _ => "Create a custom report with your own selection of charts and layout."
             };
         }
     }

@@ -42,11 +42,6 @@ namespace Sales_Tracker.ReportGenerator
         public ReportFilters Filters { get; set; } = new ReportFilters();
 
         /// <summary>
-        /// Template name (if created from a template).
-        /// </summary>
-        public string TemplateName { get; set; }
-
-        /// <summary>
         /// Report title.
         /// </summary>
         public string Title { get; set; } = "Sales Report";
