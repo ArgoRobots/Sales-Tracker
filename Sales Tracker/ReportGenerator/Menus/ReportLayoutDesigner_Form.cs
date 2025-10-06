@@ -1133,14 +1133,11 @@ namespace Sales_Tracker.ReportGenerator
 
                 _currentElementId = _selectedElement.Id;
 
-                // Create new property controls
                 int yPosition = 10;
 
-                // Create common property controls
                 CreateCommonPropertyControls(yPosition);
                 yPosition += BaseElement.RowHeight * 5;
 
-                // Add element-specific properties
                 CreateElementSpecificControls(yPosition);
 
                 // Only set the theme of it's controls, not the panel itself
@@ -1248,7 +1245,6 @@ namespace Sales_Tracker.ReportGenerator
             if (_selectedElement == null) { return yPosition; }
 
             // Let the element create its own specific controls
-            // We'll need to modify the element classes to support this caching approach
             return _selectedElement.CreatePropertyControls(
                 PropertiesContainer_Panel,
                 yPosition,
@@ -1477,7 +1473,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 ReportElementType.Chart => new ChartElement
                 {
-                    DisplayName = "Chart",
                     Bounds = new Rectangle(location, new Size(350, 250)),
                     ChartType = GetDefaultChartType()
                 },

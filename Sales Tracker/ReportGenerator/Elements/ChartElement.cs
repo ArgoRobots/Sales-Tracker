@@ -20,13 +20,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
     {
         private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
 
-        // Properties
+        // Private properties
         private Control _chartControl;
+        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalSales;
 
-        public MainMenu_Form.ChartDataType ChartType { get; set; } = MainMenu_Form.ChartDataType.TotalSales;
+        // Public properties
+        public MainMenu_Form.ChartDataType ChartType
+        {
+            get => _chartType;
+            set
+            {
+                _chartType = value;
+                // Automatically update DisplayName when ChartType changes
+                DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
+            }
+        }
         public bool ShowLegend { get; set; } = true;
         public bool ShowTitle { get; set; } = true;
         public Color BorderColor { get; set; } = Color.Gray;
+
+        // Constructor
+        public ChartElement()
+        {
+            DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
+        }
 
         // Overrides
         public override ReportElementType GetElementType() => ReportElementType.Chart;
@@ -36,7 +53,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName + " (Copy)",
+                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,

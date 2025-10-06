@@ -199,7 +199,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalSales,
-                DisplayName = "Total Sales",
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
@@ -207,7 +206,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
-                DisplayName = "Sales Distribution",
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
@@ -215,7 +213,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.GrowthRates,
-                DisplayName = "Growth Rates",
                 Bounds = grid[1, 0],
                 ZOrder = 3
             });
@@ -223,7 +220,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
-                DisplayName = "Average Order Value",
                 Bounds = grid[1, 1],
                 ZOrder = 4
             });
@@ -249,7 +245,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                DisplayName = "Sales vs Expenses",
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
@@ -257,7 +252,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.Profits,
-                DisplayName = "Total Profits",
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
@@ -265,7 +259,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalSales,
-                DisplayName = "Total Sales",
                 Bounds = grid[1, 0],
                 ZOrder = 3
             });
@@ -273,7 +266,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
-                DisplayName = "Total Purchases",
                 Bounds = grid[1, 1],
                 ZOrder = 4
             });
@@ -306,7 +298,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.GrowthRates,
-                DisplayName = "Growth Rates",
                 Bounds = stack[1],
                 ZOrder = 2
             });
@@ -314,7 +305,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.AverageTransactionValue,
-                DisplayName = "Average Order Value",
                 Bounds = stack[2],
                 ZOrder = 3
             });
@@ -322,7 +312,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
-                DisplayName = "Returns Over Time",
                 Bounds = stack[3],
                 ZOrder = 4
             });
@@ -349,7 +338,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnsOverTime,
-                DisplayName = "Returns Over Time",
                 Bounds = topStack[0],
                 ZOrder = 1
             });
@@ -362,7 +350,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnReasons,
-                DisplayName = "Return Reasons",
                 Bounds = new Rectangle(bottomArea.X, bottomArea.Y, gridWidth, gridHeight),
                 ZOrder = 2
             });
@@ -370,7 +357,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.ReturnFinancialImpact,
-                DisplayName = "Financial Impact",
                 Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y, gridWidth, gridHeight),
                 ZOrder = 3
             });
@@ -378,7 +364,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.LossesOverTime,
-                DisplayName = "Losses Over Time",
                 Bounds = new Rectangle(bottomArea.X, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
                 ZOrder = 4
             });
@@ -386,7 +371,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.LossReasons,
-                DisplayName = "Loss Reasons",
                 Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
                 ZOrder = 5
             });
@@ -412,7 +396,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.WorldMap,
-                DisplayName = "World Map",
                 Bounds = stack[0],
                 ZOrder = 1
             });
@@ -424,7 +407,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.CountriesOfOrigin,
-                DisplayName = "Countries of Origin",
                 Bounds = new Rectangle(bottomArea.X, bottomArea.Y, colWidth, bottomArea.Height),
                 ZOrder = 2
             });
@@ -432,7 +414,6 @@ namespace Sales_Tracker.ReportGenerator
             config.AddElement(new ChartElement
             {
                 ChartType = MainMenu_Form.ChartDataType.CountriesOfDestination,
-                DisplayName = "Countries of Destination",
                 Bounds = new Rectangle(bottomArea.X + colWidth + context.ElementSpacing, bottomArea.Y, colWidth, bottomArea.Height),
                 ZOrder = 3
             });
