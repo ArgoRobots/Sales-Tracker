@@ -174,6 +174,56 @@ namespace Sales_Tracker.ReportGenerator
                 return true;
             }
 
+            // Arrow key movement shortcuts (1 pixel)
+            if (keyData == Keys.Left)
+            {
+                MoveSelectedElements(-1, 0);
+                return true;
+            }
+
+            if (keyData == Keys.Right)
+            {
+                MoveSelectedElements(1, 0);
+                return true;
+            }
+
+            if (keyData == Keys.Up)
+            {
+                MoveSelectedElements(0, -1);
+                return true;
+            }
+
+            if (keyData == Keys.Down)
+            {
+                MoveSelectedElements(0, 1);
+                return true;
+            }
+
+            // Shift+Arrow for larger movements (10 pixels)
+            if (keyData == (Keys.Shift | Keys.Left))
+            {
+                MoveSelectedElements(-10, 0);
+                return true;
+            }
+
+            if (keyData == (Keys.Shift | Keys.Right))
+            {
+                MoveSelectedElements(10, 0);
+                return true;
+            }
+
+            if (keyData == (Keys.Shift | Keys.Up))
+            {
+                MoveSelectedElements(0, -10);
+                return true;
+            }
+
+            if (keyData == (Keys.Shift | Keys.Down))
+            {
+                MoveSelectedElements(0, 10);
+                return true;
+            }
+
             // Alignment shortcuts
             if (keyData == (Keys.Control | Keys.Left))
             {
@@ -629,6 +679,60 @@ namespace Sales_Tracker.ReportGenerator
         private void AddTableElement(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
+        }
+
+        // Move element method
+        /// <summary>
+        /// Moves all selected elements by the specified delta.
+        /// </summary>
+        private void MoveSelectedElements(int deltaX, int deltaY)
+        {
+            if (_selectedElements.Count == 0 && _selectedElement == null)
+            {
+                return;
+            }
+
+            // Move all selected elements
+            if (_selectedElements.Count > 0)
+            {
+                foreach (BaseElement element in _selectedElements)
+                {
+                    Rectangle oldBounds = element.Bounds;
+                    Rectangle newBounds = element.Bounds;
+
+                    newBounds.X += deltaX;
+                    newBounds.Y += deltaY;
+
+                    // Clamp to canvas bounds
+                    newBounds.X = Math.Max(0, Math.Min(newBounds.X, Canvas_Panel.Width - newBounds.Width));
+                    newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, Canvas_Panel.Height - newBounds.Height));
+
+                    element.Bounds = newBounds;
+
+                    InvalidateElementRegion(oldBounds);
+                    InvalidateElementRegion(newBounds);
+                }
+            }
+            else if (_selectedElement != null)
+            {
+                Rectangle oldBounds = _selectedElement.Bounds;
+                Rectangle newBounds = _selectedElement.Bounds;
+
+                newBounds.X += deltaX;
+                newBounds.Y += deltaY;
+
+                // Clamp to canvas bounds
+                newBounds.X = Math.Max(0, Math.Min(newBounds.X, Canvas_Panel.Width - newBounds.Width));
+                newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, Canvas_Panel.Height - newBounds.Height));
+
+                _selectedElement.Bounds = newBounds;
+
+                InvalidateElementRegion(oldBounds);
+                InvalidateElementRegion(newBounds);
+            }
+
+            UpdatePropertyValues();
+            NotifyParentValidationChanged();
         }
 
         // Alignment tool methods
