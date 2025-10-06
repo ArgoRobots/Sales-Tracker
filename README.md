@@ -3,6 +3,8 @@
 ## Introduction
 **Argo Sales Tracker** is a Windows app designed to help small to medium sized companies manage their finances. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, very overpriced, and have a high learning curve. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets and enterprise-level solutions.
 
+<img width="2400" height="1528" alt="Argo Sales Tracker" src="https://github.com/user-attachments/assets/d0f3ecad-fd85-49d1-9c1b-8f38b14f32a8" />
+
 ## Features
 - **Import data from spreadsheets**: Import your existing transactions, products, and other data from spreadsheets.
 - **Track Purchases and Sales**: Track your purchases and sales using a simple GUI.
