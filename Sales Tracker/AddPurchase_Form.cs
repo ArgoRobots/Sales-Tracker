@@ -35,8 +35,10 @@ namespace Sales_Tracker
             RecalculateMultipleItemsLayout();
             RemoveReceiptLabel();
             Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType)})";
-            LoadingPanel.ShowBlankLoadingPanel(this);
             Currency_TextBox.Text = "CAD";
+
+            this.Activated += AddPurchase_Form_Activated;
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -110,6 +112,10 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
+        private void AddPurchase_Form_Activated(object sender, EventArgs e)
+        {
+            CheckIfProductsExist();
+        }
         private void AddPurchase_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
@@ -202,6 +208,7 @@ namespace Sales_Tracker
         {
             RemoveReceiptLabel();
             OrderNumber_TextBox.Clear();
+            ProductName_TextBox.Clear();
             Quantity_TextBox.Clear();
             PricePerUnit_TextBox.Clear();
             Shipping_TextBox.Clear();

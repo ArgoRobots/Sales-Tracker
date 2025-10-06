@@ -22,6 +22,7 @@
             0x83, 0x7A, 0x2F, 0xE6, 0x95, 0xDB, 0x3C, 0xA4
         ];
 
+        // This cannot be moved to the env file because it's used to decrypt it
         private static readonly string _appSpecificString = "ArgoS4lesTrack3r2025S3cur1tyK3y";
 
         /// <summary>

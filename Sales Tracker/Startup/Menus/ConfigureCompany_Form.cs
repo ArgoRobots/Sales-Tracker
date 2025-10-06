@@ -180,6 +180,8 @@ namespace Sales_Tracker.Startup.Menus
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
                 MainMenu_Form.Instance.UpdateMainMenuFormText();
+                DateRange_Form.Instance.ResetControls();
+                CompanyLogo.SetCompanyLogo();
 
                 // Clear charts
                 foreach (Control chart in MainMenu_Form.Instance.GetAllCharts())

@@ -45,6 +45,8 @@ namespace Sales_Tracker
             PopulateTypeComboBox();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchase_DataGridView, _sale_DataGridView);
             AddEventHandlersToTextBoxes();
+
+            this.Activated += Products_Form_Activated;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -147,6 +149,11 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
+        private void Products_Form_Activated(object sender, EventArgs e)
+        {
+            ValidateCategoryTextBox();
+            ValidateCompanyTextBox();
+        }
         private void Products_Form_Resize(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
