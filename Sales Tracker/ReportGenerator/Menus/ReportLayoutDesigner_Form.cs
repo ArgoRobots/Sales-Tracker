@@ -1685,38 +1685,7 @@ namespace Sales_Tracker.ReportGenerator
                 AddNewChartElements(chartsToAdd);
             }
 
-            // If no elements exist at all, generate from template or selected charts
-            if (ReportConfig.Elements.Count == 0)
-            {
-                if (!string.IsNullOrEmpty(ReportConfig.TemplateName))
-                {
-                    LoadElementsFromTemplate(currentSelectedCharts);
-                }
-                else if (currentSelectedCharts.Count > 0)
-                {
-                    GenerateElementsFromTemplate();
-                }
-            }
-
             Canvas_Panel.Invalidate();
-        }
-        private void LoadElementsFromTemplate(List<MainMenu_Form.ChartDataType> selectedCharts)
-        {
-            ReportConfiguration template = ReportTemplates.CreateFromTemplate(ReportConfig.TemplateName);
-
-            // Only add chart elements that match selected charts
-            foreach (BaseElement element in template.Elements)
-            {
-                if (element is ChartElement chartElement && selectedCharts.Contains(chartElement.ChartType))
-                {
-                    ReportConfig.AddElement(element.Clone());
-                }
-                else if (element is not ChartElement)
-                {
-                    // Add non-chart elements from template
-                    ReportConfig.AddElement(element.Clone());
-                }
-            }
         }
         private void AddNewChartElements(List<MainMenu_Form.ChartDataType> chartTypes)
         {
@@ -1760,35 +1729,6 @@ namespace Sales_Tracker.ReportGenerator
 
                 x += chartWidth + spacing;
                 if (x + chartWidth > Canvas_Panel.Width - 50)
-                {
-                    x = 50;
-                    y += chartHeight + spacing;
-                }
-            }
-        }
-        private void GenerateElementsFromTemplate()
-        {
-            if (ReportConfig?.Filters?.SelectedChartTypes == null) { return; }
-
-            int x = 50, y = 50;
-            const int chartWidth = 350;
-            const int chartHeight = 250;
-            const int spacing = 20;
-            const int maxWidth = 800;
-
-            foreach (MainMenu_Form.ChartDataType chartType in ReportConfig.Filters.SelectedChartTypes)
-            {
-                ChartElement element = new()
-                {
-                    ChartType = chartType,
-                    DisplayName = GetChartDisplayName(chartType),
-                    Bounds = new Rectangle(x, y, chartWidth, chartHeight)
-                };
-
-                ReportConfig.AddElement(element);
-
-                x += chartWidth + spacing;
-                if (x + chartWidth > maxWidth)
                 {
                     x = 50;
                     y += chartHeight + spacing;
