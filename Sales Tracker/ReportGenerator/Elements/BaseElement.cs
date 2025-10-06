@@ -113,10 +113,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2TextBox textBox = new()
             {
                 Text = value,
-                Size = new Size(180, ControlHeight),
+                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
-                Font = new Font("Segoe UI", 9)
+                Font = new Font("Segoe UI", 9),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             textBox.TextChanged += (s, e) => onChange(textBox.Text);
@@ -154,11 +155,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Guna2ComboBox comboBox = new()
             {
-                Size = new Size(180, ControlHeight),
+                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
+                ItemHeight = 39,  // Needed to make the height equal to ControlHeight
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
-                ItemHeight = 39  // Needed to make the height equal to ControlHeight
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             comboBox.Items.AddRange(items);
             comboBox.SelectedItem = value;
