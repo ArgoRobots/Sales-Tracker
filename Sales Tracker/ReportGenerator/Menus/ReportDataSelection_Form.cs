@@ -18,6 +18,7 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialRightPanelWidth;
         private CustomCheckListBox ChartSelection_CheckedListBox;
         private bool _isApplyingTemplate = false;
+        private readonly List<MainMenu_Form.ChartDataType> _chartTypeOrder = [];
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -79,57 +80,62 @@ namespace Sales_Tracker.ReportGenerator
         {
             // Overview Section
             ChartSelection_CheckedListBox.AddSection("Overview");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.SalesVsExpenses, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalProfits, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalTransactions, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AverageTransactionValue, false);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalExpensesVsSales, TranslatedChartTitles.SalesVsExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.Profits, TranslatedChartTitles.TotalProfits);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalTransactions, TranslatedChartTitles.TotalTransactions);
+            AddChartItem(MainMenu_Form.ChartDataType.AverageTransactionValue, TranslatedChartTitles.AverageTransactionValue);
 
             // Financial Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Financial");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalRevenue, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.TotalExpenses, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.RevenueDistribution, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ExpensesDistribution, false);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalSales, TranslatedChartTitles.TotalRevenue);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalPurchases, TranslatedChartTitles.TotalExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfSales, TranslatedChartTitles.RevenueDistribution);
+            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfPurchases, TranslatedChartTitles.ExpensesDistribution);
 
             // Geographic Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Geographic Analysis");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.WorldMap, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CountriesOfOrigin, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CountriesOfDestination, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.CompaniesOfOrigin, false);
+            AddChartItem(MainMenu_Form.ChartDataType.WorldMap, TranslatedChartTitles.WorldMap);
+            AddChartItem(MainMenu_Form.ChartDataType.CountriesOfOrigin, TranslatedChartTitles.CountriesOfOrigin);
+            AddChartItem(MainMenu_Form.ChartDataType.CountriesOfDestination, TranslatedChartTitles.CountriesOfDestination);
+            AddChartItem(MainMenu_Form.ChartDataType.CompaniesOfOrigin, TranslatedChartTitles.CompaniesOfOrigin);
 
             // Performance Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Performance");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.GrowthRates, false);
+            AddChartItem(MainMenu_Form.ChartDataType.GrowthRates, TranslatedChartTitles.GrowthRates);
 
             // Operational Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Operational");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AccountantsTransactions, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.AverageShippingCosts, false);
+            AddChartItem(MainMenu_Form.ChartDataType.Accountants, TranslatedChartTitles.AccountantsTransactions);
+            AddChartItem(MainMenu_Form.ChartDataType.AverageShippingCosts, TranslatedChartTitles.AverageShippingCosts);
 
             // Returns Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Returns Analysis");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsOverTime, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnReasons, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnFinancialImpact, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsByCategory, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.ReturnsByProduct, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.PurchaseVsSaleReturns, false);
+            AddChartItem(MainMenu_Form.ChartDataType.ReturnsOverTime, TranslatedChartTitles.ReturnsOverTime);
+            AddChartItem(MainMenu_Form.ChartDataType.ReturnReasons, TranslatedChartTitles.ReturnReasons);
+            AddChartItem(MainMenu_Form.ChartDataType.ReturnFinancialImpact, TranslatedChartTitles.ReturnFinancialImpact);
+            AddChartItem(MainMenu_Form.ChartDataType.ReturnsByCategory, TranslatedChartTitles.ReturnsByCategory);
+            AddChartItem(MainMenu_Form.ChartDataType.ReturnsByProduct, TranslatedChartTitles.ReturnsByProduct);
+            AddChartItem(MainMenu_Form.ChartDataType.PurchaseVsSaleReturns, TranslatedChartTitles.PurchaseVsSaleReturns);
 
             // Lost Products Section
             ChartSelection_CheckedListBox.AddSpacer(10);
             ChartSelection_CheckedListBox.AddSection("Lost Products");
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesOverTime, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossReasons, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossFinancialImpact, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesByCategory, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.LossesByProduct, false);
-            ChartSelection_CheckedListBox.Add(TranslatedChartTitles.PurchaseVsSaleLosses, false);
+            AddChartItem(MainMenu_Form.ChartDataType.LossesOverTime, TranslatedChartTitles.LossesOverTime);
+            AddChartItem(MainMenu_Form.ChartDataType.LossReasons, TranslatedChartTitles.LossReasons);
+            AddChartItem(MainMenu_Form.ChartDataType.LossFinancialImpact, TranslatedChartTitles.LossFinancialImpact);
+            AddChartItem(MainMenu_Form.ChartDataType.LossesByCategory, TranslatedChartTitles.LossesByCategory);
+            AddChartItem(MainMenu_Form.ChartDataType.LossesByProduct, TranslatedChartTitles.LossesByProduct);
+            AddChartItem(MainMenu_Form.ChartDataType.PurchaseVsSaleLosses, TranslatedChartTitles.PurchaseVsSaleLosses);
+        }
+        private void AddChartItem(MainMenu_Form.ChartDataType chartType, string displayName)
+        {
+            _chartTypeOrder.Add(chartType);
+            ChartSelection_CheckedListBox.Add(displayName, false);
         }
         private void SetupFilterControls()
         {
@@ -189,10 +195,13 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Helper methods
-        private static MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)
+        private MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)
         {
-            MainMenu_Form.ChartDataType[] chartTypes = Enum.GetValues<MainMenu_Form.ChartDataType>();
-            return index >= 0 && index < chartTypes.Length ? chartTypes[index] : MainMenu_Form.ChartDataType.TotalSales;
+            if (index >= 0 && index < _chartTypeOrder.Count)
+            {
+                return _chartTypeOrder[index];
+            }
+            return MainMenu_Form.ChartDataType.TotalSales;
         }
         private List<MainMenu_Form.ChartDataType> GetSelectedChartTypes()
         {
