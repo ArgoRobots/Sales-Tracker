@@ -47,6 +47,7 @@ namespace Sales_Tracker.ReportGenerator
             SetupPageSettings();
             SetupExportSettings();
             StoreInitialSizes();
+            SetEventHandlers();
         }
         private void InitializeExportSettings()
         {
@@ -107,6 +108,11 @@ namespace Sales_Tracker.ReportGenerator
             _initialFormWidth = Width;
             _initialLeftPanelWidth = LeftPreview_Panel.Width;
             _initialRightPanelWidth = RightSettings_Panel.Width;
+        }
+        private void SetEventHandlers()
+        {
+            ExportFormat_ComboBox.SelectedIndexChanged += ExportSettings_Changed;
+            ExportFormat_ComboBox.SelectedIndexChanged += ExportFormat_ComboBox_SelectedIndexChanged;
         }
 
         // Form event handlers

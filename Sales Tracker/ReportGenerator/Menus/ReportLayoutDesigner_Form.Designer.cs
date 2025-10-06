@@ -106,7 +106,7 @@
             // 
             // RightCanvas_Panel
             // 
-            RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             RightCanvas_Panel.Controls.Add(MakeSameSize_Button);
             RightCanvas_Panel.Controls.Add(MakeSameHeight_Button);
             RightCanvas_Panel.Controls.Add(MakeSameWidth_Button);

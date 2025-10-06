@@ -91,7 +91,7 @@
             // 
             // Right_Panel
             // 
-            Right_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            Right_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             Right_Panel.Controls.Add(Filters_GroupBox);
             Right_Panel.Controls.Add(ReportSettings_GroupBox);
             Right_Panel.CustomizableEdges = customizableEdges17;
