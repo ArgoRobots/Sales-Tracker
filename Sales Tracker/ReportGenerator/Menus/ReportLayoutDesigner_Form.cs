@@ -1657,7 +1657,26 @@ namespace Sales_Tracker.ReportGenerator
             // Remove elements for deselected charts
             foreach (ChartElement element in elementsToRemove)
             {
+                // Check if this element was selected
+                if (_selectedElement == element)
+                {
+                    _selectedElement = null;
+                }
+
+                if (_selectedElements.Contains(element))
+                {
+                    element.IsSelected = false;
+                    _selectedElements.Remove(element);
+                }
+
                 ReportConfig.RemoveElement(element.Id);
+            }
+
+            // Clear selection UI if no elements remain selected
+            if (_selectedElements.Count == 0 && _selectedElement == null)
+            {
+                HidePropertiesPanel();
+                UpdateLayoutButtonStates();
             }
 
             // Add elements for newly selected charts
