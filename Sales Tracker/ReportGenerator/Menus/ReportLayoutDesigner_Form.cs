@@ -382,6 +382,16 @@ namespace Sales_Tracker.ReportGenerator
                     newCursor = GetCursorForHandle(handle);
                 }
 
+                // If not over a resize handle, check if over an element
+                if (newCursor == Cursors.Default)
+                {
+                    BaseElement elementAtPoint = GetElementAtPoint(e.Location);
+                    if (elementAtPoint != null)
+                    {
+                        newCursor = Cursors.Hand;
+                    }
+                }
+
                 if (Canvas_Panel.Cursor != newCursor)
                 {
                     Canvas_Panel.Cursor = newCursor;
@@ -391,13 +401,11 @@ namespace Sales_Tracker.ReportGenerator
                 if (e.Button == MouseButtons.Left && !_isDragging && !_isMultiSelecting &&
                     _mouseDownPoint != Point.Empty && GetElementAtPoint(_mouseDownPoint) == null)
                 {
-                    // Check if mouse has moved beyond threshold
                     int deltaX = Math.Abs(e.X - _mouseDownPoint.X);
                     int deltaY = Math.Abs(e.Y - _mouseDownPoint.Y);
 
                     if (deltaX > DRAG_THRESHOLD || deltaY > DRAG_THRESHOLD)
                     {
-                        // Start rectangle selection
                         bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
                         if (!ctrlPressed)
                         {
@@ -407,7 +415,7 @@ namespace Sales_Tracker.ReportGenerator
                         _isMultiSelecting = true;
                         _selectionStartPoint = _mouseDownPoint;
                         _selectionRectangle = new Rectangle(_mouseDownPoint, Size.Empty);
-                        _mouseDownPoint = Point.Empty;  // Clear to prevent re-triggering
+                        _mouseDownPoint = Point.Empty;
                     }
                 }
             }
@@ -415,7 +423,6 @@ namespace Sales_Tracker.ReportGenerator
             // Handle multi-selection rectangle
             if (_isMultiSelecting)
             {
-                // Update selection rectangle
                 int x = Math.Min(_selectionStartPoint.X, e.X);
                 int y = Math.Min(_selectionStartPoint.Y, e.Y);
                 int width = Math.Abs(e.X - _selectionStartPoint.X);
@@ -424,7 +431,6 @@ namespace Sales_Tracker.ReportGenerator
                 Rectangle oldRect = _selectionRectangle;
                 _selectionRectangle = new Rectangle(x, y, width, height);
 
-                // Invalidate the selection rectangle areas
                 if (oldRect.Width > 0 || oldRect.Height > 0)
                 {
                     oldRect.Inflate(2, 2);
@@ -445,35 +451,51 @@ namespace Sales_Tracker.ReportGenerator
             // Handle dragging multiple elements
             else if (_isDragging && _selectedElements.Count > 0)
             {
-                // Move all selected elements together
                 int deltaX = e.X - _dragStartPoint.X;
                 int deltaY = e.Y - _dragStartPoint.Y;
 
-                bool canMove = true;
+                // Calculate the actual movement possible for each axis
+                int actualDeltaX = deltaX;
+                int actualDeltaY = deltaY;
 
-                // Check if all elements can move
+                // Find the most restrictive limits
                 foreach (BaseElement element in _selectedElements)
                 {
-                    Rectangle newBounds = element.Bounds;
-                    newBounds.X += deltaX;
-                    newBounds.Y += deltaY;
+                    Rectangle testBounds = element.Bounds;
 
-                    if (newBounds.X < 0 || newBounds.Right > Canvas_Panel.Width ||
-                        newBounds.Y < 0 || newBounds.Bottom > Canvas_Panel.Height)
+                    // Check X axis limits
+                    int newX = testBounds.X + deltaX;
+                    if (newX < 0)
                     {
-                        canMove = false;
-                        break;
+                        actualDeltaX = Math.Max(actualDeltaX, -testBounds.X);
+                    }
+                    else if (newX + testBounds.Width > Canvas_Panel.Width)
+                    {
+                        actualDeltaX = Math.Min(actualDeltaX, Canvas_Panel.Width - testBounds.Width - testBounds.X);
+                    }
+
+                    // Check Y axis limits
+                    int newY = testBounds.Y + deltaY;
+                    if (newY < 0)
+                    {
+                        actualDeltaY = Math.Max(actualDeltaY, -testBounds.Y);
+                    }
+                    else if (newY + testBounds.Height > Canvas_Panel.Height)
+                    {
+                        actualDeltaY = Math.Min(actualDeltaY, Canvas_Panel.Height - testBounds.Height - testBounds.Y);
                     }
                 }
 
-                if (canMove)
+                // Apply movement if there's any valid delta
+                if (actualDeltaX != 0 || actualDeltaY != 0)
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
                         Rectangle oldBounds = element.Bounds;
                         Rectangle newBounds = element.Bounds;
-                        newBounds.X += deltaX;
-                        newBounds.Y += deltaY;
+
+                        newBounds.X += actualDeltaX;
+                        newBounds.Y += actualDeltaY;
 
                         // Apply grid snapping if enabled
                         if (_snapToGrid)
@@ -486,7 +508,10 @@ namespace Sales_Tracker.ReportGenerator
                         InvalidateElementRegion(oldBounds);
                         InvalidateElementRegion(newBounds);
                     }
-                    _dragStartPoint = e.Location;
+
+                    // Update drag point based on actual movement
+                    _dragStartPoint.X += actualDeltaX;
+                    _dragStartPoint.Y += actualDeltaY;
 
                     // Defer property update
                     _propertyUpdateTimer.Stop();
@@ -499,19 +524,40 @@ namespace Sales_Tracker.ReportGenerator
                 int deltaX = e.X - _dragStartPoint.X;
                 int deltaY = e.Y - _dragStartPoint.Y;
 
+                Rectangle oldBounds = _selectedElement.Bounds;
                 Rectangle newBounds = _selectedElement.Bounds;
-                newBounds.X += deltaX;
-                newBounds.Y += deltaY;
 
-                // Keep within canvas bounds
-                if (newBounds.X >= 0 && newBounds.Right <= Canvas_Panel.Width &&
-                    newBounds.Y >= 0 && newBounds.Bottom <= Canvas_Panel.Height)
+                // Calculate clamped position for X axis
+                int newX = oldBounds.X + deltaX;
+                newX = Math.Max(0, Math.Min(newX, Canvas_Panel.Width - oldBounds.Width));
+                int actualDeltaX = newX - oldBounds.X;
+
+                // Calculate clamped position for Y axis
+                int newY = oldBounds.Y + deltaY;
+                newY = Math.Max(0, Math.Min(newY, Canvas_Panel.Height - oldBounds.Height));
+                int actualDeltaY = newY - oldBounds.Y;
+
+                if (actualDeltaX != 0 || actualDeltaY != 0)
                 {
-                    InvalidateElementRegion(_selectedElement.Bounds);
+                    newBounds.X = newX;
+                    newBounds.Y = newY;
+
+                    // Apply grid snapping if enabled
+                    if (_snapToGrid)
+                    {
+                        newBounds = SnapToGrid(newBounds);
+                        actualDeltaX = newBounds.X - oldBounds.X;
+                        actualDeltaY = newBounds.Y - oldBounds.Y;
+                    }
+
                     _selectedElement.Bounds = newBounds;
+
+                    InvalidateElementRegion(oldBounds);
                     InvalidateElementRegion(newBounds);
 
-                    _dragStartPoint = e.Location;
+                    // Update drag point based on actual movement
+                    _dragStartPoint.X += actualDeltaX;
+                    _dragStartPoint.Y += actualDeltaY;
 
                     // Defer property panel update
                     _propertyUpdateTimer.Stop();
