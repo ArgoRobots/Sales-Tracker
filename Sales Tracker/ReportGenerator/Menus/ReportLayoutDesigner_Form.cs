@@ -1,7 +1,9 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -79,19 +81,6 @@ namespace Sales_Tracker.ReportGenerator
                 System.Reflection.BindingFlags.Instance |
                 System.Reflection.BindingFlags.NonPublic,
                 null, Canvas_Panel, [true]);
-
-            // Configure canvas panel for drag-and-drop
-            Canvas_Panel.AllowDrop = true;
-            Canvas_Panel.DragEnter += Canvas_Panel_DragEnter;
-            Canvas_Panel.DragDrop += Canvas_Panel_DragDrop;
-            Canvas_Panel.Paint += Canvas_Panel_Paint;
-            Canvas_Panel.MouseDown += Canvas_Panel_MouseDown;
-            Canvas_Panel.MouseMove += Canvas_Panel_MouseMove;
-            Canvas_Panel.MouseUp += Canvas_Panel_MouseUp;
-            Canvas_Panel.KeyDown += Canvas_Panel_KeyDown;
-
-            // Set canvas backgrounds
-            Canvas_Panel.BackColor = Color.White;
 
             // Initialize property update timer
             _propertyUpdateTimer = new Timer
@@ -222,6 +211,8 @@ namespace Sales_Tracker.ReportGenerator
 
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PanelCloseFilter PanelCloseFilter { get; set; }
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(ReportElementType)))
@@ -601,12 +592,20 @@ namespace Sales_Tracker.ReportGenerator
                 UpdatePropertyValues();
                 NotifyParentValidationChanged();
             }
-        }
-        private void Canvas_Panel_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete && _selectedElement != null)
+
+            if (e.Button == MouseButtons.Right)
             {
-                DeleteSelected();
+                bool hasSelection = _selectedElements.Count > 0 || _selectedElement != null;
+                Point formLocation = PointToClient(Canvas_Panel.PointToScreen(e.Location));
+
+                RightClickElementMenu.ShowMenu(formLocation, this, hasSelection);
+
+                // Install the filter when menu is shown
+                PanelCloseFilter ??= new PanelCloseFilter(
+                        RightClickElementMenu.RightClickElement_Panel,
+                        ReportGenerator_Form.ClosePanels
+                    );
+                Application.AddMessageFilter(PanelCloseFilter);
             }
         }
 
@@ -964,7 +963,7 @@ namespace Sales_Tracker.ReportGenerator
             UpdatePropertiesForSelection();
             UpdateLayoutButtonStates();
         }
-        private void SelectAllElements()
+        public void SelectAllElements()
         {
             if (ReportConfig?.Elements == null) { return; }
 
@@ -1500,7 +1499,7 @@ namespace Sales_Tracker.ReportGenerator
                 _ => null
             };
         }
-        private void DuplicateSelected()
+        public void DuplicateSelected()
         {
             if (_selectedElements.Count == 0 || ReportConfig == null) { return; }
 
@@ -1529,7 +1528,7 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
-        private void DeleteSelected()
+        public void DeleteSelected()
         {
             // Handle both old single-selection and multi-selection
             if (_selectedElements.Count == 0 && _selectedElement == null)

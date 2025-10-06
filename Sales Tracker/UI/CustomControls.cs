@@ -42,6 +42,7 @@ namespace Sales_Tracker.UI
             RightClickChartMenu.ConstructRightClickChartMenu();
             CompanyLogo.ConstructCompanyLogoRightClickMenu();
             ColumnVisibilityPanel.ConstructPanel();
+            RightClickElementMenu.ConstructRightClickElementMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
@@ -51,6 +52,8 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickRowMenu.RightClickDataGridView_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickChartMenu.RightClickChart_Panel);
+            LanguageManager.UpdateLanguageForControl(CompanyLogo.CompanyLogoRightClick_Panel);
+            LanguageManager.UpdateLanguageForControl(RightClickElementMenu.RightClickElement_Panel);
         }
 
         // Properties

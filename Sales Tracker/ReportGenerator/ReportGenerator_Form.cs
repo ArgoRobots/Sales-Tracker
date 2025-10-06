@@ -315,5 +315,13 @@ namespace Sales_Tracker.ReportGenerator
         {
             UpdateNavigationButtons();
         }
+        public static void ClosePanels()
+        {
+            if (ReportLayoutDesigner_Form.Instance?.PanelCloseFilter != null)
+            {
+                Application.RemoveMessageFilter(ReportLayoutDesigner_Form.Instance.PanelCloseFilter);
+            }
+            RightClickElementMenu.RightClickElement_Panel.Parent?.Controls.Remove(RightClickElementMenu.RightClickElement_Panel);
+        }
     }
 }
