@@ -39,38 +39,12 @@
         /// </summary>
         public static void DisableScrollAndForwardToPanel(this Control control)
         {
-            void handler(object? sender, MouseEventArgs e)
-            {
-                // Find parent scrollable panel
-                Panel? panel = control.Parent as Panel;
-                while (panel != null && !panel.AutoScroll)
-                {
-                    panel = panel.Parent as Panel;
-                }
+            // Create message filter for this specific control
+            ScrollMessageFilter filter = new(control);
+            Application.AddMessageFilter(filter);
 
-                if (panel != null)
-                {
-                    // Forward scroll to panel
-                    int newValue = panel.VerticalScroll.Value - e.Delta;
-                    panel.VerticalScroll.Value = Math.Clamp(newValue,
-                        panel.VerticalScroll.Minimum,
-                        panel.VerticalScroll.Maximum);
-                    panel.PerformLayout();
-
-                    // Mark as handled
-                    if (e is HandledMouseEventArgs args)
-                    {
-                        args.Handled = true;
-                    }
-                }
-            }
-
-            // Attach to main control and all children (some Guna controls have children controls)
-            control.MouseWheel += handler;
-            foreach (Control child in control.Controls)
-            {
-                child.MouseWheel += handler;
-            }
+            // Remove filter when control is disposed
+            control.Disposed += (s, e) => Application.RemoveMessageFilter(filter);
         }
     }
 }
