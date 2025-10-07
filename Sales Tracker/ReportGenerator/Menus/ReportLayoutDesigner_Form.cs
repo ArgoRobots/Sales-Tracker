@@ -448,7 +448,6 @@ namespace Sales_Tracker.ReportGenerator
 
                         _isMultiSelecting = true;
                         _selectionRectangle = new Rectangle(_selectionStartPoint, Size.Empty);
-                        _selectionStartPoint = Point.Empty;
                     }
                 }
             }
