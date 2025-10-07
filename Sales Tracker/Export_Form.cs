@@ -174,12 +174,12 @@ namespace Sales_Tracker
         }
         private void ExportReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ExportReceipts_CheckBox.Checked = !ExportReceipts_CheckBox.Checked;
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             // Select folder
             VistaFolderBrowserDialog dialog = new();
@@ -191,7 +191,7 @@ namespace Sales_Tracker
         }
         private async void Export_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             // Check if there's any data to export
             if (!HasAnyDataToExport())
@@ -432,10 +432,6 @@ namespace Sales_Tracker
                    main.CategorySaleList.Count > 0 ||
                    main.CompanyList.Count > 0 ||
                    main.AccountantList.Count > 0;
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }
