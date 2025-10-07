@@ -100,11 +100,11 @@ namespace Sales_Tracker.ReportGenerator
             // Add buttons based on selection state
             if (hasSelection)
             {
+                flowPanel.Controls.Add(RightClickElement_SelectAllBtn);
                 flowPanel.Controls.Add(RightClickElement_DuplicateBtn);
-                flowPanel.Controls.Add(RightClickElement_DeleteBtn);
                 flowPanel.Controls.Add(RightClickElement_BringToFrontBtn);
                 flowPanel.Controls.Add(RightClickElement_SendToBackBtn);
-                flowPanel.Controls.Add(RightClickElement_SelectAllBtn);
+                flowPanel.Controls.Add(RightClickElement_DeleteBtn);
             }
             else
             {
