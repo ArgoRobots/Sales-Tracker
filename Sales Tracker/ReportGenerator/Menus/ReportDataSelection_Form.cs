@@ -245,6 +245,14 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     ChartSelection_CheckedListBox.SetItemChecked(i, true);
                 }
+
+                // Update the report configuration with current selections
+                if (ReportConfig != null)
+                {
+                    ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
+                    UpdateElementsFromChartSelection();
+                }
+
                 NotifyParentValidationChanged();
             });
         }
@@ -257,6 +265,13 @@ namespace Sales_Tracker.ReportGenerator
                 for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
                 {
                     ChartSelection_CheckedListBox.SetItemChecked(i, false);
+                }
+
+                // Update the report configuration with current selections
+                if (ReportConfig != null)
+                {
+                    ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
+                    UpdateElementsFromChartSelection();
                 }
 
                 NotifyParentValidationChanged();
