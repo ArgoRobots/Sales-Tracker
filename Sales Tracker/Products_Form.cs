@@ -149,7 +149,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Products_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             CenterSelectedDataGridView();
         }
         private void Products_Form_Shown(object sender, EventArgs e)
@@ -214,7 +214,7 @@ namespace Sales_Tracker
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (Purchase_RadioButton.Checked)
             {
@@ -232,7 +232,7 @@ namespace Sales_Tracker
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (Sale_RadioButton.Checked)
             {
@@ -507,10 +507,6 @@ namespace Sales_Tracker
 
             // Restore selection
             Type_ComboBox.SelectedIndex = index != -1 ? index : 0;
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }

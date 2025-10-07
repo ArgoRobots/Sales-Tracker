@@ -69,7 +69,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Companies_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             CenterSelectedDataGridView();
         }
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -85,7 +85,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddCompany_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             string name = Company_TextBox.Text.Trim();
             MainMenu_Form.Instance.CompanyList.Add(name);
             int newRowIndex = _company_DataGridView.Rows.Add(name);
@@ -202,10 +202,6 @@ namespace Sales_Tracker
         private void ValidateInputs()
         {
             AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text) && Company_TextBox.Tag.ToString() != "0";
-        }
-        private void CloseAllPanels(object sender, EventArgs? e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }

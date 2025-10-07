@@ -91,7 +91,6 @@ namespace Sales_Tracker
             CountryOfOrigin_Label.Size = new Size(186, 31);
             CountryOfOrigin_Label.TabIndex = 0;
             CountryOfOrigin_Label.Text = "Country of origin";
-            CountryOfOrigin_Label.Click += CloseAllPanels;
             // 
             // CountryOfOrigin_TextBox
             // 
@@ -127,7 +126,6 @@ namespace Sales_Tracker
             AddProduct_Label.Size = new Size(345, 45);
             AddProduct_Label.TabIndex = 0;
             AddProduct_Label.Text = "Add product or service";
-            AddProduct_Label.Click += CloseAllPanels;
             // 
             // ProductName_Label
             // 
@@ -139,7 +137,6 @@ namespace Sales_Tracker
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
             ProductName_Label.Text = "Product name";
-            ProductName_Label.Click += CloseAllPanels;
             // 
             // ProductName_TextBox
             // 
@@ -164,7 +161,6 @@ namespace Sales_Tracker
             ProductName_TextBox.Size = new Size(300, 50);
             ProductName_TextBox.TabIndex = 4;
             ProductName_TextBox.TextChanged += ProductName_TextBox_TextChanged;
-            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Button
             // 
@@ -197,7 +193,6 @@ namespace Sales_Tracker
             ProductCategory_Label.Size = new Size(189, 31);
             ProductCategory_Label.TabIndex = 0;
             ProductCategory_Label.Text = "Product category";
-            ProductCategory_Label.Click += CloseAllPanels;
             // 
             // ProductCategory_TextBox
             // 
@@ -246,7 +241,6 @@ namespace Sales_Tracker
             ProductID_TextBox.Size = new Size(180, 50);
             ProductID_TextBox.TabIndex = 3;
             ProductID_TextBox.TextChanged += ValidateInputs;
-            ProductID_TextBox.Click += CloseAllPanels;
             // 
             // WarningProductName_PictureBox
             // 
@@ -259,7 +253,6 @@ namespace Sales_Tracker
             WarningProductName_PictureBox.TabIndex = 37;
             WarningProductName_PictureBox.TabStop = false;
             WarningProductName_PictureBox.Visible = false;
-            WarningProductName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningProductName_Label
             // 
@@ -272,7 +265,6 @@ namespace Sales_Tracker
             WarningProductName_Label.TabIndex = 0;
             WarningProductName_Label.Text = "Product already exists";
             WarningProductName_Label.Visible = false;
-            WarningProductName_Label.Click += CloseAllPanels;
             // 
             // WarningCategory_PictureBox
             // 
@@ -285,7 +277,6 @@ namespace Sales_Tracker
             WarningCategory_PictureBox.TabIndex = 39;
             WarningCategory_PictureBox.TabStop = false;
             WarningCategory_PictureBox.Visible = false;
-            WarningCategory_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCategory_LinkLabel
             // 
@@ -330,7 +321,6 @@ namespace Sales_Tracker
             Search_TextBox.TabIndex = 9;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
-            Search_TextBox.Click += CloseAllPanels;
             // 
             // ProductID_Label
             // 
@@ -342,7 +332,6 @@ namespace Sales_Tracker
             ProductID_Label.Size = new Size(122, 31);
             ProductID_Label.TabIndex = 0;
             ProductID_Label.Text = "Product ID";
-            ProductID_Label.Click += CloseAllPanels;
             // 
             // ShowingResultsFor_Label
             // 
@@ -354,7 +343,6 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 0;
             ShowingResultsFor_Label.Text = "Showing results for";
-            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // CompanyOfOrigin_Label
             // 
@@ -366,7 +354,6 @@ namespace Sales_Tracker
             CompanyOfOrigin_Label.Size = new Size(203, 31);
             CompanyOfOrigin_Label.TabIndex = 0;
             CompanyOfOrigin_Label.Text = "Company of origin";
-            CompanyOfOrigin_Label.Click += CloseAllPanels;
             // 
             // CompanyOfOrigin_TextBox
             // 
@@ -403,7 +390,6 @@ namespace Sales_Tracker
             WarningCompany_PictureBox.TabIndex = 47;
             WarningCompany_PictureBox.TabStop = false;
             WarningCompany_PictureBox.Visible = false;
-            WarningCompany_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCompany_LinkLabel
             // 
@@ -433,7 +419,6 @@ namespace Sales_Tracker
             ProductsRemaining_LinkLabel.TabIndex = 0;
             ProductsRemaining_LinkLabel.Text = "Products remaining";
             ProductsRemaining_LinkLabel.LinkClicked += ProductsRemaining_LinkLabel_LinkClicked;
-            ProductsRemaining_LinkLabel.Click += CloseAllPanels;
             // 
             // ForSale_Label
             // 
@@ -580,7 +565,6 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Products_Form_FormClosed;
             Shown += Products_Form_Shown;
-            Click += CloseAllPanels;
             Resize += Products_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningProductName_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningCategory_PictureBox).EndInit();

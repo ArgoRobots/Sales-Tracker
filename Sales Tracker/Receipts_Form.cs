@@ -103,7 +103,7 @@ namespace Sales_Tracker
         // Event handlers
         private void ClearFilters_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             IncludePurchaseReceipts_CheckBox.Checked = true;
             IncludeSaleReceipts_CheckBox.Checked = true;
             FilterByDate_CheckBox.Checked = false;
@@ -113,32 +113,32 @@ namespace Sales_Tracker
         }
         private void ExportSelected_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ReceiptManager.ExportSelectedReceipts(Receipts_DataGridView);
         }
         private void FilterByDate_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             FilterByDate_CheckBox.Checked = !FilterByDate_CheckBox.Checked;
         }
         private void IncludeSaleReceipts_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             AddAllReceiptsAndGetOldestDate();
         }
         private void IncludeSaleReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             IncludeSaleReceipts_CheckBox.Checked = !IncludeSaleReceipts_CheckBox.Checked;
         }
         private void IncludePurchaseReceipts_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             AddAllReceiptsAndGetOldestDate();
         }
         private void IncludePurchaseReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             IncludePurchaseReceipts_CheckBox.Checked = !IncludePurchaseReceipts_CheckBox.Checked;
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
@@ -147,7 +147,7 @@ namespace Sales_Tracker
         }
         private void SelectAll_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Receipts_DataGridView.SelectAll();
         }
 
@@ -297,7 +297,7 @@ namespace Sales_Tracker
         }
         private void FilterDataGridView(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             foreach (DataGridViewRow row in Receipts_DataGridView.Rows)
             {
@@ -317,10 +317,6 @@ namespace Sales_Tracker
 
             DataGridViewManager.UpdateRowColors(Receipts_DataGridView);
             LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }

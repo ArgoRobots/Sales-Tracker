@@ -1154,7 +1154,7 @@ namespace Sales_Tracker
         // Event handlers
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             if (Selected == SelectedOption.Purchases) { return; }
 
             Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -1182,7 +1182,7 @@ namespace Sales_Tracker
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             if (Selected == SelectedOption.Sales) { return; }
 
             Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -1210,7 +1210,7 @@ namespace Sales_Tracker
         }
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             if (Selected == SelectedOption.Analytics) { return; }
 
             Selected = SelectedOption.Analytics;
@@ -1222,44 +1222,44 @@ namespace Sales_Tracker
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new AddPurchase_Form());
         }
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new AddSale_Form());
         }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Accountants_Form());
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Products_Form(true));
         }
         private void ManageCompanies_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Companies_Form());
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Categories_Form(true));
         }
         private void LineChart_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             LoadOrRefreshMainCharts(true);
             LoadOrRefreshAnalyticsCharts(true);
             SetAllAnalyticTabsAsNotLoaded();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             CustomControls.Rename_TextBox.Text = CompanyName_Label.Text;
             CustomControls.Rename_TextBox.Font = CompanyName_Label.Font;
             Controls.Add(CustomControls.Rename_TextBox);
@@ -1340,7 +1340,7 @@ namespace Sales_Tracker
             }
             else
             {
-                CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
 
                 // Set the location for the panel
                 DateRangePanel.Location = new Point(
@@ -2391,7 +2391,7 @@ namespace Sales_Tracker
                 BorderRadius = 8,
                 Anchor = AnchorStyles.Top
             };
-            tabButtonsPanel.Click += (s, e) => CloseAllPanels(null, null);
+            tabButtonsPanel.Click += (s, e) => CustomControls.CloseAllPanels();
 
             // Create tab buttons
             List<Guna2Button> tabButtons = [];
@@ -2452,7 +2452,7 @@ namespace Sales_Tracker
         }
         private void TabButton_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (sender is Guna2Button clickedButton && clickedButton.Tag is AnalyticsTab tabKey)
             {
@@ -2849,7 +2849,7 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _worldMapDataType_Label.Click += (s, e) => CloseAllPanels(null, null);
+            _worldMapDataType_Label.Click += (s, e) => CustomControls.CloseAllPanels();
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             // Combined data option
@@ -2872,7 +2872,7 @@ namespace Sales_Tracker
             _combinedData_Label.Click += (s, e) =>
             {
                 _combinedData_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
             };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
@@ -2896,7 +2896,7 @@ namespace Sales_Tracker
             _purchasesOnly_Label.Click += (s, e) =>
             {
                 _purchasesOnly_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
             };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
@@ -2920,7 +2920,7 @@ namespace Sales_Tracker
             _salesOnly_Label.Click += (s, e) =>
             {
                 _salesOnly_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
             };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
@@ -2931,7 +2931,7 @@ namespace Sales_Tracker
                 BorderThickness = 0,
                 Visible = false
             };
-            _worldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
+            _worldMapControls_Panel.Click += (s, e) => CustomControls.CloseAllPanels();
 
             // Add all controls to panel
             _worldMapControls_Panel.Controls.AddRange([
@@ -3005,7 +3005,7 @@ namespace Sales_Tracker
         }
         private void WorldMapDataType_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {

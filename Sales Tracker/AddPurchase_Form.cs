@@ -123,7 +123,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
             {
@@ -154,7 +154,7 @@ namespace Sales_Tracker
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             if (MultipleItems_CheckBox.Checked)
             {
                 if (_addButton == null)
@@ -178,7 +178,7 @@ namespace Sales_Tracker
         }
         private void Receipt_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             // Select file
             OpenFileDialog dialog = new();
@@ -846,7 +846,6 @@ namespace Sales_Tracker
                 Left = left,
                 AutoSize = true
             };
-            label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
         private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, bool closeAllPanels, Control parent)
@@ -885,10 +884,6 @@ namespace Sales_Tracker
                 case CustomControls.KeyPressValidation.None:
                     break;
             }
-            if (closeAllPanels)
-            {
-                textBox.Click += CloseAllPanels;
-            }
             textBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(textBox);
 
@@ -919,7 +914,7 @@ namespace Sales_Tracker
         }
         private void MinusButton_Click(object? sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             CustomCircleButton button = (CustomCircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
@@ -943,7 +938,6 @@ namespace Sales_Tracker
                 Visible = false
             };
             ThemeManager.CustomizeScrollBar(_flowPanel);
-            _flowPanel.Click += CloseAllPanels;
             Controls.Add(_flowPanel);
         }
         private void ConstructAddButton()
@@ -970,7 +964,7 @@ namespace Sales_Tracker
 
             _addButton.Click += (_, _) =>
             {
-                CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
@@ -1049,10 +1043,6 @@ namespace Sales_Tracker
                     !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
             }
             AddPurchase_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }

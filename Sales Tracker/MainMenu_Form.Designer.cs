@@ -119,7 +119,6 @@
             MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges16;
             MainTop_Panel.Size = new Size(2404, 90);
             MainTop_Panel.TabIndex = 6;
-            MainTop_Panel.Click += CloseAllPanels;
             // 
             // Companies_Button
             // 
@@ -288,7 +287,6 @@
             Top_Panel.Name = "Top_Panel";
             Top_Panel.Size = new Size(2404, 45);
             Top_Panel.TabIndex = 0;
-            Top_Panel.Click += CloseAllPanels;
             // 
             // Saved_Label
             // 
@@ -301,7 +299,6 @@
             Saved_Label.TabIndex = 2;
             Saved_Label.Text = "Saved";
             Saved_Label.Visible = false;
-            Saved_Label.Click += CloseAllPanels;
             // 
             // Help_Button
             // 
@@ -383,7 +380,6 @@
             Total_Label.Size = new Size(239, 31);
             Total_Label.TabIndex = 5;
             Total_Label.Text = "Totals: (x transactions)";
-            Total_Label.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -395,7 +391,6 @@
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 3;
             Quantity_Label.Text = "Quantity";
-            Quantity_Label.Click += CloseAllPanels;
             // 
             // Price_Label
             // 
@@ -407,7 +402,6 @@
             Price_Label.Size = new Size(64, 31);
             Price_Label.TabIndex = 5;
             Price_Label.Text = "Price";
-            Price_Label.Click += CloseAllPanels;
             // 
             // Shipping_Label
             // 
@@ -419,7 +413,6 @@
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 7;
             Shipping_Label.Text = "Shipping";
-            Shipping_Label.Click += CloseAllPanels;
             // 
             // Tax_Label
             // 
@@ -431,7 +424,6 @@
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 9;
             Tax_Label.Text = "Tax";
-            Tax_Label.Click += CloseAllPanels;
             // 
             // Total_Panel
             // 
@@ -450,7 +442,6 @@
             Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Total_Panel.Size = new Size(1948, 75);
             Total_Panel.TabIndex = 2;
-            Total_Panel.Click += CloseAllPanels;
             // 
             // Discount_Label
             // 
@@ -462,7 +453,6 @@
             Discount_Label.Size = new Size(104, 31);
             Discount_Label.TabIndex = 12;
             Discount_Label.Text = "Discount";
-            Discount_Label.Click += CloseAllPanels;
             // 
             // ChargedDifference_Label
             // 
@@ -474,7 +464,6 @@
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
             ChargedDifference_Label.Text = "Charged difference";
-            ChargedDifference_Label.Click += CloseAllPanels;
             // 
             // Fee_Label
             // 
@@ -486,7 +475,6 @@
             Fee_Label.Size = new Size(49, 31);
             Fee_Label.TabIndex = 10;
             Fee_Label.Text = "Fee";
-            Fee_Label.Click += CloseAllPanels;
             // 
             // Sales_Button
             // 
@@ -543,7 +531,6 @@
             LineChart_Label.Size = new Size(114, 31);
             LineChart_Label.TabIndex = 16;
             LineChart_Label.Text = "Line chart";
-            LineChart_Label.Click += CloseAllPanels;
             // 
             // LineChart_ToggleSwitch
             // 
@@ -620,7 +607,6 @@
             Search_TextBox.TabIndex = 55;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
-            Search_TextBox.Click += CloseAllPanels;
             Search_TextBox.KeyDown += Search_TextBox_KeyDown;
             // 
             // ShowingResultsFor_Label
@@ -634,7 +620,6 @@
             ShowingResultsFor_Label.TabIndex = 56;
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.TextAlign = ContentAlignment.MiddleCenter;
-            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // TimeRange_Button
             // 
@@ -686,7 +671,6 @@
             Load += MainMenu_Form_Load;
             Shown += MainMenu_form_Shown;
             ResizeBegin += MainMenu_Form_ResizeBegin;
-            Click += CloseAllPanels;
             KeyDown += MainMenu_form_KeyDown;
             Resize += MainMenu_form_Resize;
             MainTop_Panel.ResumeLayout(false);

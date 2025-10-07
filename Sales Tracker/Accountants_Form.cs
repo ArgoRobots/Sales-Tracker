@@ -72,7 +72,7 @@ namespace Sales_Tracker
         }
         private void Accountants_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             CenterDataGridView();
         }
         private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -83,7 +83,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             string name = Accountant_TextBox.Text.Trim();
             MainMenu_Form.Instance.AccountantList.Add(name);
             int newRowIndex = _accountant_DataGridView.Rows.Add(name);
@@ -205,10 +205,6 @@ namespace Sales_Tracker
                 AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text)
                     && Accountant_TextBox.Tag.ToString() != "0";
             }
-        }
-        private void CloseAllPanels(object sender, EventArgs? e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }
