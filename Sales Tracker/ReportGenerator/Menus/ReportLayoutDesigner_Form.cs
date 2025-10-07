@@ -645,6 +645,19 @@ namespace Sales_Tracker.ReportGenerator
 
             if (e.Button == MouseButtons.Right)
             {
+                // Check if there's an element at the click location
+                BaseElement clickedElement = GetElementAtPoint(e.Location);
+
+                if (clickedElement != null)
+                {
+                    // If the clicked element is not already selected, select it
+                    if (!_selectedElements.Contains(clickedElement) && _selectedElement != clickedElement)
+                    {
+                        bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                        SelectElement(clickedElement, ctrlPressed);
+                    }
+                }
+
                 bool hasSelection = _selectedElements.Count > 0 || _selectedElement != null;
                 Point formLocation = PointToClient(Canvas_Panel.PointToScreen(e.Location));
 
@@ -652,9 +665,9 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Install the filter when menu is shown
                 PanelCloseFilter ??= new PanelCloseFilter(
-                        RightClickElementMenu.RightClickElement_Panel,
-                        ReportGenerator_Form.ClosePanels
-                    );
+                    RightClickElementMenu.RightClickElement_Panel,
+                    ReportGenerator_Form.ClosePanels
+                );
                 Application.AddMessageFilter(PanelCloseFilter);
             }
         }
