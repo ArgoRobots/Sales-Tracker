@@ -2330,7 +2330,7 @@ namespace Sales_Tracker
                 DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
-                Rental_DataGridView,
+           //     Rental_DataGridView,
                 Profits_Chart,
                 Total_Panel
             ];
