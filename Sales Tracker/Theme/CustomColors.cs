@@ -67,7 +67,7 @@ namespace Sales_Tracker.Theme
         {
             // Control colors
             ControlBack = Color.FromArgb(62, 62, 66);
-            ControlDisabledBack = Color.Gray;
+            ControlDisabledBack = Color.FromArgb(45, 45, 48);   
             ControlBorder = Color.FromArgb(130, 130, 130);
             ControlUncheckedBorder = Color.FromArgb(125, 137, 149);
             ControlPanelBorder = Color.FromArgb(110, 110, 110);
