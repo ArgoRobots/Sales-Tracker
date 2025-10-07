@@ -966,33 +966,47 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Z-Order tool methods
-        private void BringElementToFront()
+        public void BringElementToFront()
         {
-            if (_selectedElements.Count == 0 || ReportConfig?.Elements == null) { return; }
+            if (ReportConfig?.Elements == null) { return; }
+
+            // Get elements to move
+            List<BaseElement> elementsToMove = _selectedElements.Count > 0
+                ? _selectedElements.ToList()
+                : (_selectedElement != null ? [_selectedElement] : []);
+
+            if (elementsToMove.Count == 0) { return; }
 
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
 
-            foreach (BaseElement? element in _selectedElements.OrderBy(e => e.ZOrder))
+            foreach (BaseElement element in elementsToMove.OrderBy(e => e.ZOrder))
             {
                 element.ZOrder = ++maxZOrder;
             }
 
             Canvas_Panel.Invalidate();
         }
-        private void SendElementToBack()
+        public void SendElementToBack()
         {
-            if (_selectedElements.Count == 0 || ReportConfig?.Elements == null) { return; }
+            if (ReportConfig?.Elements == null) { return; }
+
+            // Get elements to move
+            List<BaseElement> elementsToMove = _selectedElements.Count > 0
+                ? _selectedElements.ToList()
+                : (_selectedElement != null ? [_selectedElement] : []);
+
+            if (elementsToMove.Count == 0) { return; }
 
             // Shift all non-selected elements up
-            int shiftAmount = _selectedElements.Count;
-            foreach (BaseElement? element in ReportConfig.Elements.Where(e => !_selectedElements.Contains(e)))
+            int shiftAmount = elementsToMove.Count;
+            foreach (BaseElement element in ReportConfig.Elements.Where(e => !elementsToMove.Contains(e)))
             {
                 element.ZOrder += shiftAmount;
             }
 
             // Set selected elements to bottom
             int zOrder = 0;
-            foreach (BaseElement? element in _selectedElements.OrderBy(e => e.ZOrder))
+            foreach (BaseElement element in elementsToMove.OrderBy(e => e.ZOrder))
             {
                 element.ZOrder = zOrder++;
             }
@@ -1406,7 +1420,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (ReportConfig?.Elements == null) { return; }
 
-            foreach (BaseElement element in ReportConfig.Elements.Where(e => e.IsVisible))
+            // Sort by Z-order so elements are drawn in the correct layer order
+            foreach (BaseElement element in ReportConfig.Elements.Where(e => e.IsVisible).OrderBy(e => e.ZOrder))
             {
                 // Only draw elements that intersect with the clip rectangle
                 if (clipRect.IntersectsWith(element.Bounds))

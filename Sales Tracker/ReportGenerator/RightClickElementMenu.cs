@@ -14,6 +14,8 @@ namespace Sales_Tracker.ReportGenerator
         public static Guna2Button RightClickElement_DeleteBtn { get; private set; }
         public static Guna2Button RightClickElement_DuplicateBtn { get; private set; }
         public static Guna2Button RightClickElement_SelectAllBtn { get; private set; }
+        public static Guna2Button RightClickElement_BringToFrontBtn { get; private set; }
+        public static Guna2Button RightClickElement_SendToBackBtn { get; private set; }
 
         // Constructor
         public static void ConstructRightClickElementMenu()
@@ -22,7 +24,8 @@ namespace Sales_Tracker.ReportGenerator
             int scaledButtonHeight = (int)(CustomControls.PanelButtonHeight * scale);
             int scaledSpaceForPanel = (int)(CustomControls.SpaceForPanel * scale);
 
-            int calculatedHeight = 3 * scaledButtonHeight + scaledSpaceForPanel;
+            // Updated to accommodate 5 buttons maximum
+            int calculatedHeight = 5 * scaledButtonHeight + scaledSpaceForPanel;
 
             RightClickElement_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, calculatedHeight),
@@ -50,6 +53,24 @@ namespace Sales_Tracker.ReportGenerator
             );
             RightClickElement_SelectAllBtn.Click += SelectAllElements;
             CustomControls.ConstructKeyShortcut("Ctrl+A", RightClickElement_SelectAllBtn);
+
+            // Bring to Front button
+            RightClickElement_BringToFrontBtn = CustomControls.ConstructBtnForMenu(
+                "Bring to front",
+                CustomControls.PanelBtnWidth,
+                true,
+                flowPanel
+            );
+            RightClickElement_BringToFrontBtn.Click += BringToFront;
+
+            // Send to Back button
+            RightClickElement_SendToBackBtn = CustomControls.ConstructBtnForMenu(
+                "Send to back",
+                CustomControls.PanelBtnWidth,
+                true,
+                flowPanel
+            );
+            RightClickElement_SendToBackBtn.Click += SendToBack;
 
             // Delete button
             RightClickElement_DeleteBtn = CustomControls.ConstructBtnForMenu(
@@ -79,6 +100,16 @@ namespace Sales_Tracker.ReportGenerator
             ReportLayoutDesigner_Form.Instance.SelectAllElements();
             HideMenu();
         }
+        private static void BringToFront(object sender, EventArgs e)
+        {
+            ReportLayoutDesigner_Form.Instance.BringElementToFront();
+            HideMenu();
+        }
+        private static void SendToBack(object sender, EventArgs e)
+        {
+            ReportLayoutDesigner_Form.Instance.SendElementToBack();
+            HideMenu();
+        }
 
         /// <summary>
         /// Shows the right-click menu at the specified location.
@@ -98,6 +129,8 @@ namespace Sales_Tracker.ReportGenerator
             {
                 flowPanel.Controls.Add(RightClickElement_DuplicateBtn);
                 flowPanel.Controls.Add(RightClickElement_DeleteBtn);
+                flowPanel.Controls.Add(RightClickElement_BringToFrontBtn);
+                flowPanel.Controls.Add(RightClickElement_SendToBackBtn);
                 flowPanel.Controls.Add(RightClickElement_SelectAllBtn);
             }
             else
