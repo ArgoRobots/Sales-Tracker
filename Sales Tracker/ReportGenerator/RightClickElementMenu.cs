@@ -24,61 +24,34 @@ namespace Sales_Tracker.ReportGenerator
             int scaledButtonHeight = (int)(CustomControls.PanelButtonHeight * scale);
             int scaledSpaceForPanel = (int)(CustomControls.SpaceForPanel * scale);
 
-            // Updated to accommodate 5 buttons maximum
             int calculatedHeight = 5 * scaledButtonHeight + scaledSpaceForPanel;
 
             RightClickElement_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, calculatedHeight),
-                "rightClickElement_Panel"
-            );
+                "rightClickElement_Panel");
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickElement_Panel.Controls[0];
 
             // Duplicate button
-            RightClickElement_DuplicateBtn = CustomControls.ConstructBtnForMenu(
-                "Duplicate",
-                CustomControls.PanelBtnWidth,
-                true,
-                flowPanel
-            );
+            RightClickElement_DuplicateBtn = CustomControls.ConstructBtnForMenu("Duplicate", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickElement_DuplicateBtn.Click += DuplicateElement;
             CustomControls.ConstructKeyShortcut("Ctrl+D", RightClickElement_DuplicateBtn);
 
             // Select All button
-            RightClickElement_SelectAllBtn = CustomControls.ConstructBtnForMenu(
-                "Select all",
-                CustomControls.PanelBtnWidth,
-                true,
-                flowPanel
-            );
+            RightClickElement_SelectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickElement_SelectAllBtn.Click += SelectAllElements;
             CustomControls.ConstructKeyShortcut("Ctrl+A", RightClickElement_SelectAllBtn);
 
             // Bring to Front button
-            RightClickElement_BringToFrontBtn = CustomControls.ConstructBtnForMenu(
-                "Bring to front",
-                CustomControls.PanelBtnWidth,
-                true,
-                flowPanel
-            );
+            RightClickElement_BringToFrontBtn = CustomControls.ConstructBtnForMenu("Bring to front", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickElement_BringToFrontBtn.Click += BringToFront;
 
             // Send to Back button
-            RightClickElement_SendToBackBtn = CustomControls.ConstructBtnForMenu(
-                "Send to back",
-                CustomControls.PanelBtnWidth,
-                true,
-                flowPanel
-            );
+            RightClickElement_SendToBackBtn = CustomControls.ConstructBtnForMenu("Send to back", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickElement_SendToBackBtn.Click += SendToBack;
 
             // Delete button
-            RightClickElement_DeleteBtn = CustomControls.ConstructBtnForMenu(
-                "Delete",
-                CustomControls.PanelBtnWidth,
-                true,
-                flowPanel
-            );
+            RightClickElement_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickElement_DeleteBtn.ForeColor = CustomColors.AccentRed;
             RightClickElement_DeleteBtn.Click += DeleteElement;
             CustomControls.ConstructKeyShortcut("Del", RightClickElement_DeleteBtn);
