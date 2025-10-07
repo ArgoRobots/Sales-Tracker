@@ -198,7 +198,6 @@ namespace Sales_Tracker.Settings
             FormClosing += Settings_Form_FormClosing;
             Shown += Settings_Form_Shown;
             ResizeBegin += CloseAllPanels;
-            Click += CloseAllPanels;
             ResumeLayout(false);
         }
 

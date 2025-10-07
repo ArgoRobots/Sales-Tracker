@@ -421,9 +421,5 @@ namespace Sales_Tracker.Settings
             // Save
             _selectedButton = button;
         }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
-        }
     }
 }

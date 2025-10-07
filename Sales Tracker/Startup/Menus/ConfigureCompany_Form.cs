@@ -114,12 +114,12 @@ namespace Sales_Tracker.Startup.Menus
         // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormGetStarted);
         }
         private void Create_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (File.Exists(Directory_TextBox.Text + @"\" + CompanyName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
@@ -208,7 +208,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             // Select folder
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
@@ -336,11 +336,6 @@ namespace Sales_Tracker.Startup.Menus
                 && CustomControls.IsGTextBoxValid(AccountantName_TextBox)
                 && CustomControls.IsGTextBoxValid(Directory_TextBox)
                 && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
-            CustomControls.CloseAllPanels();
         }
     }
 }

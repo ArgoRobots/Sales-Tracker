@@ -261,7 +261,7 @@ namespace Sales_Tracker.UI
         }
         private static void CompanyLogo_Click(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.CloseAllPanels(null, null);
+            MainMenu_Form.Instance.CustomControls.CloseAllPanels();
             BrowseForCompanyLogo();
         }
         private static void CompanyLogo_MouseDown(object sender, MouseEventArgs e)

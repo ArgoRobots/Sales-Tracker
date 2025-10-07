@@ -111,7 +111,6 @@ namespace Sales_Tracker.Startup.Menus
             ConfigureNewCompany_Label.Size = new Size(450, 45);
             ConfigureNewCompany_Label.TabIndex = 0;
             ConfigureNewCompany_Label.Text = "Configure your new company";
-            ConfigureNewCompany_Label.Click += CloseAllPanels;
             // 
             // CompanyName_Label
             // 
@@ -122,7 +121,6 @@ namespace Sales_Tracker.Startup.Menus
             CompanyName_Label.Size = new Size(183, 32);
             CompanyName_Label.TabIndex = 0;
             CompanyName_Label.Text = "Company name";
-            CompanyName_Label.Click += CloseAllPanels;
             // 
             // CompanyName_TextBox
             // 
@@ -147,7 +145,6 @@ namespace Sales_Tracker.Startup.Menus
             CompanyName_TextBox.Size = new Size(1135, 60);
             CompanyName_TextBox.TabIndex = 1;
             CompanyName_TextBox.TextChanged += CompanyName_TextChanged;
-            CompanyName_TextBox.Click += CloseAllPanels;
             // 
             // Directory_TextBox
             // 
@@ -172,7 +169,6 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.Size = new Size(1135, 60);
             Directory_TextBox.TabIndex = 2;
             Directory_TextBox.TextChanged += Directory_textBox_TextChanged;
-            Directory_TextBox.Click += CloseAllPanels;
             // 
             // Directory_Label
             // 
@@ -183,7 +179,6 @@ namespace Sales_Tracker.Startup.Menus
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
             Directory_Label.Text = "Directory";
-            Directory_Label.Click += CloseAllPanels;
             // 
             // WarningName_Label
             // 
@@ -195,7 +190,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_Label.TabIndex = 0;
             WarningName_Label.Text = "Warning";
             WarningName_Label.Visible = false;
-            WarningName_Label.Click += CloseAllPanels;
             // 
             // WarningDir_Label
             // 
@@ -207,7 +201,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_Label.TabIndex = 0;
             WarningDir_Label.Text = "Warning";
             WarningDir_Label.Visible = false;
-            WarningDir_Label.Click += CloseAllPanels;
             // 
             // WarningDir_PictureBox
             // 
@@ -219,7 +212,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox.TabIndex = 35;
             WarningDir_PictureBox.TabStop = false;
             WarningDir_PictureBox.Visible = false;
-            WarningDir_PictureBox.Click += CloseAllPanels;
             // 
             // WarningName_PictureBox
             // 
@@ -231,7 +223,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_PictureBox.TabIndex = 33;
             WarningName_PictureBox.TabStop = false;
             WarningName_PictureBox.Visible = false;
-            WarningName_PictureBox.Click += CloseAllPanels;
             // 
             // ThreeDots_Button
             // 
@@ -259,7 +250,6 @@ namespace Sales_Tracker.Startup.Menus
             Currency_Label.Size = new Size(190, 32);
             Currency_Label.TabIndex = 0;
             Currency_Label.Text = "Default currency";
-            Currency_Label.Click += CloseAllPanels;
             // 
             // Currency_TextBox
             // 
@@ -328,7 +318,6 @@ namespace Sales_Tracker.Startup.Menus
             AccountantName_TextBox.Size = new Size(1135, 60);
             AccountantName_TextBox.TabIndex = 278;
             AccountantName_TextBox.TextChanged += AccountantName_TextBox_TextChanged;
-            AccountantName_TextBox.Click += CloseAllPanels;
             // 
             // AccountantName_Label
             // 
@@ -369,7 +358,6 @@ namespace Sales_Tracker.Startup.Menus
             Name = "ConfigureCompany_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Shown += ConfigureCompany_Form_Shown;
-            Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).EndInit();

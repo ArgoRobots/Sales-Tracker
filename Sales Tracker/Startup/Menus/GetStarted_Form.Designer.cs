@@ -50,7 +50,6 @@ namespace Sales_Tracker.Startup.Menus
             ArgoSalesTracker_Label.Size = new Size(390, 60);
             ArgoSalesTracker_Label.TabIndex = 0;
             ArgoSalesTracker_Label.Text = "Argo Sales Tracker";
-            ArgoSalesTracker_Label.Click += CloseAllPanels;
             // 
             // OpenRecent_FlowLayoutPanel
             // 
@@ -63,7 +62,6 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_FlowLayoutPanel.Size = new Size(390, 570);
             OpenRecent_FlowLayoutPanel.TabIndex = 0;
             OpenRecent_FlowLayoutPanel.WrapContents = false;
-            OpenRecent_FlowLayoutPanel.Click += CloseAllPanels;
             OpenRecent_FlowLayoutPanel.Resize += OpenRecent_FlowLayoutPanel_Resize;
             // 
             // CreateCompany_Button
@@ -96,7 +94,6 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_Label.Size = new Size(147, 32);
             OpenRecent_Label.TabIndex = 0;
             OpenRecent_Label.Text = "Open recent";
-            OpenRecent_Label.Click += CloseAllPanels;
             // 
             // OpenCompany_Button
             // 
@@ -133,7 +130,6 @@ namespace Sales_Tracker.Startup.Menus
             FormBorderStyle = FormBorderStyle.None;
             Name = "GetStarted_Form";
             Shown += GetStarted_Form_Shown;
-            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }

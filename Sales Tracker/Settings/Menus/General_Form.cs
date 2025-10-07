@@ -110,54 +110,54 @@ namespace Sales_Tracker.Settings.Menus
         // Label event handlers
         private void ShowTooltips_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ShowTooltips_CheckBox.Checked = !ShowTooltips_CheckBox.Checked;
         }
         private void ShowDebugInfo_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ShowDebugInfo_CheckBox.Checked = !ShowDebugInfo_CheckBox.Checked;
         }
         private void SendAnonymousInformation_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             SendAnonymousInformation_CheckBox.Checked = !SendAnonymousInformation_CheckBox.Checked;
         }
         private void PurchaseReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             PurchaseReceipts_CheckBox.Checked = !PurchaseReceipts_CheckBox.Checked;
         }
         private void SalesReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             SalesReceipts_CheckBox.Checked = !SalesReceipts_CheckBox.Checked;
         }
         private void AnimateButtons_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             AnimateButtons_CheckBox.Checked = !AnimateButtons_CheckBox.Checked;
         }
         private void AnimateCharts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             AnimateCharts_CheckBox.Checked = !AnimateCharts_CheckBox.Checked;
         }
         private void EnableAISearch_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             EnableAISearch_CheckBox.Checked = !EnableAISearch_CheckBox.Checked;
         }
         private void ShowCompanyLogo_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ShowCompanyLogo_CheckBox.Checked = !ShowCompanyLogo_CheckBox.Checked;
         }
 
         // Event handlers
         private void MoreInformation_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenLink("https://argorobots.com/documentation/index.php#anonymous-data");
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
@@ -285,10 +285,6 @@ namespace Sales_Tracker.Settings.Menus
 
             // Restore selection
             ColorTheme_ComboBox.SelectedItem = GetThemeDisplayText(ThemeManager.CurrentTheme);
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels();
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void Btn_MouseDown(object? sender, MouseEventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (e.Button != MouseButtons.Left) { return; }
             Guna2Button button = (Guna2Button)sender;
@@ -225,12 +225,12 @@ namespace Sales_Tracker.Startup.Menus
         // Event handlers
         private void CreateNewCompany_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormConfigureCompany);
         }
         private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ArgoCompany.OpenCompanyFromDialog();
         }
         private void OpenRecent_FlowLayoutPanel_Resize(object sender, EventArgs e)
@@ -271,7 +271,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void ShowInFolder(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (RightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
@@ -306,7 +306,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void RemoveFromList(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             if (RightClickOpenRecent_Panel.Tag is Guna2Button button)
             {
                 string companyDir = button.Tag.ToString();
@@ -317,7 +317,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void Delete(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             if (RightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
@@ -383,11 +383,6 @@ namespace Sales_Tracker.Startup.Menus
 
             MainMenu_Form formMainMenu = new();
             formMainMenu.Show();
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            Controls.Remove(RightClickOpenRecent_Panel);
-            CustomControls.Rename();
         }
     }
 }
