@@ -207,16 +207,9 @@ namespace Sales_Tracker.ReportGenerator
         // Form event handlers
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (!_isUpdating && !Visible)
             {
-                if (Visible)
-                {
-                    OnStepActivated();
-                }
-                else
-                {
-                    OnStepDeactivated();
-                }
+                OnStepDeactivated();
             }
         }
         private void ReportDataSelection_Form_Resize(object sender, EventArgs e)
@@ -371,27 +364,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!_isUpdating)
             {
-                // Switch to custom if template was selected and title differs from template title
-                if (Template_ComboBox.SelectedIndex > 0)
-                {
-                    string selectedTemplate = Template_ComboBox.SelectedItem?.ToString();
-                    if (!string.IsNullOrEmpty(selectedTemplate))
-                    {
-                        ReportConfiguration templateConfig = ReportTemplates.CreateFromTemplate(selectedTemplate);
-                        if (ReportTitle_TextBox.Text != templateConfig.Title)
-                        {
-                            PerformUpdate(() =>
-                            {
-                                Template_ComboBox.SelectedIndex = 0;
-                                if (ReportConfig != null)
-                                {
-                                    ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                                }
-                            });
-                        }
-                    }
-                }
-
                 NotifyParentValidationChanged();
             }
         }
@@ -588,7 +560,11 @@ namespace Sales_Tracker.ReportGenerator
 
             return true;
         }
-        public void UpdateReportConfiguration()
+
+        /// <summary>
+        /// Called when the form becomes inactive (user navigates away from this step).
+        /// </summary>
+        public void OnStepDeactivated()
         {
             if (ReportConfig == null) { return; }
 
@@ -611,78 +587,6 @@ namespace Sales_Tracker.ReportGenerator
             {
                 ReportConfig.Title = ReportTitle_TextBox.Text;
             }
-        }
-        public void LoadFromReportConfiguration()
-        {
-            if (ReportConfig == null) { return; }
-
-            PerformUpdate(() =>
-            {
-                // Load filters
-                if (ReportConfig.Filters.StartDate.HasValue)
-                {
-                    StartDate_DateTimePicker.Value = ReportConfig.Filters.StartDate.Value;
-                }
-
-                if (ReportConfig.Filters.EndDate.HasValue)
-                {
-                    EndDate_DateTimePicker.Value = ReportConfig.Filters.EndDate.Value;
-                }
-
-                TransactionType_ComboBox.SelectedIndex = (int)ReportConfig.Filters.TransactionType;
-                IncludeReturns_CheckBox.Checked = ReportConfig.Filters.IncludeReturns;
-                IncludeLosses_CheckBox.Checked = ReportConfig.Filters.IncludeLosses;
-
-                // Load selected charts
-                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
-                {
-                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
-                    bool isSelected = ReportConfig.Filters.SelectedChartTypes.Contains(chartType);
-                    ChartSelection_CheckedListBox.SetItemChecked(i, isSelected);
-                }
-
-                // Load title
-                ReportTitle_TextBox.Text = ReportConfig.Title;
-
-                // Load template
-                if (!string.IsNullOrEmpty(ReportConfig.Title))
-                {
-                    int templateIndex = Template_ComboBox.Items.IndexOf(ReportConfig.Title);
-                    if (templateIndex >= 0)
-                    {
-                        Template_ComboBox.SelectedIndex = templateIndex;
-                    }
-                }
-            });
-        }
-
-        /// <summary>
-        /// Called when the form becomes active (user navigates to this step).
-        /// </summary>
-        public void OnStepActivated()
-        {
-            LoadFromReportConfiguration();
-
-            // If template name is set in the configuration, select it in the combobox
-            if (ReportConfig != null && !string.IsNullOrEmpty(ReportConfig.Title))
-            {
-                int index = Template_ComboBox.Items.IndexOf(
-                    ReportConfig.Title);
-                if (index >= 0)
-                {
-                    Template_ComboBox.SelectedIndex = index;
-                }
-            }
-
-            NotifyParentValidationChanged();
-        }
-
-        /// <summary>
-        /// Called when the form becomes inactive (user navigates away from this step).
-        /// </summary>
-        public void OnStepDeactivated()
-        {
-            UpdateReportConfiguration();
         }
 
         // Helper Methods for Base Functionality
