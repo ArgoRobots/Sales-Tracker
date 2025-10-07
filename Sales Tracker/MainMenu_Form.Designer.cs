@@ -700,7 +700,7 @@
             Controls.Add(Total_Panel);
             Controls.Add(Purchases_Button);
             Controls.Add(Sales_Button);
-            Controls.Add(Rentals_Button);
+      //      Controls.Add(Rentals_Button);
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
