@@ -203,6 +203,20 @@ namespace Sales_Tracker.ReportGenerator
                 _ => TransactionType.Both
             };
         }
+        public void SwitchToCustomTemplate()
+        {
+            if (Template_ComboBox.SelectedIndex > 0)
+            {
+                PerformUpdate(() =>
+                {
+                    Template_ComboBox.SelectedIndex = 0;
+                    if (ReportConfig != null)
+                    {
+                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                    }
+                });
+            }
+        }
 
         // Form event handlers
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)

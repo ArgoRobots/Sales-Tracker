@@ -1700,6 +1700,12 @@ namespace Sales_Tracker.ReportGenerator
                 ReportConfig.RemoveElement(element.Id);
             }
 
+            // If we deleted a chart element, switch to custom template
+            if (elementsToDelete.Any(e => e is ChartElement))
+            {
+                ReportDataSelection_Form.Instance?.SwitchToCustomTemplate();
+            }
+
             // Clear selection
             ClearAllSelections();
             Canvas_Panel.Invalidate();
