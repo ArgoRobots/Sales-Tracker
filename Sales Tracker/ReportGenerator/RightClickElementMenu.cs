@@ -67,14 +67,17 @@ namespace Sales_Tracker.ReportGenerator
         private static void DuplicateElement(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance?.DuplicateSelected();
+            HideMenu();
         }
         private static void DeleteElement(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance?.DeleteSelected();
+            HideMenu();
         }
         private static void SelectAllElements(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance?.SelectAllElements();
+            HideMenu();
         }
 
         /// <summary>
@@ -141,12 +144,9 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Hides the right-click menu.
         /// </summary>
-        public static void HideMenu(Form parentForm)
+        public static void HideMenu()
         {
-            if (RightClickElement_Panel != null && parentForm.Controls.Contains(RightClickElement_Panel))
-            {
-                parentForm.Controls.Remove(RightClickElement_Panel);
-            }
+            RightClickElement_Panel?.Parent?.Controls.Remove(RightClickElement_Panel);
         }
     }
 }
