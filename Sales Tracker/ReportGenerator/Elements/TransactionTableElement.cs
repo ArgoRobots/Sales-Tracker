@@ -288,8 +288,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderTable(Graphics graphics, List<TransactionData> transactions)
         {
-            using Font headerFont = new(DisplayName == "Segoe UI" ? "Segoe UI" : "Arial", FontSize, FontStyle.Bold);
-            using Font dataFont = new(DisplayName == "Segoe UI" ? "Segoe UI" : "Arial", FontSize);
+            using Font headerFont = new("Segoe UI", FontSize, FontStyle.Bold);
+            using Font dataFont = new("Segoe UI", FontSize);
             using SolidBrush headerBgBrush = new(HeaderBackgroundColor);
             using SolidBrush headerTextBrush = new(HeaderTextColor);
             using SolidBrush dataBrush = new(Color.Black);

@@ -119,7 +119,7 @@ namespace Sales_Tracker.ReportGenerator
             CustomTooltip.SetToolTip(DistributeHorizontally_Button, "", "Distribute horizontally");
             CustomTooltip.SetToolTip(DistributeVertically_Button, "", "Distribute vertically");
             CustomTooltip.SetToolTip(MakeSameWidth_Button, "", "Make same width");
-            CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "make same height");
+            CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "Make same height");
             CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
         }
 
