@@ -20,6 +20,7 @@ namespace Sales_Tracker.Charts
         public static string CountriesOfOrigin => Translate("Countries of origin for purchases");
         public static string CompaniesOfOrigin => Translate("Companies of origin for purchases");
         public static string CountriesOfDestination => Translate("Countries of destination for sales");
+        public static string WorldMap => Translate("World map");
 
         // Operational Charts
         public static string AccountantsTransactions => Translate("Transactions managed by accountants");
@@ -33,18 +34,53 @@ namespace Sales_Tracker.Charts
 
         // Returns Analysis Charts
         public static string ReturnsOverTime => Translate("Returns over time");
-        public static string ReturnReasons => Translate("Return reasons distribution");
+        public static string ReturnReasons => Translate("Return reasons");
         public static string ReturnFinancialImpact => Translate("Financial impact of returns");
         public static string ReturnsByCategory => Translate("Returns by category");
         public static string ReturnsByProduct => Translate("Returns by product");
         public static string PurchaseVsSaleReturns => Translate("Purchase vs. sale returns");
 
         // Losses Analysis Charts
-        public static string LossesOverTime => LanguageManager.TranslateString("Losses Over Time");
-        public static string LossReasons => LanguageManager.TranslateString("Loss Reasons");
-        public static string LossFinancialImpact => LanguageManager.TranslateString("Loss Financial Impact");
-        public static string LossesByCategory => LanguageManager.TranslateString("Losses by Category");
-        public static string LossesByProduct => LanguageManager.TranslateString("Losses by Product");
-        public static string PurchaseVsSaleLosses => LanguageManager.TranslateString("Purchase vs Sale Losses");
+        public static string LossesOverTime => LanguageManager.TranslateString("Losses over time");
+        public static string LossReasons => LanguageManager.TranslateString("Loss reasons");
+        public static string LossFinancialImpact => LanguageManager.TranslateString("Financial impact of losses");
+        public static string LossesByCategory => LanguageManager.TranslateString("Losses by category");
+        public static string LossesByProduct => LanguageManager.TranslateString("Losses by product");
+        public static string PurchaseVsSaleLosses => LanguageManager.TranslateString("Purchase vs. sale losses");
+
+        public static string GetChartDisplayName(MainMenu_Form.ChartDataType chartType)
+        {
+            return chartType switch
+            {
+                MainMenu_Form.ChartDataType.TotalSales => TotalRevenue,
+                MainMenu_Form.ChartDataType.TotalPurchases => TotalExpenses,
+                MainMenu_Form.ChartDataType.DistributionOfSales => RevenueDistribution,
+                MainMenu_Form.ChartDataType.DistributionOfPurchases => ExpensesDistribution,
+                MainMenu_Form.ChartDataType.Profits => TotalProfits,
+                MainMenu_Form.ChartDataType.CountriesOfOrigin => CountriesOfOrigin,
+                MainMenu_Form.ChartDataType.CompaniesOfOrigin => CompaniesOfOrigin,
+                MainMenu_Form.ChartDataType.CountriesOfDestination => CountriesOfDestination,
+                MainMenu_Form.ChartDataType.WorldMap => WorldMap,
+                MainMenu_Form.ChartDataType.Accountants => AccountantsTransactions,
+                MainMenu_Form.ChartDataType.TotalExpensesVsSales => SalesVsExpenses,
+                MainMenu_Form.ChartDataType.AverageTransactionValue => AverageTransactionValue,
+                MainMenu_Form.ChartDataType.TotalTransactions => TotalTransactions,
+                MainMenu_Form.ChartDataType.AverageShippingCosts => AverageShippingCosts,
+                MainMenu_Form.ChartDataType.GrowthRates => GrowthRates,
+                MainMenu_Form.ChartDataType.ReturnsOverTime => ReturnsOverTime,
+                MainMenu_Form.ChartDataType.ReturnReasons => ReturnReasons,
+                MainMenu_Form.ChartDataType.ReturnFinancialImpact => ReturnFinancialImpact,
+                MainMenu_Form.ChartDataType.ReturnsByCategory => ReturnsByCategory,
+                MainMenu_Form.ChartDataType.ReturnsByProduct => ReturnsByProduct,
+                MainMenu_Form.ChartDataType.PurchaseVsSaleReturns => PurchaseVsSaleReturns,
+                MainMenu_Form.ChartDataType.LossesOverTime => LossesOverTime,
+                MainMenu_Form.ChartDataType.LossReasons => LossReasons,
+                MainMenu_Form.ChartDataType.LossFinancialImpact => LossFinancialImpact,
+                MainMenu_Form.ChartDataType.LossesByCategory => LossesByCategory,
+                MainMenu_Form.ChartDataType.LossesByProduct => LossesByProduct,
+                MainMenu_Form.ChartDataType.PurchaseVsSaleLosses => PurchaseVsSaleLosses,
+                _ => throw new ArgumentOutOfRangeException(nameof(chartType), chartType, "Unknown chart type")
+            };
+        }
     }
 }

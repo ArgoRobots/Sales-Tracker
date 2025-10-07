@@ -6,6 +6,7 @@ using Sales_Tracker.GridView;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Language;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ReportGenerator;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
@@ -41,6 +42,7 @@ namespace Sales_Tracker.UI
             RightClickChartMenu.ConstructRightClickChartMenu();
             CompanyLogo.ConstructCompanyLogoRightClickMenu();
             ColumnVisibilityPanel.ConstructPanel();
+            RightClickElementMenu.ConstructRightClickElementMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
@@ -50,6 +52,8 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickRowMenu.RightClickDataGridView_Panel);
             LanguageManager.UpdateLanguageForControl(RightClickChartMenu.RightClickChart_Panel);
+            LanguageManager.UpdateLanguageForControl(CompanyLogo.CompanyLogoRightClick_Panel);
+            LanguageManager.UpdateLanguageForControl(RightClickElementMenu.RightClickElement_Panel);
         }
 
         // Properties
@@ -234,8 +238,8 @@ namespace Sales_Tracker.UI
             int scaledSeparatorSpace = (int)(_spaceForSeparator * scale);
             int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
 
-            // Calculate height using scaled values: 9 buttons + 2 separators + panel padding
-            int calculatedHeight = 9 * scaledButtonHeight + scaledSeparatorSpace * 2 + scaledSpaceForPanel;
+            // Calculate height using scaled values: 10 buttons + 2 separators + panel padding
+            int calculatedHeight = 10 * scaledButtonHeight + scaledSeparatorSpace * 2 + scaledSpaceForPanel;
 
             FileMenu = ConstructPanelForMenu(new Size(PanelWidth, calculatedHeight), "fileMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)FileMenu.Controls[0];
@@ -307,6 +311,12 @@ namespace Sales_Tracker.UI
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenForm(new Receipts_Form());
+            };
+
+            menuBtn = ConstructBtnForMenu("Generate report", PanelBtnWidth, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                Tools.OpenForm(new ReportGenerator_Form());
             };
 
             menuBtn = ConstructBtnForMenu("Import spreadsheet", PanelBtnWidth, true, flowPanel);

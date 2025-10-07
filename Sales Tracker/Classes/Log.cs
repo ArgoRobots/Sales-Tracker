@@ -17,7 +17,6 @@ namespace Sales_Tracker.Classes
         Encryption,
         API,
         Translation,
-        AnonymousData,
         FileAssociation,
         Environment
     }
@@ -404,14 +403,14 @@ namespace Sales_Tracker.Classes
 
         // DataGridView errors
         public static void Error_DataGridViewCellIsEmpty(
-            string dataGridViewName,
+            DataGridViewCell cell,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-d3g7c4: Cell is empty in DataGridView:'{0}'.",
+            Error("Error-d3g7c4: Cell is empty in '{0}' in column '{1}'.",
                 "",
                 ErrorCategory.DataGridView,
                 lineNumber,
-                dataGridViewName);
+                cell.DataGridView.Name, cell.OwningColumn.Name);
         }
         public static void Error_RowIsOutOfRange(
             [CallerLineNumber] int lineNumber = 0)
@@ -529,15 +528,10 @@ namespace Sales_Tracker.Classes
         }
 
         // Anonymous usage data errors
-        public static void Error_AnonymousDataCollection(
-            string info,
-            [CallerLineNumber] int lineNumber = 0)
+        public static void Error_AnonymousDataCollection(string message)
         {
-            Error("Error-a6d5c9: Error collecting anonymous usage data. {0}.",
-                "",
-                ErrorCategory.AnonymousData,
-                lineNumber,
-                info);
+            WriteWithFormat(0, "Error-a6d5c9: Error collecting anonymous usage data: {0}.",
+                message);
         }
 
         // File association errors

@@ -13,6 +13,7 @@ namespace Sales_Tracker
 {
     public partial class Export_Form : BaseForm
     {
+        // Properties
         private static Export_Form _instance;
         private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;
         private static Action _validationCallback;
@@ -116,7 +117,6 @@ namespace Sales_Tracker
         {
             CustomControls.AnimateButtons([Export_Button]);
         }
-
 
         // Form event handlers
         private void Export_Form_Shown(object sender, EventArgs e)

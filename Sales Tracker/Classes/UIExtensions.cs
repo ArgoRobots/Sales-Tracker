@@ -33,5 +33,18 @@
                 return func();
             }
         }
+
+        /// <summary>
+        /// Extension method to disable control scrolling and forward to parent panel.
+        /// </summary>
+        public static void DisableScrollAndForwardToPanel(this Control control)
+        {
+            // Create message filter for this specific control
+            ScrollMessageFilter filter = new(control);
+            Application.AddMessageFilter(filter);
+
+            // Remove filter when control is disposed
+            control.Disposed += (s, e) => Application.RemoveMessageFilter(filter);
+        }
     }
 }
