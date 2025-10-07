@@ -66,17 +66,17 @@ namespace Sales_Tracker.ReportGenerator
         // Event handlers
         private static void DuplicateElement(object sender, EventArgs e)
         {
-            ReportLayoutDesigner_Form.Instance?.DuplicateSelected();
+            ReportLayoutDesigner_Form.Instance.DuplicateSelected();
             HideMenu();
         }
         private static void DeleteElement(object sender, EventArgs e)
         {
-            ReportLayoutDesigner_Form.Instance?.DeleteSelected();
+            ReportLayoutDesigner_Form.Instance.DeleteSelected();
             HideMenu();
         }
         private static void SelectAllElements(object sender, EventArgs e)
         {
-            ReportLayoutDesigner_Form.Instance?.SelectAllElements();
+            ReportLayoutDesigner_Form.Instance.SelectAllElements();
             HideMenu();
         }
 

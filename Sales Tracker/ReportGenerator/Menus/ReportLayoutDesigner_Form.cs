@@ -1644,6 +1644,9 @@ namespace Sales_Tracker.ReportGenerator
 
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
+
+            // Focus canvas to ensure the duplicated element remains selected
+            Canvas_Panel.Focus();
         }
         public void DeleteSelected()
         {
