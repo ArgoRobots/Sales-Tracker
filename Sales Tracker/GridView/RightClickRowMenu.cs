@@ -439,8 +439,8 @@ namespace Sales_Tracker.GridView
                 CustomControls.CloseAllPanels();
 
                 // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>()
+                    && Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
                     itemsForm.RefreshItemReturnStatus();
                 }
@@ -472,8 +472,8 @@ namespace Sales_Tracker.GridView
                 CustomControls.CloseAllPanels();
 
                 // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>()
+                    && Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
                     itemsForm.RefreshItemReturnStatus();
                 }
@@ -508,8 +508,8 @@ namespace Sales_Tracker.GridView
                 CustomControls.CloseAllPanels();
 
                 // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>()
+                    && Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
                     itemsForm.RefreshItemReturnStatus();
                 }
@@ -541,8 +541,8 @@ namespace Sales_Tracker.GridView
                 CustomControls.CloseAllPanels();
 
                 // Refresh ItemsInTransaction_Form if it's open
-                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
-                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>()
+                    && Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
                 {
                     itemsForm.RefreshItemReturnStatus();
                 }
@@ -558,24 +558,72 @@ namespace Sales_Tracker.GridView
 
             if (selectedCount == 1)
             {
-                // Get transaction number for single row deletion
-                string transactionNumber = grid.SelectedRows[0].Cells[0].Value?.ToString() ?? "Unknown";
+                // Determine the type and identifier based on the current selection
+                string itemType;
+                string identifier;
+
+                switch (MainMenu_Form.Instance.Selected)
+                {
+                    case MainMenu_Form.SelectedOption.Accountants:
+                        itemType = "the accountant";
+                        identifier = grid.SelectedRows[0].Cells[Accountants_Form.Column.AccountantName.ToString()].Value?.ToString() ?? "Unknown";
+                        break;
+
+                    case MainMenu_Form.SelectedOption.Companies:
+                        itemType = "the company";
+                        identifier = grid.SelectedRows[0].Cells[Companies_Form.Column.Company.ToString()].Value?.ToString() ?? "Unknown";
+                        break;
+
+                    case MainMenu_Form.SelectedOption.CategoryPurchases:
+                    case MainMenu_Form.SelectedOption.CategorySales:
+                        itemType = "the category";
+                        identifier = grid.SelectedRows[0].Cells[Categories_Form.Column.CategoryName.ToString()].Value?.ToString() ?? "Unknown";
+                        break;
+
+                    case MainMenu_Form.SelectedOption.ProductPurchases:
+                    case MainMenu_Form.SelectedOption.ProductSales:
+                        itemType = "the product";
+                        identifier = grid.SelectedRows[0].Cells[Products_Form.Column.ProductName.ToString()].Value?.ToString() ?? "Unknown";
+                        break;
+
+                    case MainMenu_Form.SelectedOption.Purchases:
+                    case MainMenu_Form.SelectedOption.Sales:
+                    case MainMenu_Form.SelectedOption.ItemsInPurchase:
+                    case MainMenu_Form.SelectedOption.ItemsInSale:
+                    default:
+                        itemType = "transaction";
+                        identifier = "#" + (grid.SelectedRows[0].Cells[0].Value?.ToString() ?? "Unknown");
+                        break;
+                }
+
                 result = CustomMessageBox.ShowWithFormat(
                     "Confirm Deletion",
-                    "Are you sure you want to delete transaction #{0}?",
+                    "Are you sure you want to delete {0} {1}?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
-                    transactionNumber
+                    itemType,
+                    identifier
                 );
             }
             else
             {
+                // Determine the plural form based on the current selection
+                string itemType = MainMenu_Form.Instance.Selected switch
+                {
+                    MainMenu_Form.SelectedOption.Accountants => "accountants",
+                    MainMenu_Form.SelectedOption.Companies => "companies",
+                    MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales => "categories",
+                    MainMenu_Form.SelectedOption.ProductPurchases or MainMenu_Form.SelectedOption.ProductSales => "products",
+                    _ => "rows"
+                };
+
                 result = CustomMessageBox.ShowWithFormat(
                     "Confirm Deletion",
-                    "Are you sure you want to delete these {0} rows?",
+                    "Are you sure you want to delete these {0} {1}?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
-                    selectedCount
+                    selectedCount,
+                    itemType
                 );
             }
 
