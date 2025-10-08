@@ -1191,13 +1191,13 @@ namespace Sales_Tracker
             TotalSales_Chart.Visible = false;
             DistributionOfSales_Chart.Visible = false;
 
+            SelectButton(Purchases_Button);
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
 
             Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
-            SelectButton(Purchases_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
         }
         private void Sales_Button_Click(object sender, EventArgs e)
@@ -1217,13 +1217,13 @@ namespace Sales_Tracker
             TotalPurchases_Chart.Visible = false;
             DistributionOfPurchases_Chart.Visible = false;
 
+            SelectButton(Sales_Button);
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
 
             Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
-            SelectButton(Sales_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
         //private void Rentals_Button_Click(object sender, EventArgs e)
@@ -1244,24 +1244,23 @@ namespace Sales_Tracker
         //    PurchaseTotals_Chart.Visible = false;
         //    PurchaseDistribution_Chart.Visible = false;
 
+        //    SelectButton(Rentals_Button);
         //    CenterAndResizeControls();
         //    RefreshDataGridViewAndCharts();
 
         //    Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
         //    AlignTotalLabels();
         //    UpdateTotalLabels();
-        //    SelectButton(Rentals_Button);
         //    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
         //}
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Analytics) { return; }
 
+            SelectButton(Analytics_Button);
             ShowAnalyticsControls();
             CenterAndResizeControls();
             LoadOrRefreshAnalyticsCharts();
-
-            SelectButton(Analytics_Button);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
