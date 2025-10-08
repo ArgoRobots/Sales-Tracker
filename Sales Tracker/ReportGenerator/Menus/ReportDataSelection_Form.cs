@@ -337,19 +337,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!_isUpdating)
             {
-                // Switch to custom if template was selected
-                if (Template_ComboBox.SelectedIndex > 0)
-                {
-                    PerformUpdate(() =>
-                    {
-                        Template_ComboBox.SelectedIndex = 0;
-                        if (ReportConfig != null)
-                        {
-                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                        }
-                    });
-                }
-
+                SwitchToCustomTemplate();
                 ValidateDateRange();
                 NotifyParentValidationChanged();
             }
@@ -358,19 +346,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!_isUpdating)
             {
-                // Switch to custom if template was selected
-                if (Template_ComboBox.SelectedIndex > 0)
-                {
-                    PerformUpdate(() =>
-                    {
-                        Template_ComboBox.SelectedIndex = 0;
-                        if (ReportConfig != null)
-                        {
-                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                        }
-                    });
-                }
-
+                SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             }
         }

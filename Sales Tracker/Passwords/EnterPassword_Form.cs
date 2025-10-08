@@ -39,6 +39,10 @@ namespace Sales_Tracker.Passwords
             LanguageManager.UpdateLanguageForControl(this);
             SetWindowsHelloControls(allowWindowsHello);
             AdjustFormLayout();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, SearchBox.SearchResultBoxContainer);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()
@@ -184,7 +188,6 @@ namespace Sales_Tracker.Passwords
         // Event handlers
         private void Enter_Button_Click(object sender, EventArgs e)
         {
-            ClosePanels(null, null);
             ProcessEntry();
         }
         private void Password_TextBox_TextChanged(object sender, EventArgs e)
@@ -235,7 +238,6 @@ namespace Sales_Tracker.Passwords
         }
         private void PasswordEye_Button_Click(object sender, EventArgs e)
         {
-            ClosePanels(null, null);
             PasswordManager.TogglePasswordVisibility(Password_TextBox, PasswordEye_Button);
         }
         private void Accountant_TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -421,7 +423,7 @@ namespace Sales_Tracker.Passwords
                 Close();
             }
         }
-        private void ClosePanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
             SearchBox.Close();
         }

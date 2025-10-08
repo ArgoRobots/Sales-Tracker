@@ -9,30 +9,45 @@ namespace Sales_Tracker.UI
     /// </summary>
     public static class CustomTooltip
     {
-        // Properties
-        private static readonly Dictionary<Control, Guna2HtmlToolTip> _tooltips = [];
+        // Properties - one tooltip per form
+        private static readonly Dictionary<Form, Guna2HtmlToolTip> _tooltips = [];
+        private static readonly Dictionary<Control, (string title, string message)> _tooltipData = [];
 
         // Methods
         /// <summary>
-        /// Creates and configures a new Guna2HtmlToolTip instance.
+        /// Gets or creates the tooltip instance for a specific form.
         /// </summary>
-        private static Guna2HtmlToolTip CreateTooltip()
+        private static Guna2HtmlToolTip GetTooltipForForm(Form form)
         {
-            Guna2HtmlToolTip tooltip = new()
+            if (!_tooltips.TryGetValue(form, out Guna2HtmlToolTip tooltip))
             {
-                TitleFont = new Font("Segoe UI", 10, FontStyle.Bold),
-                TitleForeColor = CustomColors.Text,
-                BackColor = CustomColors.ControlBack,
-                ForeColor = CustomColors.Text,
-                BorderColor = CustomColors.ControlPanelBorder,
-                Font = new Font("Segoe UI", 10),
-                InitialDelay = 500,
-                ReshowDelay = 100
-            };
+                tooltip = new Guna2HtmlToolTip
+                {
+                    TitleFont = new Font("Segoe UI", 10, FontStyle.Bold),
+                    TitleForeColor = CustomColors.Text,
+                    BackColor = CustomColors.ControlBack,
+                    ForeColor = CustomColors.Text,
+                    BorderColor = CustomColors.ControlPanelBorder,
+                    Font = new Font("Segoe UI", 10),
+                    InitialDelay = 500,
+                    ReshowDelay = 100
+                };
 
-            // Only show the tooltip if the setting is true
-            tooltip.Popup += (_, e) => e.Cancel = !Properties.Settings.Default.ShowTooltips;
+                // Only show the tooltip if the setting is true
+                tooltip.Popup += (_, e) => e.Cancel = !Properties.Settings.Default.ShowTooltips;
 
+                _tooltips[form] = tooltip;
+
+                // Clean up when form is disposed
+                form.Disposed += (_, _) =>
+                {
+                    if (_tooltips.TryGetValue(form, out Guna2HtmlToolTip t))
+                    {
+                        t.Dispose();
+                        _tooltips.Remove(form);
+                    }
+                };
+            }
             return tooltip;
         }
 
@@ -42,14 +57,17 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
+            // Find the parent form
+            Form parentForm = control.FindForm();
+            if (parentForm == null) { return; }
+
             title = LanguageManager.TranslateString(title);
             message = LanguageManager.TranslateString(message);
 
-            if (!_tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
-            {
-                tooltip = CreateTooltip();
-                _tooltips[control] = tooltip;
-            }
+            Guna2HtmlToolTip tooltip = GetTooltipForForm(parentForm);
+
+            // Store the tooltip data for this control
+            _tooltipData[control] = (title, message);
 
             tooltip.ToolTipTitle = title;
             tooltip.SetToolTip(control, message);

@@ -160,10 +160,6 @@ namespace Sales_Tracker
             ValidateCategoryTextBox();
             ValidateCompanyTextBox();
         }
-        private void Products_Form_Resize(object sender, EventArgs e)
-        {
-            CenterSelectedDataGridView();
-        }
         private void Products_Form_Shown(object sender, EventArgs e)
         {
             _purchase_DataGridView.ClearSelection();
@@ -233,7 +229,6 @@ namespace Sales_Tracker
                 _selectedDataGridView = _purchase_DataGridView;
                 _purchase_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
-                CenterSelectedDataGridView();
                 ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
@@ -249,7 +244,6 @@ namespace Sales_Tracker
                 _selectedDataGridView = _sale_DataGridView;
                 _sale_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
-                CenterSelectedDataGridView();
                 ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
@@ -466,14 +460,18 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
             _purchase_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _purchase_DataGridView.RowsRemoved += DataGridView_RowsChanged;
+            _purchase_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             _purchase_DataGridView.Location = new Point((ClientSize.Width - _purchase_DataGridView.Width) / 2, _topForDataGridView);
+            _purchase_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
             _sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
             _sale_DataGridView.RowsAdded += DataGridView_RowsChanged;
             _sale_DataGridView.RowsRemoved += DataGridView_RowsChanged;
+            _sale_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             _sale_DataGridView.Location = new Point((ClientSize.Width - _sale_DataGridView.Width) / 2, _topForDataGridView);
+            _sale_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             ThemeManager.CustomizeScrollBar(_sale_DataGridView);
         }
@@ -481,12 +479,6 @@ namespace Sales_Tracker
         {
             if (_isProgramLoading) { return; }
             SetProductsRemainingLabel();
-        }
-        private void CenterSelectedDataGridView()
-        {
-            if (_selectedDataGridView == null) { return; }
-            _selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
-            _selectedDataGridView.Location = new Point((ClientSize.Width - _selectedDataGridView.Width) / 2, _topForDataGridView);
         }
 
         // Methods

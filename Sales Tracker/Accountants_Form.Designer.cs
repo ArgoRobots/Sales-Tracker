@@ -213,7 +213,6 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Accountants_Form_FormClosed;
             Shown += Accountants_Form_Shown;
-            Resize += Accountants_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningAccountantName_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();

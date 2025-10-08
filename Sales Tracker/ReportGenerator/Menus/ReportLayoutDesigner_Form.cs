@@ -107,12 +107,6 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetToolTips()
         {
-            CustomTooltip.SetToolTip(AddChartElement_Button, "", "Add a chart to the report");
-            CustomTooltip.SetToolTip(AddTableElement_Button, "", "Add a text label");
-            CustomTooltip.SetToolTip(AddDateElement_Button, "", "Add date range display");
-            CustomTooltip.SetToolTip(AddSummaryElement_Button, "", "Add summary statistics");
-            CustomTooltip.SetToolTip(AddTableElement_Button, "", "Add transaction table");
-
             CustomTooltip.SetToolTip(AlignLeft_Button, "", "Align left");
             CustomTooltip.SetToolTip(AlignCenter_Button, "", "Align center");
             CustomTooltip.SetToolTip(AlignRight_Button, "", "Align right");

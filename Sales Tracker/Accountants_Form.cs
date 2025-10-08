@@ -28,7 +28,6 @@ namespace Sales_Tracker
             _oldOption = MainMenu_Form.Instance.Selected;
             _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             ConstructDataGridViews();
-            CenterDataGridView();
             LoadAccountants();
             ThemeManager.SetThemeForForm(this);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
@@ -73,10 +72,6 @@ namespace Sales_Tracker
         {
             _accountant_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
-        }
-        private void Accountants_Form_Resize(object sender, EventArgs e)
-        {
-            CenterDataGridView();
         }
         private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -141,17 +136,13 @@ namespace Sales_Tracker
             { Column.AccountantName, "Accountant" },
         };
         private Guna2DataGridView _accountant_DataGridView;
-        private void CenterDataGridView()
-        {
-            if (_accountant_DataGridView == null) { return; }
-            _accountant_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
-            _accountant_DataGridView.Location = new Point((ClientSize.Width - _accountant_DataGridView.Width) / 2, _topForDataGridView);
-        }
         private void ConstructDataGridViews()
         {
             _accountant_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_accountant_DataGridView, "accountants_DataGridView", ColumnHeaders, null, this);
+            _accountant_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             _accountant_DataGridView.Location = new Point((ClientSize.Width - _accountant_DataGridView.Width) / 2, _topForDataGridView);
+            _accountant_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _accountant_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;
 
             Controls.Add(_accountant_DataGridView);
