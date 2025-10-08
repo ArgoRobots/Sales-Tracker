@@ -11,7 +11,6 @@ namespace Sales_Tracker
     public partial class ItemsInTransaction_Form : BaseForm
     {
         // Properties
-        private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly List<MainMenu_Form.Column> _columnsToLoad = [
             MainMenu_Form.Column.Product,
             MainMenu_Form.Column.Category,
@@ -30,7 +29,6 @@ namespace Sales_Tracker
             if (row == null) { return; }
 
             DataGridViewManager.SelectedRowInMainMenu = row;
-            _oldOption = MainMenu_Form.Instance.Selected;
 
             SetTitle();
 
@@ -52,7 +50,7 @@ namespace Sales_Tracker
         private void SetTitle()
         {
             Title_Label.Text = LanguageManager.TranslateString(
-                _oldOption == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
             );
         }
 
@@ -60,7 +58,6 @@ namespace Sales_Tracker
         private void ItemsInTransaction_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.IsProgramLoading = true;
-            MainMenu_Form.Instance.Selected = _oldOption;
 
             if (_hasChanges)
             {
@@ -120,7 +117,7 @@ namespace Sales_Tracker
         private void SetDataGridView(List<string> itemList)
         {
             Dictionary<MainMenu_Form.Column, string> columnHeaders;
-            columnHeaders = (_oldOption == MainMenu_Form.SelectedOption.Purchases)
+            columnHeaders = (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases)
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
@@ -130,11 +127,6 @@ namespace Sales_Tracker
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
 
             LoadAllItemsInDataGridView(itemList);
-
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales
-                ? MainMenu_Form.SelectedOption.ItemsInSale
-                : MainMenu_Form.SelectedOption.ItemsInPurchase;
-
             RefreshItemReturnStatus();
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)

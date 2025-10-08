@@ -211,7 +211,6 @@ namespace Sales_Tracker
             Name = "Companies_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            FormClosed += Companies_Form_FormClosed;
             Shown += Companies_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningCompanyName_PictureBox).EndInit();
             ResumeLayout(false);
