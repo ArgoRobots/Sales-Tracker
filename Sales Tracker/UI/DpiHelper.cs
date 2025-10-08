@@ -74,5 +74,20 @@ namespace Sales_Tracker.UI
 
             button.ImageSize = new(scaledImageSize, scaledImageSize);
         }
+
+        /// <summary>
+        /// Scales the top custom border thickness of a GroupBox based on the current DPI scale.
+        /// </summary>
+        public static void ScaleGroupBox(Guna2GroupBox groupBox)
+        {
+            float scale = GetRelativeDpiScale();
+            int scaledTop = (int)(groupBox.CustomBorderThickness.Top * scale);
+            groupBox.CustomBorderThickness = new Padding(
+                groupBox.CustomBorderThickness.Left,
+                scaledTop,
+                groupBox.CustomBorderThickness.Right,
+                groupBox.CustomBorderThickness.Bottom
+            );
+        }
     }
 }

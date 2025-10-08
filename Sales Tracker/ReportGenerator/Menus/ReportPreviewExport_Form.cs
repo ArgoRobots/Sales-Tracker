@@ -48,6 +48,7 @@ namespace Sales_Tracker.ReportGenerator
             SetupExportSettings();
             StoreInitialSizes();
             SetEventHandlers();
+            ScaleControls();
         }
         private void InitializeExportSettings()
         {
@@ -80,10 +81,10 @@ namespace Sales_Tracker.ReportGenerator
             PageSize_ComboBox.SelectedIndex = 0;  // A4 default
 
             // Setup orientation combo box
-            Orientation_ComboBox.Items.Clear();
-            Orientation_ComboBox.Items.Add("Portrait");
-            Orientation_ComboBox.Items.Add("Landscape");
-            Orientation_ComboBox.SelectedIndex = 0;  // Portrait default
+            PageOrientation_ComboBox.Items.Clear();
+            PageOrientation_ComboBox.Items.Add("Portrait");
+            PageOrientation_ComboBox.Items.Add("Landscape");
+            PageOrientation_ComboBox.SelectedIndex = 0;  // Portrait default
         }
         private void SetupExportSettings()
         {
@@ -113,6 +114,15 @@ namespace Sales_Tracker.ReportGenerator
         {
             ExportFormat_ComboBox.SelectedIndexChanged += ExportSettings_Changed;
             ExportFormat_ComboBox.SelectedIndexChanged += ExportFormat_ComboBox_SelectedIndexChanged;
+        }
+        private void ScaleControls()
+        {
+            DpiHelper.ScaleComboBox(ExportFormat_ComboBox);
+            DpiHelper.ScaleComboBox(PageSize_ComboBox);
+            DpiHelper.ScaleComboBox(PageOrientation_ComboBox);
+            DpiHelper.ScaleGroupBox(Preview_GroupBox);
+            DpiHelper.ScaleGroupBox(PageSettings_GroupBox);
+            DpiHelper.ScaleGroupBox(ExportSettings_GroupBox);
         }
 
         // Form event handlers
@@ -468,7 +478,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Update orientation
-            ReportConfig.PageOrientation = Orientation_ComboBox.SelectedIndex == 0 ?
+            ReportConfig.PageOrientation = PageOrientation_ComboBox.SelectedIndex == 0 ?
                 PageOrientation.Portrait : PageOrientation.Landscape;
         }
 
@@ -534,7 +544,7 @@ namespace Sales_Tracker.ReportGenerator
             {
                 // Load page settings
                 PageSize_ComboBox.SelectedIndex = (int)ReportConfig.PageSize;
-                Orientation_ComboBox.SelectedIndex = (int)ReportConfig.PageOrientation;
+                PageOrientation_ComboBox.SelectedIndex = (int)ReportConfig.PageOrientation;
                 PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
 
                 // Set default export path if not set

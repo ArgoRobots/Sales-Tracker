@@ -72,6 +72,7 @@ namespace Sales_Tracker.ReportGenerator
             StoreInitialSizes();
             SetToolTips();
             UpdateLayoutButtonStates();
+            ScaleControls();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
             Application.AddMessageFilter(panelCloseFilter);
@@ -118,6 +119,12 @@ namespace Sales_Tracker.ReportGenerator
             CustomTooltip.SetToolTip(MakeSameWidth_Button, "", "Make same width");
             CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "Make same height");
             CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
+        }
+        private void ScaleControls()
+        {
+            DpiHelper.ScaleGroupBox(Elements_GroupBox);
+            DpiHelper.ScaleGroupBox(Properties_GroupBox);
+            DpiHelper.ScaleGroupBox(Canvas_GroupBox);
         }
 
         // Form event handlers
