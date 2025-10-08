@@ -38,6 +38,9 @@ namespace Sales_Tracker
             AnimateButtons();
             _isProgramLoading = false;
             LanguageManager.UpdateLanguageForControl(this);
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel);
+            Application.AddMessageFilter(panelCloseFilter);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void StoreOriginalPositions()
@@ -174,13 +177,10 @@ namespace Sales_Tracker
         }
         private void ExportReceipts_Label_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             ExportReceipts_CheckBox.Checked = !ExportReceipts_CheckBox.Checked;
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             // Select folder
             VistaFolderBrowserDialog dialog = new();
 
@@ -191,9 +191,6 @@ namespace Sales_Tracker
         }
         private async void Export_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
-            // Check if there's any data to export
             if (!HasAnyDataToExport())
             {
                 CustomMessageBox.Show(
@@ -433,9 +430,9 @@ namespace Sales_Tracker
                    main.CompanyList.Count > 0 ||
                    main.AccountantList.Count > 0;
         }
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
         }
     }
 }

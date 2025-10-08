@@ -41,6 +41,10 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Purchase_DataGridView, Sale_DataGridView);
             AddEventHandlersToTextBoxes();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel, RightClickDataGridViewRowMenu.Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -98,7 +102,6 @@ namespace Sales_Tracker
         // Form event handlers
         private void Categories_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             CenterDataGridView();
         }
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -114,7 +117,6 @@ namespace Sales_Tracker
         // Event handlers
         private void AddCategory_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             string name = Category_TextBox.Text.Trim();
 
             if (Purchase_RadioButton.Checked)
@@ -140,7 +142,6 @@ namespace Sales_Tracker
         {
             if (Purchase_RadioButton.Checked)
             {
-                CloseAllPanels(null, null);
                 Purchase_DataGridView.Visible = true;
                 Sale_DataGridView.Visible = false;
                 Purchase_DataGridView.ClearSelection();
@@ -155,7 +156,6 @@ namespace Sales_Tracker
         {
             if (Sale_RadioButton.Checked)
             {
-                CloseAllPanels(null, null);
                 Sale_DataGridView.Visible = true;
                 Purchase_DataGridView.Visible = false;
                 Sale_DataGridView.ClearSelection();
@@ -302,9 +302,10 @@ namespace Sales_Tracker
                 AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
             }
         }
-        private void CloseAllPanels(object sender, EventArgs? e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
+            RightClickDataGridViewRowMenu.Hide();
         }
     }
 }

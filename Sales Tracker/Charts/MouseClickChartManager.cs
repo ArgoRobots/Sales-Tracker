@@ -8,7 +8,6 @@ namespace Sales_Tracker.Charts
     public static class MouseClickChartManager
     {
         private static readonly HashSet<Control> _registeredCharts = [];
-        private static Action<Control> _onLeftClick;
         private static Action<Control, Point> _onRightClick;
         private static CustomMessageFilter _messageFilter;
 
@@ -17,10 +16,9 @@ namespace Sales_Tracker.Charts
         /// </summary>
         public static void InitCharts(Control[] charts)
         {
-            static void leftClickAction(Control chartControl) => CustomControls.CloseAllPanels();
-            Initialize(charts, leftClickAction, RightClickChartMenu.ShowMenu);
+            Initialize(charts, RightClickChartMenu.Show);
         }
-        private static void Initialize(Control[] charts, Action<Control> onLeftClick, Action<Control, Point> onRightClick)
+        private static void Initialize(Control[] charts, Action<Control, Point> onRightClick)
         {
             // Add new charts to the collection
             foreach (Control chart in charts)
@@ -28,7 +26,6 @@ namespace Sales_Tracker.Charts
                 _registeredCharts.Add(chart);
             }
 
-            _onLeftClick = onLeftClick;
             _onRightClick = onRightClick;
 
             // Initialize message filter if not already done
@@ -73,7 +70,7 @@ namespace Sales_Tracker.Charts
                     CustomControls.RecentlyOpenedMenu,
                     CustomControls.HelpMenu,
                     CustomControls.ControlDropDown_Panel,
-                    RightClickChartMenu.RightClickChart_Panel,
+                    RightClickChartMenu.Panel,
                     TextBoxManager.RightClickTextBox_Panel
                 ];
                 Control mainPanel = DateRange_Form.Instance?.Main_Panel;
@@ -112,9 +109,6 @@ namespace Sales_Tracker.Charts
                     // Check if the click is within the bounds of the chart
                     if (chart.Bounds.Contains(localMousePosition))
                     {
-                        // Trigger the left click action with chart
-                        _onLeftClick?.Invoke(chart);
-
                         if (isRightClick)
                         {
                             // Trigger the right click action with chart and mouse position

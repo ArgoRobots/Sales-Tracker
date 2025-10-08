@@ -21,7 +21,6 @@ namespace Sales_Tracker.GridView
         private static DataGridViewRow _removedRow;
         private static readonly string _deleteAction = LanguageManager.TranslateString("deleted");
         private static DataGridViewCell _currentlyHoveredNoteCell;
-        private static bool _isMouseDown, _skipNextPanelClose;
         private static int RowHeight => (int)(35 * DpiHelper.GetRelativeDpiScale());
         private static int ColumnHeaderHeight => (int)(60 * DpiHelper.GetRelativeDpiScale());
 
@@ -58,8 +57,6 @@ namespace Sales_Tracker.GridView
 
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
-            dataGridView.MouseDown += DataGridView_MouseDown;
-            dataGridView.MouseMove += DataGridView_MouseMove;
             dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
             dataGridView.CellMouseClick += DataGridView_CellMouseClick;
@@ -177,27 +174,9 @@ namespace Sales_Tracker.GridView
                 MainMenu_Form.SaveDataGridViewToFile(dataGridView, selected);
             }
         }
-        private static void DataGridView_MouseDown(object sender, MouseEventArgs e)
-        {
-            _isMouseDown = true;
-        }
-        private static void DataGridView_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (_isMouseDown)
-            {
-                CustomControls.CloseAllPanels();
-            }
-        }
         private static void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
-            _isMouseDown = false;
             Guna2DataGridView grid = (Guna2DataGridView)sender;
-
-            if (!_skipNextPanelClose)
-            {
-                CustomControls.CloseAllPanels();
-            }
-            _skipNextPanelClose = false;  // Reset the flag
 
             SelectRowAndDeselectAllOthers(grid, e);
 
@@ -212,6 +191,9 @@ namespace Sales_Tracker.GridView
                 return;
             }
 
+            // First hide other right click panels
+            MainMenu_Form.CloseRightClickPanels();
+
             ConfigureRightClickDataGridViewMenuButtons(grid);
             PositionRightClickDataGridViewMenu(grid, e, info);
         }
@@ -219,8 +201,6 @@ namespace Sales_Tracker.GridView
         {
             if (e.KeyCode == Keys.Delete)
             {
-                MainMenu_Form.Instance.ClosePanels();
-
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
                 CustomMessageBoxResult result;
 
@@ -309,13 +289,10 @@ namespace Sales_Tracker.GridView
         }
         private static void DataGridView_ColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
         {
-            CustomControls.CloseAllPanels();
-
             // Show right click panel
             if (e.Button == MouseButtons.Right && e.RowIndex == -1 && e.ColumnIndex >= 0)
             {
-                _skipNextPanelClose = true;  // Prevent the next CloseAllPanels() call in DataGridView_MouseUp()
-                ColumnVisibilityPanel.ShowPanel(sender as Guna2DataGridView, e);
+                ColumnVisibilityPanel.Show(sender as Guna2DataGridView, e);
             }
 
             UpdateRowColors((DataGridView)sender);
@@ -631,8 +608,8 @@ namespace Sales_Tracker.GridView
         }
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
-            FlowLayoutPanel flowPanel = RightClickRowMenu.RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            RightClickRowMenu.RightClickDataGridView_Panel.Tag = grid;  // This is used in the button event handlers
+            FlowLayoutPanel flowPanel = RightClickDataGridViewRowMenu.Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            RightClickDataGridViewRowMenu.Panel.Tag = grid;  // This is used in the button event handlers
 
             // First, hide all buttons
             foreach (Control control in flowPanel.Controls)
@@ -653,59 +630,59 @@ namespace Sales_Tracker.GridView
             {
                 if (isSingleRowSelected)
                 {
-                    RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ViewReceipt_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ViewReceipt_Button, currentIndex++);
 
-                    RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ExportReceipt_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ExportReceipt_Button, currentIndex++);
                 }
 
                 return;  // Don't add any more buttons
             }
 
-            // Add ModifyBtn
+            // Add Modify_Button
             if (isSingleRowSelected)
             {
-                RightClickRowMenu.RightClickDataGridView_ModifyBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ModifyBtn, currentIndex++);
+                RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
             }
 
-            // Add MoveBtn
+            // Add Move_Button
             if (selectedOption == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
                 string text = LanguageManager.TranslateString("Move category to sales");
-                RightClickRowMenu.RightClickDataGridView_MoveBtn.Visible = true;
-                RightClickRowMenu.RightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MoveBtn, currentIndex++);
+                RightClickDataGridViewRowMenu.Move_Button.Visible = true;
+                RightClickDataGridViewRowMenu.Move_Button.Text = text;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Move_Button, currentIndex++);
             }
             else if (selectedOption == MainMenu_Form.SelectedOption.CategorySales)
             {
                 string text = LanguageManager.TranslateString("Move category to purchases");
-                RightClickRowMenu.RightClickDataGridView_MoveBtn.Visible = true;
-                RightClickRowMenu.RightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MoveBtn, currentIndex++);
+                RightClickDataGridViewRowMenu.Move_Button.Visible = true;
+                RightClickDataGridViewRowMenu.Move_Button.Text = text;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Move_Button, currentIndex++);
             }
 
             if (isPurchasesOrSales)
             {
-                // Add ShowItemsBtn
+                // Add ShowItems_Button
                 if (isSingleRowSelected && grid.SelectedRows[0].Tag is (List<string>, TagData))
                 {
-                    RightClickRowMenu.RightClickDataGridView_ShowItemsBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ShowItemsBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ShowItems_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ShowItems_Button, currentIndex++);
                 }
 
-                // Add ViewReceiptBtn and ExportReceiptBtn
+                // Add ViewReceipt_Button and ExportReceipt_Button
                 if (AnySelectedRowHasReceipt(grid))
                 {
                     if (isSingleRowSelected)
                     {
-                        RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn.Visible = true;
-                        flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReceiptBtn, currentIndex++);
+                        RightClickDataGridViewRowMenu.ViewReceipt_Button.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ViewReceipt_Button, currentIndex++);
                     }
 
-                    RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ExportReceipt_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ExportReceipt_Button, currentIndex++);
                 }
             }
 
@@ -740,74 +717,74 @@ namespace Sales_Tracker.GridView
                 // View Details buttons - show when there's information to view
                 if (hasAnyReturns)
                 {
-                    RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewReturnDetailsBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ViewReturnDetails_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ViewReturnDetails_Button, currentIndex++);
                 }
 
                 if (hasAnyLoss)
                 {
-                    RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ViewLossDetailsBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.ViewLossDetails_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ViewLossDetails_Button, currentIndex++);
                 }
 
                 // Return action buttons
                 if (isFullyReturned)
                 {
                     // Fully returned - only show undo button
-                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.UndoReturn_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.UndoReturn_Button.Text = LanguageManager.TranslateString("Undo return");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.UndoReturn_Button, currentIndex++);
                 }
                 else if (isPartiallyReturned)
                 {
                     // Partially returned - show both buttons
-                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.Return_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.Return_Button.Text = LanguageManager.TranslateString("Return more items");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Return_Button, currentIndex++);
 
-                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoReturnBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.UndoReturn_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.UndoReturn_Button.Text = LanguageManager.TranslateString("Undo partial return");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.UndoReturn_Button, currentIndex++);
                 }
                 else if (!isFullyLost && !isPartiallyLost)
                 {
                     // Not returned and not lost - show return button
-                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_ReturnBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.Return_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.Return_Button.Text = LanguageManager.TranslateString("Return product");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Return_Button, currentIndex++);
                 }
 
                 // Loss action buttons
                 if (isFullyLost)
                 {
                     // Fully lost - only show undo loss button
-                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo loss");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.UndoLoss_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.UndoLoss_Button.Text = LanguageManager.TranslateString("Undo loss");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.UndoLoss_Button, currentIndex++);
                 }
                 else if (isPartiallyLost)
                 {
                     // Partially lost - show both buttons
-                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark more items as lost");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.MarkAsLost_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.MarkAsLost_Button.Text = LanguageManager.TranslateString("Mark more items as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.MarkAsLost_Button, currentIndex++);
 
-                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_UndoLossBtn.Text = LanguageManager.TranslateString("Undo partial loss");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_UndoLossBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.UndoLoss_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.UndoLoss_Button.Text = LanguageManager.TranslateString("Undo partial loss");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.UndoLoss_Button, currentIndex++);
                 }
                 else if (!isFullyReturned && !isPartiallyReturned)
                 {
                     // Not lost and not returned - show mark as lost button
-                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Visible = true;
-                    RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn.Text = LanguageManager.TranslateString("Mark as lost");
-                    flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_MarkAsLostBtn, currentIndex++);
+                    RightClickDataGridViewRowMenu.MarkAsLost_Button.Visible = true;
+                    RightClickDataGridViewRowMenu.MarkAsLost_Button.Text = LanguageManager.TranslateString("Mark as lost");
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.MarkAsLost_Button, currentIndex++);
                 }
             }
 
             // Add DeleteBtn
-            RightClickRowMenu.RightClickDataGridView_DeleteBtn.Visible = true;
-            flowPanel.Controls.SetChildIndex(RightClickRowMenu.RightClickDataGridView_DeleteBtn, currentIndex);
+            RightClickDataGridViewRowMenu.Delete_Button.Visible = true;
+            flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex);
         }
         private static bool AnySelectedRowHasReceipt(DataGridView grid)
         {
@@ -826,7 +803,7 @@ namespace Sales_Tracker.GridView
         }
         private static void PositionRightClickDataGridViewMenu(Guna2DataGridView grid, MouseEventArgs e, DataGridView.HitTestInfo info)
         {
-            FlowLayoutPanel flowPanel = RightClickRowMenu.RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            FlowLayoutPanel flowPanel = RightClickDataGridViewRowMenu.Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             bool hasVisibleButtons = flowPanel.Controls.OfType<Guna2Button>().Any(btn => btn.Visible);
 
             if (!hasVisibleButtons)
@@ -838,13 +815,13 @@ namespace Sales_Tracker.GridView
             int formHeight = parentForm.ClientSize.Height;
             int formWidth = parentForm.ClientSize.Width;
 
-            CustomControls.SetRightClickMenuHeight(RightClickRowMenu.RightClickDataGridView_Panel);
+            CustomControls.SetRightClickMenuHeight(RightClickDataGridViewRowMenu.Panel);
 
-            SetHorizontalPosition(grid, RightClickRowMenu.RightClickDataGridView_Panel, e, formWidth);
-            SetVerticalPosition(grid, RightClickRowMenu.RightClickDataGridView_Panel, info, formHeight);
+            SetHorizontalPosition(grid, RightClickDataGridViewRowMenu.Panel, e, formWidth);
+            SetVerticalPosition(grid, RightClickDataGridViewRowMenu.Panel, info, formHeight);
 
-            grid.Parent.Controls.Add(RightClickRowMenu.RightClickDataGridView_Panel);
-            RightClickRowMenu.RightClickDataGridView_Panel.BringToFront();
+            grid.Parent.Controls.Add(RightClickDataGridViewRowMenu.Panel);
+            RightClickDataGridViewRowMenu.Panel.BringToFront();
         }
         public static void SetHorizontalPosition(Guna2DataGridView grid, Control control, MouseEventArgs e, int formWidth)
         {
@@ -962,7 +939,7 @@ namespace Sales_Tracker.GridView
                 {
                     continue;
                 }
-                
+
                 DataGridViewTextBoxColumn column = new()
                 {
                     HeaderText = columnHeader.Value,

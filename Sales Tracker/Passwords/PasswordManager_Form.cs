@@ -21,8 +21,8 @@ namespace Sales_Tracker.Passwords
         }
         private void AddEventHandlersToTextBoxes()
         {
-            TextBoxManager.Attach(CurrentPassword_TextBox);
-            TextBoxManager.Attach(NewPassword_TextBox);
+            TextBoxManager.Attach(false, CurrentPassword_TextBox);
+            TextBoxManager.Attach(false, NewPassword_TextBox);
         }
 
         // Form event handlers

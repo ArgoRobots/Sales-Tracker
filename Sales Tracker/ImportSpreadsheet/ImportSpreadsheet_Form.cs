@@ -29,6 +29,10 @@ namespace Sales_Tracker.ImportSpreadsheet
             LanguageManager.UpdateLanguageForControl(this);
             RemoveSpreadsheetLabel();
             RemoveReceiptsFolderLabel();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void InitCurrencyControls()
@@ -74,8 +78,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Select spreadsheet
         private async void SelectSpreadsheet_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             // File selection dialog
             OpenFileDialog dialog = new()
             {
@@ -257,12 +259,10 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void DetectCurrency_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             _ = DetectCurrencyAsync();
         }
         private void RemoveSpreadsheet_ImageButton_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             RemoveSpreadsheetLabel();
             Controls.Remove(_centeredFlowPanel);
             Import_Button.Enabled = false;
@@ -282,8 +282,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Select receipts folder
         private void SelectReceiptsFolder_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             FolderBrowserDialog dialog = new()
             {
                 Description = "Select folder containing receipt files",
@@ -308,7 +306,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private async void RemoveReceiptsFolder_ImageButton_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             RemoveReceiptsFolderLabel();
             await RefreshPanelsAsync();
         }
@@ -417,7 +414,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Import data with rollback and cancellation support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             if (!ValidateSpreadsheet()) { return; }
 
             // Check if any checkboxes are selected
@@ -722,7 +718,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Other event handlers
         private void OpenTutorial_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenLink("https://argorobots.com/documentation/index.php#spreadsheets");
         }
         private void AutoDetectReceiptsFolder()
@@ -1136,10 +1131,10 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
 
         // Other methods
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
             ImportSpreadsheet_Label.Focus();  // This deselects any TextBox
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
         }
     }
 }

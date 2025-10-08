@@ -12,13 +12,18 @@ namespace Sales_Tracker.Startup.Menus
     public partial class ConfigureCompany_Form : BaseForm
     {
         // Properties
+        private static ConfigureCompany_Form _instance;
         private static Action _validationCallback;
         private static bool _isProgramLoading;
+
+        // Getters
+        public static ConfigureCompany_Form Instance => _instance;
 
         // Init.
         public ConfigureCompany_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             UpdateTheme();
             SetAccessibleDescriptions();
@@ -114,13 +119,10 @@ namespace Sales_Tracker.Startup.Menus
         // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormGetStarted);
         }
         private void Create_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (File.Exists(Directory_TextBox.Text + @"\" + CompanyName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
                 Directory_TextBox.Focus();
@@ -210,8 +212,6 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             // Select folder
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
 
@@ -338,11 +338,6 @@ namespace Sales_Tracker.Startup.Menus
                 && CustomControls.IsGTextBoxValid(AccountantName_TextBox)
                 && CustomControls.IsGTextBoxValid(Directory_TextBox)
                 && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
-        }
-        private void CloseAllPanels(object sender, EventArgs e)
-        {
-            ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
-            CustomControls.CloseAllPanels();
         }
     }
 }

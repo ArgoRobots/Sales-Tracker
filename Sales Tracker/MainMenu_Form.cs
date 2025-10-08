@@ -79,6 +79,17 @@ namespace Sales_Tracker
             AnonymousDataManager.TrackSessionStart();
             NetSparkleUpdateManager.CheckForUpdates();
 
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                TextBoxManager.RightClickTextBox_Panel,
+                RightClickDataGridViewRowMenu.Panel,
+                RightClickChartMenu.Panel,
+                CustomControls.FileMenu,
+                CustomControls.RecentlyOpenedMenu,
+                CustomControls.HelpMenu,
+                CompanyLogo.CompanyLogoRightClick_Panel);
+
+            Application.AddMessageFilter(panelCloseFilter);
+
             _chartTop = Purchases_Button.Bottom + 20;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -716,7 +727,7 @@ namespace Sales_Tracker
         }
         private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels();
+            ClosePanels();
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
@@ -774,7 +785,6 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CustomControls.CloseAllPanels();
             Log.Write(2, "Closing Argo Sales Tracker");
 
             if (!ArgoCompany.AskUserToSave())
@@ -1110,7 +1120,6 @@ namespace Sales_Tracker
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels();
             CustomControls.SaveAll();
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
@@ -1123,7 +1132,6 @@ namespace Sales_Tracker
         }
         private void Upgrade_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Upgrade_Form());
         }
         private void Help_Button_Click(object sender, EventArgs e)
@@ -1145,7 +1153,6 @@ namespace Sales_Tracker
             }
             else
             {
-                CustomControls.CloseAllPanels();
                 button.Image = whiteImage;
 
                 // Calculate X position based on left or right alignment
@@ -1163,7 +1170,6 @@ namespace Sales_Tracker
         // Event handlers
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             if (Selected == SelectedOption.Purchases) { return; }
 
             Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -1191,7 +1197,6 @@ namespace Sales_Tracker
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             if (Selected == SelectedOption.Sales) { return; }
 
             Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -1217,10 +1222,8 @@ namespace Sales_Tracker
             SelectButton(Sales_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
-
         //private void Rentals_Button_Click(object sender, EventArgs e)
         //{
-        //    CloseAllPanels(null, null);
         //    if (Selected == SelectedOption.Rentals) { return; }
 
         //    Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -1249,7 +1252,6 @@ namespace Sales_Tracker
         //}
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             if (Selected == SelectedOption.Analytics) { return; }
 
             Selected = SelectedOption.Analytics;
@@ -1261,44 +1263,36 @@ namespace Sales_Tracker
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new AddPurchase_Form());
         }
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new AddSale_Form());
         }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new Accountants_Form());
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new Products_Form(true));
         }
         private void ManageCompanies_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new Companies_Form());
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             Tools.OpenForm(new Categories_Form(true));
         }
         private void LineChart_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             LoadOrRefreshMainCharts(true);
             LoadOrRefreshAnalyticsCharts(true);
             SetAllAnalyticTabsAsNotLoaded();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             CustomControls.Rename_TextBox.Text = CompanyName_Label.Text;
             CustomControls.Rename_TextBox.Font = CompanyName_Label.Font;
             Controls.Add(CustomControls.Rename_TextBox);
@@ -1379,8 +1373,6 @@ namespace Sales_Tracker
             }
             else
             {
-                CloseAllPanels(null, null);
-
                 // Set the location for the panel
                 DateRangePanel.Location = new Point(
                     TimeRange_Button.Right - DateRangePanel.Width,
@@ -2456,7 +2448,6 @@ namespace Sales_Tracker
                 BorderRadius = 8,
                 Anchor = AnchorStyles.Top
             };
-            tabButtonsPanel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Create tab buttons
             List<Guna2Button> tabButtons = [];
@@ -2517,8 +2508,6 @@ namespace Sales_Tracker
         }
         private void TabButton_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (sender is Guna2Button clickedButton && clickedButton.Tag is AnalyticsTab tabKey)
             {
                 SelectTabButton(tabKey);
@@ -2914,7 +2903,6 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _worldMapDataType_Label.Click += (s, e) => CloseAllPanels(null, null);
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             // Combined data option
@@ -2937,7 +2925,6 @@ namespace Sales_Tracker
             _combinedData_Label.Click += (s, e) =>
             {
                 _combinedData_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
@@ -2961,7 +2948,6 @@ namespace Sales_Tracker
             _purchasesOnly_Label.Click += (s, e) =>
             {
                 _purchasesOnly_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
@@ -2985,7 +2971,6 @@ namespace Sales_Tracker
             _salesOnly_Label.Click += (s, e) =>
             {
                 _salesOnly_RadioButton.Checked = true;
-                CloseAllPanels(null, null);
             };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
@@ -2996,7 +2981,6 @@ namespace Sales_Tracker
                 BorderThickness = 0,
                 Visible = false
             };
-            _worldMapControls_Panel.Click += (s, e) => CloseAllPanels(null, null);
 
             // Add all controls to panel
             _worldMapControls_Panel.Controls.AddRange([
@@ -3070,8 +3054,6 @@ namespace Sales_Tracker
         }
         private void WorldMapDataType_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {
                 GeoMapDataType dataType = GetSelectedGeoMapDataType();
@@ -3105,8 +3087,8 @@ namespace Sales_Tracker
                 CustomControls.ControlDropDown_Panel,
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
-                RightClickRowMenu.RightClickDataGridView_Panel,
-                RightClickChartMenu.RightClickChart_Panel,
+                RightClickDataGridViewRowMenu.Panel,
+                RightClickChartMenu.Panel,
                 TextBoxManager.RightClickTextBox_Panel
             }.Where(panel => panel != null).ToList();
         }
@@ -3114,16 +3096,35 @@ namespace Sales_Tracker
         {
             Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }
+        public static void CloseRightClickPanels()
+        {
+            TextBoxManager.HideRightClickPanel();
+            RightClickDataGridViewRowMenu.Hide();
+            RightClickChartMenu.Hide();
+        }
         public void ClosePanels()
         {
-            RightClickRowMenu.RightClickDataGridView_Panel.Parent?.Controls.Remove(RightClickRowMenu.RightClickDataGridView_Panel);
-            Controls.Remove(RightClickChartMenu.RightClickChart_Panel);
-            Controls.Remove(CompanyLogo.CompanyLogoRightClick_Panel);
+            RenameCompany();
+            CloseRightClickPanels();
+
+            CompanyLogo.Hide();
+            ColumnVisibilityPanel.Hide();
+            CloseDateRangePanel();
+            Controls.Remove(CustomControls.ControlDropDown_Panel);
+
+            Controls.Remove(CustomControls.FileMenu);
+            Controls.Remove(CustomControls.RecentlyOpenedMenu);
+            Controls.Remove(CustomControls.HelpMenu);
+
+            CustomControls.DeselectAllMenuButtons(CustomControls.FileMenu);
+            CustomControls.DeselectAllMenuButtons(CustomControls.RecentlyOpenedMenu);
+            CustomControls.DeselectAllMenuButtons(CustomControls.HelpMenu);
+
+            File_Button.Image = Resources.FileGray;
+            Help_Button.Image = Resources.HelpGray;
+
             DataGridViewManager.DoNotDeleteRows = false;
-        }
-        public void CloseAllPanels(object sender, EventArgs? e)
-        {
-            CustomControls.CloseAllPanels();
+            MenuKeyShortcutManager.SelectedPanel = null;
         }
     }
 }

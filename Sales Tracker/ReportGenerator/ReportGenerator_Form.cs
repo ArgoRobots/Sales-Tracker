@@ -50,6 +50,9 @@ namespace Sales_Tracker.ReportGenerator
             SetAccessibleDescriptions();
             AnimateButtons();
 
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void InitializeChildForms()
@@ -315,13 +318,11 @@ namespace Sales_Tracker.ReportGenerator
         {
             UpdateNavigationButtons();
         }
-        public static void ClosePanels()
+
+        // Other methods
+        private static void ClosePanels()
         {
-            if (ReportLayoutDesigner_Form.Instance?.PanelCloseFilter != null)
-            {
-                Application.RemoveMessageFilter(ReportLayoutDesigner_Form.Instance.PanelCloseFilter);
-            }
-            RightClickElementMenu.RightClickElement_Panel.Parent?.Controls.Remove(RightClickElementMenu.RightClickElement_Panel);
+            RightClickElementMenu.Hide();
         }
     }
 }

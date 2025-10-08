@@ -85,7 +85,7 @@
             Password_TextBox.Size = new Size(350, 50);
             Password_TextBox.TabIndex = 1;
             Password_TextBox.TextChanged += Password_TextBox_TextChanged;
-            Password_TextBox.Click += CloseAllPanels;
+            Password_TextBox.Click += ClosePanels;
             Password_TextBox.KeyDown += Password_TextBox_KeyDown;
             // 
             // EnterPassword_Label
@@ -98,7 +98,7 @@
             EnterPassword_Label.Size = new Size(237, 45);
             EnterPassword_Label.TabIndex = 0;
             EnterPassword_Label.Text = "Enter password";
-            EnterPassword_Label.Click += CloseAllPanels;
+            EnterPassword_Label.Click += ClosePanels;
             // 
             // Message_LinkLabel
             // 
@@ -112,7 +112,7 @@
             Message_LinkLabel.TabIndex = 0;
             Message_LinkLabel.Text = "Message";
             Message_LinkLabel.LinkClicked += Message_LinkLabel_LinkClicked;
-            Message_LinkLabel.Click += CloseAllPanels;
+            Message_LinkLabel.Click += ClosePanels;
             // 
             // PasswordEye_Button
             // 
@@ -151,7 +151,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += EnterPassword_Form_Shown;
-            Click += CloseAllPanels;
+            Click += ClosePanels;
             ResumeLayout(false);
             PerformLayout();
         }

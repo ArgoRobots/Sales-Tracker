@@ -16,37 +16,37 @@ namespace Sales_Tracker.Charts
     public static class RightClickChartMenu
     {
         // Properties
-        private static Guna2Button _resetZoomButton, _exportExcel, _exportSheets;
+        private static Guna2Button _resetZoom_Button, _exportExcel_Button, _exportSheet_Button;
 
         // Getter
-        public static Guna2Panel RightClickChart_Panel { get; private set; }
+        public static Guna2Panel Panel { get; private set; }
 
         // Right click menu methods
         public static void ConstructRightClickChartMenu()
         {
-            RightClickChart_Panel = CustomControls.ConstructPanelForMenu(
+            Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickChart_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
-            Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
+            Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, flowPanel);
             button.Click += SaveImage;
 
-            _exportExcel = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
-            _exportExcel.Click += ExportToMicrosoftExcel;
+            _exportExcel_Button = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, flowPanel);
+            _exportExcel_Button.Click += ExportToMicrosoftExcel;
 
-            _exportSheets = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
-            _exportSheets.Click += ExportToGoogleSheets;
+            _exportSheet_Button = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, flowPanel);
+            _exportSheet_Button.Click += ExportToGoogleSheets;
 
-            _resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
-            _resetZoomButton.Click += ResetZoom;
+            _resetZoom_Button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, flowPanel);
+            _resetZoom_Button.Click += ResetZoom;
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickChart_Panel.Tag;
+            Control chart = (Control)Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ExportToMicrosoftExcel(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickChart_Panel.Tag;
+            Control chart = (Control)Panel.Tag;
             string directory = "";
 
             using SaveFileDialog dialog = new();
@@ -204,7 +204,7 @@ namespace Sales_Tracker.Charts
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickChart_Panel.Tag;
+            Control chart = (Control)Panel.Tag;
             bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             try
@@ -626,7 +626,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickChart_Panel.Tag;
+            Control chart = (Control)Panel.Tag;
 
             if (chart is CartesianChart cartesianChart)
             {
@@ -649,69 +649,76 @@ namespace Sales_Tracker.Charts
         }
 
         // Other methods
-        public static void ShowMenu(Control chart, Point mousePosition)
+        public static void Show(Control chart, Point mousePosition)
         {
+            // First hide other right click panels
+            MainMenu_Form.CloseRightClickPanels();
+
             if (!ChartHasData(chart)) { return; }
 
             Form form = chart.FindForm();
-            RightClickChart_Panel.Tag = chart;
+            Panel.Tag = chart;
             Point localMousePosition = form.PointToClient(mousePosition);
             int formWidth = form.ClientSize.Width;
             int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];
 
             if (IsPieChart(chart))
             {
-                flowPanel.Controls.Add(_exportExcel);
-                flowPanel.Controls.Add(_exportSheets);
-                flowPanel.Controls.Remove(_resetZoomButton);
+                flowPanel.Controls.Add(_exportExcel_Button);
+                flowPanel.Controls.Add(_exportSheet_Button);
+                flowPanel.Controls.Remove(_resetZoom_Button);
             }
             else if (IsGeoMap(chart))
             {
-                flowPanel.Controls.Remove(_exportExcel);
-                flowPanel.Controls.Remove(_exportSheets);
-                flowPanel.Controls.Remove(_resetZoomButton);
+                flowPanel.Controls.Remove(_exportExcel_Button);
+                flowPanel.Controls.Remove(_exportSheet_Button);
+                flowPanel.Controls.Remove(_resetZoom_Button);
             }
             else
             {
-                flowPanel.Controls.Add(_exportExcel);
-                flowPanel.Controls.Add(_exportSheets);
-                flowPanel.Controls.Add(_resetZoomButton);
+                flowPanel.Controls.Add(_exportExcel_Button);
+                flowPanel.Controls.Add(_exportSheet_Button);
+                flowPanel.Controls.Add(_resetZoom_Button);
             }
 
-            CustomControls.SetRightClickMenuHeight(RightClickChart_Panel);
+            CustomControls.SetRightClickMenuHeight(Panel);
 
             // Calculate the horizontal position
             bool tooFarRight = false;
-            if (RightClickChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
+            if (Panel.Width + localMousePosition.X - offset + padding > formWidth)
             {
-                RightClickChart_Panel.Left = formWidth - RightClickChart_Panel.Width - padding;
+                Panel.Left = formWidth - Panel.Width - padding;
                 tooFarRight = true;
             }
             else
             {
-                RightClickChart_Panel.Left = localMousePosition.X - offset;
+                Panel.Left = localMousePosition.X - offset;
             }
 
             // Calculate the vertical position
-            if (localMousePosition.Y + RightClickChart_Panel.Height + padding > formHeight)
+            if (localMousePosition.Y + Panel.Height + padding > formHeight)
             {
-                RightClickChart_Panel.Top = formHeight - RightClickChart_Panel.Height - padding;
+                Panel.Top = formHeight - Panel.Height - padding;
                 if (!tooFarRight)
                 {
-                    RightClickChart_Panel.Left += offset;
+                    Panel.Left += offset;
                 }
             }
             else
             {
-                RightClickChart_Panel.Top = localMousePosition.Y;
+                Panel.Top = localMousePosition.Y;
             }
 
-            form.Controls.Add(RightClickChart_Panel);
-            RightClickChart_Panel.BringToFront();
+            form.Controls.Add(Panel);
+            Panel.BringToFront();
+        }
+        public static void Hide()
+        {
+            Panel?.Parent?.Controls.Remove(Panel);
         }
 
         // Helper methods

@@ -37,7 +37,9 @@ namespace Sales_Tracker
             string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";
 
-            this.Activated += AddSale_Form_Activated;
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel, SearchBox.SearchResultBoxContainer);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -117,14 +119,12 @@ namespace Sales_Tracker
         }
         private void AddSale_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels();
+            ClosePanels();
         }
 
         // Event handlers
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales)
             {
                 MainMenu_Form.Instance.Sales_Button.PerformClick();
@@ -154,7 +154,6 @@ namespace Sales_Tracker
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             if (MultipleItems_CheckBox.Checked)
             {
                 if (_addButton == null)
@@ -178,8 +177,6 @@ namespace Sales_Tracker
         }
         private void Receipt_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             // Select file
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -788,8 +785,8 @@ namespace Sales_Tracker
                 ConstructLabel(ProductName_Label.Text, 0, _labelPanel);
             }
             float scale = DpiHelper.GetRelativeDpiScale();
-            Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
-            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, (int)(150 * scale), true, false, true, true);  // Apply scaling
+            Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
+            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, (int)(150 * scale), true, false, true, true);
 
             // Price per unit
             int left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -797,7 +794,7 @@ namespace Sales_Tracker
             {
                 ConstructLabel(PricePerUnit_Label.Text, left, _labelPanel);
             }
-            textBox = ConstructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, panel);
+            textBox = ConstructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
 
             // Quantity
             left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -805,13 +802,13 @@ namespace Sales_Tracker
             {
                 ConstructLabel(Quantity_Label.Text, left, _labelPanel);
             }
-            textBox = ConstructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, true, panel);
+            textBox = ConstructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
             if (_panelsForMultipleProducts_List.Count > 1)
             {
-                ConstructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (PanelAndTextBoxHeight - CircleButtonHeight) / 2 + textBox.Top), panel);  // Use scaled properties
+                ConstructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (PanelAndTextBoxHeight - CircleButtonHeight) / 2 + textBox.Top), panel);
             }
 
             SuspendLayout();
@@ -820,7 +817,7 @@ namespace Sales_Tracker
             _flowPanel.ScrollControlIntoView(panel);
             ResumeLayout();
         }
-        private void ConstructLabel(string text, int left, Control parent)
+        private static void ConstructLabel(string text, int left, Control parent)
         {
             Label label = new()
             {
@@ -830,10 +827,9 @@ namespace Sales_Tracker
                 Left = left,
                 AutoSize = true
             };
-            label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, bool closeAllPanels, Control parent)
+        private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
         {
             Guna2TextBox textBox = new()
             {
@@ -869,10 +865,7 @@ namespace Sales_Tracker
                 case CustomControls.KeyPressValidation.None:
                     break;
             }
-            if (closeAllPanels)
-            {
-                textBox.Click += CloseAllPanels;
-            }
+
             textBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(textBox);
 
@@ -903,8 +896,6 @@ namespace Sales_Tracker
         }
         private void MinusButton_Click(object? sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             CustomCircleButton button = (CustomCircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
@@ -927,7 +918,6 @@ namespace Sales_Tracker
                 Visible = false
             };
             ThemeManager.CustomizeScrollBar(_flowPanel);
-            _flowPanel.Click += CloseAllPanels;
             Controls.Add(_flowPanel);
         }
         private void ConstructAddButton()
@@ -954,7 +944,6 @@ namespace Sales_Tracker
 
             _addButton.Click += (_, _) =>
             {
-                CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
@@ -1035,9 +1024,10 @@ namespace Sales_Tracker
             }
             AddSale_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
+            SearchBox.Close();
         }
     }
 }

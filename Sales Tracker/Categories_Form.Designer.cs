@@ -77,7 +77,6 @@ namespace Sales_Tracker
             Category_TextBox.Size = new Size(300, 50);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
-            Category_TextBox.Click += CloseAllPanels;
             Category_TextBox.KeyDown += Category_TextBox_KeyDown;
             // 
             // AddCategory_Button
@@ -111,7 +110,6 @@ namespace Sales_Tracker
             AddCategory_Label.Size = new Size(211, 45);
             AddCategory_Label.TabIndex = 0;
             AddCategory_Label.Text = "Add category";
-            AddCategory_Label.Click += CloseAllPanels;
             // 
             // CategoryName_Label
             // 
@@ -123,7 +121,6 @@ namespace Sales_Tracker
             CategoryName_Label.Size = new Size(169, 31);
             CategoryName_Label.TabIndex = 0;
             CategoryName_Label.Text = "Category name";
-            CategoryName_Label.Click += CloseAllPanels;
             // 
             // WarningCategoryName_PictureBox
             // 
@@ -136,7 +133,6 @@ namespace Sales_Tracker
             WarningCategoryName_PictureBox.TabIndex = 39;
             WarningCategoryName_PictureBox.TabStop = false;
             WarningCategoryName_PictureBox.Visible = false;
-            WarningCategoryName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCategoryName_Label
             // 
@@ -149,7 +145,6 @@ namespace Sales_Tracker
             WarningCategoryName_Label.TabIndex = 38;
             WarningCategoryName_Label.Text = "Category already exists";
             WarningCategoryName_Label.Visible = false;
-            WarningCategoryName_Label.Click += CloseAllPanels;
             // 
             // Search_TextBox
             // 
@@ -189,7 +184,6 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 50;
             ShowingResultsFor_Label.Text = "Showing results for";
-            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Purchase_RadioButton
             // 
@@ -292,7 +286,6 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;
             Shown += Categories_Form_Shown;
-            Click += CloseAllPanels;
             Resize += Categories_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).EndInit();
             ResumeLayout(false);

@@ -59,7 +59,6 @@ namespace Sales_Tracker
             WarningCompanyName_PictureBox.TabIndex = 53;
             WarningCompanyName_PictureBox.TabStop = false;
             WarningCompanyName_PictureBox.Visible = false;
-            WarningCompanyName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCompanyName_Label
             // 
@@ -72,7 +71,6 @@ namespace Sales_Tracker
             WarningCompanyName_Label.TabIndex = 52;
             WarningCompanyName_Label.Text = "Company already exists";
             WarningCompanyName_Label.Visible = false;
-            WarningCompanyName_Label.Click += CloseAllPanels;
             // 
             // CompanyName_Label
             // 
@@ -84,7 +82,6 @@ namespace Sales_Tracker
             CompanyName_Label.Size = new Size(174, 31);
             CompanyName_Label.TabIndex = 48;
             CompanyName_Label.Text = "Company name";
-            CompanyName_Label.Click += CloseAllPanels;
             // 
             // Company_TextBox
             // 
@@ -143,7 +140,6 @@ namespace Sales_Tracker
             AddCompany_Label.Size = new Size(242, 45);
             AddCompany_Label.TabIndex = 49;
             AddCompany_Label.Text = "Add companies";
-            AddCompany_Label.Click += CloseAllPanels;
             // 
             // Search_TextBox
             // 
@@ -183,7 +179,6 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 55;
             ShowingResultsFor_Label.Text = "Showing results for";
-            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Total_Label
             // 
@@ -218,7 +213,6 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Companies_Form_FormClosed;
             Shown += Companies_Form_Shown;
-            Click += CloseAllPanels;
             Resize += Companies_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningCompanyName_PictureBox).EndInit();
             ResumeLayout(false);

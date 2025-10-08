@@ -29,18 +29,16 @@ namespace Sales_Tracker.UI
             int btnWidth = CustomControls.PanelBtnWidth - 50;
 
             // Change Logo button
-            _changeLogo_Button = CustomControls.ConstructBtnForMenu("Change logo", btnWidth, true, flowPanel);
+            _changeLogo_Button = CustomControls.ConstructBtnForMenu("Change logo", btnWidth, flowPanel);
             _changeLogo_Button.Click += (sender, e) =>
             {
-                CustomControls.CloseAllPanels();
                 BrowseForCompanyLogo();
             };
 
             // Remove Logo button (will be shown/hidden based on whether there's a custom logo)
-            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove logo", btnWidth, true, flowPanel);
+            _removeLogo_Button = CustomControls.ConstructBtnForMenu("Remove logo", btnWidth, flowPanel);
             _removeLogo_Button.Click += (sender, e) =>
             {
-                CustomControls.CloseAllPanels();
                 RemoveCompanyLogo();
             };
         }
@@ -56,6 +54,10 @@ namespace Sales_Tracker.UI
             {
                 RemoveLogoControl();
             }
+        }
+        public static void Hide()
+        {
+            CompanyLogoRightClick_Panel?.Parent?.Controls.Remove(CompanyLogoRightClick_Panel);
         }
 
         // Private methods
@@ -278,7 +280,6 @@ namespace Sales_Tracker.UI
         }
         private static void CompanyLogo_Click(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.CloseAllPanels(null, null);
             BrowseForCompanyLogo();
         }
         private static void CompanyLogo_MouseDown(object sender, MouseEventArgs e)

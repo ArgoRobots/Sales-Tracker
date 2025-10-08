@@ -59,7 +59,6 @@ namespace Sales_Tracker
             WarningAccountantName_PictureBox.TabIndex = 47;
             WarningAccountantName_PictureBox.TabStop = false;
             WarningAccountantName_PictureBox.Visible = false;
-            WarningAccountantName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningAccountantName_Label
             // 
@@ -72,7 +71,6 @@ namespace Sales_Tracker
             WarningAccountantName_Label.TabIndex = 46;
             WarningAccountantName_Label.Text = "Accountant already exists";
             WarningAccountantName_Label.Visible = false;
-            WarningAccountantName_Label.Click += CloseAllPanels;
             // 
             // AccountantName_Label
             // 
@@ -84,7 +82,6 @@ namespace Sales_Tracker
             AccountantName_Label.Size = new Size(194, 31);
             AccountantName_Label.TabIndex = 40;
             AccountantName_Label.Text = "Accountant name";
-            AccountantName_Label.Click += CloseAllPanels;
             // 
             // Accountant_TextBox
             // 
@@ -110,7 +107,6 @@ namespace Sales_Tracker
             Accountant_TextBox.TabIndex = 42;
             Accountant_TextBox.Tag = "1";
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
-            Accountant_TextBox.Click += CloseAllPanels;
             Accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;
             // 
             // AddAccountant_Button
@@ -144,7 +140,6 @@ namespace Sales_Tracker
             AddAccountant_Label.Size = new Size(245, 45);
             AddAccountant_Label.TabIndex = 41;
             AddAccountant_Label.Text = "Add accountant";
-            AddAccountant_Label.Click += CloseAllPanels;
             // 
             // Search_TextBox
             // 
@@ -173,7 +168,6 @@ namespace Sales_Tracker
             Search_TextBox.TabIndex = 48;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
-            Search_TextBox.Click += CloseAllPanels;
             // 
             // ShowingResultsFor_Label
             // 
@@ -185,7 +179,6 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 49;
             ShowingResultsFor_Label.Text = "Showing results for";
-            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Total_Label
             // 
@@ -220,7 +213,6 @@ namespace Sales_Tracker
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Accountants_Form_FormClosed;
             Shown += Accountants_Form_Shown;
-            Click += CloseAllPanels;
             Resize += Accountants_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningAccountantName_PictureBox).EndInit();
             ResumeLayout(false);
