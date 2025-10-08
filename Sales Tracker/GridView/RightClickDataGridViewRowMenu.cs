@@ -592,13 +592,13 @@ namespace Sales_Tracker.GridView
                     case MainMenu_Form.SelectedOption.ItemsInSale:
                     default:
                         itemType = "transaction";
-                        identifier = "#" + (grid.SelectedRows[0].Cells[0].Value?.ToString() ?? "Unknown");
+                        identifier = grid.SelectedRows[0].Cells[0].Value?.ToString() ?? "Unknown";
                         break;
                 }
 
                 result = CustomMessageBox.ShowWithFormat(
                     "Confirm Deletion",
-                    "Are you sure you want to delete {0} {1}?",
+                    "Are you sure you want to delete {0} '{1}'?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
                     itemType,
@@ -614,6 +614,7 @@ namespace Sales_Tracker.GridView
                     MainMenu_Form.SelectedOption.Companies => "companies",
                     MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales => "categories",
                     MainMenu_Form.SelectedOption.ProductPurchases or MainMenu_Form.SelectedOption.ProductSales => "products",
+                    MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales => "transactions",
                     _ => "rows"
                 };
 
