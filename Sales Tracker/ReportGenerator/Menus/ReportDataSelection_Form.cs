@@ -53,6 +53,7 @@ namespace Sales_Tracker.ReportGenerator
             SetupFilterControls();
             SetupTemplates();
             StoreInitialSizes();
+            ScaleControls();
         }
         private void InitChartSelectionControl()
         {
@@ -170,6 +171,15 @@ namespace Sales_Tracker.ReportGenerator
             _initialFormWidth = Width;
             _initialLeftPanelWidth = Left_Panel.Width;
             _initialRightPanelWidth = Right_Panel.Width;
+        }
+        private void ScaleControls()
+        {
+            DpiHelper.ScaleComboBox(Template_ComboBox);
+            DpiHelper.ScaleComboBox(TransactionType_ComboBox);
+            DpiHelper.ScaleGroupBox(ChartSelection_GroupBox);
+            DpiHelper.ScaleGroupBox(Template_GroupBox);
+            DpiHelper.ScaleGroupBox(ReportSettings_GroupBox);
+            DpiHelper.ScaleGroupBox(Filters_GroupBox);
         }
 
         // Helper methods

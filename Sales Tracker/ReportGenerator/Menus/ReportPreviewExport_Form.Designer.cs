@@ -67,7 +67,7 @@
             PageSize_Label = new Label();
             PageSize_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Orientation_Label = new Label();
-            Orientation_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            PageOrientation_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ExportSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             PageNumber_Label = new Label();
             PageNumber_NumericUpDown = new Guna.UI2.WinForms.Guna2NumericUpDown();
@@ -125,7 +125,7 @@
             PageSettings_GroupBox.Controls.Add(PageSize_Label);
             PageSettings_GroupBox.Controls.Add(PageSize_ComboBox);
             PageSettings_GroupBox.Controls.Add(Orientation_Label);
-            PageSettings_GroupBox.Controls.Add(Orientation_ComboBox);
+            PageSettings_GroupBox.Controls.Add(PageOrientation_ComboBox);
             PageSettings_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             PageSettings_GroupBox.CustomizableEdges = customizableEdges5;
             PageSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
@@ -186,22 +186,22 @@
             // 
             // Orientation_ComboBox
             // 
-            Orientation_ComboBox.BackColor = Color.Transparent;
-            Orientation_ComboBox.BorderRadius = 2;
-            Orientation_ComboBox.CustomizableEdges = customizableEdges3;
-            Orientation_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Orientation_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Orientation_ComboBox.FocusedColor = Color.Empty;
-            Orientation_ComboBox.Font = new Font("Segoe UI", 9F);
-            Orientation_ComboBox.ForeColor = Color.Black;
-            Orientation_ComboBox.ItemHeight = 44;
-            Orientation_ComboBox.Location = new Point(145, 138);
-            Orientation_ComboBox.Margin = new Padding(4, 5, 4, 5);
-            Orientation_ComboBox.Name = "Orientation_ComboBox";
-            Orientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Orientation_ComboBox.Size = new Size(296, 50);
-            Orientation_ComboBox.TabIndex = 3;
-            Orientation_ComboBox.SelectedIndexChanged += PageSettings_Changed;
+            PageOrientation_ComboBox.BackColor = Color.Transparent;
+            PageOrientation_ComboBox.BorderRadius = 2;
+            PageOrientation_ComboBox.CustomizableEdges = customizableEdges3;
+            PageOrientation_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            PageOrientation_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            PageOrientation_ComboBox.FocusedColor = Color.Empty;
+            PageOrientation_ComboBox.Font = new Font("Segoe UI", 9F);
+            PageOrientation_ComboBox.ForeColor = Color.Black;
+            PageOrientation_ComboBox.ItemHeight = 44;
+            PageOrientation_ComboBox.Location = new Point(145, 138);
+            PageOrientation_ComboBox.Margin = new Padding(4, 5, 4, 5);
+            PageOrientation_ComboBox.Name = "Orientation_ComboBox";
+            PageOrientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            PageOrientation_ComboBox.Size = new Size(296, 50);
+            PageOrientation_ComboBox.TabIndex = 3;
+            PageOrientation_ComboBox.SelectedIndexChanged += PageSettings_Changed;
             // 
             // ExportSettings_GroupBox
             // 
@@ -649,7 +649,7 @@
         private System.Windows.Forms.Label PageSize_Label;
         private Guna.UI2.WinForms.Guna2ComboBox PageSize_ComboBox;
         private System.Windows.Forms.Label Orientation_Label;
-        private Guna.UI2.WinForms.Guna2ComboBox Orientation_ComboBox;
+        private Guna.UI2.WinForms.Guna2ComboBox PageOrientation_ComboBox;
         private Guna.UI2.WinForms.Guna2GroupBox ExportSettings_GroupBox;
         private System.Windows.Forms.Label ExportPath_Label;
         private Guna.UI2.WinForms.Guna2TextBox ExportPath_TextBox;

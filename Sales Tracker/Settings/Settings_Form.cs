@@ -42,6 +42,7 @@ namespace Sales_Tracker.Settings
         private void SetChildForm(Form form)
         {
             form.TopLevel = false;
+            form.Visible = true;
             form.Dock = DockStyle.Fill;
 
             FormBack_Panel.Controls.Add(form);

@@ -221,7 +221,7 @@ namespace Sales_Tracker
         {
             Purchase_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
-            selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
+            Purchase_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             Purchase_DataGridView.Location = new Point((ClientSize.Width - Purchase_DataGridView.Width) / 2, _topForDataGridView);
             Purchase_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             Purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;

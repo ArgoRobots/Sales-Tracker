@@ -89,7 +89,7 @@
             Properties_Separator = new Guna.UI2.WinForms.Guna2Separator();
             ElementProperties_Label = new Label();
             PropertiesContainer_Panel = new Panel();
-            Tools_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
+            Elements_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             ToolsContainer_Panel = new Panel();
             AddTableElement_Button = new Guna.UI2.WinForms.Guna2Button();
             AddSummaryElement_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -100,7 +100,7 @@
             Canvas_GroupBox.SuspendLayout();
             LeftTools_Panel.SuspendLayout();
             Properties_GroupBox.SuspendLayout();
-            Tools_GroupBox.SuspendLayout();
+            Elements_GroupBox.SuspendLayout();
             ToolsContainer_Panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -413,7 +413,7 @@
             // 
             LeftTools_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftTools_Panel.Controls.Add(Properties_GroupBox);
-            LeftTools_Panel.Controls.Add(Tools_GroupBox);
+            LeftTools_Panel.Controls.Add(Elements_GroupBox);
             LeftTools_Panel.CustomizableEdges = customizableEdges41;
             LeftTools_Panel.FillColor = Color.Transparent;
             LeftTools_Panel.Location = new Point(0, 0);
@@ -478,25 +478,25 @@
             PropertiesContainer_Panel.Size = new Size(345, 426);
             PropertiesContainer_Panel.TabIndex = 1;
             // 
-            // Tools_GroupBox
+            // Elements_GroupBox
             // 
-            Tools_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Tools_GroupBox.BackColor = Color.Transparent;
-            Tools_GroupBox.BorderRadius = 8;
-            Tools_GroupBox.BorderThickness = 0;
-            Tools_GroupBox.Controls.Add(ToolsContainer_Panel);
-            Tools_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Tools_GroupBox.CustomizableEdges = customizableEdges39;
-            Tools_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            Tools_GroupBox.ForeColor = Color.White;
-            Tools_GroupBox.Location = new Point(28, 14);
-            Tools_GroupBox.Margin = new Padding(4, 5, 4, 5);
-            Tools_GroupBox.Name = "Tools_GroupBox";
-            Tools_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Tools_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges40;
-            Tools_GroupBox.Size = new Size(345, 342);
-            Tools_GroupBox.TabIndex = 0;
-            Tools_GroupBox.Text = "Report Elements";
+            Elements_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Elements_GroupBox.BackColor = Color.Transparent;
+            Elements_GroupBox.BorderRadius = 8;
+            Elements_GroupBox.BorderThickness = 0;
+            Elements_GroupBox.Controls.Add(ToolsContainer_Panel);
+            Elements_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
+            Elements_GroupBox.CustomizableEdges = customizableEdges39;
+            Elements_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            Elements_GroupBox.ForeColor = Color.White;
+            Elements_GroupBox.Location = new Point(28, 14);
+            Elements_GroupBox.Margin = new Padding(4, 5, 4, 5);
+            Elements_GroupBox.Name = "Elements_GroupBox";
+            Elements_GroupBox.Padding = new Padding(14, 17, 14, 17);
+            Elements_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            Elements_GroupBox.Size = new Size(345, 342);
+            Elements_GroupBox.TabIndex = 0;
+            Elements_GroupBox.Text = "Report Elements";
             // 
             // ToolsContainer_Panel
             // 
@@ -651,7 +651,7 @@
             LeftTools_Panel.ResumeLayout(false);
             Properties_GroupBox.ResumeLayout(false);
             Properties_GroupBox.PerformLayout();
-            Tools_GroupBox.ResumeLayout(false);
+            Elements_GroupBox.ResumeLayout(false);
             ToolsContainer_Panel.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -659,7 +659,7 @@
         #endregion
         private Guna.UI2.WinForms.Guna2Panel LeftTools_Panel;
         private Guna.UI2.WinForms.Guna2Panel RightCanvas_Panel;
-        private Guna.UI2.WinForms.Guna2GroupBox Tools_GroupBox;
+        private Guna.UI2.WinForms.Guna2GroupBox Elements_GroupBox;
         private Guna.UI2.WinForms.Guna2GroupBox Properties_GroupBox;
         private System.Windows.Forms.Label ElementProperties_Label;
         private Guna.UI2.WinForms.Guna2GroupBox Canvas_GroupBox;
