@@ -109,14 +109,14 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         /// <summary>
-        /// Creates a returns and losses analysis template.
+        /// Creates a returns analysis template.
         /// </summary>
         public static ReportConfiguration CreateReturnsAnalysisTemplate()
         {
             ReportConfiguration config = new()
             {
-                Title = "Returns & Losses Analysis",
-                Description = "Analysis of product returns and inventory losses",
+                Title = "Returns Analysis",
+                Description = "Analysis of product returns",
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -124,10 +124,10 @@ namespace Sales_Tracker.ReportGenerator
                 ShowPageNumbers = true
             };
 
-            // Configure filters for returns data
+            // Configure filters for returns data only
             config.Filters.TransactionType = TransactionType.Both;
             config.Filters.IncludeReturns = true;
-            config.Filters.IncludeLosses = true;
+            config.Filters.IncludeLosses = false;
             config.Filters.StartDate = DateTime.Now.AddMonths(-12).Date;
             config.Filters.EndDate = DateTime.Now.Date;
             config.Filters.SelectedChartTypes.AddRange(
@@ -135,11 +135,47 @@ namespace Sales_Tracker.ReportGenerator
                 MainMenu_Form.ChartDataType.ReturnsOverTime,
                 MainMenu_Form.ChartDataType.ReturnReasons,
                 MainMenu_Form.ChartDataType.ReturnFinancialImpact,
-                MainMenu_Form.ChartDataType.LossesOverTime,
-                MainMenu_Form.ChartDataType.LossReasons
+                MainMenu_Form.ChartDataType.ReturnsByCategory,
+                MainMenu_Form.ChartDataType.ReturnsByProduct
             ]);
 
             AddReturnsAnalysisElements(config);
+
+            return config;
+        }
+
+        /// <summary>
+        /// Creates a losses analysis template.
+        /// </summary>
+        public static ReportConfiguration CreateLossesAnalysisTemplate()
+        {
+            ReportConfiguration config = new()
+            {
+                Title = "Losses Analysis",
+                Description = "Analysis of inventory losses",
+                PageSize = PageSize.A4,
+                PageOrientation = PageOrientation.Portrait,
+                ShowHeader = true,
+                ShowFooter = true,
+                ShowPageNumbers = true
+            };
+
+            // Configure filters for losses data only
+            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.IncludeReturns = false;
+            config.Filters.IncludeLosses = true;
+            config.Filters.StartDate = DateTime.Now.AddMonths(-12).Date;
+            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.SelectedChartTypes.AddRange(
+            [
+                MainMenu_Form.ChartDataType.LossesOverTime,
+                MainMenu_Form.ChartDataType.LossReasons,
+                MainMenu_Form.ChartDataType.LossFinancialImpact,
+                MainMenu_Form.ChartDataType.LossesByCategory,
+                MainMenu_Form.ChartDataType.LossesByProduct
+            ]);
+
+            AddLossesAnalysisElements(config);
 
             return config;
         }
@@ -363,14 +399,73 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.LossesOverTime,
+                ChartType = MainMenu_Form.ChartDataType.ReturnsByCategory,
                 Bounds = new Rectangle(bottomArea.X, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
                 ZOrder = 4
             });
 
             config.AddElement(new ChartElement
             {
+                ChartType = MainMenu_Form.ChartDataType.ReturnsByProduct,
+                Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
+                ZOrder = 5
+            });
+        }
+        private static void AddLossesAnalysisElements(ReportConfiguration config)
+        {
+            TemplateLayoutHelper.LayoutContext context = new()
+            {
+                PageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation)
+            };
+
+            // Date range
+            config.AddElement(new DateRangeElement
+            {
+                DisplayName = "Report Period",
+                Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
+                ZOrder = 0
+            });
+
+            // Mixed layout: full-width chart at top, then 2x2 grid
+            Rectangle[] topStack = TemplateLayoutHelper.CreateVerticalStack(context, 0.33f, 0.67f);
+
+            // Use the top portion for the full-width chart
+            config.AddElement(new ChartElement
+            {
+                ChartType = MainMenu_Form.ChartDataType.LossesOverTime,
+                Bounds = topStack[0],
+                ZOrder = 1
+            });
+
+            // Create a 2x2 grid in the bottom portion
+            Rectangle bottomArea = topStack[1];
+            int gridWidth = (bottomArea.Width - context.ElementSpacing) / 2;
+            int gridHeight = (bottomArea.Height - context.ElementSpacing) / 2;
+
+            config.AddElement(new ChartElement
+            {
                 ChartType = MainMenu_Form.ChartDataType.LossReasons,
+                Bounds = new Rectangle(bottomArea.X, bottomArea.Y, gridWidth, gridHeight),
+                ZOrder = 2
+            });
+
+            config.AddElement(new ChartElement
+            {
+                ChartType = MainMenu_Form.ChartDataType.LossFinancialImpact,
+                Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y, gridWidth, gridHeight),
+                ZOrder = 3
+            });
+
+            config.AddElement(new ChartElement
+            {
+                ChartType = MainMenu_Form.ChartDataType.LossesByCategory,
+                Bounds = new Rectangle(bottomArea.X, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
+                ZOrder = 4
+            });
+
+            config.AddElement(new ChartElement
+            {
+                ChartType = MainMenu_Form.ChartDataType.LossesByProduct,
                 Bounds = new Rectangle(bottomArea.X + gridWidth + context.ElementSpacing, bottomArea.Y + gridHeight + context.ElementSpacing, gridWidth, gridHeight),
                 ZOrder = 5
             });
@@ -427,6 +522,7 @@ namespace Sales_Tracker.ReportGenerator
             public const string FinancialOverview = "Financial Overview";
             public const string PerformanceAnalysis = "Performance Analysis";
             public const string ReturnsAnalysis = "Returns Analysis";
+            public const string LossesAnalysis = "Losses Analysis";
             public const string GeographicAnalysis = "Geographic Analysis";
         }
 
@@ -442,6 +538,7 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.FinancialOverview,
                 TemplateNames.PerformanceAnalysis,
                 TemplateNames.ReturnsAnalysis,
+                TemplateNames.LossesAnalysis,
                 TemplateNames.GeographicAnalysis
             ];
         }
@@ -457,6 +554,7 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.FinancialOverview => CreateFinancialOverviewTemplate(),
                 TemplateNames.PerformanceAnalysis => CreatePerformanceAnalysisTemplate(),
                 TemplateNames.ReturnsAnalysis => CreateReturnsAnalysisTemplate(),
+                TemplateNames.LossesAnalysis => CreateLossesAnalysisTemplate(),
                 TemplateNames.GeographicAnalysis => CreateGeographicAnalysisTemplate(),
                 _ => new ReportConfiguration()  // Custom report
             };
