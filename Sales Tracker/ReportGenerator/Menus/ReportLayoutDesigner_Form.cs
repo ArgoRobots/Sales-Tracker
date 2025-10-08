@@ -72,6 +72,9 @@ namespace Sales_Tracker.ReportGenerator
             StoreInitialSizes();
             SetToolTips();
             UpdateLayoutButtonStates();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
+            Application.AddMessageFilter(panelCloseFilter);
         }
         private void SetupCanvas()
         {
@@ -660,14 +663,7 @@ namespace Sales_Tracker.ReportGenerator
                 bool hasSelection = _selectedElements.Count > 0 || _selectedElement != null;
                 Point formLocation = PointToClient(Canvas_Panel.PointToScreen(e.Location));
 
-                RightClickElementMenu.ShowMenu(formLocation, this, hasSelection);
-
-                // Install the filter when menu is shown
-                PanelCloseFilter ??= new PanelCloseFilter(
-                    RightClickElementMenu.RightClickElement_Panel,
-                    ReportGenerator_Form.ClosePanels
-                );
-                Application.AddMessageFilter(PanelCloseFilter);
+                RightClickElementMenu.Show(formLocation, this, hasSelection);
             }
         }
 
@@ -1758,6 +1754,12 @@ namespace Sales_Tracker.ReportGenerator
         private void NotifyParentValidationChanged()
         {
             ParentReportForm?.OnChildFormValidationChanged();
+        }
+
+        // Other methods
+        private static void ClosePanels()
+        {
+            RightClickElementMenu.Hide();
         }
     }
 }

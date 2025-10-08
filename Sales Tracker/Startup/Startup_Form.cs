@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup
 {
@@ -8,9 +9,9 @@ namespace Sales_Tracker.Startup
     {
         // Properties
         private static Startup_Form _instance;
-        public static bool CanExitApp { get; set; } = true;
 
         // Getters
+        public static bool CanExitApp { get; set; } = true;
         public static Startup_Form Instance => _instance;
         public GetStarted_Form FormGetStarted { get; } = new();
         public ConfigureCompany_Form FormConfigureCompany { get; } = new();
@@ -32,6 +33,9 @@ namespace Sales_Tracker.Startup
             BackColor = CustomColors.MainBackground;
             ThemeManager.UseImmersiveDarkMode(Handle, ThemeManager.IsDarkTheme());
             FormThemeManager.RegisterForm(this);
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel, GetStarted_Form.RightClickOpenRecent_Panel);
+            Application.AddMessageFilter(panelCloseFilter);
         }
         public void SwitchMainForm(Form form)
         {
@@ -47,6 +51,15 @@ namespace Sales_Tracker.Startup
             {
                 Application.Exit();
             }
+        }
+        private void ClosePanels()
+        {
+            GetStarted_Form.Instance.RenameCompany();
+            GetStarted_Form.Instance.Controls.Remove(GetStarted_Form.RightClickOpenRecent_Panel);
+
+            ConfigureCompany_Form.Instance.ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
+            TextBoxManager.HideRightClickPanel();
+            SearchBox.Close();
         }
     }
 }

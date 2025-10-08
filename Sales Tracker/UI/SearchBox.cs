@@ -50,7 +50,7 @@ namespace Sales_Tracker.UI
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
+                    Show(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
                 }
             };
             textBox.TextChanged += SearchTextBoxChanged;
@@ -100,11 +100,11 @@ namespace Sales_Tracker.UI
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             DebounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, _searchTextBox, () => _resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
+            Show(_searchBoxParent, _searchTextBox, () => _resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
         }
 
         // Main methods
-        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
+        private static void Show(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
             int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
         {
             // Check if the search box is already shown for the same text box
@@ -132,7 +132,7 @@ namespace Sales_Tracker.UI
 
             if (!alwaysShow)
             {
-                CustomControls.CloseAllPanels();
+                Close();
             }
 
             _searchBoxParent = searchBoxParent;
@@ -246,7 +246,7 @@ namespace Sales_Tracker.UI
                             Guna2Button button = (Guna2Button)sender;
                             _searchTextBox.Text = button.Text;
                             DebounceTimer.Stop();
-                            CustomControls.CloseAllPanels();
+                            Close();
                         };
 
                         int padding = btn.Image != null ? (int)(25 * scale) : 0;
@@ -314,6 +314,10 @@ namespace Sales_Tracker.UI
             // Calculate elapsed time in milliseconds
             double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
             Log.WriteWithFormat(1, "Elapsed time for updating the SearchBox: {0} ms", elapsedTime);
+        }
+        public static void Close()
+        {
+            _searchBoxParent?.Controls.Remove(SearchResultBoxContainer);
         }
         private static int CalculateTermScore(string source, string term)
         {
@@ -430,7 +434,7 @@ namespace Sales_Tracker.UI
                         _searchTextBox.Text = btn.Text;
                         DebounceTimer.Stop();
                         isResultSelected = true;
-                        CustomControls.CloseAllPanels();
+                        Close();
                         break;
                     }
                 }
@@ -512,13 +516,6 @@ namespace Sales_Tracker.UI
             {
                 // Align panel to the left of the TextBox
                 SearchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
-            }
-        }
-        public static void CloseSearchBox()
-        {
-            if (_searchBoxParent?.Controls.Contains(SearchResultBoxContainer) == true)
-            {
-                _searchBoxParent.Controls.Remove(SearchResultBoxContainer);
             }
         }
     }

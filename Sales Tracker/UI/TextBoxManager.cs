@@ -76,7 +76,7 @@ namespace Sales_Tracker.UI
             }
         }
         private static bool IsAttached(Guna2TextBox textBox) => _undoStacks.ContainsKey(textBox);
-        public static void RemoveRightClickPanel()
+        public static void HideRightClickPanel()
         {
             RightClickTextBox_Panel.Parent?.Controls.Remove(RightClickTextBox_Panel);
         }
@@ -175,8 +175,6 @@ namespace Sales_Tracker.UI
                 {
                     return;
                 }
-
-                CustomControls.CloseAllPanels();
 
                 // Check if mouse hasn't moved too far from the down location
                 byte threshold = 3;
@@ -301,27 +299,27 @@ namespace Sales_Tracker.UI
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickTextBox_Panel.Controls[0];
 
-            Guna2Button selectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button selectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, flowPanel);
             selectAllBtn.Click += HandleSelectAll;
             CustomControls.ConstructKeyShortcut("Ctrl+A", selectAllBtn);
 
-            Guna2Button copyBtn = CustomControls.ConstructBtnForMenu("Copy", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button copyBtn = CustomControls.ConstructBtnForMenu("Copy", CustomControls.PanelBtnWidth, flowPanel);
             copyBtn.Click += HandleCopy;
             CustomControls.ConstructKeyShortcut("Ctrl+C", copyBtn);
 
-            Guna2Button pasteBtn = CustomControls.ConstructBtnForMenu("Paste", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button pasteBtn = CustomControls.ConstructBtnForMenu("Paste", CustomControls.PanelBtnWidth, flowPanel);
             pasteBtn.Click += HandlePaste;
             CustomControls.ConstructKeyShortcut("Ctrl+V", pasteBtn);
 
-            Guna2Button cutBtn = CustomControls.ConstructBtnForMenu("Cut", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button cutBtn = CustomControls.ConstructBtnForMenu("Cut", CustomControls.PanelBtnWidth, flowPanel);
             cutBtn.Click += HandleCut;
             CustomControls.ConstructKeyShortcut("Ctrl+X", cutBtn);
 
-            Guna2Button undoBtn = CustomControls.ConstructBtnForMenu("Undo", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button undoBtn = CustomControls.ConstructBtnForMenu("Undo", CustomControls.PanelBtnWidth, flowPanel);
             undoBtn.Click += HandleUndo;
             CustomControls.ConstructKeyShortcut("Ctrl+Z", undoBtn);
 
-            Guna2Button redoBtn = CustomControls.ConstructBtnForMenu("Redo", CustomControls.PanelBtnWidth, false, flowPanel);
+            Guna2Button redoBtn = CustomControls.ConstructBtnForMenu("Redo", CustomControls.PanelBtnWidth, flowPanel);
             redoBtn.Click += HandleRedo;
             CustomControls.ConstructKeyShortcut("Ctrl+Y", redoBtn);
         }
@@ -330,7 +328,7 @@ namespace Sales_Tracker.UI
             Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             textBox.SelectAll();
             textBox.Focus();
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
         private static void HandleCopy(object sender, EventArgs e)
         {
@@ -339,7 +337,7 @@ namespace Sales_Tracker.UI
             {
                 Clipboard.SetText(textBox.SelectedText);
             }
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
         private static void HandlePaste(object sender, EventArgs e)
         {
@@ -360,7 +358,7 @@ namespace Sales_Tracker.UI
             textBox.Text = text;
             textBox.SelectionStart = cursorPosition + clipboardText.Length;
 
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
         private static void HandleCut(object sender, EventArgs e)
         {
@@ -372,24 +370,27 @@ namespace Sales_Tracker.UI
             textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
             textBox.SelectionStart = cursorPosition;
 
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
         private static void HandleUndo(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             Undo(textBox);
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
         private static void HandleRedo(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             Redo(textBox);
-            CustomControls.CloseAllPanels();
+            HideRightClickPanel();
         }
 
         // Methods for right click menu
         private static void ShowRightClickMenu(Guna2TextBox textBox, Point mouseLocation)
         {
+            // First hide other right click panels
+            MainMenu_Form.CloseRightClickPanels();
+
             Form parentForm = textBox.FindForm();
             if (parentForm == null) { return; }
 

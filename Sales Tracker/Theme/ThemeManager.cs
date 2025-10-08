@@ -380,7 +380,7 @@ namespace Sales_Tracker.Theme
             SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.DateRangePanel]);
 
             CustomTooltip.UpdateAllToolTipThemes();
-            RightClickRowMenu.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
+            RightClickDataGridViewRowMenu.Delete_Button.ForeColor = CustomColors.AccentRed;
 
             // Update the Rename_TextBox
             CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;

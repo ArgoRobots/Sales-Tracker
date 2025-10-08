@@ -1,7 +1,4 @@
-﻿using Sales_Tracker.Startup.Menus;
-using Sales_Tracker.UI;
-
-namespace Sales_Tracker.Classes
+﻿namespace Sales_Tracker.Classes
 {
     public partial class BaseForm : Form
     {
@@ -18,11 +15,8 @@ namespace Sales_Tracker.Classes
                     if (MainMenu_Form.Instance != null &&
                         !MainMenu_Form.Instance.Controls.Contains(MainMenu_Form.DateRangePanel))
                     {
-                        CustomControls.CloseAllPanels();
+                        MainMenu_Form.Instance.ClosePanels();
                     }
-
-                    // Close other panels not called in CloseAllPanels()
-                    GetStarted_Form.Instance.Controls.Remove(GetStarted_Form.RightClickOpenRecent_Panel);
                 }
             }
             base.WndProc(ref m);

@@ -75,8 +75,8 @@ namespace Sales_Tracker.Passwords
         }
         private void AddEventHandlersToTextBoxes()
         {
-            TextBoxManager.Attach(Password_TextBox);
-            TextBoxManager.Attach(ConfirmPassword_TextBox);
+            TextBoxManager.Attach(false, Password_TextBox);
+            TextBoxManager.Attach(false, ConfirmPassword_TextBox);
         }
 
         // Form event handlers

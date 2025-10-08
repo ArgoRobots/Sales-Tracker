@@ -194,7 +194,7 @@ namespace Sales_Tracker.Classes
             {
                 if (!row.Visible) { continue; }
 
-                string receipt = RightClickRowMenu.GetFilePathFromRowTag(row.Tag);
+                string receipt = RightClickDataGridViewRowMenu.GetFilePathFromRowTag(row.Tag);
                 if (receipt == "")
                 {
                     doAllRowsHaveReceipt = false;

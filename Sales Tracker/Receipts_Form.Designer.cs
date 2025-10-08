@@ -81,7 +81,6 @@
             ExportReceipts_Label.Size = new Size(232, 45);
             ExportReceipts_Label.TabIndex = 0;
             ExportReceipts_Label.Text = "Export receipts";
-            ExportReceipts_Label.Click += CloseAllPanels;
             // 
             // Search_TextBox
             // 
@@ -109,7 +108,6 @@
             Search_TextBox.TabIndex = 6;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += FilterDataGridView;
-            Search_TextBox.Click += CloseAllPanels;
             // 
             // Search_Label
             // 
@@ -121,7 +119,6 @@
             Search_Label.Size = new Size(82, 31);
             Search_Label.TabIndex = 0;
             Search_Label.Text = "Search";
-            Search_Label.Click += CloseAllPanels;
             // 
             // From_Label
             // 
@@ -133,7 +130,6 @@
             From_Label.Size = new Size(66, 31);
             From_Label.TabIndex = 0;
             From_Label.Text = "From";
-            From_Label.Click += CloseAllPanels;
             // 
             // From_DateTimePicker
             // 
@@ -152,7 +148,6 @@
             From_DateTimePicker.TabIndex = 4;
             From_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             From_DateTimePicker.ValueChanged += FilterDataGridView;
-            From_DateTimePicker.Click += CloseAllPanels;
             // 
             // To_DateTimePicker
             // 
@@ -171,7 +166,6 @@
             To_DateTimePicker.TabIndex = 5;
             To_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             To_DateTimePicker.ValueChanged += FilterDataGridView;
-            To_DateTimePicker.Click += CloseAllPanels;
             // 
             // To_Label
             // 
@@ -183,7 +177,6 @@
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 0;
             To_Label.Text = "To";
-            To_Label.Click += CloseAllPanels;
             // 
             // Receipts_DataGridView
             // 
@@ -396,7 +389,6 @@
             Total_Label.Size = new Size(68, 31);
             Total_Label.TabIndex = 0;
             Total_Label.Text = "Total:";
-            Total_Label.Click += CloseAllPanels;
             // 
             // SelectAll_Button
             // 
@@ -452,7 +444,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Receipts_Form_FormClosed;
             Shown += Receipts_Form_Shown;
-            Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

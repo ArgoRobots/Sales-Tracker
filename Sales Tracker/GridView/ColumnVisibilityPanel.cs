@@ -66,8 +66,14 @@ namespace Sales_Tracker.GridView
         }
 
         // Methods
-        public static void ShowPanel(Guna2DataGridView dataGridView, DataGridViewCellMouseEventArgs e)
+        public static void Show(Guna2DataGridView dataGridView, DataGridViewCellMouseEventArgs e)
         {
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases &&
+                MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales)
+            {
+                return;
+            }
+
             _dataGridView = dataGridView;
             _currentColumnHeaders = GetColumnHeadersForDataGridView();
 
@@ -110,7 +116,7 @@ namespace Sales_Tracker.GridView
             parentForm.Controls.Add(Panel);
             Panel.BringToFront();
         }
-        public static void HidePanel()
+        public static void Hide()
         {
             Panel?.Parent?.Controls.Remove(Panel);
         }
@@ -128,9 +134,6 @@ namespace Sales_Tracker.GridView
         }
         private static void ClearCheckBoxes()
         {
-            Panel.Controls.Remove(_title_Label);
-            Panel.Controls.Remove(_apply_Button);
-            Panel.Controls.Remove(_cancel_Button);
             Panel.Controls.Clear();
             Panel.Controls.Add(_title_Label);
             Panel.Controls.Add(_apply_Button);
@@ -207,11 +210,11 @@ namespace Sales_Tracker.GridView
                 }
             }
 
-            HidePanel();
+            Hide();
         }
         private static void CancelButton_Click(object sender, EventArgs e)
         {
-            HidePanel();
+            Hide();
         }
     }
 }

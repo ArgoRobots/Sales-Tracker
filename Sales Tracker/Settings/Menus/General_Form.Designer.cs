@@ -113,7 +113,6 @@ namespace Sales_Tracker.Settings.Menus
             Language_Label.Size = new Size(107, 38);
             Language_Label.TabIndex = 0;
             Language_Label.Text = "Language";
-            Language_Label.Click += CloseAllPanels;
             // 
             // MoreInformation_Button
             // 
@@ -144,7 +143,6 @@ namespace Sales_Tracker.Settings.Menus
             Currency_Label.Size = new Size(164, 38);
             Currency_Label.TabIndex = 0;
             Currency_Label.Text = "Default currency";
-            Currency_Label.Click += CloseAllPanels;
             // 
             // ShowDebugInfo_Label
             // 
@@ -213,7 +211,6 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_Label.Size = new Size(130, 38);
             ColorTheme_Label.TabIndex = 0;
             ColorTheme_Label.Text = "Color theme";
-            ColorTheme_Label.Click += CloseAllPanels;
             // 
             // SalesReceipts_CheckBox
             // 
@@ -233,7 +230,6 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             SalesReceipts_CheckBox.UncheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            SalesReceipts_CheckBox.Click += CloseAllPanels;
             // 
             // PurchaseReceipts_CheckBox
             // 
@@ -253,7 +249,6 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             PurchaseReceipts_CheckBox.UncheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            PurchaseReceipts_CheckBox.Click += CloseAllPanels;
             // 
             // ShowDebugInfo_CheckBox
             // 
@@ -273,7 +268,6 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_CheckBox.UncheckedState.BorderRadius = 2;
             ShowDebugInfo_CheckBox.UncheckedState.BorderThickness = 0;
             ShowDebugInfo_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            ShowDebugInfo_CheckBox.Click += CloseAllPanels;
             // 
             // SendAnonymousInformation_CheckBox
             // 
@@ -293,7 +287,6 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.UncheckedState.BorderRadius = 2;
             SendAnonymousInformation_CheckBox.UncheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            SendAnonymousInformation_CheckBox.Click += CloseAllPanels;
             // 
             // Language_TextBox
             // 
@@ -335,7 +328,6 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges104;
             ColorTheme_ComboBox.Size = new Size(255, 45);
             ColorTheme_ComboBox.TabIndex = 3;
-            ColorTheme_ComboBox.Click += CloseAllPanels;
             // 
             // Currency_TextBox
             // 
@@ -598,7 +590,6 @@ namespace Sales_Tracker.Settings.Menus
             FormBorderStyle = FormBorderStyle.None;
             Name = "General_Form";
             Shown += General_form_Shown;
-            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }

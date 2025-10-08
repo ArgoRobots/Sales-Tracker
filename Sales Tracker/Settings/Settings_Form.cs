@@ -35,12 +35,13 @@ namespace Sales_Tracker.Settings
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
             LoadingPanel.CancelRequested += OnTranslationCancelled;
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels);
+            Application.AddMessageFilter(panelCloseFilter);
         }
         private void SetChildForm(Form form)
         {
             form.TopLevel = false;
-            form.Visible = true;
-            form.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             form.Dock = DockStyle.Fill;
 
             FormBack_Panel.Controls.Add(form);
@@ -106,8 +107,6 @@ namespace Sales_Tracker.Settings
             {
                 // Already disposed, ignore
             }
-
-            CustomControls.CloseAllPanels();
         }
         private void OnTranslationCancelled(object sender, EventArgs e)
         {
@@ -148,8 +147,6 @@ namespace Sales_Tracker.Settings
         {
             if (_isClosing) { return; }
 
-            CustomControls.CloseAllPanels();
-
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Reset settings", "All settings will be reset to default.",
                 CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
@@ -164,7 +161,6 @@ namespace Sales_Tracker.Settings
         {
             if (_isClosing) { return; }
 
-            CustomControls.CloseAllPanels();
             SetButtonsEnabled(false);
 
             bool success = await ApplyChanges();
@@ -187,7 +183,6 @@ namespace Sales_Tracker.Settings
         {
             if (_isClosing) { return; }
 
-            CustomControls.CloseAllPanels();
             SetButtonsEnabled(false);
 
             bool success = await ApplyChanges();
@@ -387,7 +382,6 @@ namespace Sales_Tracker.Settings
         {
             if (_isClosing) { return; }
 
-            CustomControls.CloseAllPanels();
             Guna2Button button = (Guna2Button)btnSender;
 
             // If button is already selected
@@ -413,7 +407,6 @@ namespace Sales_Tracker.Settings
             // Select new button
             button.FillColor = CustomColors.AccentBlue;
             button.ForeColor = Color.White;
-            form.BringToFront();
 
             // Show form
             form.BringToFront();
@@ -421,9 +414,10 @@ namespace Sales_Tracker.Settings
             // Save
             _selectedButton = button;
         }
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
+            SearchBox.Close();
         }
     }
 }

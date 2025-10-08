@@ -122,7 +122,6 @@ namespace Sales_Tracker
             OrderNumber_TextBox.TabIndex = 2;
             OrderNumber_TextBox.Tag = "";
             OrderNumber_TextBox.TextChanged += ValidateInputs;
-            OrderNumber_TextBox.Click += CloseAllPanels;
             // 
             // OrderNumber_Label
             // 
@@ -134,7 +133,6 @@ namespace Sales_Tracker
             OrderNumber_Label.Size = new Size(93, 31);
             OrderNumber_Label.TabIndex = 0;
             OrderNumber_Label.Text = "Order #";
-            OrderNumber_Label.Click += CloseAllPanels;
             // 
             // AddPurchase_Label
             // 
@@ -146,7 +144,6 @@ namespace Sales_Tracker
             AddPurchase_Label.Size = new Size(216, 45);
             AddPurchase_Label.TabIndex = 0;
             AddPurchase_Label.Text = "Add purchase";
-            AddPurchase_Label.Click += CloseAllPanels;
             // 
             // ProductName_Label
             // 
@@ -158,7 +155,6 @@ namespace Sales_Tracker
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
             ProductName_Label.Text = "Product name";
-            ProductName_Label.Click += CloseAllPanels;
             // 
             // ProductName_TextBox
             // 
@@ -194,7 +190,6 @@ namespace Sales_Tracker
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 0;
             Quantity_Label.Text = "Quantity";
-            Quantity_Label.Click += CloseAllPanels;
             // 
             // Quantity_TextBox
             // 
@@ -219,7 +214,6 @@ namespace Sales_Tracker
             Quantity_TextBox.Size = new Size(150, 50);
             Quantity_TextBox.TabIndex = 10;
             Quantity_TextBox.TextChanged += ValidateInputs;
-            Quantity_TextBox.Click += CloseAllPanels;
             // 
             // PricePerUnit_Label
             // 
@@ -231,7 +225,6 @@ namespace Sales_Tracker
             PricePerUnit_Label.Size = new Size(150, 31);
             PricePerUnit_Label.TabIndex = 0;
             PricePerUnit_Label.Text = "Price per unit";
-            PricePerUnit_Label.Click += CloseAllPanels;
             // 
             // PricePerUnit_TextBox
             // 
@@ -256,7 +249,6 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.Size = new Size(150, 50);
             PricePerUnit_TextBox.TabIndex = 11;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
-            PricePerUnit_TextBox.Click += CloseAllPanels;
             // 
             // Shipping_Label
             // 
@@ -268,7 +260,6 @@ namespace Sales_Tracker
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 0;
             Shipping_Label.Text = "Shipping";
-            Shipping_Label.Click += CloseAllPanels;
             // 
             // Shipping_TextBox
             // 
@@ -293,7 +284,6 @@ namespace Sales_Tracker
             Shipping_TextBox.Size = new Size(150, 50);
             Shipping_TextBox.TabIndex = 12;
             Shipping_TextBox.TextChanged += ValidateInputs;
-            Shipping_TextBox.Click += CloseAllPanels;
             // 
             // Tax_Label
             // 
@@ -305,7 +295,6 @@ namespace Sales_Tracker
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 0;
             Tax_Label.Text = "Tax";
-            Tax_Label.Click += CloseAllPanels;
             // 
             // Tax_TextBox
             // 
@@ -330,7 +319,6 @@ namespace Sales_Tracker
             Tax_TextBox.Size = new Size(150, 50);
             Tax_TextBox.TabIndex = 13;
             Tax_TextBox.TextChanged += ValidateInputs;
-            Tax_TextBox.Click += CloseAllPanels;
             // 
             // AddPurchase_Button
             // 
@@ -363,7 +351,6 @@ namespace Sales_Tracker
             Date_Label.Size = new Size(62, 31);
             Date_Label.TabIndex = 0;
             Date_Label.Text = "Date";
-            Date_Label.Click += CloseAllPanels;
             // 
             // Date_DateTimePicker
             // 
@@ -382,7 +369,6 @@ namespace Sales_Tracker
             Date_DateTimePicker.TabIndex = 9;
             Date_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             Date_DateTimePicker.ValueChanged += ValidateInputs;
-            Date_DateTimePicker.Click += CloseAllPanels;
             // 
             // WarningProduct_LinkLabel
             // 
@@ -398,7 +384,6 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.Text = "No products exist.\r\nCreate one here";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
             WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
-            WarningProduct_LinkLabel.Click += CloseAllPanels;
             // 
             // WarningProduct_PictureBox
             // 
@@ -410,7 +395,6 @@ namespace Sales_Tracker
             WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningProduct_PictureBox.TabIndex = 41;
             WarningProduct_PictureBox.TabStop = false;
-            WarningProduct_PictureBox.Click += CloseAllPanels;
             // 
             // Fee_Label
             // 
@@ -422,7 +406,6 @@ namespace Sales_Tracker
             Fee_Label.Size = new Size(49, 31);
             Fee_Label.TabIndex = 0;
             Fee_Label.Text = "Fee";
-            Fee_Label.Click += CloseAllPanels;
             // 
             // Fee_TextBox
             // 
@@ -447,7 +430,6 @@ namespace Sales_Tracker
             Fee_TextBox.Size = new Size(150, 50);
             Fee_TextBox.TabIndex = 14;
             Fee_TextBox.TextChanged += ValidateInputs;
-            Fee_TextBox.Click += CloseAllPanels;
             // 
             // Currency_Label
             // 
@@ -459,7 +441,6 @@ namespace Sales_Tracker
             Currency_Label.Size = new Size(104, 31);
             Currency_Label.TabIndex = 0;
             Currency_Label.Text = "Currency";
-            Currency_Label.Click += CloseAllPanels;
             // 
             // Charged_Label
             // 
@@ -471,7 +452,6 @@ namespace Sales_Tracker
             Charged_Label.Size = new Size(181, 31);
             Charged_Label.TabIndex = 0;
             Charged_Label.Text = "$ charged (CAD)";
-            Charged_Label.Click += CloseAllPanels;
             // 
             // Charged_TextBox
             // 
@@ -496,7 +476,6 @@ namespace Sales_Tracker
             Charged_TextBox.Size = new Size(150, 50);
             Charged_TextBox.TabIndex = 16;
             Charged_TextBox.TextChanged += ValidateInputs;
-            Charged_TextBox.Click += CloseAllPanels;
             // 
             // Receipt_Button
             // 
@@ -555,7 +534,6 @@ namespace Sales_Tracker
             Discount_Label.Size = new Size(104, 31);
             Discount_Label.TabIndex = 57;
             Discount_Label.Text = "Discount";
-            Discount_Label.Click += CloseAllPanels;
             // 
             // Discount_TextBox
             // 
@@ -580,7 +558,6 @@ namespace Sales_Tracker
             Discount_TextBox.Size = new Size(150, 50);
             Discount_TextBox.TabIndex = 15;
             Discount_TextBox.TextChanged += ValidateInputs;
-            Discount_TextBox.Click += CloseAllPanels;
             // 
             // Notes_Labal
             // 
@@ -592,7 +569,6 @@ namespace Sales_Tracker
             Notes_Labal.Size = new Size(179, 31);
             Notes_Labal.TabIndex = 0;
             Notes_Labal.Text = "Notes (optional)";
-            Notes_Labal.Click += CloseAllPanels;
             // 
             // Notes_TextBox
             // 
@@ -619,7 +595,6 @@ namespace Sales_Tracker
             Notes_TextBox.ShortcutsEnabled = false;
             Notes_TextBox.Size = new Size(525, 105);
             Notes_TextBox.TabIndex = 17;
-            Notes_TextBox.Click += CloseAllPanels;
             // 
             // MultipleItems_CheckBox
             // 
@@ -723,10 +698,10 @@ namespace Sales_Tracker
             Name = "AddPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            Activated += AddPurchase_Form_Activated;
             FormClosed += AddPurchase_Form_FormClosed;
             Shown += AddPurchase_Form_Shown;
             TextChanged += ValidateInputs;
-            Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();

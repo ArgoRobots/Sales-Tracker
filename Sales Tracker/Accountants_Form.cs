@@ -38,6 +38,10 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Visible = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_accountant_DataGridView);
             AddEventHandlersToTextBoxes();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel, RightClickDataGridViewRowMenu.Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void LoadAccountants()
@@ -72,7 +76,6 @@ namespace Sales_Tracker
         }
         private void Accountants_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             CenterDataGridView();
         }
         private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -83,7 +86,6 @@ namespace Sales_Tracker
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             string name = Accountant_TextBox.Text.Trim();
             MainMenu_Form.Instance.AccountantList.Add(name);
             int newRowIndex = _accountant_DataGridView.Rows.Add(name);
@@ -206,9 +208,10 @@ namespace Sales_Tracker
                     && Accountant_TextBox.Tag.ToString() != "0";
             }
         }
-        private void CloseAllPanels(object sender, EventArgs? e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
+            RightClickDataGridViewRowMenu.Hide();
         }
     }
 }

@@ -46,7 +46,13 @@ namespace Sales_Tracker
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchase_DataGridView, _sale_DataGridView);
             AddEventHandlersToTextBoxes();
 
-            this.Activated += Products_Form_Activated;
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                TextBoxManager.RightClickTextBox_Panel,
+                SearchBox.SearchResultBoxContainer,
+                RightClickDataGridViewRowMenu.Panel);
+
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -156,7 +162,6 @@ namespace Sales_Tracker
         }
         private void Products_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Products_Form_Shown(object sender, EventArgs e)
@@ -166,7 +171,7 @@ namespace Sales_Tracker
         }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels();
+            ClosePanels();
             MainMenu_Form.Instance.Selected = _oldOption;
         }
 
@@ -221,8 +226,6 @@ namespace Sales_Tracker
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (Purchase_RadioButton.Checked)
             {
                 _purchase_DataGridView.Visible = true;
@@ -239,8 +242,6 @@ namespace Sales_Tracker
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (Sale_RadioButton.Checked)
             {
                 _sale_DataGridView.Visible = true;
@@ -515,9 +516,11 @@ namespace Sales_Tracker
             // Restore selection
             Type_ComboBox.SelectedIndex = index != -1 ? index : 0;
         }
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            SearchBox.Close();
+            TextBoxManager.HideRightClickPanel();
+            RightClickDataGridViewRowMenu.Hide();
         }
     }
 }

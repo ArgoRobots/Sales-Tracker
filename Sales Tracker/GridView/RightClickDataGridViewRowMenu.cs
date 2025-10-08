@@ -8,78 +8,78 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.GridView
 {
-    internal class RightClickRowMenu
+    internal class RightClickDataGridViewRowMenu
     {
         // Getters
-        public static Guna2Button RightClickDataGridView_ModifyBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_MoveBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ViewReceiptBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ExportReceiptBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ShowItemsBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ViewReturnDetailsBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ViewLossDetailsBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_ReturnBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_UndoReturnBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_MarkAsLostBtn { get; private set; }
-        public static Guna2Button RightClickDataGridView_UndoLossBtn { get; private set; }
-        public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
-        public static Guna2Button RightClickDataGridView_DeleteBtn { get; private set; }
+        public static Guna2Panel Panel { get; private set; }
+        public static Guna2Button Modify_Button { get; private set; }
+        public static Guna2Button Move_Button { get; private set; }
+        public static Guna2Button ViewReceipt_Button { get; private set; }
+        public static Guna2Button ExportReceipt_Button { get; private set; }
+        public static Guna2Button ShowItems_Button { get; private set; }
+        public static Guna2Button ViewReturnDetails_Button { get; private set; }
+        public static Guna2Button ViewLossDetails_Button { get; private set; }
+        public static Guna2Button Return_Button { get; private set; }
+        public static Guna2Button UndoReturn_Button { get; private set; }
+        public static Guna2Button MarkAsLost_Button { get; private set; }
+        public static Guna2Button UndoLoss_Button { get; private set; }
+        public static Guna2Button Delete_Button { get; private set; }
 
         // Methods
         public static void ConstructRightClickRowMenu()
         {
-            RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
+            Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, 10 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickDataGridView_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickDataGridView_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];
 
-            RightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ModifyBtn.Click += ModifyRow;
+            Modify_Button = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, flowPanel);
+            Modify_Button.Click += ModifyRow;
 
-            RightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_MoveBtn.Click += MoveRows;
+            Move_Button = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, flowPanel);
+            Move_Button.Click += MoveRows;
 
-            RightClickDataGridView_ViewReceiptBtn = CustomControls.ConstructBtnForMenu("View receipt", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ViewReceiptBtn.Click += ViewReceipt;
+            ViewReceipt_Button = CustomControls.ConstructBtnForMenu("View receipt", CustomControls.PanelBtnWidth, flowPanel);
+            ViewReceipt_Button.Click += ViewReceipt;
 
-            RightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
+            ExportReceipt_Button = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, flowPanel);
+            ExportReceipt_Button.Click += ExportReceipt;
 
-            RightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ShowItemsBtn.Click += ShowItems;
+            ShowItems_Button = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, flowPanel);
+            ShowItems_Button.Click += ShowItems;
 
-            RightClickDataGridView_ViewReturnDetailsBtn = CustomControls.ConstructBtnForMenu("View return details", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ViewReturnDetailsBtn.Click += ViewReturnDetails;
+            ViewReturnDetails_Button = CustomControls.ConstructBtnForMenu("View return details", CustomControls.PanelBtnWidth, flowPanel);
+            ViewReturnDetails_Button.Click += ViewReturnDetails;
 
-            RightClickDataGridView_ViewLossDetailsBtn = CustomControls.ConstructBtnForMenu("View loss details", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ViewLossDetailsBtn.Click += ViewLossDetails;
+            ViewLossDetails_Button = CustomControls.ConstructBtnForMenu("View loss details", CustomControls.PanelBtnWidth, flowPanel);
+            ViewLossDetails_Button.Click += ViewLossDetails;
 
-            RightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Mark as  returned", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_ReturnBtn.Click += ReturnProduct;
+            Return_Button = CustomControls.ConstructBtnForMenu("Mark as  returned", CustomControls.PanelBtnWidth, flowPanel);
+            Return_Button.Click += ReturnProduct;
 
-            RightClickDataGridView_UndoReturnBtn = CustomControls.ConstructBtnForMenu("Undo return", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_UndoReturnBtn.Click += UndoReturnProduct;
+            UndoReturn_Button = CustomControls.ConstructBtnForMenu("Undo return", CustomControls.PanelBtnWidth, flowPanel);
+            UndoReturn_Button.Click += UndoReturnProduct;
 
-            RightClickDataGridView_MarkAsLostBtn = CustomControls.ConstructBtnForMenu("Mark as lost", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_MarkAsLostBtn.Click += MarkAsLost;
+            MarkAsLost_Button = CustomControls.ConstructBtnForMenu("Mark as lost", CustomControls.PanelBtnWidth, flowPanel);
+            MarkAsLost_Button.Click += MarkAsLost;
 
-            RightClickDataGridView_UndoLossBtn = CustomControls.ConstructBtnForMenu("Undo loss", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_UndoLossBtn.Click += UndoLoss;
+            UndoLoss_Button = CustomControls.ConstructBtnForMenu("Undo loss", CustomControls.PanelBtnWidth, flowPanel);
+            UndoLoss_Button.Click += UndoLoss;
 
-            RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
-            RightClickDataGridView_DeleteBtn.Click += DeleteRow;
+            Delete_Button = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, flowPanel);
+            Delete_Button.ForeColor = CustomColors.AccentRed;
+            Delete_Button.Click += DeleteRow;
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             Tools.OpenForm(new ModifyRow_Form(grid.SelectedRows[0]));
         }
         private static void MoveRows(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             List<DataGridViewRow> selectedRows = grid.SelectedRows.Cast<DataGridViewRow>().ToList();
             if (selectedRows.Count == 0) { return; }
 
@@ -101,7 +101,7 @@ namespace Sales_Tracker.GridView
         }
         private static void ViewReceipt(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow = grid.SelectedRows[0];
@@ -356,17 +356,17 @@ namespace Sales_Tracker.GridView
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             ReceiptManager.ExportSelectedReceipts(grid);
         }
         private static void ShowItems(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
         }
         private static void ViewReturnDetails(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -389,7 +389,7 @@ namespace Sales_Tracker.GridView
         }
         private static void ViewLossDetails(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -412,7 +412,7 @@ namespace Sales_Tracker.GridView
         }
         private static void ReturnProduct(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -436,7 +436,7 @@ namespace Sales_Tracker.GridView
             using ReturnProduct_Form returnForm = new(selectedRow, isPurchase);
             if (returnForm.ShowDialog() == DialogResult.OK)
             {
-                CustomControls.CloseAllPanels();
+                Hide();
 
                 // Refresh ItemsInTransaction_Form if it's open
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>()
@@ -448,7 +448,7 @@ namespace Sales_Tracker.GridView
         }
         private static void UndoReturnProduct(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -469,7 +469,7 @@ namespace Sales_Tracker.GridView
             using UndoReturn_Form undoForm = new(selectedRow);
             if (undoForm.ShowDialog() == DialogResult.OK)
             {
-                CustomControls.CloseAllPanels();
+                Hide();
 
                 // Refresh ItemsInTransaction_Form if it's open
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>()
@@ -481,7 +481,7 @@ namespace Sales_Tracker.GridView
         }
         private static void MarkAsLost(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -505,7 +505,7 @@ namespace Sales_Tracker.GridView
             using MarkProductAsLost_Form lostForm = new(selectedRow, isPurchase);
             if (lostForm.ShowDialog() == DialogResult.OK)
             {
-                CustomControls.CloseAllPanels();
+                Hide();
 
                 // Refresh ItemsInTransaction_Form if it's open
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>()
@@ -517,7 +517,7 @@ namespace Sales_Tracker.GridView
         }
         private static void UndoLoss(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
             DataGridViewRow selectedRow;
@@ -538,7 +538,7 @@ namespace Sales_Tracker.GridView
             using UndoLoss_Form undoLossForm = new(selectedRow);
             if (undoLossForm.ShowDialog() == DialogResult.OK)
             {
-                CustomControls.CloseAllPanels();
+                Hide();
 
                 // Refresh ItemsInTransaction_Form if it's open
                 if (Tools.IsFormOpen<ItemsInTransaction_Form>()
@@ -550,7 +550,7 @@ namespace Sales_Tracker.GridView
         }
         private static void DeleteRow(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
             int selectedCount = grid.SelectedRows.Count;
 
             // Show confirmation dialog
@@ -664,6 +664,10 @@ namespace Sales_Tracker.GridView
         }
 
         // Helper methods
+        public static void Hide()
+        {
+            Panel?.Parent?.Controls.Remove(Panel);
+        }
         public static string GetFilePathFromRowTag(object tag)
         {
             if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\'))

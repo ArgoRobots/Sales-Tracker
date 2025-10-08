@@ -10,12 +10,12 @@ namespace Sales_Tracker.ReportGenerator
     internal static class RightClickElementMenu
     {
         // Properties
-        public static Guna2Panel RightClickElement_Panel { get; private set; }
-        public static Guna2Button RightClickElement_DeleteBtn { get; private set; }
-        public static Guna2Button RightClickElement_DuplicateBtn { get; private set; }
-        public static Guna2Button RightClickElement_SelectAllBtn { get; private set; }
-        public static Guna2Button RightClickElement_BringToFrontBtn { get; private set; }
-        public static Guna2Button RightClickElement_SendToBackBtn { get; private set; }
+        public static Guna2Panel Panel { get; private set; }
+        public static Guna2Button Delete_Button { get; private set; }
+        public static Guna2Button Duplicate_Button { get; private set; }
+        public static Guna2Button SelectAll_Button { get; private set; }
+        public static Guna2Button BringToFront_Button { get; private set; }
+        public static Guna2Button SendToBack_Button { get; private set; }
 
         // Constructor
         public static void ConstructRightClickElementMenu()
@@ -26,106 +26,107 @@ namespace Sales_Tracker.ReportGenerator
 
             int calculatedHeight = 5 * scaledButtonHeight + scaledSpaceForPanel;
 
-            RightClickElement_Panel = CustomControls.ConstructPanelForMenu(
+            Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, calculatedHeight),
                 "rightClickElement_Panel");
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickElement_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];
 
             // Duplicate button
-            RightClickElement_DuplicateBtn = CustomControls.ConstructBtnForMenu("Duplicate", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickElement_DuplicateBtn.Click += DuplicateElement;
-            CustomControls.ConstructKeyShortcut("Ctrl+D", RightClickElement_DuplicateBtn);
+            Duplicate_Button = CustomControls.ConstructBtnForMenu("Duplicate", CustomControls.PanelBtnWidth, flowPanel);
+            Duplicate_Button.Click += DuplicateElement;
+            CustomControls.ConstructKeyShortcut("Ctrl+D", Duplicate_Button);
 
             // Select All button
-            RightClickElement_SelectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickElement_SelectAllBtn.Click += SelectAllElements;
-            CustomControls.ConstructKeyShortcut("Ctrl+A", RightClickElement_SelectAllBtn);
+            SelectAll_Button = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, flowPanel);
+            SelectAll_Button.Click += SelectAllElements;
+            CustomControls.ConstructKeyShortcut("Ctrl+A", SelectAll_Button);
 
             // Bring to Front button
-            RightClickElement_BringToFrontBtn = CustomControls.ConstructBtnForMenu("Bring to front", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickElement_BringToFrontBtn.Click += BringToFront;
+            BringToFront_Button = CustomControls.ConstructBtnForMenu("Bring to front", CustomControls.PanelBtnWidth, flowPanel);
+            BringToFront_Button.Click += BringToFront;
 
             // Send to Back button
-            RightClickElement_SendToBackBtn = CustomControls.ConstructBtnForMenu("Send to back", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickElement_SendToBackBtn.Click += SendToBack;
+            SendToBack_Button = CustomControls.ConstructBtnForMenu("Send to back", CustomControls.PanelBtnWidth, flowPanel);
+            SendToBack_Button.Click += SendToBack;
 
             // Delete button
-            RightClickElement_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
-            RightClickElement_DeleteBtn.ForeColor = CustomColors.AccentRed;
-            RightClickElement_DeleteBtn.Click += DeleteElement;
-            CustomControls.ConstructKeyShortcut("Del", RightClickElement_DeleteBtn);
+            Delete_Button = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, flowPanel);
+            Delete_Button.ForeColor = CustomColors.AccentRed;
+            Delete_Button.Click += DeleteElement;
+            CustomControls.ConstructKeyShortcut("Del", Delete_Button);
         }
 
         // Event handlers
         private static void DuplicateElement(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance.DuplicateSelected();
-            HideMenu();
+            Hide();
         }
         private static void DeleteElement(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance.DeleteSelected();
-            HideMenu();
+            Hide();
         }
         private static void SelectAllElements(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance.SelectAllElements();
-            HideMenu();
+            Hide();
         }
         private static void BringToFront(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance.BringElementToFront();
-            HideMenu();
+            Hide();
         }
         private static void SendToBack(object sender, EventArgs e)
         {
             ReportLayoutDesigner_Form.Instance.SendElementToBack();
-            HideMenu();
+            Hide();
         }
 
+        // Public methods
         /// <summary>
         /// Shows the right-click menu at the specified location.
         /// </summary>
-        public static void ShowMenu(Point location, Form parentForm, bool hasSelection)
+        public static void Show(Point location, Form parentForm, bool hasSelection)
         {
-            if (RightClickElement_Panel == null)
+            if (Panel == null)
             {
                 ConstructRightClickElementMenu();
             }
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickElement_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];
             flowPanel.Controls.Clear();
 
             // Add buttons based on selection state
             if (hasSelection)
             {
-                flowPanel.Controls.Add(RightClickElement_SelectAllBtn);
-                flowPanel.Controls.Add(RightClickElement_DuplicateBtn);
-                flowPanel.Controls.Add(RightClickElement_BringToFrontBtn);
-                flowPanel.Controls.Add(RightClickElement_SendToBackBtn);
-                flowPanel.Controls.Add(RightClickElement_DeleteBtn);
+                flowPanel.Controls.Add(SelectAll_Button);
+                flowPanel.Controls.Add(Duplicate_Button);
+                flowPanel.Controls.Add(BringToFront_Button);
+                flowPanel.Controls.Add(SendToBack_Button);
+                flowPanel.Controls.Add(Delete_Button);
             }
             else
             {
-                flowPanel.Controls.Add(RightClickElement_SelectAllBtn);
+                flowPanel.Controls.Add(SelectAll_Button);
             }
 
-            CustomControls.SetRightClickMenuHeight(RightClickElement_Panel);
+            CustomControls.SetRightClickMenuHeight(Panel);
 
             // Adjust position to keep menu within form boundaries
             Point adjustedLocation = location;
 
             // Check right boundary
-            if (adjustedLocation.X + RightClickElement_Panel.Width > parentForm.ClientSize.Width)
+            if (adjustedLocation.X + Panel.Width > parentForm.ClientSize.Width)
             {
-                adjustedLocation.X = parentForm.ClientSize.Width - RightClickElement_Panel.Width;
+                adjustedLocation.X = parentForm.ClientSize.Width - Panel.Width;
             }
 
             // Check bottom boundary
-            if (adjustedLocation.Y + RightClickElement_Panel.Height > parentForm.ClientSize.Height)
+            if (adjustedLocation.Y + Panel.Height > parentForm.ClientSize.Height)
             {
-                adjustedLocation.Y = parentForm.ClientSize.Height - RightClickElement_Panel.Height;
+                adjustedLocation.Y = parentForm.ClientSize.Height - Panel.Height;
             }
 
             // Ensure menu doesn't go off left or top edges
@@ -140,19 +141,19 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             // Position the menu
-            RightClickElement_Panel.Location = adjustedLocation;
+            Panel.Location = adjustedLocation;
 
             // Add to parent form
-            parentForm.Controls.Add(RightClickElement_Panel);
-            RightClickElement_Panel.BringToFront();
+            parentForm.Controls.Add(Panel);
+            Panel.BringToFront();
         }
 
         /// <summary>
         /// Hides the right-click menu.
         /// </summary>
-        public static void HideMenu()
+        public static void Hide()
         {
-            RightClickElement_Panel?.Parent?.Controls.Remove(RightClickElement_Panel);
+            Panel?.Parent?.Controls.Remove(Panel);
         }
     }
 }

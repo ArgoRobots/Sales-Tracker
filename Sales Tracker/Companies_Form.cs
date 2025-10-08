@@ -38,6 +38,10 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Visible = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_company_DataGridView);
             AddEventHandlersToTextBoxes();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel, RightClickDataGridViewRowMenu.Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void LoadCompanies()
@@ -69,7 +73,6 @@ namespace Sales_Tracker
         // Form event handlers
         private void Companies_Form_Resize(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -85,7 +88,6 @@ namespace Sales_Tracker
         // Event handlers
         private void AddCompany_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
             string name = Company_TextBox.Text.Trim();
             MainMenu_Form.Instance.CompanyList.Add(name);
             int newRowIndex = _company_DataGridView.Rows.Add(name);
@@ -203,9 +205,10 @@ namespace Sales_Tracker
         {
             AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text) && Company_TextBox.Tag.ToString() != "0";
         }
-        private void CloseAllPanels(object sender, EventArgs? e)
+        private void ClosePanels()
         {
-            CustomControls.CloseAllPanels();
+            TextBoxManager.HideRightClickPanel();
+            RightClickDataGridViewRowMenu.Hide();
         }
     }
 }
