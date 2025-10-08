@@ -32,7 +32,6 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
-            CenterDataGridView();
             UpdateTheme();
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
@@ -100,10 +99,6 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void Categories_Form_Resize(object sender, EventArgs e)
-        {
-            CenterDataGridView();
-        }
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = _oldOption;
@@ -147,7 +142,6 @@ namespace Sales_Tracker
                 Purchase_DataGridView.ClearSelection();
                 selectedDataGridView = Purchase_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
-                CenterDataGridView();
                 VaidateCategoryTextBox();
                 LabelManager.ShowTotalLabel(Total_Label, Purchase_DataGridView);
             }
@@ -161,7 +155,6 @@ namespace Sales_Tracker
                 Sale_DataGridView.ClearSelection();
                 selectedDataGridView = Sale_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
-                CenterDataGridView();
                 VaidateCategoryTextBox();
                 LabelManager.ShowTotalLabel(Total_Label, Sale_DataGridView);
             }
@@ -224,22 +217,20 @@ namespace Sales_Tracker
         public Guna2DataGridView Sale_DataGridView { get; set; }
 
         // DataGridView methods
-        private void CenterDataGridView()
-        {
-            if (selectedDataGridView == null) { return; }
-            selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
-            selectedDataGridView.Location = new Point((ClientSize.Width - selectedDataGridView.Width) / 2, _topForDataGridView);
-        }
         private void ConstructDataGridViews()
         {
             Purchase_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", ColumnHeaders, null, this);
+            selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             Purchase_DataGridView.Location = new Point((ClientSize.Width - Purchase_DataGridView.Width) / 2, _topForDataGridView);
+            Purchase_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             Purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             Sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
+            Sale_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             Sale_DataGridView.Location = new Point((ClientSize.Width - Sale_DataGridView.Width) / 2, _topForDataGridView);
+            Sale_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             Sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
             ThemeManager.CustomizeScrollBar(Sale_DataGridView);
         }

@@ -28,7 +28,6 @@ namespace Sales_Tracker
             _oldOption = MainMenu_Form.Instance.Selected;
             _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             ConstructDataGridViews();
-            CenterSelectedDataGridView();
             LoadCompanies();
             ThemeManager.SetThemeForForm(this);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
@@ -71,10 +70,6 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void Companies_Form_Resize(object sender, EventArgs e)
-        {
-            CenterSelectedDataGridView();
-        }
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = _oldOption;
@@ -143,17 +138,13 @@ namespace Sales_Tracker
             { Column.Company, "Company" },
         };
         private Guna2DataGridView _company_DataGridView;
-        private void CenterSelectedDataGridView()
-        {
-            if (_company_DataGridView == null) { return; }
-            _company_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
-            _company_DataGridView.Location = new Point((ClientSize.Width - _company_DataGridView.Width) / 2, _topForDataGridView);
-        }
         private void ConstructDataGridViews()
         {
             _company_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_company_DataGridView, "company_DataGridView", ColumnHeaders, null, this);
+            _company_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             _company_DataGridView.Location = new Point((ClientSize.Width - _company_DataGridView.Width) / 2, _topForDataGridView);
+            _company_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(_company_DataGridView);
