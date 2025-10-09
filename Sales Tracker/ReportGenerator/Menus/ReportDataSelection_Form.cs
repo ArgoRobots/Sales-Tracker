@@ -50,7 +50,7 @@ namespace Sales_Tracker.ReportGenerator
 
             InitChartSelectionControl();
             SetupChartSelection();
-            SetupFilterControls();
+            SetupDateRangeControls();
             SetupTemplates();
             StoreInitialSizes();
             ScaleControls();
@@ -135,15 +135,11 @@ namespace Sales_Tracker.ReportGenerator
             _chartTypeOrder.Add(chartType);
             ChartSelection_CheckedListBox.Add(displayName, false);
         }
-        private void SetupFilterControls()
+        private void SetupDateRangeControls()
         {
             // Setup date range
             StartDate_DateTimePicker.Value = DateTime.Now.AddMonths(-1);
             EndDate_DateTimePicker.Value = DateTime.Now;
-
-            // Setup includes
-            IncludeReturns_CheckBox.Checked = true;
-            IncludeLosses_CheckBox.Checked = true;
         }
         private void SetupTemplates()
         {
@@ -364,14 +360,6 @@ namespace Sales_Tracker.ReportGenerator
                 EndDate_DateTimePicker.BorderColor = CustomColors.ControlBorder;
             }
         }
-        private void IncludeLosses_Label_Click(object sender, EventArgs e)
-        {
-            IncludeLosses_CheckBox.Checked = !IncludeLosses_CheckBox.Checked;
-        }
-        private void IncludeReturns_Label_Click(object sender, EventArgs e)
-        {
-            IncludeReturns_CheckBox.Checked = !IncludeReturns_CheckBox.Checked;
-        }
 
         // Event handler helper methods
         private void ApplyTemplate(string templateName)
@@ -435,10 +423,6 @@ namespace Sales_Tracker.ReportGenerator
                     StartDate_DateTimePicker.Value = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
 
                     EndDate_DateTimePicker.Value = template.Filters.EndDate ?? DateTime.Now;
-
-                    // Update includes
-                    IncludeReturns_CheckBox.Checked = template.Filters.IncludeReturns;
-                    IncludeLosses_CheckBox.Checked = template.Filters.IncludeLosses;
                 });
 
                 // Force the layout designer to refresh
@@ -551,8 +535,6 @@ namespace Sales_Tracker.ReportGenerator
             ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
             ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
             ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
-            ReportConfig.Filters.IncludeReturns = IncludeReturns_CheckBox.Checked;
-            ReportConfig.Filters.IncludeLosses = IncludeLosses_CheckBox.Checked;
 
             // Update template
             if (Template_ComboBox.SelectedIndex > 0)

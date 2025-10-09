@@ -8,6 +8,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class SummaryElement : BaseElement
     {
         public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public bool IncludeReturns { get; set; } = true;
+        public bool IncludeLosses { get; set; } = true;
         public bool ShowTotalSales { get; set; } = true;
         public bool ShowTotalTransactions { get; set; } = true;
         public bool ShowAverageValue { get; set; } = true;
@@ -31,6 +33,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             return new SummaryElement
             {
                 TransactionType = TransactionType,
+                IncludeReturns = IncludeReturns,
+                IncludeLosses = IncludeLosses,
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 DisplayName = DisplayName,
@@ -123,7 +127,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         MainMenu_Form.Instance.Sale_DataGridView,
                         startDate,
                         endDate,
-                        config.Filters.IncludeReturns);
+                        IncludeReturns);
 
                     stats.TotalSales = Total;
                     stats.TransactionCount += Count;
@@ -136,7 +140,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         MainMenu_Form.Instance.Purchase_DataGridView,
                         startDate,
                         endDate,
-                        config.Filters.IncludeReturns);
+                        IncludeReturns);
 
                     stats.TotalPurchases = Total;
                     if (TransactionType == TransactionType.Purchases)
@@ -196,7 +200,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             return (total, count);
         }
 
-        private static decimal CalculateGrowthRate(
+        private decimal CalculateGrowthRate(
             ReportConfiguration config,
             DateTime startDate,
             DateTime endDate,
@@ -216,7 +220,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     MainMenu_Form.Instance.Sale_DataGridView,
                     prevStart,
                     prevEnd,
-                    config.Filters.IncludeReturns);
+                    IncludeReturns);
                 previousPeriodTotal += Total;
             }
 
@@ -228,7 +232,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     MainMenu_Form.Instance.Purchase_DataGridView,
                     prevStart,
                     prevEnd,
-                    config.Filters.IncludeReturns);
+                    IncludeReturns);
                 previousPeriodTotal += Total;
             }
 
@@ -289,6 +293,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     onPropertyChanged();
                 });
             yPosition += RowHeight;
+
+            // Include returns checkbox
+            AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
+                value =>
+                {
+                    IncludeReturns = value;
+                    onPropertyChanged();
+                });
+            yPosition += CheckBoxRowHeight;
+
+            // Include losses checkbox  
+            AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
+                value =>
+                {
+                    IncludeLosses = value;
+                    onPropertyChanged();
+                });
+            yPosition += CheckBoxRowHeight;
 
             // Total Sales checkbox with clickable label
             AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,
