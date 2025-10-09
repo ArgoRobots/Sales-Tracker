@@ -8,10 +8,6 @@ namespace Sales_Tracker.ReportGenerator
     public static class ReportTemplates
     {
         // Template creation methods
-
-        /// <summary>
-        /// Creates a monthly sales report template.
-        /// </summary>
         public static ReportConfiguration CreateMonthlySalesTemplate()
         {
             ReportConfiguration config = new()
@@ -41,10 +37,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return config;
         }
-
-        /// <summary>
-        /// Creates a financial overview template.
-        /// </summary>
         public static ReportConfiguration CreateFinancialOverviewTemplate()
         {
             ReportConfiguration config = new()
@@ -74,10 +66,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return config;
         }
-
-        /// <summary>
-        /// Creates a performance analysis template.
-        /// </summary>
         public static ReportConfiguration CreatePerformanceAnalysisTemplate()
         {
             ReportConfiguration config = new()
@@ -107,10 +95,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return config;
         }
-
-        /// <summary>
-        /// Creates a returns analysis template.
-        /// </summary>
         public static ReportConfiguration CreateReturnsAnalysisTemplate()
         {
             ReportConfiguration config = new()
@@ -143,10 +127,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return config;
         }
-
-        /// <summary>
-        /// Creates a losses analysis template.
-        /// </summary>
         public static ReportConfiguration CreateLossesAnalysisTemplate()
         {
             ReportConfiguration config = new()
@@ -179,10 +159,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return config;
         }
-
-        /// <summary>
-        /// Creates a geographic analysis template.
-        /// </summary>
         public static ReportConfiguration CreateGeographicAnalysisTemplate()
         {
             ReportConfiguration config = new()
@@ -525,10 +501,6 @@ namespace Sales_Tracker.ReportGenerator
             public const string LossesAnalysis = "Losses Analysis";
             public const string GeographicAnalysis = "Geographic Analysis";
         }
-
-        /// <summary>
-        /// Gets all available template names.
-        /// </summary>
         public static List<string> GetAvailableTemplates()
         {
             return
@@ -542,10 +514,6 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.GeographicAnalysis
             ];
         }
-
-        /// <summary>
-        /// Creates a report configuration from a template name.
-        /// </summary>
         public static ReportConfiguration CreateFromTemplate(string templateName)
         {
             return templateName switch

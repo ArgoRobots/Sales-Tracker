@@ -1,4 +1,6 @@
-﻿using Sales_Tracker.Charts;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Charts;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -44,10 +46,11 @@ namespace Sales_Tracker.ReportGenerator
             ParentReportForm = parentForm;
 
             // This fixes a bug. I have a similar setup on ReportPreviewExport_Form but it doesn't have this issue. I'm not sure why.
-            Filters_GroupBox.Anchor = AnchorStyles.None;
-            Filters_GroupBox.Height = Right_Panel.Height - Right_Panel.Padding.Bottom - Filters_GroupBox.Top;
-            Filters_GroupBox.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            DateRange_GroupBox.Anchor = AnchorStyles.None;
+            DateRange_GroupBox.Height = Right_Panel.Height - Right_Panel.Padding.Bottom - DateRange_GroupBox.Top;
+            DateRange_GroupBox.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
+            InitializeDatePresets();
             InitChartSelectionControl();
             SetupChartSelection();
             SetupDateRangeControls();
@@ -137,9 +140,21 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupDateRangeControls()
         {
-            // Setup date range
-            StartDate_DateTimePicker.Value = DateTime.Now.AddMonths(-1);
-            EndDate_DateTimePicker.Value = DateTime.Now;
+            // Set initial date range
+            PerformUpdate(() =>
+            {
+                // Set default selection to "This month"
+                DatePreset? thisMonthPreset = _datePresets.FirstOrDefault(p => p.Name == "This month");
+                if (thisMonthPreset != null)
+                {
+                    thisMonthPreset.RadioButton.Checked = true;
+                    (DateTime start, DateTime end) = thisMonthPreset.GetDateRange();
+                    StartDate_DateTimePicker.Value = start;
+                    EndDate_DateTimePicker.Value = end;
+                }
+
+                SetCustomDateRangeControlsVisibility(false);
+            });
         }
         private void SetupTemplates()
         {
@@ -167,7 +182,119 @@ namespace Sales_Tracker.ReportGenerator
             DpiHelper.ScaleGroupBox(ChartSelection_GroupBox);
             DpiHelper.ScaleGroupBox(Template_GroupBox);
             DpiHelper.ScaleGroupBox(ReportSettings_GroupBox);
-            DpiHelper.ScaleGroupBox(Filters_GroupBox);
+            DpiHelper.ScaleGroupBox(DateRange_GroupBox);
+        }
+
+        /// <summary>
+        /// Manages date presets and their associated radio buttons.
+        /// </summary>
+        private class DatePreset
+        {
+            public Guna2CustomRadioButton RadioButton { get; set; }
+            public string Name { get; set; }
+            public Func<(DateTime start, DateTime end)> GetDateRange { get; set; }
+
+            public bool Matches(DateTime startDate, DateTime endDate)
+            {
+                (DateTime start, DateTime end) = GetDateRange();
+                return start.Date == startDate.Date && end.Date == endDate.Date;
+            }
+        }
+
+        private List<DatePreset> _datePresets;
+
+        /// <summary>
+        /// Initialize date presets list in constructor or setup method.
+        /// </summary>
+        private void InitializeDatePresets()
+        {
+            DateTime today = DateTime.Today;
+
+            _datePresets =
+            [
+                new DatePreset
+                {
+                    RadioButton = Today_RadioButton,
+                    Name = "Today",
+                    GetDateRange = () => (today, today)
+                },
+                new DatePreset
+                {
+                    RadioButton = Yesterday_RadioButton,
+                    Name = "Yesterday",
+                    GetDateRange = () => (today.AddDays(-1), today.AddDays(-1))
+                },
+                new DatePreset
+                {
+                    RadioButton = Last7Days_RadioButton,
+                    Name = "Last 7 days",
+                    GetDateRange = () => (today.AddDays(-7), today)
+                },
+                new DatePreset
+                {
+                    RadioButton = Last30Days_RadioButton,
+                    Name = "Last 30 days",
+                    GetDateRange = () => (today.AddDays(-30), today)
+                },
+                new DatePreset
+                {
+                    RadioButton = ThisMonth_RadioButton,
+                    Name = "This month",
+                    GetDateRange = () => (new DateTime(today.Year, today.Month, 1), today)
+                },
+                new DatePreset
+                {
+                    RadioButton = LastMonth_RadioButton,
+                    Name = "Last month",
+                    GetDateRange = () =>
+                    {
+                        DateTime firstDay = today.AddMonths(-1);
+                        DateTime start = new(firstDay.Year, firstDay.Month, 1);
+                        return (start, start.AddMonths(1).AddDays(-1));
+                    }
+                },
+                new DatePreset
+                {
+                    RadioButton = ThisQuarter_RadioButton,
+                    Name = "This quarter",
+                    GetDateRange = () =>
+                    {
+                        int quarter = (today.Month - 1) / 3;
+                        return (new DateTime(today.Year, quarter * 3 + 1, 1), today);
+                    }
+                },
+                new DatePreset
+                {
+                    RadioButton = LastQuarter_RadioButton,
+                    Name = "Last quarter",
+                    GetDateRange = () =>
+                    {
+                        int quarter = ((today.Month - 1) / 3) - 1;
+                        int year = today.Year;
+                        if (quarter < 0) { quarter = 3; year--; }
+                        DateTime start = new(year, quarter * 3 + 1, 1);
+                        return (start, start.AddMonths(3).AddDays(-1));
+                    }
+                },
+                new DatePreset
+                {
+                    RadioButton = YearToDate_RadioButton,
+                    Name = "Year to date",
+                    GetDateRange = () => (new DateTime(today.Year, 1, 1), today)
+                },
+                new DatePreset
+                {
+                    RadioButton = LastYear_RadioButton,
+                    Name = "Last year",
+                    GetDateRange = () => (new DateTime(today.Year - 1, 1, 1), new DateTime(today.Year - 1, 12, 31))
+                },
+                new DatePreset
+                {
+                    RadioButton = AllTime_RadioButton,
+                    Name = "All time",
+                    GetDateRange = () => (GetEarliestTransactionDate(), today)
+                }
+            ];
         }
 
         // Helper methods
@@ -321,19 +448,11 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
         }
-        private void DateRange_Changed(object sender, EventArgs e)
+        private void DateRange_ValueChanged(object sender, EventArgs e)
         {
             if (!_isUpdating)
             {
-                SwitchToCustomTemplate();
                 ValidateDateRange();
-                NotifyParentValidationChanged();
-            }
-        }
-        private void FilterChanged(object sender, EventArgs e)
-        {
-            if (!_isUpdating)
-            {
                 SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             }
@@ -345,23 +464,203 @@ namespace Sales_Tracker.ReportGenerator
                 NotifyParentValidationChanged();
             }
         }
+        private void DatePreset_RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isUpdating) { return; }
+
+            if (sender is not Guna2CustomRadioButton radioButton || !radioButton.Checked) { return; }
+
+            PerformUpdate(() =>
+            {
+                if (radioButton == Custom_RadioButton)
+                {
+                    SetCustomDateRangeControlsVisibility(true);
+                }
+                else
+                {
+                    SetCustomDateRangeControlsVisibility(false);
+
+                    // Find and apply the preset
+                    DatePreset? preset = _datePresets.FirstOrDefault(p => p.RadioButton == radioButton);
+                    if (preset != null)
+                    {
+                        (DateTime start, DateTime end) = preset.GetDateRange();
+                        StartDate_DateTimePicker.Value = start;
+                        EndDate_DateTimePicker.Value = end;
+                    }
+                }
+            });
+
+            SwitchToCustomTemplate();
+            NotifyParentValidationChanged();
+        }
+
+        // Label click event handlers to toggle radio buttons
+        private void Today_Label_Click(object sender, EventArgs e) => Today_RadioButton.Checked = !Today_RadioButton.Checked;
+        private void Yesterday_Label_Click(object sender, EventArgs e) => Yesterday_RadioButton.Checked = !Yesterday_RadioButton.Checked;
+        private void Last7Days_Label_Click(object sender, EventArgs e) => Last7Days_RadioButton.Checked = !Last7Days_RadioButton.Checked;
+        private void Last30Days_Label_Click(object sender, EventArgs e) => Last30Days_RadioButton.Checked = !Last30Days_RadioButton.Checked;
+        private void ThisMonth_Label_Click(object sender, EventArgs e) => ThisMonth_RadioButton.Checked = !ThisMonth_RadioButton.Checked;
+        private void LastMonth_Label_Click(object sender, EventArgs e) => LastMonth_RadioButton.Checked = !LastMonth_RadioButton.Checked;
+        private void ThisQuarter_Label_Click(object sender, EventArgs e) => ThisQuarter_RadioButton.Checked = !ThisQuarter_RadioButton.Checked;
+        private void LastQuarter_Label_Click(object sender, EventArgs e) => LastQuarter_RadioButton.Checked = !LastQuarter_RadioButton.Checked;
+        private void YearToDate_Label_Click(object sender, EventArgs e) => YearToDate_RadioButton.Checked = !YearToDate_RadioButton.Checked;
+        private void LastYear_Label_Click(object sender, EventArgs e) => LastYear_RadioButton.Checked = !LastYear_RadioButton.Checked;
+        private void AllTime_Label_Click(object sender, EventArgs e) => AllTime_RadioButton.Checked = !AllTime_RadioButton.Checked;
+        private void Custom_Label_Click(object sender, EventArgs e) => Custom_RadioButton.Checked = !Custom_RadioButton.Checked;
+
+        // Event handler helper methods
+        private void ApplyDatePreset(string presetName)
+        {
+            DateTime today = DateTime.Today;
+            DateTime startDate = today;
+            DateTime endDate = today;
+
+            switch (presetName)
+            {
+                case "Today":
+                    startDate = today;
+                    endDate = today;
+                    break;
+
+                case "Yesterday":
+                    startDate = today.AddDays(-1);
+                    endDate = today.AddDays(-1);
+                    break;
+
+                case "Last 7 days":
+                    startDate = today.AddDays(-7);
+                    endDate = today;
+                    break;
+
+                case "Last 30 days":
+                    startDate = today.AddDays(-30);
+                    endDate = today;
+                    break;
+
+                case "This month":
+                    startDate = new DateTime(today.Year, today.Month, 1);
+                    endDate = today;
+                    break;
+
+                case "Last month":
+                    DateTime firstDayLastMonth = today.AddMonths(-1);
+                    startDate = new DateTime(firstDayLastMonth.Year, firstDayLastMonth.Month, 1);
+                    endDate = startDate.AddMonths(1).AddDays(-1);
+                    break;
+
+                case "This quarter":
+                    int currentQuarter = (today.Month - 1) / 3;
+                    startDate = new DateTime(today.Year, currentQuarter * 3 + 1, 1);
+                    endDate = today;
+                    break;
+
+                case "Last quarter":
+                    int lastQuarter = ((today.Month - 1) / 3) - 1;
+                    int year = today.Year;
+                    if (lastQuarter < 0)
+                    {
+                        lastQuarter = 3;
+                        year--;
+                    }
+                    startDate = new DateTime(year, lastQuarter * 3 + 1, 1);
+                    endDate = startDate.AddMonths(3).AddDays(-1);
+                    break;
+
+                case "Year to date":
+                    startDate = new DateTime(today.Year, 1, 1);
+                    endDate = today;
+                    break;
+
+                case "Last year":
+                    startDate = new DateTime(today.Year - 1, 1, 1);
+                    endDate = new DateTime(today.Year - 1, 12, 31);
+                    break;
+
+                case "All time":
+                    startDate = GetEarliestTransactionDate();
+                    endDate = today;
+                    break;
+
+                case "Custom":
+                    // Don't change dates for custom
+                    return;
+            }
+
+            PerformUpdate(() =>
+            {
+                StartDate_DateTimePicker.Value = startDate;
+                EndDate_DateTimePicker.Value = endDate;
+            });
+        }
+        private static DateTime GetEarliestTransactionDate()
+        {
+            DateTime earliestDate = DateTime.Today;
+
+            // Check sales transactions for earliest date
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            {
+                if (row.Cells[ReadOnlyVariables.Date_column].Value != null &&
+                    DateTime.TryParse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime date))
+                {
+                    if (date < earliestDate)
+                    {
+                        earliestDate = date;
+                    }
+                }
+            }
+
+            // Check purchase transactions for earliest date
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
+            {
+                if (row.Cells[ReadOnlyVariables.Date_column].Value != null &&
+                    DateTime.TryParse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString(), out DateTime date))
+                {
+                    if (date < earliestDate)
+                    {
+                        earliestDate = date;
+                    }
+                }
+            }
+
+            // If no transactions found, default to reasonable date
+            if (earliestDate == DateTime.Today)
+            {
+                earliestDate = new DateTime(2000, 1, 1);
+            }
+
+            return earliestDate;
+        }
         private void ValidateDateRange()
         {
-            if (StartDate_DateTimePicker.Value >= EndDate_DateTimePicker.Value)
+            if (!HasValidDateRange())
             {
-                // Visual indication of invalid date range
-                StartDate_DateTimePicker.BorderColor = Color.Red;
-                EndDate_DateTimePicker.BorderColor = Color.Red;
+                SetDateTimeControlsBorderColor(CustomColors.AccentRed);
+
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Invalid Date Range",
+                    "The 'Start' date cannot be later than the 'End' date.\nWould you like to swap the dates automatically?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    // Swap the dates
+                    (StartDate_DateTimePicker.Value, EndDate_DateTimePicker.Value) = (EndDate_DateTimePicker.Value, StartDate_DateTimePicker.Value);
+
+                    SetDateTimeControlsBorderColor(CustomColors.ControlBorder);
+                }
             }
             else
             {
-                // Reset to normal colors
-                StartDate_DateTimePicker.BorderColor = CustomColors.ControlBorder;
-                EndDate_DateTimePicker.BorderColor = CustomColors.ControlBorder;
+                SetDateTimeControlsBorderColor(CustomColors.ControlBorder);
             }
         }
-
-        // Event handler helper methods
+        private void SetDateTimeControlsBorderColor(Color color)
+        {
+            StartDate_DateTimePicker.BorderColor = color;
+            EndDate_DateTimePicker.BorderColor = color;
+        }
         private void ApplyTemplate(string templateName)
         {
             if (string.IsNullOrEmpty(templateName)) { return; }
@@ -420,9 +719,24 @@ namespace Sales_Tracker.ReportGenerator
                     ReportTitle_TextBox.Text = template.Title;
 
                     // Update date range
-                    StartDate_DateTimePicker.Value = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
+                    DateTime startDate = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
+                    DateTime endDate = template.Filters.EndDate ?? DateTime.Now;
 
-                    EndDate_DateTimePicker.Value = template.Filters.EndDate ?? DateTime.Now;
+                    StartDate_DateTimePicker.Value = startDate;
+                    EndDate_DateTimePicker.Value = endDate;
+
+                    // Find matching preset or use Custom
+                    DatePreset? matchingPreset = _datePresets.FirstOrDefault(p => p.Matches(startDate, endDate));
+                    if (matchingPreset != null)
+                    {
+                        matchingPreset.RadioButton.Checked = true;
+                        SetCustomDateRangeControlsVisibility(false);
+                    }
+                    else
+                    {
+                        Custom_RadioButton.Checked = true;
+                        SetCustomDateRangeControlsVisibility(true);
+                    }
                 });
 
                 // Force the layout designer to refresh
@@ -432,6 +746,13 @@ namespace Sales_Tracker.ReportGenerator
             {
                 _isUpdating = false;
             }
+        }
+        private void SetCustomDateRangeControlsVisibility(bool visible)
+        {
+            StartDate_Label.Visible = visible;
+            StartDate_DateTimePicker.Visible = visible;
+            EndDate_Label.Visible = visible;
+            EndDate_DateTimePicker.Visible = visible;
         }
 
         /// <summary>
@@ -475,53 +796,15 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
+        private bool HasValidDateRange()
+        {
+            return StartDate_DateTimePicker.Value <= EndDate_DateTimePicker.Value;
+        }
         public bool IsValidForNextStep()
         {
-            bool hasChartsSelected = ChartSelection_CheckedListBox.CheckedItems.Count > 0;
-            bool hasValidDateRange = StartDate_DateTimePicker.Value < EndDate_DateTimePicker.Value;
             bool hasTitle = !string.IsNullOrWhiteSpace(ReportTitle_TextBox.Text);
 
-            return hasChartsSelected && hasValidDateRange && hasTitle;
-        }
-        public bool ValidateStep()
-        {
-            if (ChartSelection_CheckedListBox.CheckedItems.Count == 0)
-            {
-                CustomMessageBox.Show(
-                    "Please select at least one chart to include in your report.",
-                    "No Charts Selected",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok
-                );
-                return false;
-            }
-
-            // Validate date range
-            if (StartDate_DateTimePicker.Value >= EndDate_DateTimePicker.Value)
-            {
-                CustomMessageBox.Show(
-                    "Invalid Date Range",
-                    "Start date must be before end date.",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok
-                );
-                return false;
-            }
-
-            // Validate report title
-            if (string.IsNullOrWhiteSpace(ReportTitle_TextBox.Text))
-            {
-                CustomMessageBox.Show(
-                    "Missing Report Title",
-                    "Please enter a report title.",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok
-                );
-                ReportTitle_TextBox.Focus();
-                return false;
-            }
-
-            return true;
+            return HasValidDateRange() && hasTitle;
         }
 
         /// <summary>

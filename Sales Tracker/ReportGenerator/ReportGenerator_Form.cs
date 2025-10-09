@@ -261,7 +261,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             return (ReportStep)_currentStep switch
             {
-                ReportStep.DataSelection => _dataSelectionForm?.ValidateStep() ?? false,
+                ReportStep.DataSelection => true,
                 ReportStep.LayoutDesigner => _layoutDesignerForm?.ValidateStep() ?? false,
                 ReportStep.PreviewExport => _previewExportForm?.ValidateStep() ?? false,
                 _ => false,
