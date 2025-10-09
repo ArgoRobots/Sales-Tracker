@@ -70,10 +70,6 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MainMenu_Form.Instance.Selected = _oldOption;
-        }
         private void Companies_Form_Shown(object sender, EventArgs e)
         {
             _company_DataGridView.ClearSelection();
@@ -148,7 +144,6 @@ namespace Sales_Tracker
             _company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(_company_DataGridView);
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
         }
 
         // Validate company name

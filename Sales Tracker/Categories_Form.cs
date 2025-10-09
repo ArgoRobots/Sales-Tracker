@@ -99,10 +99,6 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MainMenu_Form.Instance.Selected = _oldOption;
-        }
         private void Categories_Form_Shown(object sender, EventArgs e)
         {
             Purchase_DataGridView.ClearSelection();
@@ -141,7 +137,6 @@ namespace Sales_Tracker
                 Sale_DataGridView.Visible = false;
                 Purchase_DataGridView.ClearSelection();
                 selectedDataGridView = Purchase_DataGridView;
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
                 VaidateCategoryTextBox();
                 LabelManager.ShowTotalLabel(Total_Label, Purchase_DataGridView);
             }
@@ -154,7 +149,6 @@ namespace Sales_Tracker
                 Purchase_DataGridView.Visible = false;
                 Sale_DataGridView.ClearSelection();
                 selectedDataGridView = Sale_DataGridView;
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
                 VaidateCategoryTextBox();
                 LabelManager.ShowTotalLabel(Total_Label, Sale_DataGridView);
             }

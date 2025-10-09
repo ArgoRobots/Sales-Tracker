@@ -73,10 +73,6 @@ namespace Sales_Tracker
             _accountant_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MainMenu_Form.Instance.Selected = _oldOption;
-        }
 
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
@@ -146,7 +142,6 @@ namespace Sales_Tracker
             _accountant_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;
 
             Controls.Add(_accountant_DataGridView);
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
         }
 
         // Validate accountant name

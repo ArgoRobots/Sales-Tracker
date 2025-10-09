@@ -1180,7 +1180,6 @@ namespace Sales_Tracker
 
             Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            Selected = SelectedOption.Purchases;
             ShowMainControls();
             SelectedDataGridView = Purchase_DataGridView;
             Purchase_DataGridView.Visible = true;
@@ -1192,13 +1191,13 @@ namespace Sales_Tracker
             TotalSales_Chart.Visible = false;
             DistributionOfSales_Chart.Visible = false;
 
+            SelectButton(Purchases_Button);
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
 
             Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
-            SelectButton(Purchases_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
         }
         private void Sales_Button_Click(object sender, EventArgs e)
@@ -1207,7 +1206,6 @@ namespace Sales_Tracker
 
             Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            Selected = SelectedOption.Sales;
             ShowMainControls();
             SelectedDataGridView = Sale_DataGridView;
             Sale_DataGridView.Visible = true;
@@ -1219,13 +1217,13 @@ namespace Sales_Tracker
             TotalPurchases_Chart.Visible = false;
             DistributionOfPurchases_Chart.Visible = false;
 
+            SelectButton(Sales_Button);
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
 
             Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
-            SelectButton(Sales_Button);
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
         //private void Rentals_Button_Click(object sender, EventArgs e)
@@ -1234,7 +1232,6 @@ namespace Sales_Tracker
 
         //    Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-        //    Selected = SelectedOption.Rentals;
         //    ShowMainControls();
         //    SelectedDataGridView = Rental_DataGridView;
         //    Rental_DataGridView.Visible = true;
@@ -1247,25 +1244,23 @@ namespace Sales_Tracker
         //    PurchaseTotals_Chart.Visible = false;
         //    PurchaseDistribution_Chart.Visible = false;
 
+        //    SelectButton(Rentals_Button);
         //    CenterAndResizeControls();
         //    RefreshDataGridViewAndCharts();
 
         //    Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
         //    AlignTotalLabels();
         //    UpdateTotalLabels();
-        //    SelectButton(Rentals_Button);
         //    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
         //}
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Analytics) { return; }
 
-            Selected = SelectedOption.Analytics;
+            SelectButton(Analytics_Button);
             ShowAnalyticsControls();
             CenterAndResizeControls();
             LoadOrRefreshAnalyticsCharts();
-
-            SelectButton(Analytics_Button);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -1417,6 +1412,10 @@ namespace Sales_Tracker
             UnselectButtons();
             button.BorderThickness = 2;
             button.BorderColor = CustomColors.AccentBlue;
+        }
+        private static bool IsButtonSelected(Guna2Button button)
+        {
+            return button.BorderThickness == 2;
         }
         private void UnselectButtons()
         {
@@ -1862,8 +1861,26 @@ namespace Sales_Tracker
         }
 
         // DataGridView properties
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SelectedOption Selected { get; set; }
+        public SelectedOption Selected { get => GetSelectedOption(); }
+        private SelectedOption GetSelectedOption()
+        {
+            return ActiveForm switch
+            {
+                Accountants_Form => SelectedOption.Accountants,
+                Companies_Form => SelectedOption.Companies,
+                Categories_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.CategoryPurchases : SelectedOption.CategorySales,
+                Products_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
+                Receipts_Form => SelectedOption.Receipts,
+                ItemsInTransaction_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ItemsInPurchase : SelectedOption.ItemsInSale,
+                _ => GetButtonBasedOption()
+            };
+        }
+        private SelectedOption GetButtonBasedOption()
+        {
+            if (IsButtonSelected(Purchases_Button)) { return SelectedOption.Purchases; }
+            if (IsButtonSelected(Sales_Button)) { return SelectedOption.Sales; }
+            return SelectedOption.Analytics;
+        }
 
         // DataGridView getters
         public Guna2DataGridView Purchase_DataGridView { get; private set; } = new();

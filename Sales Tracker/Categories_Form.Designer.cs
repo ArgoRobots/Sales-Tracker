@@ -284,7 +284,6 @@ namespace Sales_Tracker
             Name = "Categories_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            FormClosed += Categories_Form_FormClosed;
             Shown += Categories_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).EndInit();
             ResumeLayout(false);

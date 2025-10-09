@@ -165,11 +165,6 @@ namespace Sales_Tracker
             _purchase_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            ClosePanels();
-            MainMenu_Form.Instance.Selected = _oldOption;
-        }
 
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
@@ -228,7 +223,6 @@ namespace Sales_Tracker
                 _sale_DataGridView.Visible = false;
                 _selectedDataGridView = _purchase_DataGridView;
                 _purchase_DataGridView.ClearSelection();
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
                 ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
@@ -243,7 +237,6 @@ namespace Sales_Tracker
                 _purchase_DataGridView.Visible = false;
                 _selectedDataGridView = _sale_DataGridView;
                 _sale_DataGridView.ClearSelection();
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
                 ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();

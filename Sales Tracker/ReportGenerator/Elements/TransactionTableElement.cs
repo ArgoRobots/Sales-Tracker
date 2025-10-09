@@ -33,6 +33,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class TransactionTableElement : BaseElement
     {
         // Data selection properties
+        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public bool IncludeReturns { get; set; } = true;
+        public bool IncludeLosses { get; set; } = true;
         public TableDataSelection DataSelection { get; set; } = TableDataSelection.All;
         public TableSortOrder SortOrder { get; set; } = TableSortOrder.DateDescending;
         public int MaxRows { get; set; } = 10;
@@ -86,6 +89,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             return new TransactionTableElement
             {
+                TransactionType = TransactionType,
+                IncludeReturns = IncludeReturns,
+                IncludeLosses = IncludeLosses,
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 DisplayName = DisplayName,
@@ -143,20 +149,19 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Get date range from filters
             DateTime startDate = config?.Filters?.StartDate ?? DateTime.MinValue;
             DateTime endDate = config?.Filters?.EndDate ?? DateTime.MaxValue;
-            TransactionType transactionType = config?.Filters?.TransactionType ?? TransactionType.Both;
 
             // Load sales transactions if needed
-            if (transactionType == TransactionType.Sales || transactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
             {
                 DataGridView salesGrid = MainMenu_Form.Instance.Sale_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Sales, config));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Sales, IncludeReturns, IncludeLosses));
             }
 
             // Load purchase transactions if needed  
-            if (transactionType == TransactionType.Purchases || transactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
             {
                 DataGridView purchaseGrid = MainMenu_Form.Instance.Purchase_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, config));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, IncludeReturns, IncludeLosses));
             }
 
             // Sort transactions
@@ -171,7 +176,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return allTransactions;
         }
-        private static List<TransactionData> ExtractTransactionsFromGrid(DataGridView grid, DateTime startDate, DateTime endDate, TransactionType type, ReportConfiguration config)
+        private static List<TransactionData> ExtractTransactionsFromGrid(DataGridView grid, DateTime startDate, DateTime endDate, TransactionType type, bool includeReturns, bool includeLosses)
         {
             List<TransactionData> transactions = [];
 
@@ -206,11 +211,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 bool isLoss = LostProduct.LostManager.IsTransactionLost(row);
 
                 // Check filters for returns and losses
-                if (isReturn && !(config?.Filters?.IncludeReturns ?? true))
+                if (isReturn && !includeReturns)
                 {
                     continue;
                 }
-                if (isLoss && !(config?.Filters?.IncludeLosses ?? true))
+                if (isLoss && !includeLosses)
                 {
                     continue;
                 }
@@ -620,6 +625,35 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     onPropertyChanged();
                 });
             yPosition += RowHeight;
+
+            // Transaction type
+            AddPropertyLabel(container, "Type:", yPosition);
+            AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
+                ["Sales", "Purchases", "Both"],
+                value =>
+                {
+                    TransactionType = Enum.Parse<TransactionType>(value);
+                    onPropertyChanged();
+                });
+            yPosition += RowHeight;
+
+            // Include returns checkbox
+            AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
+                value =>
+                {
+                    IncludeReturns = value;
+                    onPropertyChanged();
+                });
+            yPosition += CheckBoxRowHeight;
+
+            // Include losses checkbox
+            AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
+                value =>
+                {
+                    IncludeLosses = value;
+                    onPropertyChanged();
+                });
+            yPosition += CheckBoxRowHeight;
 
             // Sort order combo box
             AddPropertyLabel(container, "Sort:", yPosition);

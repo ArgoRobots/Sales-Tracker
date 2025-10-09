@@ -304,7 +304,6 @@
             Name = "ImportSpreadsheet_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            FormClosed += ImportSpreadSheets_Form_FormClosed;
             Shown += ImportSpreadSheets_Form_Shown;
             ResumeLayout(false);
             PerformLayout();

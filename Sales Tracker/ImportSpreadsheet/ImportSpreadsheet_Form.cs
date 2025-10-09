@@ -70,10 +70,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ImportSpreadSheets_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MainMenu_Form.Instance.Selected = _oldOption;
-        }
 
         // Select spreadsheet
         private async void SelectSpreadsheet_Button_Click(object sender, EventArgs e)

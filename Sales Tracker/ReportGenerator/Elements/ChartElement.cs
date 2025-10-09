@@ -67,8 +67,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
-                if (_chartControl == null)
+                // Check if configuration has changed and reload if necessary
+                bool needsReload = ShouldReloadChart(ChartType, config);
+
+                if (_chartControl == null || needsReload)
                 {
+                    // Dispose of old control if reloading
+                    if (_chartControl != null && needsReload)
+                    {
+                        _chartControl.Dispose();
+                        _chartControl = null;
+                    }
+
                     LoadChartData(ChartType, config);
                 }
 
@@ -114,6 +124,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
             }
+        }
+        private static bool ShouldReloadChart(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
+        {
+            if (config?.Filters == null)
+            {
+                return false;
+            }
+
+            // Check if we have a previous configuration for this chart type
+            if (!_lastLoadedConfig.TryGetValue(chartType, out (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses) lastConfig))
+            {
+                return true; // Never loaded before
+            }
+
+            // Check if any filter values have changed
+            bool configChanged = lastConfig.StartDate != config.Filters.StartDate ||
+                                lastConfig.EndDate != config.Filters.EndDate ||
+                                lastConfig.IncludeReturns != config.Filters.IncludeReturns ||
+                                lastConfig.IncludeLosses != config.Filters.IncludeLosses;
+
+            return configChanged;
         }
 
         // Load chart methods
