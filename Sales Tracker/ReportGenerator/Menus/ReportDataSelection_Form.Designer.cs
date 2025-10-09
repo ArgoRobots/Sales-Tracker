@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -40,24 +40,22 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Right_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Filters_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             IncludeLosses_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
@@ -69,8 +67,6 @@
             StartDate_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             EndDate_Label = new Label();
             EndDate_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
-            TransactionType_Label = new Label();
-            TransactionType_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ReportSettings_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             ReportTitle_Label = new Label();
             ReportTitle_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -94,13 +90,13 @@
             Right_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             Right_Panel.Controls.Add(Filters_GroupBox);
             Right_Panel.Controls.Add(ReportSettings_GroupBox);
-            Right_Panel.CustomizableEdges = customizableEdges17;
+            Right_Panel.CustomizableEdges = customizableEdges15;
             Right_Panel.FillColor = Color.Transparent;
             Right_Panel.Location = new Point(900, 0);
             Right_Panel.Margin = new Padding(4, 5, 4, 5);
             Right_Panel.Name = "Right_Panel";
             Right_Panel.Padding = new Padding(7, 14, 28, 14);
-            Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Right_Panel.Size = new Size(600, 900);
             Right_Panel.TabIndex = 1;
             // 
@@ -119,17 +115,15 @@
             Filters_GroupBox.Controls.Add(StartDate_DateTimePicker);
             Filters_GroupBox.Controls.Add(EndDate_Label);
             Filters_GroupBox.Controls.Add(EndDate_DateTimePicker);
-            Filters_GroupBox.Controls.Add(TransactionType_Label);
-            Filters_GroupBox.Controls.Add(TransactionType_ComboBox);
             Filters_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Filters_GroupBox.CustomizableEdges = customizableEdges11;
+            Filters_GroupBox.CustomizableEdges = customizableEdges9;
             Filters_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Filters_GroupBox.ForeColor = Color.White;
             Filters_GroupBox.Location = new Point(7, 178);
             Filters_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Filters_GroupBox.Name = "Filters_GroupBox";
             Filters_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Filters_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Filters_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Filters_GroupBox.Size = new Size(565, 711);
             Filters_GroupBox.TabIndex = 1;
             Filters_GroupBox.Text = "Data Filters";
@@ -285,38 +279,6 @@
             EndDate_DateTimePicker.Value = new DateTime(2024, 12, 31, 0, 0, 0, 0);
             EndDate_DateTimePicker.ValueChanged += DateRange_Changed;
             // 
-            // TransactionType_Label
-            // 
-            TransactionType_Label.AutoSize = true;
-            TransactionType_Label.BackColor = Color.Transparent;
-            TransactionType_Label.Font = new Font("Segoe UI", 9.5F);
-            TransactionType_Label.ForeColor = SystemColors.ControlText;
-            TransactionType_Label.Location = new Point(21, 272);
-            TransactionType_Label.Margin = new Padding(4, 0, 4, 0);
-            TransactionType_Label.Name = "TransactionType_Label";
-            TransactionType_Label.Size = new Size(156, 25);
-            TransactionType_Label.TabIndex = 5;
-            TransactionType_Label.Text = "Transaction Type:";
-            // 
-            // TransactionType_ComboBox
-            // 
-            TransactionType_ComboBox.BackColor = Color.Transparent;
-            TransactionType_ComboBox.BorderRadius = 2;
-            TransactionType_ComboBox.CustomizableEdges = customizableEdges9;
-            TransactionType_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            TransactionType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            TransactionType_ComboBox.FocusedColor = Color.Empty;
-            TransactionType_ComboBox.Font = new Font("Segoe UI", 9F);
-            TransactionType_ComboBox.ForeColor = Color.Black;
-            TransactionType_ComboBox.ItemHeight = 44;
-            TransactionType_ComboBox.Location = new Point(191, 259);
-            TransactionType_ComboBox.Margin = new Padding(4, 5, 4, 5);
-            TransactionType_ComboBox.Name = "TransactionType_ComboBox";
-            TransactionType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            TransactionType_ComboBox.Size = new Size(280, 50);
-            TransactionType_ComboBox.TabIndex = 6;
-            TransactionType_ComboBox.SelectedIndexChanged += FilterChanged;
-            // 
             // ReportSettings_GroupBox
             // 
             ReportSettings_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -326,14 +288,14 @@
             ReportSettings_GroupBox.Controls.Add(ReportTitle_Label);
             ReportSettings_GroupBox.Controls.Add(ReportTitle_TextBox);
             ReportSettings_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            ReportSettings_GroupBox.CustomizableEdges = customizableEdges15;
+            ReportSettings_GroupBox.CustomizableEdges = customizableEdges13;
             ReportSettings_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ReportSettings_GroupBox.ForeColor = Color.White;
             ReportSettings_GroupBox.Location = new Point(7, 14);
             ReportSettings_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ReportSettings_GroupBox.Name = "ReportSettings_GroupBox";
             ReportSettings_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            ReportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ReportSettings_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ReportSettings_GroupBox.Size = new Size(565, 150);
             ReportSettings_GroupBox.TabIndex = 0;
             ReportSettings_GroupBox.Text = "Report Settings";
@@ -356,7 +318,7 @@
             ReportTitle_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ReportTitle_TextBox.BorderRadius = 2;
             ReportTitle_TextBox.Cursor = Cursors.IBeam;
-            ReportTitle_TextBox.CustomizableEdges = customizableEdges13;
+            ReportTitle_TextBox.CustomizableEdges = customizableEdges11;
             ReportTitle_TextBox.DefaultText = "Sales Report";
             ReportTitle_TextBox.Font = new Font("Segoe UI", 9F);
             ReportTitle_TextBox.ForeColor = Color.Black;
@@ -365,7 +327,7 @@
             ReportTitle_TextBox.Name = "ReportTitle_TextBox";
             ReportTitle_TextBox.PlaceholderText = "Enter report title";
             ReportTitle_TextBox.SelectedText = "";
-            ReportTitle_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            ReportTitle_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             ReportTitle_TextBox.Size = new Size(307, 50);
             ReportTitle_TextBox.TabIndex = 1;
             ReportTitle_TextBox.TextChanged += ReportTitle_TextBox_TextChanged;
@@ -375,13 +337,13 @@
             Left_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             Left_Panel.Controls.Add(ChartSelection_GroupBox);
             Left_Panel.Controls.Add(Template_GroupBox);
-            Left_Panel.CustomizableEdges = customizableEdges29;
+            Left_Panel.CustomizableEdges = customizableEdges27;
             Left_Panel.FillColor = Color.Transparent;
             Left_Panel.Location = new Point(0, 0);
             Left_Panel.Margin = new Padding(4, 5, 4, 5);
             Left_Panel.Name = "Left_Panel";
             Left_Panel.Padding = new Padding(28, 14, 7, 14);
-            Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges28;
             Left_Panel.Size = new Size(900, 900);
             Left_Panel.TabIndex = 0;
             // 
@@ -394,14 +356,14 @@
             ChartSelection_GroupBox.Controls.Add(SelectAll_Button);
             ChartSelection_GroupBox.Controls.Add(SelectNone_Button);
             ChartSelection_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            ChartSelection_GroupBox.CustomizableEdges = customizableEdges23;
+            ChartSelection_GroupBox.CustomizableEdges = customizableEdges21;
             ChartSelection_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             ChartSelection_GroupBox.ForeColor = Color.White;
             ChartSelection_GroupBox.Location = new Point(28, 14);
             ChartSelection_GroupBox.Margin = new Padding(4, 5, 4, 5);
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             ChartSelection_GroupBox.Size = new Size(865, 706);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
@@ -413,14 +375,14 @@
             SelectAll_Button.BorderColor = Color.LightGray;
             SelectAll_Button.BorderRadius = 2;
             SelectAll_Button.BorderThickness = 1;
-            SelectAll_Button.CustomizableEdges = customizableEdges19;
+            SelectAll_Button.CustomizableEdges = customizableEdges17;
             SelectAll_Button.FillColor = Color.White;
             SelectAll_Button.Font = new Font("Segoe UI", 9F);
             SelectAll_Button.ForeColor = Color.Black;
             SelectAll_Button.Location = new Point(18, 644);
             SelectAll_Button.Margin = new Padding(4, 5, 4, 5);
             SelectAll_Button.Name = "SelectAll_Button";
-            SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             SelectAll_Button.Size = new Size(150, 40);
             SelectAll_Button.TabIndex = 1;
             SelectAll_Button.Text = "Select all";
@@ -433,14 +395,14 @@
             SelectNone_Button.BorderColor = Color.LightGray;
             SelectNone_Button.BorderRadius = 2;
             SelectNone_Button.BorderThickness = 1;
-            SelectNone_Button.CustomizableEdges = customizableEdges21;
+            SelectNone_Button.CustomizableEdges = customizableEdges19;
             SelectNone_Button.FillColor = Color.White;
             SelectNone_Button.Font = new Font("Segoe UI", 9F);
             SelectNone_Button.ForeColor = Color.Black;
             SelectNone_Button.Location = new Point(176, 644);
             SelectNone_Button.Margin = new Padding(4, 5, 4, 5);
             SelectNone_Button.Name = "SelectNone_Button";
-            SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             SelectNone_Button.Size = new Size(150, 40);
             SelectNone_Button.TabIndex = 2;
             SelectNone_Button.Text = "Select none";
@@ -455,14 +417,14 @@
             Template_GroupBox.Controls.Add(Template_Label);
             Template_GroupBox.Controls.Add(Template_ComboBox);
             Template_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Template_GroupBox.CustomizableEdges = customizableEdges27;
+            Template_GroupBox.CustomizableEdges = customizableEdges25;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Template_GroupBox.ForeColor = Color.White;
             Template_GroupBox.Location = new Point(28, 734);
             Template_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Template_GroupBox.Size = new Size(865, 150);
             Template_GroupBox.TabIndex = 1;
             Template_GroupBox.Text = "Report Templates";
@@ -484,7 +446,7 @@
             // 
             Template_ComboBox.BackColor = Color.Transparent;
             Template_ComboBox.BorderRadius = 2;
-            Template_ComboBox.CustomizableEdges = customizableEdges25;
+            Template_ComboBox.CustomizableEdges = customizableEdges23;
             Template_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             Template_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Template_ComboBox.FocusedColor = Color.Empty;
@@ -494,7 +456,7 @@
             Template_ComboBox.Location = new Point(127, 70);
             Template_ComboBox.Margin = new Padding(4, 5, 4, 5);
             Template_ComboBox.Name = "Template_ComboBox";
-            Template_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            Template_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Template_ComboBox.Size = new Size(280, 50);
             Template_ComboBox.TabIndex = 1;
             Template_ComboBox.SelectedIndexChanged += Template_ComboBox_SelectedIndexChanged;
@@ -531,8 +493,6 @@
         private Guna.UI2.WinForms.Guna2DateTimePicker StartDate_DateTimePicker;
         private Label EndDate_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker EndDate_DateTimePicker;
-        private Label TransactionType_Label;
-        private Guna.UI2.WinForms.Guna2ComboBox TransactionType_ComboBox;
         private Guna.UI2.WinForms.Guna2GroupBox ReportSettings_GroupBox;
         private Label ReportTitle_Label;
         private Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;

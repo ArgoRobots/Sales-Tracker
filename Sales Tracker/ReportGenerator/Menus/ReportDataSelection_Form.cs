@@ -141,13 +141,6 @@ namespace Sales_Tracker.ReportGenerator
             StartDate_DateTimePicker.Value = DateTime.Now.AddMonths(-1);
             EndDate_DateTimePicker.Value = DateTime.Now;
 
-            // Setup transaction type
-            TransactionType_ComboBox.Items.Clear();
-            TransactionType_ComboBox.Items.Add("Sales");
-            TransactionType_ComboBox.Items.Add("Purchases");
-            TransactionType_ComboBox.Items.Add("Both");
-            TransactionType_ComboBox.SelectedIndex = 2;  // Both by default
-
             // Setup includes
             IncludeReturns_CheckBox.Checked = true;
             IncludeLosses_CheckBox.Checked = true;
@@ -175,7 +168,6 @@ namespace Sales_Tracker.ReportGenerator
         private void ScaleControls()
         {
             DpiHelper.ScaleComboBox(Template_ComboBox);
-            DpiHelper.ScaleComboBox(TransactionType_ComboBox);
             DpiHelper.ScaleGroupBox(ChartSelection_GroupBox);
             DpiHelper.ScaleGroupBox(Template_GroupBox);
             DpiHelper.ScaleGroupBox(ReportSettings_GroupBox);
@@ -202,16 +194,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return selectedCharts;
-        }
-        private TransactionType GetSelectedTransactionType()
-        {
-            return TransactionType_ComboBox.SelectedIndex switch
-            {
-                0 => TransactionType.Sales,
-                1 => TransactionType.Purchases,
-                2 => TransactionType.Both,
-                _ => TransactionType.Both
-            };
         }
         public void SwitchToCustomTemplate()
         {
@@ -449,9 +431,6 @@ namespace Sales_Tracker.ReportGenerator
                     // Update report title
                     ReportTitle_TextBox.Text = template.Title;
 
-                    // Update transaction type
-                    TransactionType_ComboBox.SelectedIndex = (int)template.Filters.TransactionType;
-
                     // Update date range
                     StartDate_DateTimePicker.Value = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
 
@@ -571,7 +550,6 @@ namespace Sales_Tracker.ReportGenerator
             // Update filters
             ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
             ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
-            ReportConfig.Filters.TransactionType = GetSelectedTransactionType();
             ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
             ReportConfig.Filters.IncludeReturns = IncludeReturns_CheckBox.Checked;
             ReportConfig.Filters.IncludeLosses = IncludeLosses_CheckBox.Checked;
