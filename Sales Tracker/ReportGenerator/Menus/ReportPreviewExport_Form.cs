@@ -578,7 +578,6 @@ namespace Sales_Tracker.ReportGenerator
             if (updateAction == null) { return; }
 
             _isUpdating = true;
-
             try
             {
                 updateAction();

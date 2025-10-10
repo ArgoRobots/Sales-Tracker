@@ -30,7 +30,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Transaction table element for displaying tabular data.
     /// </summary>
-    public class TransactionTableElement : BaseElement
+    public class TableElement : BaseElement
     {
         // Data selection properties
         public TransactionType TransactionType { get; set; } = TransactionType.Both;
@@ -87,7 +87,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public override ReportElementType GetElementType() => ReportElementType.TransactionTable;
         public override BaseElement Clone()
         {
-            return new TransactionTableElement
+            return new TableElement
             {
                 TransactionType = TransactionType,
                 IncludeReturns = IncludeReturns,

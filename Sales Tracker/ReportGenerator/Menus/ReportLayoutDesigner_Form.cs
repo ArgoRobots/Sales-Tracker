@@ -1603,7 +1603,7 @@ namespace Sales_Tracker.ReportGenerator
                     Bounds = new Rectangle(location, new Size(350, 250)),
                     ChartType = GetDefaultChartType()
                 },
-                ReportElementType.TextLabel => new TextLabelElement
+                ReportElementType.TextLabel => new LabelElement
                 {
                     DisplayName = "Text Label",
                     Bounds = new Rectangle(location, new Size(200, 30)),
@@ -1619,7 +1619,7 @@ namespace Sales_Tracker.ReportGenerator
                     DisplayName = "Summary",
                     Bounds = new Rectangle(location, new Size(300, 120))
                 },
-                ReportElementType.TransactionTable => new TransactionTableElement
+                ReportElementType.TransactionTable => new TableElement
                 {
                     DisplayName = "Transaction Table",
                     Bounds = new Rectangle(location, new Size(400, 200))
