@@ -122,7 +122,7 @@
             Right_Panel.Location = new Point(900, 0);
             Right_Panel.Margin = new Padding(4, 5, 4, 5);
             Right_Panel.Name = "Right_Panel";
-            Right_Panel.Padding = new Padding(7, 14, 28, 14);
+            Right_Panel.Padding = new Padding(7, 14, 28, 0);
             Right_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Right_Panel.Size = new Size(600, 900);
             Right_Panel.TabIndex = 1;
@@ -170,7 +170,7 @@
             DateRange_GroupBox.Name = "DateRange_GroupBox";
             DateRange_GroupBox.Padding = new Padding(14, 17, 14, 17);
             DateRange_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            DateRange_GroupBox.Size = new Size(565, 711);
+            DateRange_GroupBox.Size = new Size(565, 725);
             DateRange_GroupBox.TabIndex = 1;
             DateRange_GroupBox.Text = "Data Range";
             // 
@@ -691,7 +691,7 @@
             Left_Panel.Location = new Point(0, 0);
             Left_Panel.Margin = new Padding(4, 5, 4, 5);
             Left_Panel.Name = "Left_Panel";
-            Left_Panel.Padding = new Padding(28, 14, 7, 14);
+            Left_Panel.Padding = new Padding(28, 14, 7, 0);
             Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges36;
             Left_Panel.Size = new Size(900, 900);
             Left_Panel.TabIndex = 0;
@@ -713,7 +713,7 @@
             ChartSelection_GroupBox.Name = "ChartSelection_GroupBox";
             ChartSelection_GroupBox.Padding = new Padding(14, 17, 14, 17);
             ChartSelection_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            ChartSelection_GroupBox.Size = new Size(865, 706);
+            ChartSelection_GroupBox.Size = new Size(865, 720);
             ChartSelection_GroupBox.TabIndex = 0;
             ChartSelection_GroupBox.Text = "Select Charts";
             // 
@@ -728,7 +728,7 @@
             SelectAll_Button.FillColor = Color.White;
             SelectAll_Button.Font = new Font("Segoe UI", 9F);
             SelectAll_Button.ForeColor = Color.Black;
-            SelectAll_Button.Location = new Point(18, 644);
+            SelectAll_Button.Location = new Point(18, 658);
             SelectAll_Button.Margin = new Padding(4, 5, 4, 5);
             SelectAll_Button.Name = "SelectAll_Button";
             SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
@@ -748,7 +748,7 @@
             SelectNone_Button.FillColor = Color.White;
             SelectNone_Button.Font = new Font("Segoe UI", 9F);
             SelectNone_Button.ForeColor = Color.Black;
-            SelectNone_Button.Location = new Point(176, 644);
+            SelectNone_Button.Location = new Point(176, 658);
             SelectNone_Button.Margin = new Padding(4, 5, 4, 5);
             SelectNone_Button.Name = "SelectNone_Button";
             SelectNone_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
@@ -769,7 +769,7 @@
             Template_GroupBox.CustomizableEdges = customizableEdges33;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Template_GroupBox.ForeColor = Color.White;
-            Template_GroupBox.Location = new Point(28, 734);
+            Template_GroupBox.Location = new Point(28, 748);
             Template_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);

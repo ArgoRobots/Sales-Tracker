@@ -124,7 +124,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             DpiHelper.ScaleGroupBox(Elements_GroupBox);
             DpiHelper.ScaleGroupBox(Properties_GroupBox);
-            DpiHelper.ScaleGroupBox(Canvas_GroupBox);
         }
 
         // Form event handlers
