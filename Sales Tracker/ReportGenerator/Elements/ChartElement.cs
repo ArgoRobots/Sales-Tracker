@@ -38,6 +38,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowLegend { get; set; } = true;
         public bool ShowTitle { get; set; } = true;
         public Color BorderColor { get; set; } = Color.Gray;
+        public string FontFamily { get; set; } = "Segoe UI";
+        public float FontSize { get; set; } = 11f;
 
         // Constructor
         public ChartElement()
@@ -60,7 +62,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
                 ShowTitle = ShowTitle,
-                BorderColor = BorderColor
+                BorderColor = BorderColor,
+                FontFamily = FontFamily,
+                FontSize = FontSize
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config)
@@ -629,7 +633,28 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
+
+            // Font family
+            AddPropertyLabel(container, "Font:", yPosition);
+            AddPropertyComboBox(container, FontFamily, yPosition,
+                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+                value =>
+                {
+                    FontFamily = value;
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
+
+            // Font size
+            AddPropertyLabel(container, "Font Size:", yPosition);
+            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            {
+                FontSize = (float)value;
+                onPropertyChanged();
+            }, 8, 20);
+            numericUpDown.Left = 110;
+            yPosition += ControlRowHeight;
 
             // Show legend checkbox
             AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
@@ -691,6 +716,5 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
         }
-        protected override Color GetDesignerColor() => Color.LightBlue;
     }
 }

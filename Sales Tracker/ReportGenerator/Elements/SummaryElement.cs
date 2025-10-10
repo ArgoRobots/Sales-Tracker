@@ -16,6 +16,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowGrowthRate { get; set; } = true;
         public Color BackgroundColor { get; set; } = Color.WhiteSmoke;
         public Color BorderColor { get; set; } = Color.LightGray;
+        public string FontFamily { get; set; } = "Segoe UI";
+        public float FontSize { get; set; } = 10f;
+        public FontStyle FontStyle { get; set; } = FontStyle.Regular;
+        public StringAlignment Alignment { get; set; } = StringAlignment.Near;
+        public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Near;
 
         private class SummaryStatistics
         {
@@ -46,7 +51,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowAverageValue = ShowAverageValue,
                 ShowGrowthRate = ShowGrowthRate,
                 BackgroundColor = BackgroundColor,
-                BorderColor = BorderColor
+                BorderColor = BorderColor,
+                FontFamily = FontFamily,
+                FontSize = FontSize,
+                FontStyle = FontStyle,
+                Alignment = Alignment,
+                VerticalAlignment = VerticalAlignment
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config)
@@ -63,17 +73,39 @@ namespace Sales_Tracker.ReportGenerator.Elements
             SummaryStatistics stats = CalculateStatistics(config);
 
             // Draw summary content with actual values
-            using Font titleFont = new("Segoe UI", 11, FontStyle.Bold);
-            using Font valueFont = new("Segoe UI", 10);
+            using Font titleFont = new(FontFamily, FontSize + 1, FontStyle.Bold | FontStyle);
+            using Font valueFont = new(FontFamily, FontSize, FontStyle);
             using SolidBrush textBrush = new(Color.Black);
             using SolidBrush positiveBrush = new(Color.Green);
             using SolidBrush negativeBrush = new(Color.Red);
 
-            int y = Bounds.Y + 10;
-            int x = Bounds.X + 10;
+            // Calculate starting position based on alignment
+            int contentHeight = CalculateContentHeight();
+            int startY = VerticalAlignment switch
+            {
+                StringAlignment.Near => Bounds.Y + 10,
+                StringAlignment.Center => Bounds.Y + (Bounds.Height - contentHeight) / 2,
+                StringAlignment.Far => Bounds.Bottom - contentHeight - 10,
+                _ => Bounds.Y + 10
+            };
 
-            graphics.DrawString("Summary Statistics", titleFont, textBrush, x, y);
-            y += 25;
+            int x = Alignment switch
+            {
+                StringAlignment.Near => Bounds.X + 10,
+                StringAlignment.Center => Bounds.X + Bounds.Width / 2,
+                StringAlignment.Far => Bounds.Right - 10,
+                _ => Bounds.X + 10
+            };
+
+            StringFormat format = new()
+            {
+                Alignment = Alignment,
+                LineAlignment = StringAlignment.Near
+            };
+
+            RectangleF textBounds = new(Bounds.X + 10, startY, Bounds.Width - 20, 25);
+            graphics.DrawString("Summary Statistics", titleFont, textBrush, textBounds, format);
+            startY += 25;
 
             if (ShowTotalSales)
             {
@@ -83,28 +115,41 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     TransactionType.Purchases => $"Total Purchases: {FormatCurrency(stats.TotalPurchases)}",
                     _ => $"Total: {FormatCurrency(stats.CombinedTotal)}"
                 };
-                graphics.DrawString(totalText, valueFont, textBrush, x, y);
-                y += 20;
+                textBounds.Y = startY;
+                graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
+                startY += 20;
             }
 
             if (ShowTotalTransactions)
             {
-                graphics.DrawString($"Transactions: {stats.TransactionCount:N0}", valueFont, textBrush, x, y);
-                y += 20;
+                textBounds.Y = startY;
+                graphics.DrawString($"Transactions: {stats.TransactionCount:N0}", valueFont, textBrush, textBounds, format);
+                startY += 20;
             }
 
             if (ShowAverageValue)
             {
-                graphics.DrawString($"Average Value: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, x, y);
-                y += 20;
+                textBounds.Y = startY;
+                graphics.DrawString($"Average Value: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, textBounds, format);
+                startY += 20;
             }
 
             if (ShowGrowthRate)
             {
                 SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
                 string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
-                graphics.DrawString($"Growth Rate: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, x, y);
+                textBounds.Y = startY;
+                graphics.DrawString($"Growth Rate: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
             }
+        }
+        private int CalculateContentHeight()
+        {
+            int height = 25; // Title
+            if (ShowTotalSales) height += 20;
+            if (ShowTotalTransactions) height += 20;
+            if (ShowAverageValue) height += 20;
+            if (ShowGrowthRate) height += 20;
+            return height;
         }
         private SummaryStatistics CalculateStatistics(ReportConfiguration config)
         {
@@ -292,7 +337,58 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     TransactionType = Enum.Parse<TransactionType>(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
+
+            // Font family
+            AddPropertyLabel(container, "Font:", yPosition);
+            AddPropertyComboBox(container, FontFamily, yPosition,
+                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+                value =>
+                {
+                    FontFamily = value;
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
+
+            // Font size
+            AddPropertyLabel(container, "Size:", yPosition);
+            AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            {
+                FontSize = (float)value;
+                onPropertyChanged();
+            }, 8, 20);
+            yPosition += ControlRowHeight;
+
+            // Font style toggle buttons
+            AddPropertyLabel(container, "Style:", yPosition);
+            AddFontStyleToggleButtons(container, yPosition, FontStyle, style =>
+            {
+                FontStyle = style;
+                onPropertyChanged();
+            });
+            yPosition += ControlRowHeight;
+
+            // Horizontal alignment
+            AddPropertyLabel(container, "Align:", yPosition);
+            AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+                ["Left", "Center", "Right"],
+                value =>
+                {
+                    Alignment = DisplayTextToAlignment(value);
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
+
+            // Vertical alignment
+            AddPropertyLabel(container, "V-Align:", yPosition);
+            AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+                ["Top", "Middle", "Bottom"],
+                value =>
+                {
+                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
 
             // Include returns checkbox
             AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
@@ -350,6 +446,47 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition;
         }
-        protected override Color GetDesignerColor() => Color.LightCyan;
+
+        // Helper methods
+        private static string AlignmentToDisplayText(StringAlignment alignment)
+        {
+            return alignment switch
+            {
+                StringAlignment.Near => "Left",
+                StringAlignment.Center => "Center",
+                StringAlignment.Far => "Right",
+                _ => "Left"
+            };
+        }
+        private static StringAlignment DisplayTextToAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Left" => StringAlignment.Near,
+                "Center" => StringAlignment.Center,
+                "Right" => StringAlignment.Far,
+                _ => StringAlignment.Near
+            };
+        }
+        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
+        {
+            return alignment switch
+            {
+                StringAlignment.Near => "Top",
+                StringAlignment.Center => "Middle",
+                StringAlignment.Far => "Bottom",
+                _ => "Top"
+            };
+        }
+        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Top" => StringAlignment.Near,
+                "Middle" => StringAlignment.Center,
+                "Bottom" => StringAlignment.Far,
+                _ => StringAlignment.Near
+            };
+        }
     }
 }
