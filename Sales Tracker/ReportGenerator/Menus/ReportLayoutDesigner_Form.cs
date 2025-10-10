@@ -3,7 +3,6 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
-using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -264,8 +263,6 @@ namespace Sales_Tracker.ReportGenerator
 
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PanelCloseFilter PanelCloseFilter { get; set; }
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(ReportElementType)))
