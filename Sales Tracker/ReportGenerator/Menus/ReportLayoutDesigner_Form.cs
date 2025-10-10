@@ -1225,6 +1225,50 @@ namespace Sales_Tracker.ReportGenerator
             UpdatePropertiesForSelection();
         }
 
+        /// <summary>
+        /// Clears selection for any elements that have been removed from the configuration.
+        /// </summary>
+        public void ClearSelectionForRemovedElements()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            bool selectionChanged = false;
+
+            // Check if the primary selected element was removed
+            if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
+            {
+                _selectedElement.IsSelected = false;
+                _selectedElement = null;
+                selectionChanged = true;
+            }
+
+            // Check if any multi-selected elements were removed
+            List<BaseElement> removedElements = _selectedElements
+                .Where(element => !ReportConfig.Elements.Contains(element))
+                .ToList();
+
+            foreach (BaseElement element in removedElements)
+            {
+                element.IsSelected = false;
+                _selectedElements.Remove(element);
+                selectionChanged = true;
+            }
+
+            // Update the primary selected element if needed
+            if (_selectedElement == null && _selectedElements.Count > 0)
+            {
+                _selectedElement = _selectedElements.First();
+            }
+
+            // Update UI if selection changed
+            if (selectionChanged)
+            {
+                Canvas_Panel.Invalidate();
+                UpdatePropertiesForSelection();
+                UpdateLayoutButtonStates();
+            }
+        }
+
         // Alignment tool event handlers
         private void AlignLeft_Button_Click(object sender, EventArgs e) => AlignSelectedLeft();
         private void AlignCenter_Button_Click(object sender, EventArgs e) => AlignSelectedCenter();
