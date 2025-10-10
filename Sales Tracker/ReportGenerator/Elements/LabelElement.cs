@@ -7,7 +7,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Text label element for displaying text content.
     /// </summary>
-    public class TextLabelElement : BaseElement
+    public class LabelElement : BaseElement
     {
         public string Text { get; set; } = "Sample Text";
         public string FontFamily { get; set; } = "Segoe UI";
@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public override ReportElementType GetElementType() => ReportElementType.TextLabel;
         public override BaseElement Clone()
         {
-            return new TextLabelElement
+            return new LabelElement
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
