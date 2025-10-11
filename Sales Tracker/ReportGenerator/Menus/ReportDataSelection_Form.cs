@@ -757,40 +757,74 @@ namespace Sales_Tracker.ReportGenerator
 
         /// <summary>
         /// Updates the ReportConfig.Elements collection based on current chart selections.
+        /// Only adds/removes charts as needed, preserving position and size of existing charts.
         /// </summary>
         private void UpdateElementsFromChartSelection()
         {
             if (ReportConfig == null) { return; }
 
             List<MainMenu_Form.ChartDataType> selectedCharts = GetSelectedChartTypes();
-            ReportConfig.Elements.Clear();
+            List<ChartElement> existingCharts = ReportConfig.GetElementsOfType<ChartElement>();
 
-            const int chartWidth = 350;
-            const int chartHeight = 250;
-            const int spacing = 20;
-            const int startX = 50;
-            const int startY = 50;
-            const int columns = 2;
+            // Remove charts that are no longer selected
+            List<ChartElement> chartsToRemove = existingCharts
+                .Where(chart => !selectedCharts.Contains(chart.ChartType))
+                .ToList();
 
-            int row = 0, col = 0;
-
-            foreach (MainMenu_Form.ChartDataType chartType in selectedCharts)
+            foreach (ChartElement chart in chartsToRemove)
             {
-                int x = startX + (col * (chartWidth + spacing));
-                int y = startY + (row * (chartHeight + spacing));
+                ReportConfig.Elements.Remove(chart);
+            }
 
-                ChartElement newChartElement = new()
-                {
-                    ChartType = chartType,
-                    Bounds = new Rectangle(x, y, chartWidth, chartHeight)
-                };
-                ReportConfig.AddElement(newChartElement);
+            // Clear selection for removed charts in the layout designer
+            if (chartsToRemove.Count > 0)
+            {
+                ReportLayoutDesigner_Form.Instance.ClearSelectionForRemovedElements();
+            }
 
-                col++;
-                if (col >= columns)
+            // Find which chart types need to be added (selected but not in existing elements)
+            List<MainMenu_Form.ChartDataType> existingChartTypes = existingCharts
+                .Where(chart => selectedCharts.Contains(chart.ChartType))
+                .Select(chart => chart.ChartType)
+                .ToList();
+
+            List<MainMenu_Form.ChartDataType> chartsToAdd = selectedCharts
+                .Where(chartType => !existingChartTypes.Contains(chartType))
+                .ToList();
+
+            // Add new charts with default positioning
+            if (chartsToAdd.Count > 0)
+            {
+                const int chartWidth = 350;
+                const int chartHeight = 250;
+                const int spacing = 20;
+                const int startX = 50;
+                const int startY = 50;
+                const int columns = 2;
+
+                // Calculate starting position based on existing charts
+                int existingCount = ReportConfig.GetElementsOfType<ChartElement>().Count;
+                int row = existingCount / columns;
+                int col = existingCount % columns;
+
+                foreach (MainMenu_Form.ChartDataType chartType in chartsToAdd)
                 {
-                    col = 0;
-                    row++;
+                    int x = startX + (col * (chartWidth + spacing));
+                    int y = startY + (row * (chartHeight + spacing));
+
+                    ChartElement newChartElement = new()
+                    {
+                        ChartType = chartType,
+                        Bounds = new Rectangle(x, y, chartWidth, chartHeight)
+                    };
+                    ReportConfig.AddElement(newChartElement);
+
+                    col++;
+                    if (col >= columns)
+                    {
+                        col = 0;
+                        row++;
+                    }
                 }
             }
         }

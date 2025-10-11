@@ -32,7 +32,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class TableElement : BaseElement
     {
-        // Data selection properties
+        // Data selection properties (General tab)
         public TransactionType TransactionType { get; set; } = TransactionType.Both;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
@@ -40,21 +40,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public TableSortOrder SortOrder { get; set; } = TableSortOrder.DateDescending;
         public int MaxRows { get; set; } = 10;
 
-        // Display properties
+        // Display properties (Style tab)
         public bool ShowHeaders { get; set; } = true;
         public bool AlternateRowColors { get; set; } = true;
         public bool ShowGridLines { get; set; } = true;
         public bool ShowTotalsRow { get; set; } = false;
         public bool AutoSizeColumns { get; set; } = true;
         public float FontSize { get; set; } = 8f;
+        public string FontFamily { get; set; } = "Segoe UI";
+        public int DataRowHeight { get; set; } = 20;
+        public int HeaderRowHeight { get; set; } = 25;
+        public int CellPadding { get; set; } = 3;
 
-        // Colors
+        // Colors (Style tab)
         public Color HeaderBackgroundColor { get; set; } = Color.FromArgb(94, 148, 255);
         public Color HeaderTextColor { get; set; } = Color.White;
         public Color GridLineColor { get; set; } = Color.LightGray;
         public Color AlternateRowColor { get; set; } = Color.FromArgb(248, 248, 248);
 
-        // Column visibility
+        // Column visibility (Columns tab)
         public bool ShowDateColumn { get; set; } = true;
         public bool ShowTransactionIdColumn { get; set; } = true;
         public bool ShowCustomerSupplierColumn { get; set; } = true;
@@ -107,6 +111,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowTotalsRow = ShowTotalsRow,
                 AutoSizeColumns = AutoSizeColumns,
                 FontSize = FontSize,
+                FontFamily = FontFamily,
+                DataRowHeight = DataRowHeight,
+                HeaderRowHeight = HeaderRowHeight,
+                CellPadding = CellPadding,
                 HeaderBackgroundColor = HeaderBackgroundColor,
                 HeaderTextColor = HeaderTextColor,
                 GridLineColor = GridLineColor,
@@ -293,8 +301,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderTable(Graphics graphics, List<TransactionData> transactions)
         {
-            using Font headerFont = new("Segoe UI", FontSize, FontStyle.Bold);
-            using Font dataFont = new("Segoe UI", FontSize);
+            using Font headerFont = new(FontFamily, FontSize, FontStyle.Bold);
+            using Font dataFont = new(FontFamily, FontSize);
             using SolidBrush headerBgBrush = new(HeaderBackgroundColor);
             using SolidBrush headerTextBrush = new(HeaderTextColor);
             using SolidBrush dataBrush = new(Color.Black);
@@ -313,19 +321,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 columns[i] = (columns[i].Header, columns[i].Width * scaleFactor, columns[i].Show, columns[i].Align);
             }
 
-            float rowHeight = FontSize + 8;
             float currentY = Bounds.Y;
             float currentX = Bounds.X;
 
             // Draw header if enabled
             if (ShowHeaders)
             {
-                graphics.FillRectangle(headerBgBrush, Bounds.X, currentY, Bounds.Width, rowHeight);
+                graphics.FillRectangle(headerBgBrush, Bounds.X, currentY, Bounds.Width, HeaderRowHeight);
 
                 currentX = Bounds.X;
                 foreach ((string Header, float Width, bool Show, StringAlignment Align) in columns.Where(c => c.Show))
                 {
-                    RectangleF headerRect = new(currentX, currentY, Width, rowHeight);
+                    RectangleF headerRect = new(currentX, currentY, Width, HeaderRowHeight);
                     DrawCellText(graphics, Header, headerRect, headerFont, headerTextBrush, StringAlignment.Center);
 
                     if (ShowGridLines)
@@ -336,7 +343,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     currentX += Width;
                 }
 
-                currentY += rowHeight;
+                currentY += HeaderRowHeight;
             }
 
             // Draw data rows
@@ -346,7 +353,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Alternate row colors
                 if (AlternateRowColors && rowIndex % 2 == 1)
                 {
-                    graphics.FillRectangle(alternateBrush, Bounds.X, currentY, Bounds.Width, rowHeight);
+                    graphics.FillRectangle(alternateBrush, Bounds.X, currentY, Bounds.Width, DataRowHeight);
                 }
 
                 currentX = Bounds.X;
@@ -355,7 +362,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Draw each column
                 if (ShowDateColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Date.ToShortDateString(), cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -364,7 +371,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowTransactionIdColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.TransactionId, cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -373,7 +380,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowCustomerSupplierColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.CustomerSupplier, cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -382,7 +389,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowProductColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Product, cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -391,7 +398,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowQuantityColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Quantity.ToString("N0"), cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -400,7 +407,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowUnitPriceColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.UnitPrice:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -409,7 +416,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowTotalColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.Total:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -418,7 +425,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowStatusColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Status, cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -427,7 +434,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowAccountantColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Accountant, cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
@@ -436,17 +443,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowShippingColumn && columns[colIndex].Show)
                 {
-                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.Shipping:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
                     if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     currentX += columns[colIndex].Width;
                 }
 
-                currentY += rowHeight;
+                currentY += DataRowHeight;
                 rowIndex++;
 
                 // Stop if we've exceeded the bounds
-                if (currentY > Bounds.Bottom - rowHeight)
+                if (currentY > Bounds.Bottom - DataRowHeight)
                     break;
             }
 
@@ -454,7 +461,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (ShowTotalsRow && transactions.Count > 0)
             {
                 using SolidBrush totalsBrush = new(Color.FromArgb(230, 230, 230));
-                graphics.FillRectangle(totalsBrush, Bounds.X, currentY, Bounds.Width, rowHeight);
+                graphics.FillRectangle(totalsBrush, Bounds.X, currentY, Bounds.Width, DataRowHeight);
 
                 currentX = Bounds.X;
 
@@ -466,7 +473,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 bool labelDrawn = false;
                 foreach ((string Header, float Width, bool Show, StringAlignment Align) in columns.Where(c => c.Show))
                 {
-                    RectangleF cellRect = new(currentX, currentY, Width, rowHeight);
+                    RectangleF cellRect = new(currentX, currentY, Width, DataRowHeight);
 
                     if (!labelDrawn)
                     {
@@ -514,13 +521,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ? "Sample Text"
                 : transactions.Select(selector).OrderByDescending(s => s?.Length ?? 0).FirstOrDefault() ?? "Sample Text";
         }
-        private static float CalculateColumnWidth(Graphics graphics, string header, string sampleData, Font headerFont, Font dataFont)
+        private float CalculateColumnWidth(Graphics graphics, string header, string sampleData, Font headerFont, Font dataFont)
         {
             float headerWidth = graphics.MeasureString(header, headerFont).Width;
             float dataWidth = graphics.MeasureString(sampleData, dataFont).Width;
-            return Math.Max(headerWidth, dataWidth) + 10;  // Add padding
+            return Math.Max(headerWidth, dataWidth) + (CellPadding * 2);  // Add padding
         }
-        private static void DrawCellText(Graphics graphics, string text, RectangleF cellRect, Font font, Brush brush, StringAlignment alignment)
+        private void DrawCellText(Graphics graphics, string text, RectangleF cellRect, Font font, Brush brush, StringAlignment alignment)
         {
             StringFormat format = new()
             {
@@ -532,9 +539,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Add padding
             RectangleF textRect = new(
-                cellRect.X + 3,
+                cellRect.X + CellPadding,
                 cellRect.Y,
-                cellRect.Width - 6,
+                cellRect.Width - (CellPadding * 2),
                 cellRect.Height
             );
 
@@ -613,32 +620,103 @@ namespace Sales_Tracker.ReportGenerator.Elements
             RectangleF labelRect = new(Bounds.X, Bounds.Y + Bounds.Height / 2 - 10, Bounds.Width, 20);
             graphics.DrawString(DisplayName ?? "Transaction Table", font, textBrush, labelRect, format);
         }
+
+        // Override the property to indicate this element handles its own common controls
+        public override bool HandlesOwnCommonControls => true;
+
+        public static Panel General_Panel { get; private set; }
+        public static Panel Style_Panel { get; private set; }
+        public static Panel Columns_Panel { get; private set; }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
+            // Create panels for each tab
+            General_Panel = CreateTabPanel(container, true);  // General container visible by default
+            Style_Panel = CreateTabPanel(container, false);
+            Columns_Panel = CreateTabPanel(container, false);
+
+            // Add panels to container
+            container.Controls.Add(General_Panel);
+            container.Controls.Add(Style_Panel);
+            container.Controls.Add(Columns_Panel);
+
+            // Create controls for each tab panel
+            CreateGeneralTabControls(General_Panel, 0, onPropertyChanged);
+            CreateStyleTabControls(Style_Panel, 0, onPropertyChanged);
+            CreateColumnsTabControls(Columns_Panel, 0, onPropertyChanged);
+
+            // Tab changed handler that only shows/hides panels
+            static void tabChangedHandler(int tabIndex)
+            {
+                // Hide all panels
+                General_Panel.Visible = false;
+                Style_Panel.Visible = false;
+                Columns_Panel.Visible = false;
+
+                // Show selected panel
+                switch (tabIndex)
+                {
+                    case 0:
+                        General_Panel.Visible = true;
+                        break;
+                    case 1:
+                        Style_Panel.Visible = true;
+                        break;
+                    case 2:
+                        Columns_Panel.Visible = true;
+                        break;
+                }
+            }
+
+            // Create tab buttons with the handler
+            string[] tabNames = ["General", "Style", "Columns"];
+            Panel tabPanel = CreateTabButtons(container, tabNames, tabChangedHandler);
+
+            return yPosition + 45;
+        }
+        private static Panel CreateTabPanel(Panel container, bool visible) => new()
+        {
+            Location = new Point(0, 45),
+            Size = new Size(container.Width, container.Height - 45),
+            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
+            AutoScroll = true,
+            Visible = visible
+        };
+        private void CreateGeneralTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+        {
+            // Add common controls first
+            CreateCommonPropertyControls(
+                panel,
+                this,
+                yPosition,
+                onPropertyChanged,
+                out _);  // We don't need to register these since TableElement manages them directly
+
+            yPosition += ControlRowHeight * 5;
+
             // Data selection combo box
-            AddPropertyLabel(container, "Data:", yPosition);
-            AddPropertyComboBox(container, DataSelection.ToString(), yPosition,
+            AddPropertyLabel(panel, "Data:", yPosition);
+            AddPropertyComboBox(panel, DataSelection.ToString(), yPosition,
                 Enum.GetNames<TableDataSelection>(),
                 value =>
                 {
                     DataSelection = Enum.Parse<TableDataSelection>(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Transaction type
-            AddPropertyLabel(container, "Type:", yPosition);
-            AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
+            AddPropertyLabel(panel, "Type:", yPosition);
+            AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
                 ["Sales", "Purchases", "Both"],
                 value =>
                 {
                     TransactionType = Enum.Parse<TransactionType>(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Include returns checkbox
-            AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Include Returns", IncludeReturns, yPosition,
                 value =>
                 {
                     IncludeReturns = value;
@@ -647,7 +725,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox
-            AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Include Losses", IncludeLosses, yPosition,
                 value =>
                 {
                     IncludeLosses = value;
@@ -656,103 +734,139 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Sort order combo box
-            AddPropertyLabel(container, "Sort:", yPosition);
-            AddPropertyComboBox(container, FormatSortOrder(SortOrder), yPosition,
+            AddPropertyLabel(panel, "Sort:", yPosition);
+            AddPropertyComboBox(panel, FormatSortOrder(SortOrder), yPosition,
                 ["Date ↓", "Date ↑", "Amount ↓", "Amount ↑"],
                 value =>
                 {
                     SortOrder = ParseSortOrder(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Max rows
-            AddPropertyLabel(container, "Max Rows:", yPosition);
-            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(container, MaxRows, yPosition, value =>
+            AddPropertyLabel(panel, "Max Rows:", yPosition);
+            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, MaxRows, yPosition, value =>
             {
                 MaxRows = (int)value;
                 onPropertyChanged();
             }, 1, 100);
             numericUpDown.Left = 110;
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
+
+            // Totals row
+            AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
+                value => { ShowTotalsRow = value; onPropertyChanged(); });
+        }
+        private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+        {
+            // Font family
+            AddPropertyLabel(panel, "Font:", yPosition);
+            AddPropertyComboBox(panel, FontFamily, yPosition,
+                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+                value =>
+                {
+                    FontFamily = value;
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
 
             // Font size
-            AddPropertyLabel(container, "Font Size:", yPosition);
-            AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            AddPropertyLabel(panel, "Font Size:", yPosition);
+            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition, value =>
             {
                 FontSize = (float)value;
                 onPropertyChanged();
-            }, 6, 14).Left = 110;
-            yPosition += RowHeight;
+            }, 6, 14);
+            numericUpDown.Left = 150;
+            yPosition += ControlRowHeight;
 
-            // Add separator label
-            AddPropertyLabel(container, "Display Options:", yPosition, true);
-            yPosition += 35;
+            // Row Height
+            AddPropertyLabel(panel, "Row Height:", yPosition);
+            numericUpDown = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition, value =>
+            {
+                DataRowHeight = (int)value;
+                onPropertyChanged();
+            }, 15, 50);
+            numericUpDown.Left = 150;
+            yPosition += ControlRowHeight;
+
+            // Header Row Height
+            AddPropertyLabel(panel, "Header Height:", yPosition);
+            numericUpDown = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition, value =>
+            {
+                HeaderRowHeight = (int)value;
+                onPropertyChanged();
+            }, 20, 60);
+            numericUpDown.Left = 150;
+            yPosition += ControlRowHeight;
+
+            // Cell Padding
+            AddPropertyLabel(panel, "Cell Padding:", yPosition);
+            numericUpDown = AddPropertyNumericUpDown(panel, CellPadding, yPosition, value =>
+            {
+                CellPadding = (int)value;
+                onPropertyChanged();
+            }, 0, 20);
+            numericUpDown.Left = 150;
+            yPosition += ControlRowHeight;
 
             // Display option checkboxes
-            AddPropertyCheckBoxWithLabel(container, "Show Headers", ShowHeaders, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
                 value => { ShowHeaders = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Alternate Row Colors", AlternateRowColors, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
                 value => { AlternateRowColors = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Show Grid Lines", ShowGridLines, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
                 value => { ShowGridLines = value; onPropertyChanged(); });
-            yPosition += CheckBoxRowHeight;
-
-            AddPropertyCheckBoxWithLabel(container, "Show Totals Row", ShowTotalsRow, yPosition,
-                value => { ShowTotalsRow = value; onPropertyChanged(); });
-            yPosition += CheckBoxRowHeight;
-
-            // Add column visibility section
-            AddPropertyLabel(container, "Visible Columns:", yPosition, true);
-            yPosition += 35;
-
-            // Column visibility checkboxes
-            AddPropertyCheckBoxWithLabel(container, "Date", ShowDateColumn, yPosition,
+        }
+        private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+        {
+            // Add column visibility checkboxes
+            AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
                 value => { ShowDateColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Transaction ID", ShowTransactionIdColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
                 value => { ShowTransactionIdColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
                 value => { ShowCustomerSupplierColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Product", ShowProductColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
                 value => { ShowProductColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Quantity", ShowQuantityColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
                 value => { ShowQuantityColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Unit Price", ShowUnitPriceColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
                 value => { ShowUnitPriceColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Total", ShowTotalColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
                 value => { ShowTotalColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Status", ShowStatusColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
                 value => { ShowStatusColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Accountant", ShowAccountantColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
                 value => { ShowAccountantColumn = value; onPropertyChanged(); });
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(container, "Shipping", ShowShippingColumn, yPosition,
+            AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
                 value => { ShowShippingColumn = value; onPropertyChanged(); });
-            yPosition += CheckBoxRowHeight;
-
-            return yPosition;
         }
+
+        // Helper methods
         private static string FormatSortOrder(TableSortOrder order)
         {
             return order switch
@@ -775,6 +889,5 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _ => TableSortOrder.DateDescending
             };
         }
-        protected override Color GetDesignerColor() => Color.Lavender;
     }
 }

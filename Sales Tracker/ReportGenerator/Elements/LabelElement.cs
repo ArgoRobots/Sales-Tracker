@@ -1,8 +1,4 @@
-﻿using Guna.UI2.WinForms;
-using Guna.UI2.WinForms.Enums;
-using Sales_Tracker.Theme;
-
-namespace Sales_Tracker.ReportGenerator.Elements
+﻿namespace Sales_Tracker.ReportGenerator.Elements
 {
     /// <summary>
     /// Text label element for displaying text content.
@@ -91,7 +87,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Text = value;
                 onPropertyChanged();
             });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
@@ -102,7 +98,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     FontFamily = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
@@ -111,12 +107,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 72);
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Font style toggle buttons
             AddPropertyLabel(container, "Style:", yPosition);
-            AddFontStyleToggleButtons(container, yPosition, onPropertyChanged);
-            yPosition += RowHeight;
+            AddFontStyleToggleButtons(container, yPosition, FontStyle, style =>
+            {
+                FontStyle = style;
+                onPropertyChanged();
+            });
+            yPosition += ControlRowHeight;
 
             // Text alignment
             AddPropertyLabel(container, "Align:", yPosition);
@@ -127,7 +127,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Alignment = DisplayTextToAlignment(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Vertical alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
@@ -138,12 +138,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     VerticalAlignment = DisplayTextToVerticalAlignment(value);
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             // Text color
             AddPropertyLabel(container, "Color:", yPosition);
             AddColorPicker(container, yPosition, onPropertyChanged);
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
 
             return yPosition;
         }
@@ -187,125 +187,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _ => StringAlignment.Center
             };
         }
-        private void AddFontStyleToggleButtons(Panel container, int yPosition, Action onPropertyChanged)
-        {
-            int xPosition = 85;
-            const int buttonWidth = 35;
-            const int buttonHeight = 30;
-            const int spacing = 5;
-
-            // Calculate vertical position to center with label
-            int buttonY = yPosition + 2;
-
-            // Bold button
-            Guna2Button boldButton = new()
-            {
-                Size = new Size(buttonWidth, buttonHeight),
-                Location = new Point(xPosition, buttonY),
-                Text = "B",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                BorderRadius = 2,
-                ButtonMode = ButtonMode.ToogleButton,
-                Checked = FontStyle.HasFlag(FontStyle.Bold),
-                FillColor = Color.White,
-                ForeColor = Color.Black,
-                CheckedState =
-                {
-                    FillColor = CustomColors.AccentBlue,
-                    ForeColor = Color.White
-                }
-            };
-            boldButton.CheckedChanged += (s, e) =>
-            {
-                if (boldButton.Checked)
-                {
-                    FontStyle |= FontStyle.Bold;
-                }
-                else
-                {
-                    FontStyle &= ~FontStyle.Bold;
-                }
-
-                onPropertyChanged();
-            };
-            container.Controls.Add(boldButton);
-            xPosition += buttonWidth + spacing;
-
-            // Italic button
-            Guna2Button italicButton = new()
-            {
-                Size = new Size(buttonWidth, buttonHeight),
-                Location = new Point(xPosition, buttonY),
-                Text = "I",
-                Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                BorderRadius = 2,
-                ButtonMode = ButtonMode.ToogleButton,
-                Checked = FontStyle.HasFlag(FontStyle.Italic),
-                FillColor = Color.White,
-                ForeColor = Color.Black,
-                CheckedState =
-                {
-                    FillColor = CustomColors.AccentBlue,
-                    ForeColor = Color.White
-                }
-            };
-            italicButton.CheckedChanged += (s, e) =>
-            {
-                if (italicButton.Checked)
-                {
-                    FontStyle |= FontStyle.Italic;
-                }
-                else
-                {
-                    FontStyle &= ~FontStyle.Italic;
-                }
-
-                onPropertyChanged();
-            };
-            container.Controls.Add(italicButton);
-            xPosition += buttonWidth + spacing;
-
-            // Underline button
-            Guna2Button underlineButton = new()
-            {
-                Size = new Size(buttonWidth, buttonHeight),
-                Location = new Point(xPosition, buttonY),
-                Text = "U",
-                Font = new Font("Segoe UI", 9, FontStyle.Underline),
-                BorderRadius = 2,
-                ButtonMode = ButtonMode.ToogleButton,
-                Checked = FontStyle.HasFlag(FontStyle.Underline),
-                FillColor = Color.White,
-                ForeColor = Color.Black,
-                CheckedState =
-                {
-                    FillColor = CustomColors.AccentBlue,
-                    ForeColor = Color.White
-                }
-            };
-            underlineButton.CheckedChanged += (s, e) =>
-            {
-                if (underlineButton.Checked)
-                {
-                    FontStyle |= FontStyle.Underline;
-                }
-                else
-                {
-                    FontStyle &= ~FontStyle.Underline;
-                }
-
-                onPropertyChanged();
-            };
-            container.Controls.Add(underlineButton);
-        }
         private void AddColorPicker(Panel container, int yPosition, Action onPropertyChanged)
         {
             Panel colorPreview = new()
             {
                 BackColor = TextColor,
                 BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(50, 22),
-                Location = new Point(85, yPosition),
+                Size = new Size(50, 30),
+                Location = new Point(85, yPosition + 8),
                 Cursor = Cursors.Hand
             };
 
@@ -332,11 +221,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Text = "Click to change",
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 3),
-                Size = new Size(100, 20)
+                Location = new Point(140, yPosition + 11),
+                AutoSize = true
             };
             container.Controls.Add(colorLabel);
         }
-        protected override Color GetDesignerColor() => Color.LightYellow;
     }
 }

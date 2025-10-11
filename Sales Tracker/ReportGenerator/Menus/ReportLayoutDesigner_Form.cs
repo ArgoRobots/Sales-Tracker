@@ -3,7 +3,6 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
-using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -124,7 +123,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             DpiHelper.ScaleGroupBox(Elements_GroupBox);
             DpiHelper.ScaleGroupBox(Properties_GroupBox);
-            DpiHelper.ScaleGroupBox(Canvas_GroupBox);
         }
 
         // Form event handlers
@@ -265,8 +263,6 @@ namespace Sales_Tracker.ReportGenerator
 
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public PanelCloseFilter PanelCloseFilter { get; set; }
         private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(ReportElementType)))
@@ -1225,6 +1221,50 @@ namespace Sales_Tracker.ReportGenerator
             UpdatePropertiesForSelection();
         }
 
+        /// <summary>
+        /// Clears selection for any elements that have been removed from the configuration.
+        /// </summary>
+        public void ClearSelectionForRemovedElements()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            bool selectionChanged = false;
+
+            // Check if the primary selected element was removed
+            if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
+            {
+                _selectedElement.IsSelected = false;
+                _selectedElement = null;
+                selectionChanged = true;
+            }
+
+            // Check if any multi-selected elements were removed
+            List<BaseElement> removedElements = _selectedElements
+                .Where(element => !ReportConfig.Elements.Contains(element))
+                .ToList();
+
+            foreach (BaseElement element in removedElements)
+            {
+                element.IsSelected = false;
+                _selectedElements.Remove(element);
+                selectionChanged = true;
+            }
+
+            // Update the primary selected element if needed
+            if (_selectedElement == null && _selectedElements.Count > 0)
+            {
+                _selectedElement = _selectedElements.First();
+            }
+
+            // Update UI if selection changed
+            if (selectionChanged)
+            {
+                Canvas_Panel.Invalidate();
+                UpdatePropertiesForSelection();
+                UpdateLayoutButtonStates();
+            }
+        }
+
         // Alignment tool event handlers
         private void AlignLeft_Button_Click(object sender, EventArgs e) => AlignSelectedLeft();
         private void AlignCenter_Button_Click(object sender, EventArgs e) => AlignSelectedCenter();
@@ -1261,110 +1301,81 @@ namespace Sales_Tracker.ReportGenerator
 
                 int yPosition = 10;
 
-                CreateCommonPropertyControls(yPosition);
-                yPosition += BaseElement.RowHeight * 5;
+                // Only create common controls if element doesn't handle its own
+                if (!_selectedElement.HandlesOwnCommonControls)
+                {
+                    Dictionary<string, Control> commonControls = BaseElement.CreateCommonPropertyControls(
+                        PropertiesContainer_Panel,
+                        _selectedElement,
+                        yPosition,
+                        OnPropertyChanged,
+                        out Dictionary<string, Action> commonUpdateActions);
+
+                    // Register the controls and update actions
+                    foreach (KeyValuePair<string, Control> kvp in commonControls)
+                    {
+                        _propertyControls[kvp.Key] = kvp.Value;
+                    }
+                    foreach (KeyValuePair<string, Action> kvp in commonUpdateActions)
+                    {
+                        _updateActions[kvp.Key] = kvp.Value;
+                    }
+
+                    yPosition += BaseElement.ControlRowHeight * 5;
+                }
 
                 CreateElementSpecificControls(yPosition);
-
-                // Only set the theme of it's controls, not the panel itself
-                List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
-                ThemeManager.SetThemeForControls(controls);
-
-                // Find all checkboxes inside PropertiesContainer_Panel
-                foreach (Guna2CustomCheckBox cb in PropertiesContainer_Panel.Controls.OfType<Guna2CustomCheckBox>())
-                {
-                    cb.UncheckedState.FillColor = CustomColors.MainBackground;
-                }
+                UpdatePropertyContainerTheme();
             }
 
             UpdatePropertyValues();
         }
-        private void CreateCommonPropertyControls(int startY)
+        private void UpdatePropertyContainerTheme()
         {
-            int yPosition = startY;
+            // Only set the theme of its controls, not the panel itself
+            List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
+            ThemeManager.SetThemeForControls(controls);
 
-            // Name property
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Name:", yPosition);
-            Guna2TextBox nameTextBox = BaseElement.AddPropertyTextBox(PropertiesContainer_Panel, _selectedElement?.DisplayName ?? "", yPosition,
-                value =>
+            // Set BackColor for TableElement's tab panels if this is a TableElement
+            if (_selectedElement is TableElement)
+            {
+                if (TableElement.General_Panel != null)
                 {
-                    if (_selectedElement != null)
-                    {
-                        _selectedElement.DisplayName = value;
-                        Canvas_Panel.Invalidate();
-                        NotifyParentValidationChanged();
-                    }
-                });
-            _propertyControls["Name"] = nameTextBox;
-            _updateActions["Name"] = () => nameTextBox.Text = _selectedElement?.DisplayName ?? "";
-            yPosition += BaseElement.RowHeight;
+                    TableElement.General_Panel.BackColor = CustomColors.ControlBack;
+                }
+                if (TableElement.Style_Panel != null)
+                {
+                    TableElement.Style_Panel.BackColor = CustomColors.ControlBack;
+                }
+                if (TableElement.Columns_Panel != null)
+                {
+                    TableElement.Columns_Panel.BackColor = CustomColors.ControlBack;
+                }
+                if (BaseElement.Tab_Panel != null)
+                {
+                    BaseElement.Tab_Panel.BackColor = CustomColors.ControlBack;
+                }
+            }
 
-            // X position
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "X:", yPosition);
-            Guna2NumericUpDown xNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.X ?? 0, yPosition,
-                value =>
-                {
-                    if (_selectedElement != null)
-                    {
-                        Rectangle bounds = _selectedElement.Bounds;
-                        bounds.X = (int)value;
-                        _selectedElement.Bounds = bounds;
-                        Canvas_Panel.Invalidate();
-                    }
-                }, 0, 9999);
-            _propertyControls["X"] = xNumeric;
-            _updateActions["X"] = () => xNumeric.Value = _selectedElement?.Bounds.X ?? 0;
-            yPosition += BaseElement.RowHeight;
+            // Find all CheckBoxes inside PropertiesContainer_Panel
+            foreach (Guna2CustomCheckBox checkBox in PropertiesContainer_Panel.Controls.OfType<Guna2CustomCheckBox>())
+            {
+                checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
+            }
 
-            // Y position
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Y:", yPosition);
-            Guna2NumericUpDown yNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Y ?? 0, yPosition,
-                value =>
-                {
-                    if (_selectedElement != null)
-                    {
-                        Rectangle bounds = _selectedElement.Bounds;
-                        bounds.Y = (int)value;
-                        _selectedElement.Bounds = bounds;
-                        Canvas_Panel.Invalidate();
-                    }
-                }, 0, 9999);
-            _propertyControls["Y"] = yNumeric;
-            _updateActions["Y"] = () => yNumeric.Value = _selectedElement?.Bounds.Y ?? 0;
-            yPosition += BaseElement.RowHeight;
+            // Also find the CheckBoxes inside TableElement's tab panels if this is a TableElement
+            if (_selectedElement is TableElement)
+            {
+                Panel[] tabPanels = [TableElement.General_Panel, TableElement.Style_Panel, TableElement.Columns_Panel];
 
-            // Width
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Width:", yPosition);
-            Guna2NumericUpDown widthNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Width ?? 100, yPosition,
-                value =>
+                foreach (Panel panel in tabPanels)
                 {
-                    if (_selectedElement != null)
+                    foreach (Guna2CustomCheckBox checkBox in panel.Controls.OfType<Guna2CustomCheckBox>())
                     {
-                        Rectangle bounds = _selectedElement.Bounds;
-                        bounds.Width = Math.Max(50, (int)value);
-                        _selectedElement.Bounds = bounds;
-                        Canvas_Panel.Invalidate();
+                        checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
                     }
-                }, 50, 9999);
-            _propertyControls["Width"] = widthNumeric;
-            _updateActions["Width"] = () => widthNumeric.Value = _selectedElement?.Bounds.Width ?? 100;
-            yPosition += BaseElement.RowHeight;
-
-            // Height
-            BaseElement.AddPropertyLabel(PropertiesContainer_Panel, "Height:", yPosition);
-            Guna2NumericUpDown heightNumeric = BaseElement.AddPropertyNumericUpDown(PropertiesContainer_Panel, _selectedElement?.Bounds.Height ?? 100, yPosition,
-                value =>
-                {
-                    if (_selectedElement != null)
-                    {
-                        Rectangle bounds = _selectedElement.Bounds;
-                        bounds.Height = Math.Max(30, (int)value);
-                        _selectedElement.Bounds = bounds;
-                        Canvas_Panel.Invalidate();
-                    }
-                }, 30, 9999);
-            _propertyControls["Height"] = heightNumeric;
-            _updateActions["Height"] = () => heightNumeric.Value = _selectedElement?.Bounds.Height ?? 100;
+                }
+            }
         }
         private int CreateElementSpecificControls(int yPosition)
         {

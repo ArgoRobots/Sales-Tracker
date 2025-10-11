@@ -9,6 +9,9 @@
         public Color TextColor { get; set; } = Color.Gray;
         public float FontSize { get; set; } = 10f;
         public FontStyle FontStyle { get; set; } = FontStyle.Italic;
+        public string FontFamily { get; set; } = "Segoe UI";
+        public StringAlignment Alignment { get; set; } = StringAlignment.Near;
+        public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()
@@ -24,7 +27,10 @@
                 DateFormat = DateFormat,
                 TextColor = TextColor,
                 FontSize = FontSize,
-                FontStyle = FontStyle
+                FontStyle = FontStyle,
+                FontFamily = FontFamily,
+                Alignment = Alignment,
+                VerticalAlignment = VerticalAlignment
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config)
@@ -44,9 +50,18 @@
                 dateText += "Not specified";
             }
 
-            using Font font = new("Segoe UI", FontSize, FontStyle);
+            using Font font = new(FontFamily, FontSize, FontStyle);
             using SolidBrush brush = new(TextColor);
-            graphics.DrawString(dateText, font, brush, Bounds);
+
+            StringFormat format = new()
+            {
+                Alignment = Alignment,
+                LineAlignment = VerticalAlignment,
+                FormatFlags = StringFormatFlags.NoWrap,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
+
+            graphics.DrawString(dateText, font, brush, Bounds, format);
         }
         public override void DrawDesignerElement(Graphics graphics)
         {
@@ -55,15 +70,8 @@
             graphics.FillRectangle(brush, Bounds);
             graphics.DrawRectangle(pen, Bounds);
 
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Black);
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(DisplayName ?? "Date Range", font, textBrush, Bounds, format);
+            // Draw actual date range with current settings
+            RenderElement(graphics, null);
         }
         public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -76,7 +84,18 @@
                     DateFormat = value;
                     onPropertyChanged();
                 });
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
+
+            // Font family
+            AddPropertyLabel(container, "Font:", yPosition);
+            AddPropertyComboBox(container, FontFamily, yPosition,
+                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+                value =>
+                {
+                    FontFamily = value;
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
@@ -85,10 +104,126 @@
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 24);
-            yPosition += RowHeight;
+            yPosition += ControlRowHeight;
+
+            // Font style toggle buttons
+            AddPropertyLabel(container, "Style:", yPosition);
+            AddFontStyleToggleButtons(container, yPosition, FontStyle, style =>
+            {
+                FontStyle = style;
+                onPropertyChanged();
+            });
+            yPosition += ControlRowHeight;
+
+            // Horizontal alignment
+            AddPropertyLabel(container, "Align:", yPosition);
+            AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+                ["Left", "Center", "Right"],
+                value =>
+                {
+                    Alignment = DisplayTextToAlignment(value);
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
+
+            // Vertical alignment
+            AddPropertyLabel(container, "V-Align:", yPosition);
+            AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+                ["Top", "Middle", "Bottom"],
+                value =>
+                {
+                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                    onPropertyChanged();
+                });
+            yPosition += ControlRowHeight;
+
+            // Text color
+            AddPropertyLabel(container, "Color:", yPosition);
+            AddColorPicker(container, yPosition, onPropertyChanged);
+            yPosition += ControlRowHeight;
 
             return yPosition;
         }
-        protected override Color GetDesignerColor() => Color.LightGreen;
+
+        // Helper methods
+        private static string AlignmentToDisplayText(StringAlignment alignment)
+        {
+            return alignment switch
+            {
+                StringAlignment.Near => "Left",
+                StringAlignment.Center => "Center",
+                StringAlignment.Far => "Right",
+                _ => "Left"
+            };
+        }
+        private static StringAlignment DisplayTextToAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Left" => StringAlignment.Near,
+                "Center" => StringAlignment.Center,
+                "Right" => StringAlignment.Far,
+                _ => StringAlignment.Near
+            };
+        }
+        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
+        {
+            return alignment switch
+            {
+                StringAlignment.Near => "Top",
+                StringAlignment.Center => "Middle",
+                StringAlignment.Far => "Bottom",
+                _ => "Middle"
+            };
+        }
+        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
+        {
+            return displayText switch
+            {
+                "Top" => StringAlignment.Near,
+                "Middle" => StringAlignment.Center,
+                "Bottom" => StringAlignment.Far,
+                _ => StringAlignment.Center
+            };
+        }
+        private void AddColorPicker(Panel container, int yPosition, Action onPropertyChanged)
+        {
+            Panel colorPreview = new()
+            {
+                BackColor = TextColor,
+                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(50, 30),
+                Location = new Point(85, yPosition + 8),
+                Cursor = Cursors.Hand
+            };
+
+            colorPreview.Click += (s, e) =>
+            {
+                ColorDialog colorDialog = new()
+                {
+                    Color = TextColor,
+                    FullOpen = true
+                };
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    TextColor = colorDialog.Color;
+                    colorPreview.BackColor = TextColor;
+                    onPropertyChanged();
+                }
+            };
+
+            container.Controls.Add(colorPreview);
+
+            Label colorLabel = new()
+            {
+                Text = "Click to change",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(140, yPosition + 11),
+                AutoSize = true
+            };
+            container.Controls.Add(colorLabel);
+        }
     }
 }
