@@ -121,7 +121,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontStyle = style;
                 onPropertyChanged();
             });
-            // Note: Font style buttons need special handling for updates
             yPosition += ControlRowHeight;
 
             // Text alignment
