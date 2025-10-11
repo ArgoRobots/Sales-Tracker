@@ -139,7 +139,11 @@
 
             // Text color
             AddPropertyLabel(container, "Color:", yPosition);
-            AddColorPicker(container, yPosition, onPropertyChanged);
+            AddColorPicker(container, yPosition, 85, TextColor, color =>
+            {
+                TextColor = color;
+                onPropertyChanged();
+            });
             yPosition += ControlRowHeight;
 
             return yPosition;
@@ -185,45 +189,6 @@
                 "Bottom" => StringAlignment.Far,
                 _ => StringAlignment.Center
             };
-        }
-        private void AddColorPicker(Panel container, int yPosition, Action onPropertyChanged)
-        {
-            Panel colorPreview = new()
-            {
-                BackColor = TextColor,
-                BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(50, 30),
-                Location = new Point(85, yPosition + 8),
-                Cursor = Cursors.Hand
-            };
-
-            colorPreview.Click += (s, e) =>
-            {
-                ColorDialog colorDialog = new()
-                {
-                    Color = TextColor,
-                    FullOpen = true
-                };
-
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    TextColor = colorDialog.Color;
-                    colorPreview.BackColor = TextColor;
-                    onPropertyChanged();
-                }
-            };
-
-            container.Controls.Add(colorPreview);
-
-            Label colorLabel = new()
-            {
-                Text = "Click to change",
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 11),
-                AutoSize = true
-            };
-            container.Controls.Add(colorLabel);
         }
     }
 }
