@@ -36,7 +36,10 @@ namespace Sales_Tracker.Settings
             LoadingPanel.ShowBlankLoadingPanel(this);
             LoadingPanel.CancelRequested += OnTranslationCancelled;
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels);
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                SearchBox.SearchResultBoxContainer,
+                TextBoxManager.RightClickTextBox_Panel);
+
             Application.AddMessageFilter(panelCloseFilter);
         }
         private void SetChildForm(Form form)
