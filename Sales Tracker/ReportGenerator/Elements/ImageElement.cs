@@ -30,7 +30,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Color BorderColor { get; set; } = Color.Transparent;
         public int BorderThickness { get; set; } = 0;
         public bool MaintainAspectRatio { get; set; } = true;
-        public int CornerRadius { get; set; } = 0;
+        public int CornerRadius_Percent { get; set; } = 0;
         public byte Opacity { get; set; } = 255;
 
         // Cached image data
@@ -42,6 +42,19 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public ImageElement()
         {
             DisplayName = "Image";
+        }
+
+        /// <summary>
+        /// Calculates the actual corner radius in pixels based on the percentage and bounds.
+        /// </summary>
+        private int GetActualCornerRadius()
+        {
+            if (CornerRadius_Percent <= 0) { return 0; }
+
+            // Calculate radius as percentage of the smaller dimension
+            // At 100%, radius = half of smaller side (creates a circle)
+            int minDimension = Math.Min(Bounds.Width, Bounds.Height);
+            return (int)(minDimension * (CornerRadius_Percent / 200.0));
         }
 
         // Overrides
@@ -62,7 +75,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 BorderColor = BorderColor,
                 BorderThickness = BorderThickness,
                 MaintainAspectRatio = MaintainAspectRatio,
-                CornerRadius = CornerRadius,
+                CornerRadius_Percent = CornerRadius_Percent,
                 Opacity = Opacity
             };
         }
@@ -70,13 +83,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
+                int actualRadius = GetActualCornerRadius();
+
                 // Draw background if not transparent
                 if (BackgroundColor != Color.Transparent)
                 {
                     using SolidBrush bgBrush = new(BackgroundColor);
-                    if (CornerRadius > 0)
+                    if (actualRadius > 0)
                     {
-                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, CornerRadius);
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
                         graphics.FillPath(bgBrush, path);
                     }
                     else
@@ -108,9 +123,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (BorderColor != Color.Transparent && BorderThickness > 0)
                 {
                     using Pen borderPen = new(BorderColor, BorderThickness);
-                    if (CornerRadius > 0)
+                    if (actualRadius > 0)
                     {
-                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, CornerRadius);
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
                         graphics.DrawPath(borderPen, path);
                     }
                     else
@@ -142,10 +157,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             try
             {
+                int actualRadius = GetActualCornerRadius();
+
                 // Set up clipping if using rounded corners
-                if (CornerRadius > 0)
+                if (actualRadius > 0)
                 {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, CornerRadius);
+                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
                     graphics.SetClip(path);
                 }
 
@@ -190,10 +207,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             try
             {
+                int actualRadius = GetActualCornerRadius();
+
                 // Set up clipping if using rounded corners
-                if (CornerRadius > 0)
+                if (actualRadius > 0)
                 {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, CornerRadius);
+                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
                     graphics.SetClip(path);
                 }
 
@@ -490,23 +509,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
 
-            // Corner radius
-            AddPropertyLabel(container, "Border radius:", yPosition);
-            guna2NumericUpDown = AddPropertyNumericUpDown(container, CornerRadius, yPosition, value =>
+            // Corner radius (now as percentage)
+            AddPropertyLabel(container, "Border radius %:", yPosition);
+            guna2NumericUpDown = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition, value =>
             {
-                CornerRadius = (int)value;
+                CornerRadius_Percent = (int)value;
                 onPropertyChanged();
-            }, 0, 50);
+            }, 0, 100);
             guna2NumericUpDown.Left = 170;
             yPosition += ControlRowHeight;
 
             // Border thickness
             AddPropertyLabel(container, "Border thickness:", yPosition);
             guna2NumericUpDown = AddPropertyNumericUpDown(container, BorderThickness, yPosition, value =>
-              {
-                  BorderThickness = (int)value;
-                  onPropertyChanged();
-              }, 0, 20);
+            {
+                BorderThickness = (int)value;
+                onPropertyChanged();
+            }, 0, 20);
             guna2NumericUpDown.Left = 170;
             yPosition += ControlRowHeight;
 
