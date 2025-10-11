@@ -56,6 +56,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Color HeaderBackgroundColor { get; set; } = Color.FromArgb(94, 148, 255);
         public Color HeaderTextColor { get; set; } = Color.White;
         public Color GridLineColor { get; set; } = Color.LightGray;
+        public Color BaseRowColor { get; set; } = Color.White;
         public Color AlternateRowColor { get; set; } = Color.FromArgb(248, 248, 248);
 
         // Column visibility (Columns tab)
@@ -118,6 +119,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 HeaderBackgroundColor = HeaderBackgroundColor,
                 HeaderTextColor = HeaderTextColor,
                 GridLineColor = GridLineColor,
+                BaseRowColor = BaseRowColor,
                 AlternateRowColor = AlternateRowColor,
                 ShowDateColumn = ShowDateColumn,
                 ShowTransactionIdColumn = ShowTransactionIdColumn,
@@ -309,6 +311,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using SolidBrush alternateBrush = new(AlternateRowColor);
             using Pen gridPen = new(GridLineColor, 0.5f);
 
+            // Draw base background for entire table bounds
+            using (SolidBrush baseBgBrush = new(BaseRowColor))
+            {
+                graphics.FillRectangle(baseBgBrush, Bounds);
+            }
+
             // Calculate column widths
             List<(string Header, float Width, bool Show, StringAlignment Align)> columns = GetColumnDefinitions(graphics, headerFont, dataFont, transactions);
 
@@ -354,6 +362,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (AlternateRowColors && rowIndex % 2 == 1)
                 {
                     graphics.FillRectangle(alternateBrush, Bounds.X, currentY, Bounds.Width, DataRowHeight);
+                }
+                else
+                {
+                    using SolidBrush bgBrush = new(BaseRowColor);
+                    graphics.FillRectangle(bgBrush, Bounds.X, currentY, Bounds.Width, DataRowHeight);
                 }
 
                 currentX = Bounds.X;
