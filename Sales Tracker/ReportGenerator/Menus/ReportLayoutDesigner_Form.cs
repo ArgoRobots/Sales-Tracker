@@ -685,6 +685,10 @@ namespace Sales_Tracker.ReportGenerator
         {
             CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
         }
+        private void AddImageElement_Button_Click(object sender, EventArgs e)
+        {
+            CreateElementAtLocation(ReportElementType.Image, new Point(50, 360));
+        }
 
         // Move element method
         /// <summary>
@@ -1333,7 +1337,11 @@ namespace Sales_Tracker.ReportGenerator
         private void UpdatePropertyContainerTheme()
         {
             // Only set the theme of its controls, not the panel itself
-            List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
+            List<Control> controls = PropertiesContainer_Panel.Controls
+                .Cast<Control>()
+                .Where(c => c.Tag?.ToString() != BaseElement.ColorPickerTag)
+                .ToList();
+
             ThemeManager.SetThemeForControls(controls);
 
             // Set BackColor for TableElement's tab panels if this is a TableElement
@@ -1634,6 +1642,11 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     DisplayName = "Transaction Table",
                     Bounds = new Rectangle(location, new Size(400, 200))
+                },
+                ReportElementType.Image => new ImageElement
+                {
+                    Bounds = new Rectangle(location, new Size(200, 200)),
+                    DisplayName = "Image"
                 },
                 _ => null
             };

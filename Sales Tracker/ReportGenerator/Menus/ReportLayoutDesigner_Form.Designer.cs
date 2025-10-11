@@ -52,14 +52,12 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges41 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges42 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -68,6 +66,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             RightCanvas_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Canvas_Panel = new Panel();
             MakeSameSize_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -93,6 +95,7 @@
             AddDateElement_Button = new Guna.UI2.WinForms.Guna2Button();
             AddLabelElement_Button = new Guna.UI2.WinForms.Guna2Button();
             AddChartElement_Button = new Guna.UI2.WinForms.Guna2Button();
+            AddImageElement_Button = new Guna.UI2.WinForms.Guna2Button();
             RightCanvas_Panel.SuspendLayout();
             LeftTools_Panel.SuspendLayout();
             Properties_GroupBox.SuspendLayout();
@@ -390,13 +393,13 @@
             LeftTools_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LeftTools_Panel.Controls.Add(Properties_GroupBox);
             LeftTools_Panel.Controls.Add(Elements_GroupBox);
-            LeftTools_Panel.CustomizableEdges = customizableEdges39;
+            LeftTools_Panel.CustomizableEdges = customizableEdges41;
             LeftTools_Panel.FillColor = Color.Transparent;
             LeftTools_Panel.Location = new Point(0, 0);
             LeftTools_Panel.Margin = new Padding(4, 5, 4, 5);
             LeftTools_Panel.Name = "LeftTools_Panel";
             LeftTools_Panel.Padding = new Padding(28, 14, 7, 0);
-            LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            LeftTools_Panel.ShadowDecoration.CustomizableEdges = customizableEdges42;
             LeftTools_Panel.Size = new Size(380, 900);
             LeftTools_Panel.TabIndex = 0;
             // 
@@ -462,14 +465,14 @@
             Elements_GroupBox.BorderThickness = 0;
             Elements_GroupBox.Controls.Add(ToolsContainer_Panel);
             Elements_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Elements_GroupBox.CustomizableEdges = customizableEdges37;
+            Elements_GroupBox.CustomizableEdges = customizableEdges39;
             Elements_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Elements_GroupBox.ForeColor = Color.White;
             Elements_GroupBox.Location = new Point(28, 14);
             Elements_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Elements_GroupBox.Name = "Elements_GroupBox";
             Elements_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Elements_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Elements_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges40;
             Elements_GroupBox.Size = new Size(345, 342);
             Elements_GroupBox.TabIndex = 0;
             Elements_GroupBox.Text = "Report Elements";
@@ -479,15 +482,16 @@
             ToolsContainer_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ToolsContainer_Panel.AutoScroll = true;
             ToolsContainer_Panel.BackColor = Color.Transparent;
+            ToolsContainer_Panel.Controls.Add(AddImageElement_Button);
             ToolsContainer_Panel.Controls.Add(AddTableElement_Button);
             ToolsContainer_Panel.Controls.Add(AddSummaryElement_Button);
             ToolsContainer_Panel.Controls.Add(AddDateElement_Button);
             ToolsContainer_Panel.Controls.Add(AddLabelElement_Button);
             ToolsContainer_Panel.Controls.Add(AddChartElement_Button);
-            ToolsContainer_Panel.Location = new Point(14, 50);
+            ToolsContainer_Panel.Location = new Point(14, 47);
             ToolsContainer_Panel.Margin = new Padding(4, 5, 4, 5);
             ToolsContainer_Panel.Name = "ToolsContainer_Panel";
-            ToolsContainer_Panel.Size = new Size(316, 281);
+            ToolsContainer_Panel.Size = new Size(316, 285);
             ToolsContainer_Panel.TabIndex = 1;
             // 
             // AddTableElement_Button
@@ -497,7 +501,7 @@
             AddTableElement_Button.BorderColor = Color.DimGray;
             AddTableElement_Button.BorderRadius = 2;
             AddTableElement_Button.BorderThickness = 1;
-            AddTableElement_Button.CustomizableEdges = customizableEdges27;
+            AddTableElement_Button.CustomizableEdges = customizableEdges29;
             AddTableElement_Button.DisabledState.BorderColor = Color.DarkGray;
             AddTableElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddTableElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -505,11 +509,11 @@
             AddTableElement_Button.FillColor = Color.White;
             AddTableElement_Button.Font = new Font("Segoe UI", 9.5F);
             AddTableElement_Button.ForeColor = Color.Black;
-            AddTableElement_Button.Location = new Point(6, 228);
-            AddTableElement_Button.Margin = new Padding(6, 5, 6, 5);
+            AddTableElement_Button.Location = new Point(6, 192);
+            AddTableElement_Button.Margin = new Padding(6, 3, 6, 3);
             AddTableElement_Button.Name = "AddTableElement_Button";
-            AddTableElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            AddTableElement_Button.Size = new Size(304, 45);
+            AddTableElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            AddTableElement_Button.Size = new Size(304, 40);
             AddTableElement_Button.TabIndex = 6;
             AddTableElement_Button.Text = "Add table element";
             AddTableElement_Button.Click += AddTableElement;
@@ -521,7 +525,7 @@
             AddSummaryElement_Button.BorderColor = Color.DimGray;
             AddSummaryElement_Button.BorderRadius = 2;
             AddSummaryElement_Button.BorderThickness = 1;
-            AddSummaryElement_Button.CustomizableEdges = customizableEdges29;
+            AddSummaryElement_Button.CustomizableEdges = customizableEdges31;
             AddSummaryElement_Button.DisabledState.BorderColor = Color.DarkGray;
             AddSummaryElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddSummaryElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -529,11 +533,11 @@
             AddSummaryElement_Button.FillColor = Color.White;
             AddSummaryElement_Button.Font = new Font("Segoe UI", 9.5F);
             AddSummaryElement_Button.ForeColor = Color.Black;
-            AddSummaryElement_Button.Location = new Point(6, 173);
-            AddSummaryElement_Button.Margin = new Padding(6, 5, 6, 5);
+            AddSummaryElement_Button.Location = new Point(6, 146);
+            AddSummaryElement_Button.Margin = new Padding(6, 3, 6, 3);
             AddSummaryElement_Button.Name = "AddSummaryElement_Button";
-            AddSummaryElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            AddSummaryElement_Button.Size = new Size(304, 45);
+            AddSummaryElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            AddSummaryElement_Button.Size = new Size(304, 40);
             AddSummaryElement_Button.TabIndex = 5;
             AddSummaryElement_Button.Text = "Add summary element";
             AddSummaryElement_Button.Click += AddSummaryElement;
@@ -545,7 +549,7 @@
             AddDateElement_Button.BorderColor = Color.DimGray;
             AddDateElement_Button.BorderRadius = 2;
             AddDateElement_Button.BorderThickness = 1;
-            AddDateElement_Button.CustomizableEdges = customizableEdges31;
+            AddDateElement_Button.CustomizableEdges = customizableEdges33;
             AddDateElement_Button.DisabledState.BorderColor = Color.DarkGray;
             AddDateElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddDateElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -553,11 +557,11 @@
             AddDateElement_Button.FillColor = Color.White;
             AddDateElement_Button.Font = new Font("Segoe UI", 9.5F);
             AddDateElement_Button.ForeColor = Color.Black;
-            AddDateElement_Button.Location = new Point(6, 118);
-            AddDateElement_Button.Margin = new Padding(6, 5, 6, 5);
+            AddDateElement_Button.Location = new Point(6, 100);
+            AddDateElement_Button.Margin = new Padding(6, 3, 6, 3);
             AddDateElement_Button.Name = "AddDateElement_Button";
-            AddDateElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            AddDateElement_Button.Size = new Size(304, 45);
+            AddDateElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            AddDateElement_Button.Size = new Size(304, 40);
             AddDateElement_Button.TabIndex = 4;
             AddDateElement_Button.Text = "Add date element";
             AddDateElement_Button.Click += AddDateRangeElement;
@@ -569,7 +573,7 @@
             AddLabelElement_Button.BorderColor = Color.DimGray;
             AddLabelElement_Button.BorderRadius = 2;
             AddLabelElement_Button.BorderThickness = 1;
-            AddLabelElement_Button.CustomizableEdges = customizableEdges33;
+            AddLabelElement_Button.CustomizableEdges = customizableEdges35;
             AddLabelElement_Button.DisabledState.BorderColor = Color.DarkGray;
             AddLabelElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddLabelElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -577,11 +581,11 @@
             AddLabelElement_Button.FillColor = Color.White;
             AddLabelElement_Button.Font = new Font("Segoe UI", 9.5F);
             AddLabelElement_Button.ForeColor = Color.Black;
-            AddLabelElement_Button.Location = new Point(6, 63);
-            AddLabelElement_Button.Margin = new Padding(6, 5, 6, 5);
+            AddLabelElement_Button.Location = new Point(6, 54);
+            AddLabelElement_Button.Margin = new Padding(6, 3, 6, 3);
             AddLabelElement_Button.Name = "AddLabelElement_Button";
-            AddLabelElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;
-            AddLabelElement_Button.Size = new Size(304, 45);
+            AddLabelElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            AddLabelElement_Button.Size = new Size(304, 40);
             AddLabelElement_Button.TabIndex = 3;
             AddLabelElement_Button.Text = "Add label element";
             AddLabelElement_Button.Click += AddTextElement;
@@ -593,7 +597,7 @@
             AddChartElement_Button.BorderColor = Color.DimGray;
             AddChartElement_Button.BorderRadius = 2;
             AddChartElement_Button.BorderThickness = 1;
-            AddChartElement_Button.CustomizableEdges = customizableEdges35;
+            AddChartElement_Button.CustomizableEdges = customizableEdges37;
             AddChartElement_Button.DisabledState.BorderColor = Color.DarkGray;
             AddChartElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddChartElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -602,13 +606,37 @@
             AddChartElement_Button.Font = new Font("Segoe UI", 9.5F);
             AddChartElement_Button.ForeColor = Color.Black;
             AddChartElement_Button.Location = new Point(6, 8);
-            AddChartElement_Button.Margin = new Padding(6, 5, 6, 5);
+            AddChartElement_Button.Margin = new Padding(6, 3, 6, 3);
             AddChartElement_Button.Name = "AddChartElement_Button";
-            AddChartElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
-            AddChartElement_Button.Size = new Size(304, 45);
+            AddChartElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            AddChartElement_Button.Size = new Size(304, 40);
             AddChartElement_Button.TabIndex = 2;
             AddChartElement_Button.Text = "Add chart element";
             AddChartElement_Button.Click += AddChartElement;
+            // 
+            // AddImageElement_Button
+            // 
+            AddImageElement_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            AddImageElement_Button.Animated = true;
+            AddImageElement_Button.BorderColor = Color.DimGray;
+            AddImageElement_Button.BorderRadius = 2;
+            AddImageElement_Button.BorderThickness = 1;
+            AddImageElement_Button.CustomizableEdges = customizableEdges27;
+            AddImageElement_Button.DisabledState.BorderColor = Color.DarkGray;
+            AddImageElement_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AddImageElement_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AddImageElement_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AddImageElement_Button.FillColor = Color.White;
+            AddImageElement_Button.Font = new Font("Segoe UI", 9.5F);
+            AddImageElement_Button.ForeColor = Color.Black;
+            AddImageElement_Button.Location = new Point(6, 238);
+            AddImageElement_Button.Margin = new Padding(6, 3, 6, 3);
+            AddImageElement_Button.Name = "AddImageElement_Button";
+            AddImageElement_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            AddImageElement_Button.Size = new Size(304, 40);
+            AddImageElement_Button.TabIndex = 7;
+            AddImageElement_Button.Text = "Add image element";
+            AddImageElement_Button.Click += AddImageElement_Button_Click;
             // 
             // ReportLayoutDesigner_Form
             // 
@@ -657,5 +685,6 @@
         public Guna.UI2.WinForms.Guna2Button MakeSameSize_Button;
         public Guna.UI2.WinForms.Guna2Button MakeSameHeight_Button;
         public Guna.UI2.WinForms.Guna2Button MakeSameWidth_Button;
+        public Guna.UI2.WinForms.Guna2Button AddImageElement_Button;
     }
 }

@@ -352,6 +352,61 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         public static Panel Tab_Panel { get; private set; }
+        public static readonly string ColorPickerTag = "ColorPicker";
+
+        /// <summary>
+        /// Adds a color picker control with an optional label.
+        /// </summary>
+        protected static Panel AddColorPicker(
+            Panel container,
+            int yPosition,
+            int xPosition,
+            Color currentColor,
+            Action<Color> onColorChanged,
+            bool showLabel = true)
+        {
+            Panel colorPreview = new()
+            {
+                BackColor = currentColor,
+                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(50, 30),
+                Location = new Point(xPosition, yPosition + 8),
+                Cursor = Cursors.Hand,
+                Tag = ColorPickerTag
+            };
+
+            colorPreview.Click += (s, e) =>
+            {
+                ColorDialog colorDialog = new()
+                {
+                    Color = colorPreview.BackColor,
+                    FullOpen = true
+                };
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    colorPreview.BackColor = colorDialog.Color;
+                    onColorChanged(colorDialog.Color);
+                }
+            };
+
+            container.Controls.Add(colorPreview);
+
+            if (showLabel)
+            {
+                Label colorLabel = new()
+                {
+                    Text = "Click to change",
+                    Font = new Font("Segoe UI", 8),
+                    ForeColor = Color.Gray,
+                    Location = new Point(xPosition + 55, yPosition + 11),
+                    AutoSize = true
+                };
+                container.Controls.Add(colorLabel);
+            }
+
+            return colorPreview;
+        }
 
         /// <summary>
         /// Creates tab buttons for organizing properties.
