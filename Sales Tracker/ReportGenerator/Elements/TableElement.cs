@@ -627,14 +627,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static Panel General_Panel { get; private set; }
         public static Panel Style_Panel { get; private set; }
         public static Panel Columns_Panel { get; private set; }
-        public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
+        protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            // Create panels for each tab
-            General_Panel = CreateTabPanel(container, true);  // General container visible by default
+            // Create panels for each tab (only once)
+            General_Panel = CreateTabPanel(container, true);
             Style_Panel = CreateTabPanel(container, false);
             Columns_Panel = CreateTabPanel(container, false);
 
-            // Add panels to container
             container.Controls.Add(General_Panel);
             container.Controls.Add(Style_Panel);
             container.Controls.Add(Columns_Panel);
@@ -644,32 +643,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CreateStyleTabControls(Style_Panel, 0, onPropertyChanged);
             CreateColumnsTabControls(Columns_Panel, 0, onPropertyChanged);
 
-            // Tab changed handler that only shows/hides panels
-            static void tabChangedHandler(int tabIndex)
+            // Tab changed handler
+            static void TabChangedHandler(int tabIndex)
             {
-                // Hide all panels
-                General_Panel.Visible = false;
-                Style_Panel.Visible = false;
-                Columns_Panel.Visible = false;
-
-                // Show selected panel
-                switch (tabIndex)
-                {
-                    case 0:
-                        General_Panel.Visible = true;
-                        break;
-                    case 1:
-                        Style_Panel.Visible = true;
-                        break;
-                    case 2:
-                        Columns_Panel.Visible = true;
-                        break;
-                }
+                General_Panel.Visible = tabIndex == 0;
+                Style_Panel.Visible = tabIndex == 1;
+                Columns_Panel.Visible = tabIndex == 2;
             }
 
-            // Create tab buttons with the handler
+            // Create tab buttons
             string[] tabNames = ["General", "Style", "Columns"];
-            Panel tabPanel = CreateTabButtons(container, tabNames, tabChangedHandler);
+            Panel tabPanel = CreateTabButtons(container, tabNames, TabChangedHandler);
 
             return yPosition + 45;
         }
@@ -684,35 +668,39 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private void CreateGeneralTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Add common controls first
-            CreateCommonPropertyControls(
-                panel,
-                this,
-                yPosition,
-                onPropertyChanged,
-                out _);  // We don't need to register these since TableElement manages them directly
+            CreateCommonPropertyControls(panel, this, yPosition, onPropertyChanged,
+                out Dictionary<string, Action> commonUpdateActions);
+
+            // Cache the common control update actions
+            foreach (KeyValuePair<string, Action> kvp in commonUpdateActions)
+            {
+                CacheControl(kvp.Key, null, kvp.Value);
+            }
 
             yPosition += ControlRowHeight * 5;
 
             // Data selection combo box
             AddPropertyLabel(panel, "Data:", yPosition);
-            AddPropertyComboBox(panel, DataSelection.ToString(), yPosition,
+            Guna2ComboBox dataCombo = AddPropertyComboBox(panel, DataSelection.ToString(), yPosition,
                 Enum.GetNames<TableDataSelection>(),
                 value =>
                 {
                     DataSelection = Enum.Parse<TableDataSelection>(value);
                     onPropertyChanged();
                 });
+            CacheControl("DataSelection", dataCombo, () => dataCombo.SelectedItem = DataSelection.ToString());
             yPosition += ControlRowHeight;
 
             // Transaction type
             AddPropertyLabel(panel, "Type:", yPosition);
-            AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
+            Guna2ComboBox typeCombo = AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
                 ["Sales", "Purchases", "Both"],
                 value =>
                 {
                     TransactionType = Enum.Parse<TransactionType>(value);
                     onPropertyChanged();
                 });
+            CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
@@ -722,6 +710,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     IncludeReturns = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox returnsCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox
@@ -731,17 +721,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     IncludeLosses = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox lossesCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
             // Sort order combo box
             AddPropertyLabel(panel, "Sort:", yPosition);
-            AddPropertyComboBox(panel, FormatSortOrder(SortOrder), yPosition,
+            Guna2ComboBox sortCombo = AddPropertyComboBox(panel, FormatSortOrder(SortOrder), yPosition,
                 ["Date ↓", "Date ↑", "Amount ↓", "Amount ↑"],
                 value =>
                 {
                     SortOrder = ParseSortOrder(value);
                     onPropertyChanged();
                 });
+            CacheControl("SortOrder", sortCombo, () => sortCombo.SelectedItem = FormatSortOrder(SortOrder));
             yPosition += ControlRowHeight;
 
             // Max rows
@@ -752,118 +745,156 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 onPropertyChanged();
             }, 1, 100);
             numericUpDown.Left = 110;
+            CacheControl("MaxRows", numericUpDown, () => numericUpDown.Value = MaxRows);
             yPosition += ControlRowHeight;
 
             // Totals row
             AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
-                value => { ShowTotalsRow = value; onPropertyChanged(); });
+                value =>
+                {
+                    ShowTotalsRow = value;
+                    onPropertyChanged();
+                });
+            Guna2CustomCheckBox totalsCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowTotalsRow", totalsCheck, () => totalsCheck.Checked = ShowTotalsRow);
         }
         private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Font family
             AddPropertyLabel(panel, "Font:", yPosition);
-            AddPropertyComboBox(panel, FontFamily, yPosition,
+            Guna2ComboBox fontCombo = AddPropertyComboBox(panel, FontFamily, yPosition,
                 ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
                 value =>
                 {
                     FontFamily = value;
                     onPropertyChanged();
                 });
+            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(panel, "Font Size:", yPosition);
-            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition, value =>
+            Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition, value =>
             {
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 14);
-            numericUpDown.Left = 150;
+            fontSizeNumeric.Left = 150;
+            CacheControl("FontSize", fontSizeNumeric, () => fontSizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Row Height
             AddPropertyLabel(panel, "Row Height:", yPosition);
-            numericUpDown = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition, value =>
+            Guna2NumericUpDown rowHeightNumeric = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition, value =>
             {
                 DataRowHeight = (int)value;
                 onPropertyChanged();
             }, 15, 50);
-            numericUpDown.Left = 150;
+            rowHeightNumeric.Left = 150;
+            CacheControl("DataRowHeight", rowHeightNumeric, () => rowHeightNumeric.Value = DataRowHeight);
             yPosition += ControlRowHeight;
 
             // Header Row Height
             AddPropertyLabel(panel, "Header Height:", yPosition);
-            numericUpDown = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition, value =>
+            Guna2NumericUpDown headerHeightNumeric = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition, value =>
             {
                 HeaderRowHeight = (int)value;
                 onPropertyChanged();
             }, 20, 60);
-            numericUpDown.Left = 150;
+            headerHeightNumeric.Left = 150;
+            CacheControl("HeaderRowHeight", headerHeightNumeric, () => headerHeightNumeric.Value = HeaderRowHeight);
             yPosition += ControlRowHeight;
 
             // Cell Padding
             AddPropertyLabel(panel, "Cell Padding:", yPosition);
-            numericUpDown = AddPropertyNumericUpDown(panel, CellPadding, yPosition, value =>
+            Guna2NumericUpDown cellPaddingNumeric = AddPropertyNumericUpDown(panel, CellPadding, yPosition, value =>
             {
                 CellPadding = (int)value;
                 onPropertyChanged();
             }, 0, 20);
-            numericUpDown.Left = 150;
+            cellPaddingNumeric.Left = 150;
+            CacheControl("CellPadding", cellPaddingNumeric, () => cellPaddingNumeric.Value = CellPadding);
             yPosition += ControlRowHeight;
 
             // Display option checkboxes
             AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
                 value => { ShowHeaders = value; onPropertyChanged(); });
+            Guna2CustomCheckBox headersCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowHeaders", headersCheck, () => headersCheck.Checked = ShowHeaders);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
                 value => { AlternateRowColors = value; onPropertyChanged(); });
+            Guna2CustomCheckBox alternateCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("AlternateRowColors", alternateCheck, () => alternateCheck.Checked = AlternateRowColors);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
                 value => { ShowGridLines = value; onPropertyChanged(); });
+            Guna2CustomCheckBox gridCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowGridLines", gridCheck, () => gridCheck.Checked = ShowGridLines);
         }
         private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Add column visibility checkboxes
             AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
                 value => { ShowDateColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox dateCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowDateColumn", dateCheck, () => dateCheck.Checked = ShowDateColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
                 value => { ShowTransactionIdColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox idCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowTransactionIdColumn", idCheck, () => idCheck.Checked = ShowTransactionIdColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
                 value => { ShowCustomerSupplierColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox customerCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowCustomerSupplierColumn", customerCheck, () => customerCheck.Checked = ShowCustomerSupplierColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
                 value => { ShowProductColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox productCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowProductColumn", productCheck, () => productCheck.Checked = ShowProductColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
                 value => { ShowQuantityColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox quantityCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowQuantityColumn", quantityCheck, () => quantityCheck.Checked = ShowQuantityColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
                 value => { ShowUnitPriceColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox unitPriceCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowUnitPriceColumn", unitPriceCheck, () => unitPriceCheck.Checked = ShowUnitPriceColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
                 value => { ShowTotalColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox totalCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowTotalColumn", totalCheck, () => totalCheck.Checked = ShowTotalColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
                 value => { ShowStatusColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox statusCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowStatusColumn", statusCheck, () => statusCheck.Checked = ShowStatusColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
                 value => { ShowAccountantColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox accountantCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowAccountantColumn", accountantCheck, () => accountantCheck.Checked = ShowAccountantColumn);
             yPosition += CheckBoxRowHeight;
 
             AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
                 value => { ShowShippingColumn = value; onPropertyChanged(); });
+            Guna2CustomCheckBox shippingCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowShippingColumn", shippingCheck, () => shippingCheck.Checked = ShowShippingColumn);
         }
 
         // Helper methods

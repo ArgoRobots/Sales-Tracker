@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.DataClasses;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -322,7 +323,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             graphics.DrawString(DisplayName ?? "Summary", font, textBrush, Bounds, format);
         }
-        public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
+        protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Section header for included metrics
             AddPropertyLabel(container, "Include:", yPosition, true);
@@ -330,33 +331,36 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Transaction type
             AddPropertyLabel(container, "Type:", yPosition);
-            AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
+            Guna2ComboBox typeCombo = AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
                 ["Sales", "Purchases", "Both"],
                 value =>
                 {
                     TransactionType = Enum.Parse<TransactionType>(value);
                     onPropertyChanged();
                 });
+            CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
-            AddPropertyComboBox(container, FontFamily, yPosition,
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
                 ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
                 value =>
                 {
                     FontFamily = value;
                     onPropertyChanged();
                 });
+            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
-            AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            Guna2NumericUpDown sizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
             {
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 8, 20);
+            CacheControl("FontSize", sizeNumeric, () => sizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Font style toggle buttons
@@ -366,28 +370,31 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontStyle = style;
                 onPropertyChanged();
             });
+            // Note: Font style buttons need special handling for updates
             yPosition += ControlRowHeight;
 
             // Horizontal alignment
             AddPropertyLabel(container, "Align:", yPosition);
-            AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
                 ["Left", "Center", "Right"],
                 value =>
                 {
                     Alignment = DisplayTextToAlignment(value);
                     onPropertyChanged();
                 });
+            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
                 ["Top", "Middle", "Bottom"],
                 value =>
                 {
                     VerticalAlignment = DisplayTextToVerticalAlignment(value);
                     onPropertyChanged();
                 });
+            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
@@ -397,6 +404,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     IncludeReturns = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox returnsCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox  
@@ -406,6 +415,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     IncludeLosses = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox lossesCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
             // Total Sales checkbox with clickable label
@@ -415,6 +426,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowTotalSales = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox salesCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowTotalSales", salesCheck, () => salesCheck.Checked = ShowTotalSales);
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
@@ -424,6 +437,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowTotalTransactions = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox transactionsCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowTotalTransactions", transactionsCheck, () => transactionsCheck.Checked = ShowTotalTransactions);
             yPosition += CheckBoxRowHeight;
 
             // Average Value checkbox
@@ -433,6 +448,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowAverageValue = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox avgCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowAverageValue", avgCheck, () => avgCheck.Checked = ShowAverageValue);
             yPosition += CheckBoxRowHeight;
 
             // Growth Rate checkbox
@@ -442,6 +459,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowGrowthRate = value;
                     onPropertyChanged();
                 });
+            Guna2CustomCheckBox growthCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
+            CacheControl("ShowGrowthRate", growthCheck, () => growthCheck.Checked = ShowGrowthRate);
             yPosition += CheckBoxRowHeight + 10;
 
             return yPosition;

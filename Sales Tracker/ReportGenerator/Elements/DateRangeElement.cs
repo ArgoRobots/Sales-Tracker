@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.ReportGenerator.Elements
+﻿using Guna.UI2.WinForms;
+
+namespace Sales_Tracker.ReportGenerator.Elements
 {
     /// <summary>
     /// Date range element for displaying report date filters.
@@ -73,37 +75,40 @@
             // Draw actual date range with current settings
             RenderElement(graphics, null);
         }
-        public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
+        protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Date format
             AddPropertyLabel(container, "Format:", yPosition);
-            AddPropertyComboBox(container, DateFormat, yPosition,
+            Guna2ComboBox formatCombo = AddPropertyComboBox(container, DateFormat, yPosition,
                 ["yyyy-MM-dd", "MM/dd/yyyy", "dd/MM/yyyy", "MMM dd, yyyy", "MMMM dd, yyyy"],
                 value =>
                 {
                     DateFormat = value;
                     onPropertyChanged();
                 });
+            CacheControl("DateFormat", formatCombo, () => formatCombo.SelectedItem = DateFormat);
             yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
-            AddPropertyComboBox(container, FontFamily, yPosition,
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
                 ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
                 value =>
                 {
                     FontFamily = value;
                     onPropertyChanged();
                 });
+            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(container, "Size:", yPosition);
-            AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            Guna2NumericUpDown sizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
             {
                 FontSize = (float)value;
                 onPropertyChanged();
             }, 6, 24);
+            CacheControl("FontSize", sizeNumeric, () => sizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Font style toggle buttons
@@ -113,37 +118,41 @@
                 FontStyle = style;
                 onPropertyChanged();
             });
+            // Note: Font style buttons need special handling for updates
             yPosition += ControlRowHeight;
 
             // Horizontal alignment
             AddPropertyLabel(container, "Align:", yPosition);
-            AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
                 ["Left", "Center", "Right"],
                 value =>
                 {
                     Alignment = DisplayTextToAlignment(value);
                     onPropertyChanged();
                 });
+            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
                 ["Top", "Middle", "Bottom"],
                 value =>
                 {
                     VerticalAlignment = DisplayTextToVerticalAlignment(value);
                     onPropertyChanged();
                 });
+            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
             // Text color
             AddPropertyLabel(container, "Color:", yPosition);
-            AddColorPicker(container, yPosition, 85, TextColor, color =>
+            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor, color =>
             {
                 TextColor = color;
                 onPropertyChanged();
             });
+            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             return yPosition;

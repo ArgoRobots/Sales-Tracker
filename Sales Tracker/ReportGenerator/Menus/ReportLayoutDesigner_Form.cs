@@ -33,11 +33,7 @@ namespace Sales_Tracker.ReportGenerator
         private bool _isMultiSelecting = false;
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
-
-        // Property controls caching
-        private string _currentElementId = null;
-        private readonly Dictionary<string, Control> _propertyControls = [];
-        private readonly Dictionary<string, Action> _updateActions = [];
+        private BaseElement _currentPropertyElement = null;
 
         /// <summary>
         /// Gets the parent report generator form.
@@ -1293,56 +1289,46 @@ namespace Sales_Tracker.ReportGenerator
 
             ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
 
-            // Check if we need to create new controls
-            if (_currentElementId != _selectedElement.Id)
+            // Only recreate if different element selected
+            if (_currentPropertyElement != _selectedElement)
             {
-                // Clear old controls
-                PropertiesContainer_Panel.Controls.Clear();
-                _propertyControls.Clear();
-                _updateActions.Clear();
+                _currentPropertyElement = _selectedElement;
 
-                _currentElementId = _selectedElement.Id;
+                // Element handles its own caching internally
+                _selectedElement.CreatePropertyControls(
+                    PropertiesContainer_Panel,
+                    10,
+                    OnPropertyChanged);
 
-                int yPosition = 10;
-
-                // Only create common controls if element doesn't handle its own
-                if (!_selectedElement.HandlesOwnCommonControls)
-                {
-                    Dictionary<string, Control> commonControls = BaseElement.CreateCommonPropertyControls(
-                        PropertiesContainer_Panel,
-                        _selectedElement,
-                        yPosition,
-                        OnPropertyChanged,
-                        out Dictionary<string, Action> commonUpdateActions);
-
-                    // Register the controls and update actions
-                    foreach (KeyValuePair<string, Control> kvp in commonControls)
-                    {
-                        _propertyControls[kvp.Key] = kvp.Value;
-                    }
-                    foreach (KeyValuePair<string, Action> kvp in commonUpdateActions)
-                    {
-                        _updateActions[kvp.Key] = kvp.Value;
-                    }
-
-                    yPosition += BaseElement.ControlRowHeight * 5;
-                }
-
-                CreateElementSpecificControls(yPosition);
                 UpdatePropertyContainerTheme();
             }
-
-            UpdatePropertyValues();
+            else
+            {
+                // Just update values, controls already exist
+                _selectedElement.CreatePropertyControls(
+                    PropertiesContainer_Panel,
+                    10,
+                    OnPropertyChanged);
+            }
         }
         private void UpdatePropertyContainerTheme()
         {
-            // Only set the theme of its controls, not the panel itself
-            List<Control> controls = PropertiesContainer_Panel.Controls
-                .Cast<Control>()
-                .Where(c => c.Tag?.ToString() != BaseElement.ColorPickerTag)
-                .ToList();
+            // Get the cached panel if it exists
+            Panel cachedPanel = PropertiesContainer_Panel.Controls.OfType<Panel>().FirstOrDefault();
 
-            ThemeManager.SetThemeForControls(controls);
+            if (cachedPanel != null)
+            {
+                // Set the BackColor of the cached panel itself
+                cachedPanel.BackColor = CustomColors.ControlBack;
+
+                // Get controls from inside the cached panel
+                List<Control> controls = cachedPanel.Controls
+                    .Cast<Control>()
+                    .Where(c => c.Tag?.ToString() != BaseElement.ColorPickerTag)
+                    .ToList();
+
+                ThemeManager.SetThemeForControls(controls);
+            }
 
             // Set BackColor for TableElement's tab panels if this is a TableElement
             if (_selectedElement is TableElement)
@@ -1365,10 +1351,13 @@ namespace Sales_Tracker.ReportGenerator
                 }
             }
 
-            // Find all CheckBoxes inside PropertiesContainer_Panel
-            foreach (Guna2CustomCheckBox checkBox in PropertiesContainer_Panel.Controls.OfType<Guna2CustomCheckBox>())
+            // Find all CheckBoxes inside the cached panel
+            if (cachedPanel != null)
             {
-                checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
+                foreach (Guna2CustomCheckBox checkBox in cachedPanel.Controls.OfType<Guna2CustomCheckBox>())
+                {
+                    checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
+                }
             }
 
             // Also find the CheckBoxes inside TableElement's tab panels if this is a TableElement
@@ -1378,44 +1367,29 @@ namespace Sales_Tracker.ReportGenerator
 
                 foreach (Panel panel in tabPanels)
                 {
-                    foreach (Guna2CustomCheckBox checkBox in panel.Controls.OfType<Guna2CustomCheckBox>())
+                    if (panel != null)
                     {
-                        checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
+                        foreach (Guna2CustomCheckBox checkBox in panel.Controls.OfType<Guna2CustomCheckBox>())
+                        {
+                            checkBox.UncheckedState.FillColor = CustomColors.MainBackground;
+                        }
                     }
                 }
             }
         }
-        private int CreateElementSpecificControls(int yPosition)
-        {
-            if (_selectedElement == null) { return yPosition; }
-
-            // Let the element create its own specific controls
-            return _selectedElement.CreatePropertyControls(
-                PropertiesContainer_Panel,
-                yPosition,
-                OnPropertyChanged);
-        }
         private void UpdatePropertyValues()
         {
-            if (_selectedElement == null || _currentElementId != _selectedElement.Id)
-            {
-                CreateOrShowPropertiesPanel();
-                return;
-            }
-
-            // Update all registered property controls
-            foreach (Action updateAction in _updateActions.Values)
-            {
-                updateAction?.Invoke();
-            }
+            // Element handles its own value updates internally
+            _selectedElement?.CreatePropertyControls(
+                PropertiesContainer_Panel,
+                10,
+                OnPropertyChanged);
         }
         private void HidePropertiesPanel()
         {
             ElementProperties_Label.Text = "No element selected";
             PropertiesContainer_Panel.Controls.Clear();
-            _propertyControls.Clear();
-            _updateActions.Clear();
-            _currentElementId = null;
+            _currentPropertyElement = null;
         }
         private void OnPropertyChanged()
         {
