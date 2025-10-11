@@ -717,24 +717,22 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
-            AddPropertyCheckBoxWithLabel(panel, "Include Returns", IncludeReturns, yPosition,
+            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(panel, "Include Returns", IncludeReturns, yPosition,
                 value =>
                 {
                     IncludeReturns = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox returnsCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox
-            AddPropertyCheckBoxWithLabel(panel, "Include Losses", IncludeLosses, yPosition,
+            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(panel, "Include Losses", IncludeLosses, yPosition,
                 value =>
                 {
                     IncludeLosses = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox lossesCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
@@ -762,13 +760,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Totals row
-            AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
+            Guna2CustomCheckBox totalsCheck = AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
                 value =>
                 {
                     ShowTotalsRow = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox totalsCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowTotalsRow", totalsCheck, () => totalsCheck.Checked = ShowTotalsRow);
         }
         private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
@@ -830,83 +827,70 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Display option checkboxes
-            AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
+            Guna2CustomCheckBox headersCheck = AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
                 value => { ShowHeaders = value; onPropertyChanged(); });
-            Guna2CustomCheckBox headersCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowHeaders", headersCheck, () => headersCheck.Checked = ShowHeaders);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
+            Guna2CustomCheckBox alternateCheck = AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
                 value => { AlternateRowColors = value; onPropertyChanged(); });
-            Guna2CustomCheckBox alternateCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("AlternateRowColors", alternateCheck, () => alternateCheck.Checked = AlternateRowColors);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
+            Guna2CustomCheckBox gridCheck = AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
                 value => { ShowGridLines = value; onPropertyChanged(); });
-            Guna2CustomCheckBox gridCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowGridLines", gridCheck, () => gridCheck.Checked = ShowGridLines);
         }
         private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Add column visibility checkboxes
-            AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
+            Guna2CustomCheckBox dateCheck = AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
                 value => { ShowDateColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox dateCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowDateColumn", dateCheck, () => dateCheck.Checked = ShowDateColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
+            Guna2CustomCheckBox idCheck = AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
                 value => { ShowTransactionIdColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox idCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowTransactionIdColumn", idCheck, () => idCheck.Checked = ShowTransactionIdColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
+            Guna2CustomCheckBox customerCheck = AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
                 value => { ShowCustomerSupplierColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox customerCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowCustomerSupplierColumn", customerCheck, () => customerCheck.Checked = ShowCustomerSupplierColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
+            Guna2CustomCheckBox productCheck = AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
                 value => { ShowProductColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox productCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowProductColumn", productCheck, () => productCheck.Checked = ShowProductColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
+            Guna2CustomCheckBox quantityCheck = AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
                 value => { ShowQuantityColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox quantityCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowQuantityColumn", quantityCheck, () => quantityCheck.Checked = ShowQuantityColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
+            Guna2CustomCheckBox unitPriceCheck = AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
                 value => { ShowUnitPriceColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox unitPriceCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowUnitPriceColumn", unitPriceCheck, () => unitPriceCheck.Checked = ShowUnitPriceColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
+            Guna2CustomCheckBox totalCheck = AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
                 value => { ShowTotalColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox totalCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowTotalColumn", totalCheck, () => totalCheck.Checked = ShowTotalColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
+            Guna2CustomCheckBox statusCheck = AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
                 value => { ShowStatusColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox statusCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowStatusColumn", statusCheck, () => statusCheck.Checked = ShowStatusColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
+            Guna2CustomCheckBox accountantCheck = AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
                 value => { ShowAccountantColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox accountantCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowAccountantColumn", accountantCheck, () => accountantCheck.Checked = ShowAccountantColumn);
             yPosition += CheckBoxRowHeight;
 
-            AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
+            Guna2CustomCheckBox shippingCheck = AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
                 value => { ShowShippingColumn = value; onPropertyChanged(); });
-            Guna2CustomCheckBox shippingCheck = panel.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowShippingColumn", shippingCheck, () => shippingCheck.Checked = ShowShippingColumn);
         }
 

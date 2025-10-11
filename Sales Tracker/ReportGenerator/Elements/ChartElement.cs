@@ -660,28 +660,22 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
-            AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
+            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
                 value =>
                 {
                     ShowLegend = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox legendCheck = container.Controls
-                .OfType<Guna2CustomCheckBox>()
-                .LastOrDefault();
             CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
             yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
-            AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
+            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
                 value =>
                 {
                     ShowTitle = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox titleCheck = container.Controls
-                .OfType<Guna2CustomCheckBox>()
-                .LastOrDefault();
             CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
             yPosition += CheckBoxRowHeight;
 

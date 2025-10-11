@@ -398,68 +398,62 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
-            AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
+            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
                 value =>
                 {
                     IncludeReturns = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox returnsCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox  
-            AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
+            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
                 value =>
                 {
                     IncludeLosses = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox lossesCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
             // Total Sales checkbox with clickable label
-            AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,
+            Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,
                 value =>
                 {
                     ShowTotalSales = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox salesCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowTotalSales", salesCheck, () => salesCheck.Checked = ShowTotalSales);
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
-            AddPropertyCheckBoxWithLabel(container, "Total Transactions", ShowTotalTransactions, yPosition,
+            Guna2CustomCheckBox transactionsCheck = AddPropertyCheckBoxWithLabel(container, "Total Transactions", ShowTotalTransactions, yPosition,
                 value =>
                 {
                     ShowTotalTransactions = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox transactionsCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowTotalTransactions", transactionsCheck, () => transactionsCheck.Checked = ShowTotalTransactions);
             yPosition += CheckBoxRowHeight;
 
             // Average Value checkbox
-            AddPropertyCheckBoxWithLabel(container, "Average Value", ShowAverageValue, yPosition,
+            Guna2CustomCheckBox avgCheck = AddPropertyCheckBoxWithLabel(container, "Average Value", ShowAverageValue, yPosition,
                 value =>
                 {
                     ShowAverageValue = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox avgCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowAverageValue", avgCheck, () => avgCheck.Checked = ShowAverageValue);
             yPosition += CheckBoxRowHeight;
 
             // Growth Rate checkbox
-            AddPropertyCheckBoxWithLabel(container, "Growth Rate", ShowGrowthRate, yPosition,
+            Guna2CustomCheckBox growthCheck = AddPropertyCheckBoxWithLabel(container, "Growth Rate", ShowGrowthRate, yPosition,
                 value =>
                 {
                     ShowGrowthRate = value;
                     onPropertyChanged();
                 });
-            Guna2CustomCheckBox growthCheck = container.Controls.OfType<Guna2CustomCheckBox>().LastOrDefault();
             CacheControl("ShowGrowthRate", growthCheck, () => growthCheck.Checked = ShowGrowthRate);
             yPosition += CheckBoxRowHeight + 10;
 
