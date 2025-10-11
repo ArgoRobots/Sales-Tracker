@@ -1337,7 +1337,11 @@ namespace Sales_Tracker.ReportGenerator
         private void UpdatePropertyContainerTheme()
         {
             // Only set the theme of its controls, not the panel itself
-            List<Control> controls = PropertiesContainer_Panel.Controls.Cast<Control>().ToList();
+            List<Control> controls = PropertiesContainer_Panel.Controls
+                .Cast<Control>()
+                .Where(c => c.Tag?.ToString() != BaseElement.ColorPickerTag)
+                .ToList();
+
             ThemeManager.SetThemeForControls(controls);
 
             // Set BackColor for TableElement's tab panels if this is a TableElement

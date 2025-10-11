@@ -352,6 +352,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         public static Panel Tab_Panel { get; private set; }
+        public static readonly string ColorPickerTag = "ColorPicker";
 
         /// <summary>
         /// Adds a color picker control with an optional label.
@@ -370,7 +371,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 BorderStyle = BorderStyle.FixedSingle,
                 Size = new Size(50, 30),
                 Location = new Point(xPosition, yPosition + 8),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Tag = ColorPickerTag
             };
 
             colorPreview.Click += (s, e) =>

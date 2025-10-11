@@ -14,8 +14,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         Stretch,  // Stretch to fill bounds (may distort)
         Fit,      // Fit within bounds (maintain aspect ratio)
         Fill,     // Fill bounds (maintain aspect ratio, may crop)
-        Center,   // Center at original size
-        Tile      // Tile the image
+        Center    // Center at original size
     }
 
     /// <summary>
@@ -293,7 +292,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ImageScaleMode.Fit => CalculateFitBounds(imageAspect, boundsAspect),
                 ImageScaleMode.Fill => CalculateFillBounds(imageAspect, boundsAspect),
                 ImageScaleMode.Center => CalculateCenterBounds(),
-                ImageScaleMode.Tile => Bounds,
                 _ => Bounds
             };
         }
