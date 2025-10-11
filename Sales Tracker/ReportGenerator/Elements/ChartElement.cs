@@ -666,7 +666,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ShowLegend = value;
                     onPropertyChanged();
                 });
-            // Store reference to the checkbox for updates
             Guna2CustomCheckBox legendCheck = container.Controls
                 .OfType<Guna2CustomCheckBox>()
                 .LastOrDefault();

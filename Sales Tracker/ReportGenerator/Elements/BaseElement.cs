@@ -120,12 +120,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _controlsCreated = true;
             }
 
-            // Clear container and add cached panel
-            container.Controls.Clear();
-
-            if (_cachedPropertyPanel != null)
+            // Only clear and add if the cached panel isn't already in the container
+            if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
             {
-                _cachedPropertyPanel.Parent?.Controls.Remove(_cachedPropertyPanel);
+                container.Controls.Clear();
                 container.Controls.Add(_cachedPropertyPanel);
             }
 
