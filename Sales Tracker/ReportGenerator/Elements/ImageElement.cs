@@ -489,6 +489,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             guna2NumericUpDown.Left = 170;
             yPosition += ControlRowHeight;
 
+
+            // Corner radius
+            AddPropertyLabel(container, "Border radius:", yPosition);
+            guna2NumericUpDown = AddPropertyNumericUpDown(container, CornerRadius, yPosition, value =>
+            {
+                CornerRadius = (int)value;
+                onPropertyChanged();
+            }, 0, 50);
+            guna2NumericUpDown.Left = 170;
+            yPosition += ControlRowHeight;
+
             // Border thickness
             AddPropertyLabel(container, "Border thickness:", yPosition);
             guna2NumericUpDown = AddPropertyNumericUpDown(container, BorderThickness, yPosition, value =>
@@ -499,64 +510,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
             guna2NumericUpDown.Left = 170;
             yPosition += ControlRowHeight;
 
-            // Corner radius
-            AddPropertyLabel(container, "Radius:", yPosition);
-            guna2NumericUpDown = AddPropertyNumericUpDown(container, CornerRadius, yPosition, value =>
-            {
-                CornerRadius = (int)value;
-                onPropertyChanged();
-            }, 0, 50);
-            guna2NumericUpDown.Left = 170;
-            yPosition += ControlRowHeight;
-
             // Border color
             AddPropertyLabel(container, "Border Color:", yPosition);
-            AddColorPicker(container, yPosition, BorderColor, color =>
-               {
-                   BorderColor = color;
-                   onPropertyChanged();
-               });
-            guna2NumericUpDown.Left = 170;
+            AddColorPicker(container, yPosition, 170, BorderColor, color =>
+            {
+                BorderColor = color;
+                onPropertyChanged();
+            }, showLabel: false);
             yPosition += ControlRowHeight;
 
             // Background color
             AddPropertyLabel(container, "Background color:", yPosition);
-            AddColorPicker(container, yPosition, BackgroundColor, color =>
+            AddColorPicker(container, yPosition, 170, BackgroundColor, color =>
             {
                 BackgroundColor = color;
                 onPropertyChanged();
-            });
+            }, showLabel: false);
             yPosition += ControlRowHeight;
 
             return yPosition;
-        }
-        private static void AddColorPicker(Panel container, int yPosition, Color currentColor, Action<Color> onColorChanged)
-        {
-            Panel colorPreview = new()
-            {
-                BackColor = currentColor,
-                BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(50, 30),
-                Location = new Point(170, yPosition + 8),
-                Cursor = Cursors.Hand
-            };
-
-            colorPreview.Click += (s, e) =>
-            {
-                ColorDialog colorDialog = new()
-                {
-                    Color = currentColor,
-                    FullOpen = true
-                };
-
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    colorPreview.BackColor = colorDialog.Color;
-                    onColorChanged(colorDialog.Color);
-                }
-            };
-
-            container.Controls.Add(colorPreview);
         }
     }
 }
