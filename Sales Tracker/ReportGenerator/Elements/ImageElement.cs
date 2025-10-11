@@ -428,7 +428,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using SolidBrush overlayBrush = new(Color.FromArgb(10, 0, 0, 255));
             graphics.FillRectangle(overlayBrush, Bounds);
         }
-        public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
+        protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Image path
             AddPropertyLabel(container, "Image:", yPosition);
@@ -446,6 +446,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             container.Controls.Add(browseButton);
+            CacheControl("BrowseButton", browseButton, null);  // No update action needed
             yPosition += ControlRowHeight;
 
             // Path label
@@ -458,6 +459,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 AutoSize = true
             };
             container.Controls.Add(pathLabel);
+            CacheControl("PathLabel", pathLabel, () =>
+                pathLabel.Text = !string.IsNullOrEmpty(ImagePath) ? Path.GetFileName(ImagePath) : "No image selected");
 
             // Update browse button click handler to update the label
             browseButton.Click += (s, e) =>
@@ -490,62 +493,67 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Scale mode
             AddPropertyLabel(container, "Scale:", yPosition);
-            AddPropertyComboBox(container, ScaleMode.ToString(), yPosition,
+            Guna2ComboBox scaleCombo = AddPropertyComboBox(container, ScaleMode.ToString(), yPosition,
                 Enum.GetNames<ImageScaleMode>(),
                 value =>
                 {
                     ScaleMode = Enum.Parse<ImageScaleMode>(value);
                     onPropertyChanged();
                 });
+            CacheControl("ScaleMode", scaleCombo, () => scaleCombo.SelectedItem = ScaleMode.ToString());
             yPosition += ControlRowHeight;
 
             // Opacity
             AddPropertyLabel(container, "Opacity:", yPosition);
-            Guna2NumericUpDown guna2NumericUpDown = AddPropertyNumericUpDown(container, Opacity, yPosition, value =>
+            Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition, value =>
             {
                 Opacity = (byte)value;
                 onPropertyChanged();
             }, 0, 255);
-            guna2NumericUpDown.Left = 170;
+            opacityNumeric.Left = 170;
+            CacheControl("Opacity", opacityNumeric, () => opacityNumeric.Value = Opacity);
             yPosition += ControlRowHeight;
 
-
-            // Corner radius (now as percentage)
+            // Corner radius
             AddPropertyLabel(container, "Border radius %:", yPosition);
-            guna2NumericUpDown = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition, value =>
+            Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition, value =>
             {
                 CornerRadius_Percent = (int)value;
                 onPropertyChanged();
             }, 0, 100);
-            guna2NumericUpDown.Left = 170;
+            radiusNumeric.Left = 170;
+            CacheControl("CornerRadius_Percent", radiusNumeric, () => radiusNumeric.Value = CornerRadius_Percent);
             yPosition += ControlRowHeight;
 
             // Border thickness
             AddPropertyLabel(container, "Border thickness:", yPosition);
-            guna2NumericUpDown = AddPropertyNumericUpDown(container, BorderThickness, yPosition, value =>
+            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition, value =>
             {
                 BorderThickness = (int)value;
                 onPropertyChanged();
             }, 0, 20);
-            guna2NumericUpDown.Left = 170;
+            thicknessNumeric.Left = 170;
+            CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             AddPropertyLabel(container, "Border Color:", yPosition);
-            AddColorPicker(container, yPosition, 170, BorderColor, color =>
+            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor, color =>
             {
                 BorderColor = color;
                 onPropertyChanged();
             }, showLabel: false);
+            CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Background color
             AddPropertyLabel(container, "Background color:", yPosition);
-            AddColorPicker(container, yPosition, 170, BackgroundColor, color =>
+            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor, color =>
             {
                 BackgroundColor = color;
                 onPropertyChanged();
             }, showLabel: false);
+            CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
             return yPosition;

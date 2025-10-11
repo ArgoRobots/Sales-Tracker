@@ -42,16 +42,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool IsVisible { get; set; } = true;
 
         /// <summary>
-        /// Cached property controls panel to avoid recreation.
-        /// </summary>
-        private Panel _cachedPropertyPanel;
-
-        /// <summary>
-        /// Flag to track if property controls have been created.
-        /// </summary>
-        private bool _propertyControlsCreated = false;
-
-        /// <summary>
         /// Gets the height of each row for the element in the designer.
         /// </summary>
         public static byte ControlRowHeight { get; } = 55;
@@ -80,39 +70,98 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void DrawDesignerElement(Graphics graphics);
 
+        private Panel _cachedPropertyPanel;
+        private bool _controlsCreated = false;
+        private readonly Dictionary<string, Control> _controlCache = [];
+        private readonly Dictionary<string, Action> _updateActionCache = [];
+
         /// <summary>
-        /// Public method that handles caching of property controls.
+        /// Creates or retrieves cached property controls. Only creates controls once.
         /// </summary>
         public virtual int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            // If controls haven't been created yet, create them
-            if (!_propertyControlsCreated)
+            // Create controls only once
+            if (!_controlsCreated)
             {
-                // Create a panel to hold all property controls
                 _cachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
-                    Size = container.Size,
+                    Size = new Size(container.Width - 5, container.Height),
+                    AutoSize = false,
+                    AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
 
-                _propertyControlsCreated = true;
+                // Create common controls if element doesn't handle its own
+                if (!HandlesOwnCommonControls)
+                {
+                    Dictionary<string, Control> commonControls = CreateCommonPropertyControls(
+                        _cachedPropertyPanel,
+                        this,
+                        yPosition,
+                        onPropertyChanged,
+                        out Dictionary<string, Action> commonUpdateActions);
+
+                    foreach (KeyValuePair<string, Control> kvp in commonControls)
+                    {
+                        _controlCache[kvp.Key] = kvp.Value;
+                    }
+                    foreach (KeyValuePair<string, Action> kvp in commonUpdateActions)
+                    {
+                        _updateActionCache[kvp.Key] = kvp.Value;
+                    }
+
+                    yPosition += ControlRowHeight * 5;
+                }
+
+                // Let derived classes create their specific controls
+                yPosition = CreateElementSpecificControls(_cachedPropertyPanel, yPosition, onPropertyChanged);
+
+                _controlsCreated = true;
             }
 
-            // Clear the container
-            container.Controls.Clear();
-
-            // Add the cached panel to the container
-            if (_cachedPropertyPanel != null)
+            // Only clear and add if the cached panel isn't already in the container
+            if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
             {
-                // Remove from any previous parent
-                _cachedPropertyPanel.Parent?.Controls.Remove(_cachedPropertyPanel);
-
-                // Add to new container
+                container.Controls.Clear();
                 container.Controls.Add(_cachedPropertyPanel);
             }
 
+            UpdateAllControlValues();
+
             return yPosition;
+        }
+
+        /// <summary>
+        /// Creates element-specific property controls. Override this in derived classes.
+        /// Store controls and update actions in _controlCache and _updateActionCache.
+        /// </summary>
+        protected virtual int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
+        {
+            return yPosition;
+        }
+
+        /// <summary>
+        /// Updates all cached control values without recreating them.
+        /// </summary>
+        protected void UpdateAllControlValues()
+        {
+            foreach (Action updateAction in _updateActionCache.Values)
+            {
+                updateAction?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Adds a control and its update action to the cache.
+        /// </summary>
+        protected void CacheControl(string key, Control control, Action updateAction)
+        {
+            _controlCache[key] = control;
+            if (updateAction != null)
+            {
+                _updateActionCache[key] = updateAction;
+            }
         }
 
         /// <summary>

@@ -622,28 +622,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
             string text = DisplayName ?? ChartType.ToString();
             graphics.DrawString(text, font, textBrush, Bounds, format);
         }
-        public override int CreatePropertyControls(Panel container, int yPosition, Action onPropertyChanged)
+        protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Chart type selector
             AddPropertyLabel(container, "Chart:", yPosition);
-            AddPropertyComboBox(container, ChartType.ToString(), yPosition,
+            Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
                 GetAvailableChartTypes(),
                 value =>
                 {
                     ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
                     onPropertyChanged();
                 });
+            CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
             yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
-            AddPropertyComboBox(container, FontFamily, yPosition,
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
                 ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
                 value =>
                 {
                     FontFamily = value;
                     onPropertyChanged();
                 });
+            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
@@ -654,24 +656,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 onPropertyChanged();
             }, 8, 20);
             numericUpDown.Left = 110;
+            CacheControl("FontSize", numericUpDown, () => numericUpDown.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
-            AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
+            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
                 value =>
                 {
                     ShowLegend = value;
                     onPropertyChanged();
                 });
+            CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
             yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
-            AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
+            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
                 value =>
                 {
                     ShowTitle = value;
                     onPropertyChanged();
                 });
+            CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
             yPosition += CheckBoxRowHeight;
 
             return yPosition;
