@@ -445,6 +445,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
+            container.Controls.Add(browseButton);
+            yPosition += ControlRowHeight;
+
+            // Path label
+            Label pathLabel = new()
+            {
+                Text = !string.IsNullOrEmpty(ImagePath) ? Path.GetFileName(ImagePath) : "No image selected",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(85, yPosition),
+                AutoSize = true
+            };
+            container.Controls.Add(pathLabel);
+
+            // Update browse button click handler to update the label
             browseButton.Click += (s, e) =>
             {
                 using OpenFileDialog openDialog = new();
@@ -463,27 +478,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     _cachedImage = null;
                     _cachedSvg = null;
                     _cachedImagePath = null;
+
+                    // Update the label immediately
+                    pathLabel.Text = Path.GetFileName(ImagePath);
+
                     onPropertyChanged();
                 }
             };
 
-            container.Controls.Add(browseButton);
-            yPosition += ControlRowHeight;
-
-            // Display current path
-            if (!string.IsNullOrEmpty(ImagePath))
-            {
-                Label pathLabel = new()
-                {
-                    Text = Path.GetFileName(ImagePath),
-                    Font = new Font("Segoe UI", 8),
-                    ForeColor = Color.Gray,
-                    Location = new Point(85, yPosition),
-                    AutoSize = true
-                };
-                container.Controls.Add(pathLabel);
-                yPosition += 35;
-            }
+            yPosition += 35;
 
             // Scale mode
             AddPropertyLabel(container, "Scale:", yPosition);
