@@ -123,7 +123,7 @@ namespace Sales_Tracker.ReportGenerator
             Previous_Button.FillColor = Color.White;
             Previous_Button.Font = new Font("Segoe UI", 11F);
             Previous_Button.ForeColor = Color.Black;
-            Previous_Button.Location = new Point(989, 16);
+            Previous_Button.Location = new Point(976, 16);
             Previous_Button.Margin = new Padding(6, 5, 6, 5);
             Previous_Button.Name = "Previous_Button";
             Previous_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -146,7 +146,7 @@ namespace Sales_Tracker.ReportGenerator
             Next_Button.FillColor = Color.White;
             Next_Button.Font = new Font("Segoe UI", 11F);
             Next_Button.ForeColor = Color.Black;
-            Next_Button.Location = new Point(1151, 16);
+            Next_Button.Location = new Point(1138, 16);
             Next_Button.Margin = new Padding(6, 5, 6, 5);
             Next_Button.Name = "Next_Button";
             Next_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -169,7 +169,7 @@ namespace Sales_Tracker.ReportGenerator
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 11F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(1313, 16);
+            Cancel_Button.Location = new Point(1300, 16);
             Cancel_Button.Margin = new Padding(6, 5, 6, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
