@@ -133,6 +133,14 @@ namespace Sales_Tracker.ReportGenerator
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
+        private void PageNumber_NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Remove Windows "ding" noise when user presses enter
+                e.SuppressKeyPress = true;
+            }
+        }
         private void Close_Button_Click(object sender, EventArgs e)
         {
             Close();

@@ -248,6 +248,7 @@
             PageNumber_NumericUpDown.Size = new Size(120, 50);
             PageNumber_NumericUpDown.TabIndex = 33;
             PageNumber_NumericUpDown.ValueChanged += PageNumber_NumericUpDown_ValueChanged;
+            PageNumber_NumericUpDown.KeyDown += PageNumber_NumericUpDown_KeyDown;
             // 
             // PageSettings_Form
             // 

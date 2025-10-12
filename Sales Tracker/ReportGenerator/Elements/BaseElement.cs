@@ -328,6 +328,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Maximum = max,
                 Value = value
             };
+            numericUpDown.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    // Remove Windows "ding" noise when user presses enter
+                    e.SuppressKeyPress = true;
+                }
+            };
 
             numericUpDown.DisableScrollAndForwardToPanel();
 
