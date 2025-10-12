@@ -520,9 +520,9 @@ namespace Sales_Tracker.ReportGenerator
                     {
                         actualDeltaY = Math.Max(actualDeltaY, -testBounds.Y);
                     }
-                    else if (newY + testBounds.Height > Canvas_Panel.Height)
+                    else if (newY + testBounds.Height > pageSize.Height)
                     {
-                        actualDeltaY = Math.Min(actualDeltaY, Canvas_Panel.Height - testBounds.Height - testBounds.Y);
+                        actualDeltaY = Math.Min(actualDeltaY, pageSize.Height - testBounds.Height - testBounds.Y);
                     }
                 }
 
@@ -1567,8 +1567,9 @@ namespace Sales_Tracker.ReportGenerator
             {
                 // Invalidate only the affected regions
                 Rectangle unionRect = Rectangle.Union(_lastElementBounds, newBounds);
-                unionRect.Inflate(10, 10);  // Add padding for resize handles
-                Canvas_Panel.Invalidate(unionRect);
+                Rectangle scaledUnionRect = PageToScaledRectangle(unionRect);
+                scaledUnionRect.Inflate(10, 10);
+                Canvas_Panel.Invalidate(scaledUnionRect);
 
                 _selectedElement.Bounds = newBounds;
                 _lastElementBounds = newBounds;
