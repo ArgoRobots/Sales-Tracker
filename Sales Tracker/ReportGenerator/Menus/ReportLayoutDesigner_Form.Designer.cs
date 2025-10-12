@@ -166,8 +166,6 @@
             Canvas_Panel.Name = "Canvas_Panel";
             Canvas_Panel.Size = new Size(1077, 838);
             Canvas_Panel.TabIndex = 0;
-            Canvas_Panel.DragDrop += Canvas_Panel_DragDrop;
-            Canvas_Panel.DragEnter += Canvas_Panel_DragEnter;
             Canvas_Panel.Paint += Canvas_Panel_Paint;
             Canvas_Panel.MouseDown += Canvas_Panel_MouseDown;
             Canvas_Panel.MouseMove += Canvas_Panel_MouseMove;
