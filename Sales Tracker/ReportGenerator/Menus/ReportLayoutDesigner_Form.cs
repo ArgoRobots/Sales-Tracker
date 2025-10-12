@@ -652,6 +652,15 @@ namespace Sales_Tracker.ReportGenerator
                         SelectElement(clickedElement, ctrlPressed);
                     }
                 }
+                else
+                {
+                    // Right-clicked on empty area - clear selection unless Ctrl is pressed
+                    bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                    if (!ctrlPressed)
+                    {
+                        ClearAllSelections();
+                    }
+                }
 
                 bool hasSelection = _selectedElements.Count > 0 || _selectedElement != null;
                 Point formLocation = PointToClient(Canvas_Panel.PointToScreen(e.Location));
