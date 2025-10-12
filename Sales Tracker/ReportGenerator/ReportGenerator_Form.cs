@@ -57,9 +57,9 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void InitializeChildForms()
         {
-            _dataSelectionForm = new(this);
-            _layoutDesignerForm = new(this);
-            _previewExportForm = new(this);
+            _dataSelectionForm = new();
+            _layoutDesignerForm = new();
+            _previewExportForm = new();
 
             SetupChildForm(_dataSelectionForm);
             SetupChildForm(_layoutDesignerForm);
@@ -83,8 +83,6 @@ namespace Sales_Tracker.ReportGenerator
             ReportLayoutDesigner_Form.Instance.ToolsContainer_Panel.BackColor = CustomColors.ControlBack;
             ReportLayoutDesigner_Form.Instance.PropertiesContainer_Panel.BackColor = CustomColors.ControlBack;
 
-            ReportPreviewExport_Form.Instance.IncludeHeader_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
-            ReportPreviewExport_Form.Instance.IncludeFooter_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
             ReportPreviewExport_Form.Instance.OpenAfterExport_CheckBox.UncheckedState.FillColor = CustomColors.MainBackground;
 
             ThemeManager.MakeGButtonBluePrimary(Previous_Button);
@@ -199,8 +197,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             return (ReportStep)_currentStep switch
             {
-                ReportStep.DataSelection => _dataSelectionForm?.IsValidForNextStep() ?? false,
-                ReportStep.LayoutDesigner => _layoutDesignerForm?.IsValidForNextStep() ?? false,
+                ReportStep.DataSelection => _dataSelectionForm.IsValidForNextStep(),
+                ReportStep.LayoutDesigner => ReportLayoutDesigner_Form.IsValidForNextStep(),
                 ReportStep.PreviewExport => true,  // Always can finish from preview
                 _ => false,
             };
@@ -237,10 +235,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (_currentStep < _totalSteps - 1)
             {
-                if (ValidateCurrentStep())
-                {
-                    SetCurrentStep((ReportStep)(_currentStep + 1));
-                }
+                SetCurrentStep((ReportStep)(_currentStep + 1));
             }
             else
             {
@@ -257,16 +252,6 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Validation and completion
-        private bool ValidateCurrentStep()
-        {
-            return (ReportStep)_currentStep switch
-            {
-                ReportStep.DataSelection => true,
-                ReportStep.LayoutDesigner => _layoutDesignerForm?.ValidateStep() ?? false,
-                ReportStep.PreviewExport => _previewExportForm?.ValidateStep() ?? false,
-                _ => false,
-            };
-        }
         private void FinishReportGeneration()
         {
             try

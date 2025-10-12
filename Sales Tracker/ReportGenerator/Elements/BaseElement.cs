@@ -86,11 +86,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _cachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
-                    Size = new Size(container.Width - 5, container.Height),
                     AutoSize = false,
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
+
+                SetCachedPropertiesPanelSize(container);
 
                 // Create common controls if element doesn't handle its own
                 if (!HandlesOwnCommonControls)
@@ -124,12 +125,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
             {
                 container.Controls.Clear();
+                SetCachedPropertiesPanelSize(container);
                 container.Controls.Add(_cachedPropertyPanel);
             }
 
             UpdateAllControlValues();
 
             return yPosition;
+        }
+        private void SetCachedPropertiesPanelSize(Panel container)
+        {
+            _cachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
         }
 
         /// <summary>

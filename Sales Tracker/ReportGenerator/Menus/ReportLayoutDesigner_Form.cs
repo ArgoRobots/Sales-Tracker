@@ -27,8 +27,6 @@ namespace Sales_Tracker.ReportGenerator
         private Rectangle _lastElementBounds;
         private bool _deferPropertyUpdate = false;
         private Timer _propertyUpdateTimer;
-        private Bitmap _gridCache = null;
-        private Size _lastCanvasSize = Size.Empty;
         private readonly List<BaseElement> _selectedElements = [];
         private bool _isMultiSelecting = false;
         private Rectangle _selectionRectangle;
@@ -36,14 +34,9 @@ namespace Sales_Tracker.ReportGenerator
         private BaseElement _currentPropertyElement = null;
 
         /// <summary>
-        /// Gets the parent report generator form.
-        /// </summary>
-        public ReportGenerator_Form ParentReportForm { get; private set; }
-
-        /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
         // Resize handle enumeration
         private enum ResizeHandle
@@ -57,16 +50,16 @@ namespace Sales_Tracker.ReportGenerator
         public static ReportLayoutDesigner_Form Instance => _instance;
 
         // Init.
-        public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
+        public ReportLayoutDesigner_Form()
         {
             InitializeComponent();
             _instance = this;
-            ParentReportForm = parentForm;
 
             SetupCanvas();
             StoreInitialSizes();
             SetToolTips();
             UpdateLayoutButtonStates();
+            OnPageSettingsChanged();
             ScaleControls();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
@@ -148,6 +141,8 @@ namespace Sales_Tracker.ReportGenerator
 
             // Position the right panel
             RightCanvas_Panel.Left = LeftTools_Panel.Width;
+
+            ResizeCanvasToPageSize();
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -279,26 +274,19 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
-            // Use clipping region for better performance
-            e.Graphics.SetClip(e.ClipRectangle);
+            if (ReportConfig == null) return;
 
-            // Draw cached grid if size hasn't changed
-            if (_gridCache == null || _lastCanvasSize != Canvas_Panel.Size)
+            Graphics graphics = e.Graphics;
+            graphics.SetClip(e.ClipRectangle);
+
+            ReportRenderer.RenderReport(graphics, Canvas_Panel.Size, ReportConfig);
+
+            if (_snapToGrid)
             {
-                CreateGridCache();
-                _lastCanvasSize = Canvas_Panel.Size;
+                DrawGrid(graphics);
             }
 
-            if (_gridCache != null)
-            {
-                e.Graphics.DrawImage(_gridCache, 0, 0);
-            }
-
-            // Draw elements
-            Rectangle clipRect = e.ClipRectangle;
-            DrawVisibleElements(e.Graphics, clipRect);
-
-            DrawSelection(e.Graphics);
+            DrawSelectionForElements(graphics);
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -669,7 +657,7 @@ namespace Sales_Tracker.ReportGenerator
             }
         }
 
-        // Tool event handlers
+        // Add element event handlers
         private void AddChartElement(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
@@ -693,6 +681,60 @@ namespace Sales_Tracker.ReportGenerator
         private void AddImageElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Image, new Point(50, 360));
+        }
+
+        // Settings button
+        private void Settings_Button_Click(object sender, EventArgs e)
+        {
+            using PageSettings_Form pageSettings_Form = new();
+            pageSettings_Form.ShowDialog(this);
+        }
+        public void OnPageSettingsChanged()
+        {
+            ResizeCanvasToPageSize();
+            NotifyParentValidationChanged();
+            Canvas_Panel.Invalidate();
+        }
+
+        /// <summary>
+        /// Resizes the canvas to match the current page dimensions, maximizing size while fitting in the panel.
+        /// Always centers the canvas in the available space.
+        /// </summary>
+        private void ResizeCanvasToPageSize()
+        {
+            if (ReportConfig == null) { return; }
+
+            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+            int toolbarHeight = 62;
+            int padding = 10;
+
+            // Calculate available space in the panel
+            int availableWidth = RightCanvas_Panel.ClientSize.Width - (padding * 2);
+            int availableHeight = RightCanvas_Panel.ClientSize.Height - toolbarHeight - (padding * 2);
+
+            // Calculate scale factors for width and height
+            float scaleWidth = (float)availableWidth / pageSize.Width;
+            float scaleHeight = (float)availableHeight / pageSize.Height;
+
+            // Use the smaller scale factor to ensure canvas fits in both dimensions
+            float scaleFactor = Math.Min(scaleWidth, scaleHeight);
+
+            // Calculate final canvas size
+            int canvasWidth = (int)(pageSize.Width * scaleFactor);
+            int canvasHeight = (int)(pageSize.Height * scaleFactor);
+
+            // Update canvas size
+            Canvas_Panel.Size = new Size(canvasWidth, canvasHeight);
+
+            // Center horizontally in available width
+            int centerX = (RightCanvas_Panel.ClientSize.Width - canvasWidth) / 2;
+
+            // Center vertically in available height
+            int availableVerticalSpace = RightCanvas_Panel.ClientSize.Height - toolbarHeight;
+            int centerY = toolbarHeight + ((availableVerticalSpace - canvasHeight) / 2);
+
+            // Set the centered location
+            Canvas_Panel.Location = new Point(centerX, centerY);
         }
 
         // Move element method
@@ -1043,9 +1085,26 @@ namespace Sales_Tracker.ReportGenerator
             MakeSameSize_Button.Enabled = canResize;
         }
 
-        // Grid Snapping
+        // Grids
         private const int GRID_SIZE = 10;
         private bool _snapToGrid = false;
+        private void DrawGrid(Graphics g)
+        {
+            using Pen pen = new(Color.FromArgb(30, CustomColors.ControlBorder), 1);
+            pen.DashStyle = DashStyle.Dot;
+
+            // Draw vertical lines
+            for (int x = 0; x < Canvas_Panel.Width; x += GRID_SIZE)
+            {
+                g.DrawLine(pen, x, 0, x, Canvas_Panel.Height);
+            }
+
+            // Draw horizontal lines
+            for (int y = 0; y < Canvas_Panel.Height; y += GRID_SIZE)
+            {
+                g.DrawLine(pen, 0, y, Canvas_Panel.Width, y);
+            }
+        }
         private void ToggleSnapToGrid()
         {
             _snapToGrid = !_snapToGrid;
@@ -1109,7 +1168,7 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             UpdateLayoutButtonStates();
         }
-        private void DrawSelection(Graphics g)
+        private void DrawSelectionForElements(Graphics g)
         {
             if (_selectedElements.Count > 1)
             {
@@ -1414,47 +1473,6 @@ namespace Sales_Tracker.ReportGenerator
             invalidateRect.Inflate(10, 10);
             Canvas_Panel.Invalidate(invalidateRect);
         }
-        private void DrawVisibleElements(Graphics g, Rectangle clipRect)
-        {
-            if (ReportConfig?.Elements == null) { return; }
-
-            // Sort by Z-order so elements are drawn in the correct layer order
-            foreach (BaseElement element in ReportConfig.Elements.Where(e => e.IsVisible).OrderBy(e => e.ZOrder))
-            {
-                // Only draw elements that intersect with the clip rectangle
-                if (clipRect.IntersectsWith(element.Bounds))
-                {
-                    element.DrawDesignerElement(g);
-                }
-            }
-        }
-        private void CreateGridCache()
-        {
-            _gridCache?.Dispose();
-            _gridCache = new Bitmap(Canvas_Panel.Width, Canvas_Panel.Height);
-
-            using Graphics g = Graphics.FromImage(_gridCache);
-            g.Clear(Canvas_Panel.BackColor);
-            DrawGrid(g);
-        }
-        private void DrawGrid(Graphics g)
-        {
-            const int gridSize = 20;
-            using Pen pen = new(CustomColors.ControlBorder, 1);
-            pen.DashStyle = DashStyle.Dot;
-
-            // Draw vertical lines
-            for (int x = 0; x < Canvas_Panel.Width; x += gridSize)
-            {
-                g.DrawLine(pen, x, 0, x, Canvas_Panel.Height);
-            }
-
-            // Draw horizontal lines
-            for (int y = 0; y < Canvas_Panel.Height; y += gridSize)
-            {
-                g.DrawLine(pen, 0, y, Canvas_Panel.Width, y);
-            }
-        }
 
         // Resize element methods
         private void ResizeElement(Point currentPoint)
@@ -1596,7 +1614,7 @@ namespace Sales_Tracker.ReportGenerator
                 NotifyParentValidationChanged();
             }
         }
-        private BaseElement? CreateElementByType(ReportElementType elementType, Point location)
+        private static BaseElement? CreateElementByType(ReportElementType elementType, Point location)
         {
             return elementType switch
             {
@@ -1714,12 +1732,12 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
-        private MainMenu_Form.ChartDataType GetDefaultChartType()
+        private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
             return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
         }
-        private BaseElement? GetElementAtPoint(Point point)
+        private static BaseElement? GetElementAtPoint(Point point)
         {
             if (ReportConfig?.Elements == null) { return null; }
 
@@ -1740,28 +1758,13 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Form implementation methods
-        public bool IsValidForNextStep()
+        public static bool IsValidForNextStep()
         {
             return ReportConfig?.Elements?.Count > 0;
         }
-        public bool ValidateStep()
+        private static void NotifyParentValidationChanged()
         {
-            if (!IsValidForNextStep())
-            {
-                CustomMessageBox.Show(
-                    "Empty Layout",
-                    "Please add at least one element to your report layout.",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok
-                );
-                return false;
-            }
-
-            return true;
-        }
-        private void NotifyParentValidationChanged()
-        {
-            ParentReportForm?.OnChildFormValidationChanged();
+            ReportGenerator_Form.Instance.OnChildFormValidationChanged();
         }
 
         // Other methods

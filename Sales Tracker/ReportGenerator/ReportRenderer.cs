@@ -35,9 +35,8 @@ namespace Sales_Tracker.ReportGenerator
 
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                SetupGraphics(graphics);
                 graphics.ScaleTransform(scale, scale);
-                RenderReport(graphics, pageSize);
+                RenderReport(graphics, pageSize, _config);
             }
 
             return bitmap;
@@ -71,9 +70,8 @@ namespace Sales_Tracker.ReportGenerator
             using Bitmap bitmap = new(exportWidth, exportHeight);
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                SetupGraphics(graphics);
                 graphics.ScaleTransform(scaleFactor, scaleFactor);
-                RenderReport(graphics, pageSize);
+                RenderReport(graphics, pageSize, _config);
             }
 
             SaveBitmap(bitmap);
@@ -98,8 +96,7 @@ namespace Sales_Tracker.ReportGenerator
             using Bitmap bitmap = new(pageSize.Width, pageSize.Height);
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                SetupGraphics(graphics);
-                RenderReport(graphics, pageSize);
+                RenderReport(graphics, pageSize, _config);
             }
 
             // Convert System.Drawing.Bitmap to SKBitmap
@@ -113,7 +110,7 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         // Private rendering methods
-        private static void SetupGraphics(Graphics graphics)
+        public static void SetupGraphics(Graphics graphics)
         {
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -121,36 +118,36 @@ namespace Sales_Tracker.ReportGenerator
             graphics.CompositingQuality = CompositingQuality.HighQuality;
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
-        private void RenderReport(Graphics graphics, Size pageSize)
+        public static void RenderReport(Graphics graphics, Size pageSize, ReportConfiguration config)
         {
-            // Clear background
-            graphics.Clear(_config.BackgroundColor);
+            SetupGraphics(graphics);
+            graphics.Clear(config.BackgroundColor);
 
             // Render header if enabled
-            if (_config.ShowHeader)
+            if (config.ShowHeader)
             {
-                RenderHeader(graphics, pageSize);
+                RenderHeader(graphics, pageSize, config);
             }
 
             // Render footer if enabled
-            if (_config.ShowFooter)
+            if (config.ShowFooter)
             {
-                RenderFooter(graphics, pageSize);
+                RenderFooter(graphics, pageSize, config);
             }
 
             // Render all report elements using their own render methods
-            List<BaseElement> elements = _config.GetElementsByZOrder();
+            List<BaseElement> elements = config.GetElementsByZOrder();
             foreach (BaseElement element in elements.Where(e => e.IsVisible))
             {
-                element.RenderElement(graphics, _config);
+                element.RenderElement(graphics, config);
             }
         }
-        private void RenderHeader(Graphics graphics, Size pageSize)
+        private static void RenderHeader(Graphics graphics, Size pageSize, ReportConfiguration config)
         {
             Rectangle headerRect = new(
-                _config.PageMargins.Left,
-                _config.PageMargins.Top,
-                pageSize.Width - _config.PageMargins.Left - _config.PageMargins.Right,
+                config.PageMargins.Left,
+                config.PageMargins.Top,
+                pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
                 50
             );
 
@@ -163,7 +160,7 @@ namespace Sales_Tracker.ReportGenerator
                     LineAlignment = StringAlignment.Center
                 };
 
-                graphics.DrawString(_config.Title, titleFont, titleBrush, headerRect, titleFormat);
+                graphics.DrawString(config.Title, titleFont, titleBrush, headerRect, titleFormat);
             }
 
             // Draw separator line
@@ -172,12 +169,12 @@ namespace Sales_Tracker.ReportGenerator
                 headerRect.Left, headerRect.Bottom + 5,
                 headerRect.Right, headerRect.Bottom + 5);
         }
-        private void RenderFooter(Graphics graphics, Size pageSize)
+        public static void RenderFooter(Graphics graphics, Size pageSize, ReportConfiguration config)
         {
             Rectangle footerRect = new(
-                _config.PageMargins.Left,
-                pageSize.Height - _config.PageMargins.Bottom - 30,
-                pageSize.Width - _config.PageMargins.Left - _config.PageMargins.Right,
+                config.PageMargins.Left,
+                pageSize.Height - config.PageMargins.Bottom - 30,
+                pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
                 30
             );
 
@@ -190,10 +187,10 @@ namespace Sales_Tracker.ReportGenerator
                 footerFont, footerBrush, footerRect, leftFormat);
 
             // Right side - page number (if enabled)
-            if (_config.ShowPageNumbers)
+            if (config.ShowPageNumbers)
             {
                 StringFormat rightFormat = new() { Alignment = StringAlignment.Far };
-                graphics.DrawString($"Page {_config.CurrentPageNumber}", footerFont, footerBrush, footerRect, rightFormat);
+                graphics.DrawString($"Page {config.CurrentPageNumber}", footerFont, footerBrush, footerRect, rightFormat);
             }
         }
         private void SaveBitmap(Bitmap bitmap)
