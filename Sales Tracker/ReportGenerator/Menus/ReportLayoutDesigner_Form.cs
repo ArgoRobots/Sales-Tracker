@@ -466,18 +466,25 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 Rectangle oldRect = _selectionRectangle;
                 _selectionRectangle = new Rectangle(x, y, width, height);
 
-                // Invalidate old selection rectangle (in scaled coordinates)
+                // Invalidate the union of old and new rectangles to avoid artifacts
                 if (oldRect.Width > 0 || oldRect.Height > 0)
                 {
                     Rectangle scaledOldRect = PageToScaledRectangle(oldRect);
-                    scaledOldRect.Inflate(2, 2);
-                    Canvas_Panel.Invalidate(scaledOldRect);
-                }
+                    Rectangle scaledNewRect = PageToScaledRectangle(_selectionRectangle);
 
-                // Invalidate new selection rectangle (in scaled coordinates)
-                Rectangle scaledNewRect = PageToScaledRectangle(_selectionRectangle);
-                scaledNewRect.Inflate(2, 2);
-                Canvas_Panel.Invalidate(scaledNewRect);
+                    // Create union of both rectangles to cover all areas
+                    Rectangle invalidateRegion = Rectangle.Union(scaledOldRect, scaledNewRect);
+                    invalidateRegion.Inflate(5, 5);  // Increased inflation for pen width and anti-aliasing
+
+                    Canvas_Panel.Invalidate(invalidateRegion);
+                }
+                else
+                {
+                    // First time drawing the rectangle
+                    Rectangle scaledNewRect = PageToScaledRectangle(_selectionRectangle);
+                    scaledNewRect.Inflate(5, 5);
+                    Canvas_Panel.Invalidate(scaledNewRect);
+                }
 
                 UpdateSelectionFromRectangle();
             }
