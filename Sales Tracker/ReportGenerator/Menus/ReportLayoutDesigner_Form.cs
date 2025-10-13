@@ -698,7 +698,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void AddTextElement_Button_Click(object sender, EventArgs e)
         {
-            CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
+            CreateElementAtLocation(ReportElementType.Label, new Point(50, 220));
         }
         private void AddDateElement_Button_Click(object sender, EventArgs e)
         {
@@ -1672,7 +1672,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     Bounds = new Rectangle(location, new Size(350, 250)),
                     ChartType = GetDefaultChartType()
                 },
-                ReportElementType.TextLabel => new LabelElement
+                ReportElementType.Label => new LabelElement
                 {
                     Bounds = new Rectangle(location, new Size(200, 30)),
                     Text = "Sample Text"

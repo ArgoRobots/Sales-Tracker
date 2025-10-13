@@ -9,7 +9,7 @@ namespace Sales_Tracker.ReportGenerator
     {
         Chart,
         TransactionTable,
-        TextLabel,
+        Label,
         Image,
         Logo,
         DateRange,
