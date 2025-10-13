@@ -70,86 +70,106 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using Pen borderPen = new(BorderColor, 1);
             graphics.DrawRectangle(borderPen, Bounds);
 
-            // Calculate statistics
-            SummaryStatistics stats = CalculateStatistics(config);
+            // Add clipping region to prevent overflow
+            Region originalClip = graphics.Clip;
+            graphics.SetClip(Bounds);
 
-            // Draw summary content with actual values
-            using Font titleFont = new(FontFamily, FontSize + 1, FontStyle.Bold | FontStyle);
-            using Font valueFont = new(FontFamily, FontSize, FontStyle);
-            using SolidBrush textBrush = new(Color.Black);
-            using SolidBrush positiveBrush = new(Color.Green);
-            using SolidBrush negativeBrush = new(Color.Red);
-
-            // Calculate starting position based on alignment
-            int contentHeight = CalculateContentHeight();
-            int startY = VerticalAlignment switch
+            try
             {
-                StringAlignment.Near => Bounds.Y + 10,
-                StringAlignment.Center => Bounds.Y + (Bounds.Height - contentHeight) / 2,
-                StringAlignment.Far => Bounds.Bottom - contentHeight - 10,
-                _ => Bounds.Y + 10
-            };
+                // Calculate statistics
+                SummaryStatistics stats = CalculateStatistics(config);
 
-            int x = Alignment switch
-            {
-                StringAlignment.Near => Bounds.X + 10,
-                StringAlignment.Center => Bounds.X + Bounds.Width / 2,
-                StringAlignment.Far => Bounds.Right - 10,
-                _ => Bounds.X + 10
-            };
+                // Draw summary content with actual values
+                using Font titleFont = new(FontFamily, FontSize + 1, FontStyle.Bold | FontStyle);
+                using Font valueFont = new(FontFamily, FontSize, FontStyle);
+                using SolidBrush textBrush = new(Color.Black);
+                using SolidBrush positiveBrush = new(Color.Green);
+                using SolidBrush negativeBrush = new(Color.Red);
 
-            StringFormat format = new()
-            {
-                Alignment = Alignment,
-                LineAlignment = StringAlignment.Near
-            };
+                int titleHeight = titleFont.Height;
+                int lineHeight = valueFont.Height;
+                int padding = 10;
 
-            RectangleF textBounds = new(Bounds.X + 10, startY, Bounds.Width - 20, 25);
-            graphics.DrawString("Summary Statistics", titleFont, textBrush, textBounds, format);
-            startY += 25;
-
-            if (ShowTotalSales)
-            {
-                string totalText = TransactionType switch
+                // Calculate starting position based on alignment
+                int contentHeight = CalculateContentHeight(titleFont, valueFont);
+                int startY = VerticalAlignment switch
                 {
-                    TransactionType.Sales => $"Total Sales: {FormatCurrency(stats.TotalSales)}",
-                    TransactionType.Purchases => $"Total Purchases: {FormatCurrency(stats.TotalPurchases)}",
-                    _ => $"Total: {FormatCurrency(stats.CombinedTotal)}"
+                    StringAlignment.Near => Bounds.Y + padding,
+                    StringAlignment.Center => Bounds.Y + (Bounds.Height - contentHeight) / 2,
+                    StringAlignment.Far => Bounds.Bottom - contentHeight - padding,
+                    _ => Bounds.Y + padding
                 };
-                textBounds.Y = startY;
-                graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
-                startY += 20;
-            }
 
-            if (ShowTotalTransactions)
-            {
-                textBounds.Y = startY;
-                graphics.DrawString($"Transactions: {stats.TransactionCount:N0}", valueFont, textBrush, textBounds, format);
-                startY += 20;
-            }
+                StringFormat format = new()
+                {
+                    Alignment = Alignment,
+                    LineAlignment = StringAlignment.Near,
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
 
-            if (ShowAverageValue)
-            {
-                textBounds.Y = startY;
-                graphics.DrawString($"Average Value: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, textBounds, format);
-                startY += 20;
-            }
+                // Check if there's enough space for title
+                if (startY + titleHeight <= Bounds.Bottom - padding)
+                {
+                    RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), titleHeight);
+                    graphics.DrawString("Summary Statistics", titleFont, textBrush, textBounds, format);
+                    startY += titleHeight;
+                }
+                else
+                {
+                    return;  // Not enough space
+                }
 
-            if (ShowGrowthRate)
+                if (ShowTotalSales && startY + lineHeight <= Bounds.Bottom - padding)
+                {
+                    string totalText = TransactionType switch
+                    {
+                        TransactionType.Sales => $"Total Sales: {FormatCurrency(stats.TotalSales)}",
+                        TransactionType.Purchases => $"Total Purchases: {FormatCurrency(stats.TotalPurchases)}",
+                        _ => $"Total: {FormatCurrency(stats.CombinedTotal)}"
+                    };
+                    RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
+                    graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
+                    startY += lineHeight;
+                }
+
+                if (ShowTotalTransactions && startY + lineHeight <= Bounds.Bottom - padding)
+                {
+                    RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
+                    graphics.DrawString($"Transactions: {stats.TransactionCount:N0}", valueFont, textBrush, textBounds, format);
+                    startY += lineHeight;
+                }
+
+                if (ShowAverageValue && startY + lineHeight <= Bounds.Bottom - padding)
+                {
+                    RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
+                    graphics.DrawString($"Average Value: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, textBounds, format);
+                    startY += lineHeight;
+                }
+
+                if (ShowGrowthRate && startY + lineHeight <= Bounds.Bottom - padding)
+                {
+                    SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
+                    string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
+                    RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
+                    graphics.DrawString($"Growth Rate: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
+                }
+            }
+            finally
             {
-                SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
-                string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
-                textBounds.Y = startY;
-                graphics.DrawString($"Growth Rate: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
+                graphics.Clip = originalClip;
             }
         }
-        private int CalculateContentHeight()
+        private int CalculateContentHeight(Font titleFont, Font valueFont)
         {
-            int height = 25; // Title
-            if (ShowTotalSales) height += 20;
-            if (ShowTotalTransactions) height += 20;
-            if (ShowAverageValue) height += 20;
-            if (ShowGrowthRate) height += 20;
+            int height = titleFont.Height;  // Title height
+            int lineHeight = valueFont.Height;
+
+            if (ShowTotalSales) { height += lineHeight; }
+            if (ShowTotalTransactions) { height += lineHeight; }
+            if (ShowAverageValue) { height += lineHeight; }
+            if (ShowGrowthRate) { height += lineHeight; }
+
             return height;
         }
         private SummaryStatistics CalculateStatistics(ReportConfiguration config)
