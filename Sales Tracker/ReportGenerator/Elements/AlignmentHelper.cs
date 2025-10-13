@@ -1,7 +1,14 @@
 ﻿namespace Sales_Tracker.ReportGenerator.Elements
 {
+    /// <summary>
+    /// Provides utility methods for converting StringAlignment enums to user-friendly display text and vice versa.
+    /// Supports both horizontal (Left/Center/Right) and vertical (Top/Middle/Bottom) alignment translations.
+    /// </summary>
     public static class AlignmentHelper
     {
+        /// <summary>
+        /// Converts a StringAlignment enum value to display-friendly text.
+        /// </summary>
         public static string ToDisplayText(StringAlignment alignment, bool isVertical = false)
         {
             return alignment switch
@@ -12,7 +19,11 @@
                 _ => isVertical ? "Middle" : "Left"
             };
         }
-        public static StringAlignment FromDisplayText(string text, bool isVertical = false)
+
+        /// <summary>
+        /// Converts display-friendly text back to a StringAlignment enum value.
+        /// </summary>
+        public static StringAlignment FromDisplayText(string text)
         {
             return text switch
             {
