@@ -471,16 +471,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
+            // Create SKTypeface for font family
+            SKTypeface typeface = SKTypeface.FromFamilyName(FontFamily);
+
             // Show title if enabled
             if (ShowTitle)
             {
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
 
+                SolidColorPaint titlePaint = new(SKColors.Black)
+                {
+                    SKTypeface = typeface
+                };
+
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = 14,
-                    Paint = new SolidColorPaint(SKColors.Black),
+                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5)
                 };
             }
@@ -490,19 +498,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Series = sourceChart.Series;
             }
 
-            // Copy axis configuration with proper SKia paints
+            // Copy axis configuration with font properties
             if (sourceChart.XAxes != null)
             {
                 skChart.XAxes = sourceChart.XAxes.Select(axis =>
                 {
+                    SolidColorPaint labelPaint = new(SKColors.Black)
+                    {
+                        SKTypeface = typeface
+                    };
+
                     Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
-                        LabelsPaint = new SolidColorPaint(SKColors.Black),
-                        TextSize = 11
+                        LabelsPaint = labelPaint,
+                        TextSize = FontSize  // Use FontSize property
                     };
                     return newAxis;
                 }).ToArray();
@@ -512,15 +525,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 skChart.YAxes = sourceChart.YAxes.Select(axis =>
                 {
+                    SolidColorPaint labelPaint = new(SKColors.Black)
+                    {
+                        SKTypeface = typeface
+                    };
+
                     Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
-                        LabelsPaint = new SolidColorPaint(SKColors.Black),
+                        LabelsPaint = labelPaint,
                         SeparatorsPaint = new SolidColorPaint(SKColors.LightGray),
-                        TextSize = 11
+                        TextSize = FontSize  // Use FontSize property
                     };
                     return newAxis;
                 }).ToArray();
@@ -530,8 +548,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ? LegendPosition.Top
                 : LegendPosition.Hidden;
 
-            skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
-            skChart.LegendTextSize = 12;
+            SolidColorPaint legendPaint = new(SKColors.Black)
+            {
+                SKTypeface = typeface
+            };
+            skChart.LegendTextPaint = legendPaint;
+            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
@@ -547,17 +569,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
+            // Create SKTypeface for font family
+            SKTypeface typeface = SKTypeface.FromFamilyName(FontFamily);
+
             // Show title if enabled
             if (ShowTitle)
             {
-                // Get the title text based on chart type
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
+
+                SolidColorPaint titlePaint = new(SKColors.Black)
+                {
+                    SKTypeface = typeface
+                };
 
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = 14,
-                    Paint = new SolidColorPaint(SKColors.Black),
+                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5)
                 };
             }
@@ -571,8 +600,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ? LegendPosition.Right
                 : LegendPosition.Hidden;
 
-            skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
-            skChart.LegendTextSize = 12;
+            SolidColorPaint legendPaint = new(SKColors.Black)
+            {
+                SKTypeface = typeface
+            };
+            skChart.LegendTextPaint = legendPaint;
+            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
