@@ -692,23 +692,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         // Add element event handlers
-        private void AddChartElement(object sender, EventArgs e)
+        private void AddChartElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
         }
-        private void AddTextElement(object sender, EventArgs e)
+        private void AddTextElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
         }
-        private void AddDateRangeElement(object sender, EventArgs e)
+        private void AddDateElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.DateRange, new Point(50, 280));
         }
-        private void AddSummaryElement(object sender, EventArgs e)
+        private void AddSummaryElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Summary, new Point(50, 320));
         }
-        private void AddTableElement(object sender, EventArgs e)
+        private void AddTableElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
         }

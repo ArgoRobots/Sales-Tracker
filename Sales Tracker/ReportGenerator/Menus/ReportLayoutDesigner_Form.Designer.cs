@@ -576,7 +576,7 @@
             AddTableElement_Button.Size = new Size(304, 40);
             AddTableElement_Button.TabIndex = 6;
             AddTableElement_Button.Text = "Add table element";
-            AddTableElement_Button.Click += AddTableElement;
+            AddTableElement_Button.Click += AddTableElement_Button_Click;
             // 
             // AddSummaryElement_Button
             // 
@@ -600,7 +600,7 @@
             AddSummaryElement_Button.Size = new Size(304, 40);
             AddSummaryElement_Button.TabIndex = 5;
             AddSummaryElement_Button.Text = "Add summary element";
-            AddSummaryElement_Button.Click += AddSummaryElement;
+            AddSummaryElement_Button.Click += AddSummaryElement_Button_Click;
             // 
             // AddDateElement_Button
             // 
@@ -624,7 +624,7 @@
             AddDateElement_Button.Size = new Size(304, 40);
             AddDateElement_Button.TabIndex = 4;
             AddDateElement_Button.Text = "Add date element";
-            AddDateElement_Button.Click += AddDateRangeElement;
+            AddDateElement_Button.Click += AddDateElement_Button_Click;
             // 
             // AddLabelElement_Button
             // 
@@ -648,7 +648,7 @@
             AddLabelElement_Button.Size = new Size(304, 40);
             AddLabelElement_Button.TabIndex = 3;
             AddLabelElement_Button.Text = "Add label element";
-            AddLabelElement_Button.Click += AddTextElement;
+            AddLabelElement_Button.Click += AddTextElement_Button_Click;
             // 
             // AddChartElement_Button
             // 
@@ -672,7 +672,7 @@
             AddChartElement_Button.Size = new Size(304, 40);
             AddChartElement_Button.TabIndex = 2;
             AddChartElement_Button.Text = "Add chart element";
-            AddChartElement_Button.Click += AddChartElement;
+            AddChartElement_Button.Click += AddChartElement_Button_Click;
             // 
             // ReportLayoutDesigner_Form
             // 
