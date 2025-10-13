@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// Second step in report generation - drag-and-drop canvas for arranging report elements.

@@ -2,7 +2,7 @@
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// Settings form for configuring page layout and display options.

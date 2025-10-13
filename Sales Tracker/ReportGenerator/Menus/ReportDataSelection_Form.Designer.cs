@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.ReportGenerator
+﻿namespace Sales_Tracker.ReportGenerator.Menus
 {
     partial class ReportDataSelection_Form
     {

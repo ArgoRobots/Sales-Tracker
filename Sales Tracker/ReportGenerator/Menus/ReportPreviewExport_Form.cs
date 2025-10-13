@@ -2,7 +2,7 @@
 using Sales_Tracker.UI;
 using System.Diagnostics;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// Third step in report generation - preview and export functionality.
