@@ -41,7 +41,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 using Font font = new(FontFamily, FontSize, FontStyle);
                 using SolidBrush brush = new(TextColor);
 
-                StringFormat format = new()
+                using StringFormat format = new()
                 {
                     Alignment = Alignment,
                     LineAlignment = VerticalAlignment,

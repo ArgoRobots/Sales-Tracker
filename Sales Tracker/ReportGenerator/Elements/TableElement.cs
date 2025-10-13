@@ -541,7 +541,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void DrawCellText(Graphics graphics, string text, RectangleF cellRect, Font font, Brush brush, StringAlignment alignment)
         {
-            StringFormat format = new()
+            using StringFormat format = new()
             {
                 Alignment = alignment,
                 LineAlignment = StringAlignment.Center,
