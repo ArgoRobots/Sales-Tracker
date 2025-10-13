@@ -99,7 +99,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 IncludeLosses = IncludeLosses,
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -542,7 +541,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void DrawCellText(Graphics graphics, string text, RectangleF cellRect, Font font, Brush brush, StringAlignment alignment)
         {
-            StringFormat format = new()
+            using StringFormat format = new()
             {
                 Alignment = alignment,
                 LineAlignment = StringAlignment.Center,
@@ -590,48 +589,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(message, font, textBrush, Bounds, format);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            using SolidBrush brush = new(Color.Lavender);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            // Draw mini table preview
-            using Pen gridPen = new(Color.LightGray, 0.5f);
-            float rowHeight = 20;
-            float colWidth = Bounds.Width / 4;
-
-            // Draw header row
-            using SolidBrush headerBrush = new(HeaderBackgroundColor);
-            RectangleF headerRect = new(Bounds.X, Bounds.Y, Bounds.Width, rowHeight);
-            graphics.FillRectangle(headerBrush, headerRect);
-
-            // Draw grid lines
-            for (int i = 0; i < 3; i++)
-            {
-                float y = Bounds.Y + (i + 1) * rowHeight;
-                if (y < Bounds.Bottom)
-                    graphics.DrawLine(gridPen, Bounds.Left, y, Bounds.Right, y);
-            }
-
-            for (int i = 1; i < 4; i++)
-            {
-                float x = Bounds.X + i * colWidth;
-                graphics.DrawLine(gridPen, x, Bounds.Y, x, Math.Min(Bounds.Y + rowHeight * 3, Bounds.Bottom));
-            }
-
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Black);
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            RectangleF labelRect = new(Bounds.X, Bounds.Y + Bounds.Height / 2 - 10, Bounds.Width, 20);
-            graphics.DrawString(DisplayName ?? "Transaction Table", font, textBrush, labelRect, format);
         }
 
         // Override the property to indicate this element handles its own common controls

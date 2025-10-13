@@ -22,7 +22,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -64,16 +63,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(dateText, font, brush, Bounds, format);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            using SolidBrush brush = new(Color.LightGreen);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            // Draw actual date range with current settings
-            RenderElement(graphics, null);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -122,26 +111,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Horizontal alignment
             AddPropertyLabel(container, "Align:", yPosition);
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(Alignment), yPosition,
                 ["Left", "Center", "Right"],
                 value =>
                 {
-                    Alignment = DisplayTextToAlignment(value);
+                    Alignment = AlignmentHelper.FromDisplayText(value);
                     onPropertyChanged();
                 });
-            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
+            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentHelper.ToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(VerticalAlignment), yPosition,
                 ["Top", "Middle", "Bottom"],
                 value =>
                 {
-                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                    VerticalAlignment = AlignmentHelper.FromDisplayText(value);
                     onPropertyChanged();
                 });
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
+            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
             // Text color
@@ -155,48 +144,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             return yPosition;
-        }
-
-        // Helper methods
-        private static string AlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Left",
-                StringAlignment.Center => "Center",
-                StringAlignment.Far => "Right",
-                _ => "Left"
-            };
-        }
-        private static StringAlignment DisplayTextToAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Left" => StringAlignment.Near,
-                "Center" => StringAlignment.Center,
-                "Right" => StringAlignment.Far,
-                _ => StringAlignment.Near
-            };
-        }
-        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Top",
-                StringAlignment.Center => "Middle",
-                StringAlignment.Far => "Bottom",
-                _ => "Middle"
-            };
-        }
-        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Top" => StringAlignment.Near,
-                "Middle" => StringAlignment.Center,
-                "Bottom" => StringAlignment.Far,
-                _ => StringAlignment.Center
-            };
         }
     }
 }

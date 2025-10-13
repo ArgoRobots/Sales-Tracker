@@ -16,7 +16,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Chart element for displaying graphs and charts.
     /// </summary>
-    public class ChartElement : BaseElement
+    public class ChartElement : BaseElement, IDisposable
     {
         private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
 
@@ -31,8 +31,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             set
             {
                 _chartType = value;
-                // Automatically update DisplayName when ChartType changes
-                DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
             }
         }
         public bool ShowLegend { get; set; } = true;
@@ -40,12 +38,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Color BorderColor { get; set; } = Color.Gray;
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 11f;
-
-        // Constructor
-        public ChartElement()
-        {
-            DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
-        }
 
         // Overrides
         public override ReportElementType GetElementType() => ReportElementType.Chart;
@@ -55,7 +47,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -131,24 +122,22 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private static bool ShouldReloadChart(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
         {
-            if (config?.Filters == null)
-            {
-                return false;
-            }
+            if (config?.Filters == null) { return false; }
 
-            // Check if we have a previous configuration for this chart type
-            if (!_lastLoadedConfig.TryGetValue(chartType, out (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses) lastConfig))
+            if (!_lastLoadedConfig.TryGetValue(chartType, out var lastConfig))
             {
                 return true; // Never loaded before
             }
 
-            // Check if any filter values have changed
-            bool configChanged = lastConfig.StartDate != config.Filters.StartDate ||
-                                lastConfig.EndDate != config.Filters.EndDate ||
-                                lastConfig.IncludeReturns != config.Filters.IncludeReturns ||
-                                lastConfig.IncludeLosses != config.Filters.IncludeLosses;
+            // Use tuple comparison for cleaner code
+            var currentConfig = (
+                config.Filters.StartDate,
+                config.Filters.EndDate,
+                config.Filters.IncludeReturns,
+                config.Filters.IncludeLosses
+            );
 
-            return configChanged;
+            return lastConfig != currentConfig;
         }
 
         // Load chart methods
@@ -362,7 +351,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     "FilteredPurchases_DataGridView",
                     MainMenu_Form.Instance.PurchaseColumnHeaders,
                     null,
-                    MainMenu_Form.Instance
+                    null
                 );
             }
             else
@@ -372,7 +361,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     "FilteredSales_DataGridView",
                     MainMenu_Form.Instance.SalesColumnHeaders,
                     null,
-                    MainMenu_Form.Instance
+                    null
                 );
             }
 
@@ -471,16 +460,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
+            // Create SKTypeface for font family
+            SKTypeface typeface = SKTypeface.FromFamilyName(FontFamily);
+
             // Show title if enabled
             if (ShowTitle)
             {
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
 
+                SolidColorPaint titlePaint = new(SKColors.Black)
+                {
+                    SKTypeface = typeface
+                };
+
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = 14,
-                    Paint = new SolidColorPaint(SKColors.Black),
+                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5)
                 };
             }
@@ -490,19 +487,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Series = sourceChart.Series;
             }
 
-            // Copy axis configuration with proper SKia paints
+            // Copy axis configuration with font properties
             if (sourceChart.XAxes != null)
             {
                 skChart.XAxes = sourceChart.XAxes.Select(axis =>
                 {
+                    SolidColorPaint labelPaint = new(SKColors.Black)
+                    {
+                        SKTypeface = typeface
+                    };
+
                     Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
-                        LabelsPaint = new SolidColorPaint(SKColors.Black),
-                        TextSize = 11
+                        LabelsPaint = labelPaint,
+                        TextSize = FontSize  // Use FontSize property
                     };
                     return newAxis;
                 }).ToArray();
@@ -512,15 +514,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 skChart.YAxes = sourceChart.YAxes.Select(axis =>
                 {
+                    SolidColorPaint labelPaint = new(SKColors.Black)
+                    {
+                        SKTypeface = typeface
+                    };
+
                     Axis newAxis = new()
                     {
                         Labels = axis.Labels,
                         Labeler = axis.Labeler,
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
-                        LabelsPaint = new SolidColorPaint(SKColors.Black),
+                        LabelsPaint = labelPaint,
                         SeparatorsPaint = new SolidColorPaint(SKColors.LightGray),
-                        TextSize = 11
+                        TextSize = FontSize  // Use FontSize property
                     };
                     return newAxis;
                 }).ToArray();
@@ -530,8 +537,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ? LegendPosition.Top
                 : LegendPosition.Hidden;
 
-            skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
-            skChart.LegendTextSize = 12;
+            SolidColorPaint legendPaint = new(SKColors.Black)
+            {
+                SKTypeface = typeface
+            };
+            skChart.LegendTextPaint = legendPaint;
+            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
@@ -547,17 +558,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Background = SKColors.White
             };
 
+            // Create SKTypeface for font family
+            SKTypeface typeface = SKTypeface.FromFamilyName(FontFamily);
+
             // Show title if enabled
             if (ShowTitle)
             {
-                // Get the title text based on chart type
                 string titleText = TranslatedChartTitles.GetChartDisplayName(ChartType);
+
+                SolidColorPaint titlePaint = new(SKColors.Black)
+                {
+                    SKTypeface = typeface
+                };
 
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = 14,
-                    Paint = new SolidColorPaint(SKColors.Black),
+                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5)
                 };
             }
@@ -571,8 +589,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ? LegendPosition.Right
                 : LegendPosition.Hidden;
 
-            skChart.LegendTextPaint = new SolidColorPaint(SKColors.Black);
-            skChart.LegendTextSize = 12;
+            SolidColorPaint legendPaint = new(SKColors.Black)
+            {
+                SKTypeface = typeface
+            };
+            skChart.LegendTextPaint = legendPaint;
+            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
@@ -603,24 +625,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using SKData data = image.Encode();
             using MemoryStream stream = new(data.ToArray());
             return new Bitmap(stream);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            using SolidBrush brush = new(Color.LightBlue);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Black);
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            string text = DisplayName ?? ChartType.ToString();
-            graphics.DrawString(text, font, textBrush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -720,6 +724,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
+        }
+
+        // Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _chartControl?.Dispose();
+                _chartControl = null;
+            }
+        }
+        ~ChartElement()
+        {
+            Dispose(false);
         }
     }
 }

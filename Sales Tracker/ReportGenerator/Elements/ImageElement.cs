@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Image element for displaying PNG, JPEG, and SVG images.
     /// </summary>
-    public class ImageElement : BaseElement
+    public class ImageElement : BaseElement, IDisposable
     {
         // Properties
         public string ImagePath { get; set; } = "";
@@ -36,12 +36,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private Image _cachedImage;
         private SKSvg _cachedSvg;
         private string _cachedImagePath;
-
-        // Constructor
-        public ImageElement()
-        {
-            DisplayName = "Image";
-        }
 
         /// <summary>
         /// Calculates the actual corner radius in pixels based on the percentage and bounds.
@@ -64,7 +58,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -419,15 +412,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
         }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            // Draw same as RenderElement for consistency
-            RenderElement(graphics, null);
-
-            // Add a subtle overlay to indicate it's in designer mode
-            using SolidBrush overlayBrush = new(Color.FromArgb(10, 0, 0, 255));
-            graphics.FillRectangle(overlayBrush, Bounds);
-        }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Image path
@@ -557,6 +541,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             return yPosition;
+        }
+
+        // Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _cachedImage?.Dispose();
+                _cachedImage = null;
+                _cachedSvg = null;
+            }
+        }
+        ~ImageElement()
+        {
+            Dispose(false);
         }
     }
 }

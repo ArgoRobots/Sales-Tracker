@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// Second step in report generation - drag-and-drop canvas for arranging report elements.
@@ -27,8 +27,6 @@ namespace Sales_Tracker.ReportGenerator
         private Rectangle _lastElementBounds;
         private bool _deferPropertyUpdate = false;
         private Timer _propertyUpdateTimer;
-        private Bitmap _gridCache = null;
-        private Size _lastCanvasSize = Size.Empty;
         private readonly List<BaseElement> _selectedElements = [];
         private bool _isMultiSelecting = false;
         private Rectangle _selectionRectangle;
@@ -36,14 +34,9 @@ namespace Sales_Tracker.ReportGenerator
         private BaseElement _currentPropertyElement = null;
 
         /// <summary>
-        /// Gets the parent report generator form.
-        /// </summary>
-        public ReportGenerator_Form ParentReportForm { get; private set; }
-
-        /// <summary>
         /// Gets the current report configuration.
         /// </summary>
-        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
+        private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
         // Resize handle enumeration
         private enum ResizeHandle
@@ -57,16 +50,17 @@ namespace Sales_Tracker.ReportGenerator
         public static ReportLayoutDesigner_Form Instance => _instance;
 
         // Init.
-        public ReportLayoutDesigner_Form(ReportGenerator_Form parentForm)
+        public ReportLayoutDesigner_Form()
         {
             InitializeComponent();
             _instance = this;
-            ParentReportForm = parentForm;
 
             SetupCanvas();
             StoreInitialSizes();
             SetToolTips();
             UpdateLayoutButtonStates();
+            OnPageSettingsChanged();
+            InitializeResizeDebounceTimer();
             ScaleControls();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
@@ -148,6 +142,12 @@ namespace Sales_Tracker.ReportGenerator
 
             // Position the right panel
             RightCanvas_Panel.Left = LeftTools_Panel.Width;
+
+            ResizeCanvasToPageSize();
+
+            // Restart the debounce timer to update properties after resizing stops
+            _resizeDebounceTimer?.Stop();
+            _resizeDebounceTimer?.Start();
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -257,51 +257,57 @@ namespace Sales_Tracker.ReportGenerator
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        // Resize debounce timer
+        private Timer _resizeDebounceTimer;
+        private void InitializeResizeDebounceTimer()
+        {
+            _resizeDebounceTimer = new Timer
+            {
+                Interval = 150
+            };
+            _resizeDebounceTimer.Tick += (s, e) =>
+            {
+                _resizeDebounceTimer.Stop();
+                UpdatePropertiesForSelection();
+            };
+        }
+        private Point ScaledToPageCoordinates(Point scaledPoint)
+        {
+            if (_canvasScaleFactor <= 0) return scaledPoint;
+            return new Point(
+                (int)(scaledPoint.X / _canvasScaleFactor),
+                (int)(scaledPoint.Y / _canvasScaleFactor)
+            );
+        }
+
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
-        private void Canvas_Panel_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(ReportElementType)))
-            {
-                e.Effect = DragDropEffects.Copy;
-            }
-        }
-        private void Canvas_Panel_DragDrop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(ReportElementType)))
-            {
-                if (e.Data.GetData(typeof(ReportElementType)) is ReportElementType elementType)
-                {
-                    Point dropLocation = Canvas_Panel.PointToClient(new Point(e.X, e.Y));
-                    CreateElementAtLocation(elementType, dropLocation);
-                }
-            }
-        }
+        private float _canvasScaleFactor = 1.0f;
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
-            // Use clipping region for better performance
-            e.Graphics.SetClip(e.ClipRectangle);
+            if (ReportConfig == null) { return; }
 
-            // Draw cached grid if size hasn't changed
-            if (_gridCache == null || _lastCanvasSize != Canvas_Panel.Size)
+            Graphics graphics = e.Graphics;
+            graphics.SetClip(e.ClipRectangle);
+
+            // Get the actual page size (not the scaled canvas size)
+            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+
+            // Apply scaling transformation (just like the preview does)
+            graphics.ScaleTransform(_canvasScaleFactor, _canvasScaleFactor);
+
+            ReportRenderer.RenderReport(graphics, pageSize, ReportConfig);
+
+            if (_snapToGrid)
             {
-                CreateGridCache();
-                _lastCanvasSize = Canvas_Panel.Size;
+                DrawGrid(graphics);
             }
 
-            if (_gridCache != null)
-            {
-                e.Graphics.DrawImage(_gridCache, 0, 0);
-            }
-
-            // Draw elements
-            Rectangle clipRect = e.ClipRectangle;
-            DrawVisibleElements(e.Graphics, clipRect);
-
-            DrawSelection(e.Graphics);
+            DrawSelectionForElements(graphics);
         }
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
+            Point pageLocation = ScaledToPageCoordinates(e.Location);
             Canvas_Panel.Focus();
 
             if (e.Button == MouseButtons.Left)
@@ -313,7 +319,7 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(e.Location, element);
+                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             _isResizing = true;
@@ -321,7 +327,7 @@ namespace Sales_Tracker.ReportGenerator
                             _selectedElement = element;
                             _originalBounds = element.Bounds;
                             _lastElementBounds = element.Bounds;
-                            _dragStartPoint = e.Location;
+                            _dragStartPoint = pageLocation;
                             _deferPropertyUpdate = true;
                             return;
                         }
@@ -330,20 +336,20 @@ namespace Sales_Tracker.ReportGenerator
                 // Check single selected element
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(e.Location, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
                     if (handle != ResizeHandle.None)
                     {
                         _isResizing = true;
                         _activeResizeHandle = handle;
                         _originalBounds = _selectedElement.Bounds;
                         _lastElementBounds = _selectedElement.Bounds;
-                        _dragStartPoint = e.Location;
+                        _dragStartPoint = pageLocation;
                         _deferPropertyUpdate = true;
                         return;
                     }
                 }
 
-                BaseElement clickedElement = GetElementAtPoint(e.Location);
+                BaseElement clickedElement = GetElementAtPoint(pageLocation);
 
                 if (clickedElement != null)
                 {
@@ -376,18 +382,19 @@ namespace Sales_Tracker.ReportGenerator
                             SelectElement(clickedElement);
                         }
                         _isDragging = true;
-                        _dragStartPoint = e.Location;
+                        _dragStartPoint = pageLocation;
                     }
                 }
                 else
                 {
-                    // Clicked on empty area
-                    _selectionStartPoint = e.Location;
+                    _selectionStartPoint = pageLocation;
                 }
             }
         }
         private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
         {
+            Point pageLocation = ScaledToPageCoordinates(e.Location);
+
             // Handle cursor changes for resize handles when not dragging
             if (!_isResizing && !_isDragging && !_isMultiSelecting)
             {
@@ -398,7 +405,7 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(e.Location, element);
+                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             newCursor = GetCursorForHandle(handle);
@@ -408,14 +415,14 @@ namespace Sales_Tracker.ReportGenerator
                 }
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(e.Location, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
                     newCursor = GetCursorForHandle(handle);
                 }
 
                 // If not over a resize handle, check if over an element
                 if (newCursor == Cursors.Default)
                 {
-                    BaseElement elementAtPoint = GetElementAtPoint(e.Location);
+                    BaseElement elementAtPoint = GetElementAtPoint(pageLocation);
                     if (elementAtPoint != null)
                     {
                         newCursor = Cursors.Hand;
@@ -431,8 +438,8 @@ namespace Sales_Tracker.ReportGenerator
                 if (e.Button == MouseButtons.Left && !_isDragging && !_isMultiSelecting &&
                     _selectionStartPoint != Point.Empty && GetElementAtPoint(_selectionStartPoint) == null)
                 {
-                    int deltaX = Math.Abs(e.X - _selectionStartPoint.X);
-                    int deltaY = Math.Abs(e.Y - _selectionStartPoint.Y);
+                    int deltaX = Math.Abs(pageLocation.X - _selectionStartPoint.X);
+                    int deltaY = Math.Abs(pageLocation.Y - _selectionStartPoint.Y);
 
                     if (deltaX > DRAG_THRESHOLD || deltaY > DRAG_THRESHOLD)
                     {
@@ -451,36 +458,47 @@ namespace Sales_Tracker.ReportGenerator
             // Handle multi-selection rectangle
             if (_isMultiSelecting)
             {
-                int x = Math.Min(_selectionStartPoint.X, e.X);
-                int y = Math.Min(_selectionStartPoint.Y, e.Y);
-                int width = Math.Abs(e.X - _selectionStartPoint.X);
-                int height = Math.Abs(e.Y - _selectionStartPoint.Y);
+                int x = Math.Min(_selectionStartPoint.X, pageLocation.X);
+                int y = Math.Min(_selectionStartPoint.Y, pageLocation.Y);
+                int width = Math.Abs(pageLocation.X - _selectionStartPoint.X);
+                int height = Math.Abs(pageLocation.Y - _selectionStartPoint.Y);
 
                 Rectangle oldRect = _selectionRectangle;
                 _selectionRectangle = new Rectangle(x, y, width, height);
 
+                // Invalidate the union of old and new rectangles to avoid artifacts
                 if (oldRect.Width > 0 || oldRect.Height > 0)
                 {
-                    oldRect.Inflate(2, 2);
-                    Canvas_Panel.Invalidate(oldRect);
-                }
+                    Rectangle scaledOldRect = PageToScaledRectangle(oldRect);
+                    Rectangle scaledNewRect = PageToScaledRectangle(_selectionRectangle);
 
-                Rectangle newRect = _selectionRectangle;
-                newRect.Inflate(2, 2);
-                Canvas_Panel.Invalidate(newRect);
+                    // Create union of both rectangles to cover all areas
+                    Rectangle invalidateRegion = Rectangle.Union(scaledOldRect, scaledNewRect);
+                    invalidateRegion.Inflate(5, 5);  // Increased inflation for pen width and anti-aliasing
+
+                    Canvas_Panel.Invalidate(invalidateRegion);
+                }
+                else
+                {
+                    // First time drawing the rectangle
+                    Rectangle scaledNewRect = PageToScaledRectangle(_selectionRectangle);
+                    scaledNewRect.Inflate(5, 5);
+                    Canvas_Panel.Invalidate(scaledNewRect);
+                }
 
                 UpdateSelectionFromRectangle();
             }
+
             // Handle resizing
             else if (_isResizing && _selectedElement != null)
             {
-                ResizeElement(e.Location);
+                ResizeElement(pageLocation);
             }
             // Handle dragging multiple elements
             else if (_isDragging && _selectedElements.Count > 0)
             {
-                int deltaX = e.X - _dragStartPoint.X;
-                int deltaY = e.Y - _dragStartPoint.Y;
+                int deltaX = pageLocation.X - _dragStartPoint.X;
+                int deltaY = pageLocation.Y - _dragStartPoint.Y;
 
                 // Calculate the actual movement possible for each axis
                 int actualDeltaX = deltaX;
@@ -490,6 +508,7 @@ namespace Sales_Tracker.ReportGenerator
                 foreach (BaseElement element in _selectedElements)
                 {
                     Rectangle testBounds = element.Bounds;
+                    Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
 
                     // Check X axis limits
                     int newX = testBounds.X + deltaX;
@@ -497,9 +516,9 @@ namespace Sales_Tracker.ReportGenerator
                     {
                         actualDeltaX = Math.Max(actualDeltaX, -testBounds.X);
                     }
-                    else if (newX + testBounds.Width > Canvas_Panel.Width)
+                    else if (newX + testBounds.Width > pageSize.Width)
                     {
-                        actualDeltaX = Math.Min(actualDeltaX, Canvas_Panel.Width - testBounds.Width - testBounds.X);
+                        actualDeltaX = Math.Min(actualDeltaX, pageSize.Width - testBounds.Width - testBounds.X);
                     }
 
                     // Check Y axis limits
@@ -508,9 +527,9 @@ namespace Sales_Tracker.ReportGenerator
                     {
                         actualDeltaY = Math.Max(actualDeltaY, -testBounds.Y);
                     }
-                    else if (newY + testBounds.Height > Canvas_Panel.Height)
+                    else if (newY + testBounds.Height > pageSize.Height)
                     {
-                        actualDeltaY = Math.Min(actualDeltaY, Canvas_Panel.Height - testBounds.Height - testBounds.Y);
+                        actualDeltaY = Math.Min(actualDeltaY, pageSize.Height - testBounds.Height - testBounds.Y);
                     }
                 }
 
@@ -549,20 +568,22 @@ namespace Sales_Tracker.ReportGenerator
             // Handle dragging single element
             else if (_isDragging && _selectedElement != null)
             {
-                int deltaX = e.X - _dragStartPoint.X;
-                int deltaY = e.Y - _dragStartPoint.Y;
+                int deltaX = pageLocation.X - _dragStartPoint.X;
+                int deltaY = pageLocation.Y - _dragStartPoint.Y;
 
                 Rectangle oldBounds = _selectedElement.Bounds;
                 Rectangle newBounds = _selectedElement.Bounds;
 
+                Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+
                 // Calculate clamped position for X axis
                 int newX = oldBounds.X + deltaX;
-                newX = Math.Max(0, Math.Min(newX, Canvas_Panel.Width - oldBounds.Width));
+                newX = Math.Max(0, Math.Min(newX, pageSize.Width - oldBounds.Width));
                 int actualDeltaX = newX - oldBounds.X;
 
                 // Calculate clamped position for Y axis
                 int newY = oldBounds.Y + deltaY;
-                newY = Math.Max(0, Math.Min(newY, Canvas_Panel.Height - oldBounds.Height));
+                newY = Math.Max(0, Math.Min(newY, pageSize.Height - oldBounds.Height));
                 int actualDeltaY = newY - oldBounds.Y;
 
                 if (actualDeltaX != 0 || actualDeltaY != 0)
@@ -631,17 +652,18 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             // Update properties panel once at the end
-            if (wasInteracting && (_selectedElement != null || _selectedElements.Count > 0))
+            if (wasInteracting)
             {
                 _propertyUpdateTimer.Stop();
-                UpdatePropertyValues();
+                UpdatePropertiesForSelection();
                 NotifyParentValidationChanged();
             }
 
             if (e.Button == MouseButtons.Right)
             {
                 // Check if there's an element at the click location
-                BaseElement clickedElement = GetElementAtPoint(e.Location);
+                Point pageLocation = ScaledToPageCoordinates(e.Location);
+                BaseElement clickedElement = GetElementAtPoint(pageLocation);
 
                 if (clickedElement != null)
                 {
@@ -652,6 +674,15 @@ namespace Sales_Tracker.ReportGenerator
                         SelectElement(clickedElement, ctrlPressed);
                     }
                 }
+                else
+                {
+                    // Right-clicked on empty area - clear selection unless Ctrl is pressed
+                    bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+                    if (!ctrlPressed)
+                    {
+                        ClearAllSelections();
+                    }
+                }
 
                 bool hasSelection = _selectedElements.Count > 0 || _selectedElement != null;
                 Point formLocation = PointToClient(Canvas_Panel.PointToScreen(e.Location));
@@ -660,30 +691,86 @@ namespace Sales_Tracker.ReportGenerator
             }
         }
 
-        // Tool event handlers
-        private void AddChartElement(object sender, EventArgs e)
+        // Add element event handlers
+        private void AddChartElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Chart, new Point(50, 50));
         }
-        private void AddTextElement(object sender, EventArgs e)
+        private void AddTextElement_Button_Click(object sender, EventArgs e)
         {
-            CreateElementAtLocation(ReportElementType.TextLabel, new Point(50, 220));
+            CreateElementAtLocation(ReportElementType.Label, new Point(50, 220));
         }
-        private void AddDateRangeElement(object sender, EventArgs e)
+        private void AddDateElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.DateRange, new Point(50, 280));
         }
-        private void AddSummaryElement(object sender, EventArgs e)
+        private void AddSummaryElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Summary, new Point(50, 320));
         }
-        private void AddTableElement(object sender, EventArgs e)
+        private void AddTableElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.TransactionTable, new Point(50, 450));
         }
         private void AddImageElement_Button_Click(object sender, EventArgs e)
         {
             CreateElementAtLocation(ReportElementType.Image, new Point(50, 360));
+        }
+
+        // Settings button
+        private void Settings_Button_Click(object sender, EventArgs e)
+        {
+            using PageSettings_Form pageSettings_Form = new();
+            pageSettings_Form.ShowDialog(this);
+        }
+        public void OnPageSettingsChanged()
+        {
+            ResizeCanvasToPageSize();
+            NotifyParentValidationChanged();
+            Canvas_Panel.Invalidate();
+        }
+
+        /// <summary>
+        /// Resizes the canvas to match the current page dimensions, maximizing size while fitting in the panel.
+        /// Always centers the canvas in the available space.
+        /// </summary>
+        private void ResizeCanvasToPageSize()
+        {
+            if (ReportConfig == null) { return; }
+
+            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+            int toolbarHeight = 62;
+            int padding = 10;
+
+            // Calculate available space in the panel
+            int availableWidth = RightCanvas_Panel.ClientSize.Width - (padding * 2);
+            int availableHeight = RightCanvas_Panel.ClientSize.Height - toolbarHeight - (padding * 2);
+
+            // Calculate scale factors for width and height
+            float scaleWidth = (float)availableWidth / pageSize.Width;
+            float scaleHeight = (float)availableHeight / pageSize.Height;
+
+            // Use the smaller scale factor to ensure canvas fits in both dimensions
+            float scaleFactor = Math.Min(scaleWidth, scaleHeight);
+
+            _canvasScaleFactor = scaleFactor;
+
+            // Calculate final canvas size
+            int canvasWidth = (int)(pageSize.Width * scaleFactor);
+            int canvasHeight = (int)(pageSize.Height * scaleFactor);
+
+            // Update canvas size
+            Canvas_Panel.Size = new Size(canvasWidth, canvasHeight);
+
+            // Center horizontally in available width
+            int centerX = (RightCanvas_Panel.ClientSize.Width - canvasWidth) / 2;
+
+            // Center vertically in available height
+            int availableVerticalSpace = RightCanvas_Panel.ClientSize.Height - toolbarHeight;
+            int centerY = toolbarHeight + ((availableVerticalSpace - canvasHeight) / 2);
+
+            // Set the centered location
+            Canvas_Panel.Location = new Point(centerX, centerY);
         }
 
         // Move element method
@@ -697,6 +784,8 @@ namespace Sales_Tracker.ReportGenerator
                 return;
             }
 
+            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+
             // Move all selected elements
             if (_selectedElements.Count > 0)
             {
@@ -709,8 +798,8 @@ namespace Sales_Tracker.ReportGenerator
                     newBounds.Y += deltaY;
 
                     // Clamp to canvas bounds
-                    newBounds.X = Math.Max(0, Math.Min(newBounds.X, Canvas_Panel.Width - newBounds.Width));
-                    newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, Canvas_Panel.Height - newBounds.Height));
+                    newBounds.X = Math.Max(0, Math.Min(newBounds.X, pageSize.Width - newBounds.Width));
+                    newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, pageSize.Height - newBounds.Height));
 
                     element.Bounds = newBounds;
 
@@ -727,8 +816,8 @@ namespace Sales_Tracker.ReportGenerator
                 newBounds.Y += deltaY;
 
                 // Clamp to canvas bounds
-                newBounds.X = Math.Max(0, Math.Min(newBounds.X, Canvas_Panel.Width - newBounds.Width));
-                newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, Canvas_Panel.Height - newBounds.Height));
+                newBounds.X = Math.Max(0, Math.Min(newBounds.X, pageSize.Width - newBounds.Width));
+                newBounds.Y = Math.Max(0, Math.Min(newBounds.Y, pageSize.Height - newBounds.Height));
 
                 _selectedElement.Bounds = newBounds;
 
@@ -1034,9 +1123,27 @@ namespace Sales_Tracker.ReportGenerator
             MakeSameSize_Button.Enabled = canResize;
         }
 
-        // Grid Snapping
+        // Grids
         private const int GRID_SIZE = 10;
         private bool _snapToGrid = false;
+        private static void DrawGrid(Graphics g)
+        {
+            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
+
+            using Pen pen = new(Color.FromArgb(30, CustomColors.ControlBorder), 1);
+            pen.DashStyle = DashStyle.Dot;
+
+            // Draw in page coordinates - ScaleTransform handles the visual scaling
+            for (int x = 0; x < pageSize.Width; x += GRID_SIZE)
+            {
+                g.DrawLine(pen, x, 0, x, pageSize.Height);
+            }
+
+            for (int y = 0; y < pageSize.Height; y += GRID_SIZE)
+            {
+                g.DrawLine(pen, 0, y, pageSize.Width, y);
+            }
+        }
         private void ToggleSnapToGrid()
         {
             _snapToGrid = !_snapToGrid;
@@ -1100,7 +1207,7 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             UpdateLayoutButtonStates();
         }
-        private void DrawSelection(Graphics g)
+        private void DrawSelectionForElements(Graphics g)
         {
             if (_selectedElements.Count > 1)
             {
@@ -1287,7 +1394,7 @@ namespace Sales_Tracker.ReportGenerator
                 return;
             }
 
-            ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
+            ElementProperties_Label.Text = $"Selected: {_selectedElement.GetElementType()}";
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
@@ -1400,51 +1507,19 @@ namespace Sales_Tracker.ReportGenerator
         // Canvas methods
         private void InvalidateElementRegion(Rectangle bounds)
         {
-            // Inflate the bounds slightly to include borders and handles
-            Rectangle invalidateRect = bounds;
-            invalidateRect.Inflate(10, 10);
-            Canvas_Panel.Invalidate(invalidateRect);
+            // Convert page bounds to scaled canvas coordinates for invalidation
+            Rectangle scaledBounds = PageToScaledRectangle(bounds);
+            scaledBounds.Inflate(10, 10);
+            Canvas_Panel.Invalidate(scaledBounds);
         }
-        private void DrawVisibleElements(Graphics g, Rectangle clipRect)
+        private Rectangle PageToScaledRectangle(Rectangle pageRect)
         {
-            if (ReportConfig?.Elements == null) { return; }
-
-            // Sort by Z-order so elements are drawn in the correct layer order
-            foreach (BaseElement element in ReportConfig.Elements.Where(e => e.IsVisible).OrderBy(e => e.ZOrder))
-            {
-                // Only draw elements that intersect with the clip rectangle
-                if (clipRect.IntersectsWith(element.Bounds))
-                {
-                    element.DrawDesignerElement(g);
-                }
-            }
-        }
-        private void CreateGridCache()
-        {
-            _gridCache?.Dispose();
-            _gridCache = new Bitmap(Canvas_Panel.Width, Canvas_Panel.Height);
-
-            using Graphics g = Graphics.FromImage(_gridCache);
-            g.Clear(Canvas_Panel.BackColor);
-            DrawGrid(g);
-        }
-        private void DrawGrid(Graphics g)
-        {
-            const int gridSize = 20;
-            using Pen pen = new(CustomColors.ControlBorder, 1);
-            pen.DashStyle = DashStyle.Dot;
-
-            // Draw vertical lines
-            for (int x = 0; x < Canvas_Panel.Width; x += gridSize)
-            {
-                g.DrawLine(pen, x, 0, x, Canvas_Panel.Height);
-            }
-
-            // Draw horizontal lines
-            for (int y = 0; y < Canvas_Panel.Height; y += gridSize)
-            {
-                g.DrawLine(pen, 0, y, Canvas_Panel.Width, y);
-            }
+            return new Rectangle(
+                (int)(pageRect.X * _canvasScaleFactor),
+                (int)(pageRect.Y * _canvasScaleFactor),
+                (int)(pageRect.Width * _canvasScaleFactor),
+                (int)(pageRect.Height * _canvasScaleFactor)
+            );
         }
 
         // Resize element methods
@@ -1499,8 +1574,9 @@ namespace Sales_Tracker.ReportGenerator
             {
                 // Invalidate only the affected regions
                 Rectangle unionRect = Rectangle.Union(_lastElementBounds, newBounds);
-                unionRect.Inflate(10, 10);  // Add padding for resize handles
-                Canvas_Panel.Invalidate(unionRect);
+                Rectangle scaledUnionRect = PageToScaledRectangle(unionRect);
+                scaledUnionRect.Inflate(10, 10);
+                Canvas_Panel.Invalidate(scaledUnionRect);
 
                 _selectedElement.Bounds = newBounds;
                 _lastElementBounds = newBounds;
@@ -1587,7 +1663,7 @@ namespace Sales_Tracker.ReportGenerator
                 NotifyParentValidationChanged();
             }
         }
-        private BaseElement? CreateElementByType(ReportElementType elementType, Point location)
+        private static BaseElement? CreateElementByType(ReportElementType elementType, Point location)
         {
             return elementType switch
             {
@@ -1596,31 +1672,26 @@ namespace Sales_Tracker.ReportGenerator
                     Bounds = new Rectangle(location, new Size(350, 250)),
                     ChartType = GetDefaultChartType()
                 },
-                ReportElementType.TextLabel => new LabelElement
+                ReportElementType.Label => new LabelElement
                 {
-                    DisplayName = "Text Label",
                     Bounds = new Rectangle(location, new Size(200, 30)),
                     Text = "Sample Text"
                 },
                 ReportElementType.DateRange => new DateRangeElement
                 {
-                    DisplayName = "Date Range",
                     Bounds = new Rectangle(location, new Size(250, 30))
                 },
                 ReportElementType.Summary => new SummaryElement
                 {
-                    DisplayName = "Summary",
                     Bounds = new Rectangle(location, new Size(300, 120))
                 },
                 ReportElementType.TransactionTable => new TableElement
                 {
-                    DisplayName = "Transaction Table",
                     Bounds = new Rectangle(location, new Size(400, 200))
                 },
                 ReportElementType.Image => new ImageElement
                 {
-                    Bounds = new Rectangle(location, new Size(200, 200)),
-                    DisplayName = "Image"
+                    Bounds = new Rectangle(location, new Size(200, 200))
                 },
                 _ => null
             };
@@ -1705,54 +1776,27 @@ namespace Sales_Tracker.ReportGenerator
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
-        private MainMenu_Form.ChartDataType GetDefaultChartType()
+        private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
             return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
         }
-        private BaseElement? GetElementAtPoint(Point point)
+        private static BaseElement? GetElementAtPoint(Point point)
         {
-            if (ReportConfig?.Elements == null) { return null; }
-
-            // Check elements in reverse Z-order (top to bottom)
-            IOrderedEnumerable<BaseElement> sortedElements = ReportConfig.Elements
-                .Where(e => e.IsVisible)
-                .OrderByDescending(e => e.ZOrder);
-
-            foreach (BaseElement? element in sortedElements)
-            {
-                if (element.Bounds.Contains(point))
-                {
-                    return element;
-                }
-            }
-
-            return null;
+            return ReportConfig?.Elements?
+                .Where(e => e.IsVisible && e.Bounds.Contains(point))
+                .OrderByDescending(e => e.ZOrder)
+                .FirstOrDefault();
         }
 
         // Form implementation methods
-        public bool IsValidForNextStep()
+        public static bool IsValidForNextStep()
         {
             return ReportConfig?.Elements?.Count > 0;
         }
-        public bool ValidateStep()
+        private static void NotifyParentValidationChanged()
         {
-            if (!IsValidForNextStep())
-            {
-                CustomMessageBox.Show(
-                    "Empty Layout",
-                    "Please add at least one element to your report layout.",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok
-                );
-                return false;
-            }
-
-            return true;
-        }
-        private void NotifyParentValidationChanged()
-        {
-            ParentReportForm?.OnChildFormValidationChanged();
+            ReportGenerator_Form.Instance.OnChildFormValidationChanged();
         }
 
         // Other methods

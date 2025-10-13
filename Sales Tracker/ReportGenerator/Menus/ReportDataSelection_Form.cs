@@ -5,7 +5,7 @@ using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// First step in report generation - allows users to select charts, transactions, and apply filters.
@@ -19,31 +19,17 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialRightPanelWidth;
         private CustomCheckListBox ChartSelection_CheckedListBox;
         private readonly List<MainMenu_Form.ChartDataType> _chartTypeOrder = [];
-
-        /// <summary>
-        /// Gets the parent report generator form.
-        /// </summary>
-        public ReportGenerator_Form ParentReportForm { get; private set; }
-
-        /// <summary>
-        /// Gets the current report configuration.
-        /// </summary>
-        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
-
-        /// <summary>
-        /// Indicates if the form is currently being loaded/updated programmatically.
-        /// </summary>
         private bool _isUpdating;
+        private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
         // Getters
         public static ReportDataSelection_Form Instance => _instance;
 
         // Init.
-        public ReportDataSelection_Form(ReportGenerator_Form parentForm)
+        public ReportDataSelection_Form()
         {
             InitializeComponent();
             _instance = this;
-            ParentReportForm = parentForm;
 
             // This fixes a bug. I have a similar setup on ReportPreviewExport_Form but it doesn't have this issue. I'm not sure why.
             DateRange_GroupBox.Anchor = AnchorStyles.None;
@@ -671,7 +657,7 @@ namespace Sales_Tracker.ReportGenerator
                 ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
 
                 // Apply the template configuration to the parent's report config
-                if (ReportConfig != null && ParentReportForm != null)
+                if (ReportConfig != null)
                 {
                     // Clear existing elements
                     ReportConfig.Elements.Clear();
@@ -739,8 +725,7 @@ namespace Sales_Tracker.ReportGenerator
                     }
                 });
 
-                // Force the layout designer to refresh
-                ParentReportForm?.OnChildFormValidationChanged();
+                NotifyParentValidationChanged();
             }
             finally
             {
@@ -870,9 +855,9 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Notifies the parent form that validation state has changed
         /// </summary>
-        private void NotifyParentValidationChanged()
+        private static void NotifyParentValidationChanged()
         {
-            ParentReportForm?.OnChildFormValidationChanged();
+            ReportGenerator_Form.Instance.OnChildFormValidationChanged();
         }
 
         /// <summary>

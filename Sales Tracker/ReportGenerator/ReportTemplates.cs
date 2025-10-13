@@ -200,7 +200,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range element
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
@@ -246,7 +245,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
@@ -292,7 +290,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
@@ -302,7 +299,6 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new SummaryElement
             {
-                DisplayName = "Performance Summary",
                 Bounds = stack[0],
                 ZOrder = 1
             });
@@ -338,7 +334,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
@@ -397,7 +392,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });
@@ -456,7 +450,6 @@ namespace Sales_Tracker.ReportGenerator
             // Date range
             config.AddElement(new DateRangeElement
             {
-                DisplayName = "Report Period",
                 Bounds = TemplateLayoutHelper.GetDateRangeBounds(context),
                 ZOrder = 0
             });

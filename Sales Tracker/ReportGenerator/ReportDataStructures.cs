@@ -9,7 +9,7 @@ namespace Sales_Tracker.ReportGenerator
     {
         Chart,
         TransactionTable,
-        TextLabel,
+        Label,
         Image,
         Logo,
         DateRange,
@@ -96,7 +96,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (element != null)
             {
-                element.ZOrder = Elements.Count;
+                // Set Z-order to be higher than any existing element
+                element.ZOrder = Elements.Count != 0 ? Elements.Max(e => e.ZOrder) + 1 : 0;
                 Elements.Add(element);
             }
         }
@@ -110,6 +111,13 @@ namespace Sales_Tracker.ReportGenerator
             if (element != null)
             {
                 Elements.Remove(element);
+
+                // Dispose if element implements IDisposable
+                if (element is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
                 return true;
             }
             return false;

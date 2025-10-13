@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -11,11 +12,11 @@ namespace Sales_Tracker.ReportGenerator
     {
         // Properties
         public static Guna2Panel Panel { get; private set; }
-        public static Guna2Button Delete_Button { get; private set; }
-        public static Guna2Button Duplicate_Button { get; private set; }
-        public static Guna2Button SelectAll_Button { get; private set; }
-        public static Guna2Button BringToFront_Button { get; private set; }
-        public static Guna2Button SendToBack_Button { get; private set; }
+        private static Guna2Button Delete_Button;
+        private static Guna2Button Duplicate_Button;
+        private static Guna2Button SelectAll_Button;
+        private static Guna2Button BringToFront_Button;
+        private static Guna2Button SendToBack_Button;
 
         // Constructor
         public static void ConstructRightClickElementMenu()

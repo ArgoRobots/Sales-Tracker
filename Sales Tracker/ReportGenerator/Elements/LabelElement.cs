@@ -15,14 +15,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment Alignment { get; set; } = StringAlignment.Center;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
-        public override ReportElementType GetElementType() => ReportElementType.TextLabel;
+        public override ReportElementType GetElementType() => ReportElementType.Label;
         public override BaseElement Clone()
         {
             return new LabelElement
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -42,7 +41,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 using Font font = new(FontFamily, FontSize, FontStyle);
                 using SolidBrush brush = new(TextColor);
 
-                StringFormat format = new()
+                using StringFormat format = new()
                 {
                     Alignment = Alignment,
                     LineAlignment = VerticalAlignment,
@@ -68,17 +67,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 graphics.DrawString(Text, fallbackFont, fallbackBrush, Bounds, fallbackFormat);
             }
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            // Draw background
-            using SolidBrush bgBrush = new(Color.LightYellow);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(bgBrush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            // Draw text with actual settings
-            RenderElement(graphics, null);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -125,26 +113,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Text alignment
             AddPropertyLabel(container, "Align:", yPosition);
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(Alignment), yPosition,
                 ["Left", "Center", "Right"],
                 value =>
                 {
-                    Alignment = DisplayTextToAlignment(value);
+                    Alignment = AlignmentHelper.FromDisplayText(value);
                     onPropertyChanged();
                 });
-            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
+            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentHelper.ToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(VerticalAlignment), yPosition,
                 ["Top", "Middle", "Bottom"],
                 value =>
                 {
-                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
+                    VerticalAlignment = AlignmentHelper.FromDisplayText(value);
                     onPropertyChanged();
                 });
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
+            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
             // Text color
@@ -158,46 +146,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             return yPosition;
-        }
-        private static string AlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Left",
-                StringAlignment.Center => "Center",
-                StringAlignment.Far => "Right",
-                _ => "Center"
-            };
-        }
-        private static StringAlignment DisplayTextToAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Left" => StringAlignment.Near,
-                "Center" => StringAlignment.Center,
-                "Right" => StringAlignment.Far,
-                _ => StringAlignment.Center
-            };
-        }
-        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Top",
-                StringAlignment.Center => "Middle",
-                StringAlignment.Far => "Bottom",
-                _ => "Middle"
-            };
-        }
-        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Top" => StringAlignment.Near,
-                "Middle" => StringAlignment.Center,
-                "Bottom" => StringAlignment.Far,
-                _ => StringAlignment.Center
-            };
         }
     }
 }

@@ -2,7 +2,7 @@
 using Sales_Tracker.UI;
 using System.Diagnostics;
 
-namespace Sales_Tracker.ReportGenerator
+namespace Sales_Tracker.ReportGenerator.Menus
 {
     /// <summary>
     /// Third step in report generation - preview and export functionality.
@@ -16,35 +16,20 @@ namespace Sales_Tracker.ReportGenerator
         private int _initialRightPanelWidth;
         private ExportSettings _exportSettings;
         private ZoomableImageViewer _zoomableViewer;
-
-        /// <summary>
-        /// Gets the parent report generator form.
-        /// </summary>
-        public ReportGenerator_Form ParentReportForm { get; private set; }
-
-        /// <summary>
-        /// Gets the current report configuration.
-        /// </summary>
-        private ReportConfiguration? ReportConfig => ParentReportForm?.CurrentReportConfiguration;
-
-        /// <summary>
-        /// Indicates if the form is currently being loaded/updated programmatically.
-        /// </summary>
         private bool _isUpdating;
+        private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
         // Getters
         public static ReportPreviewExport_Form Instance => _instance;
 
         // Init.
-        public ReportPreviewExport_Form(ReportGenerator_Form parentForm)
+        public ReportPreviewExport_Form()
         {
             InitializeComponent();
             _instance = this;
-            ParentReportForm = parentForm;
 
             InitializeExportSettings();
             SetupZoomableViewer();
-            SetupPageSettings();
             SetupExportSettings();
             StoreInitialSizes();
             SetEventHandlers();
@@ -56,7 +41,6 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetupZoomableViewer()
         {
-            // Create the zoomable viewer handler and attach it to the existing PictureBox
             _zoomableViewer = new ZoomableImageViewer(Preview_PictureBox);
 
             // Subscribe to zoom changed event
@@ -69,22 +53,6 @@ namespace Sales_Tracker.ReportGenerator
             ZoomIn_Button.Click += (s, e) => _zoomableViewer.ZoomIn();
             ZoomOut_Button.Click += (s, e) => _zoomableViewer.ZoomOut();
             FitToWindow_Button.Click += (s, e) => _zoomableViewer.FitToWindow();
-        }
-        private void SetupPageSettings()
-        {
-            // Setup page size combo box
-            PageSize_ComboBox.Items.Clear();
-            PageSize_ComboBox.Items.Add("A4 (210 × 297 mm)");
-            PageSize_ComboBox.Items.Add("Letter (8.5 × 11 in)");
-            PageSize_ComboBox.Items.Add("Legal (8.5 × 14 in)");
-            PageSize_ComboBox.Items.Add("Tabloid (11 × 17 in)");
-            PageSize_ComboBox.SelectedIndex = 0;  // A4 default
-
-            // Setup orientation combo box
-            PageOrientation_ComboBox.Items.Clear();
-            PageOrientation_ComboBox.Items.Add("Portrait");
-            PageOrientation_ComboBox.Items.Add("Landscape");
-            PageOrientation_ComboBox.SelectedIndex = 0;  // Portrait default
         }
         private void SetupExportSettings()
         {
@@ -101,8 +69,6 @@ namespace Sales_Tracker.ReportGenerator
 
             // Setup checkboxes
             OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
-            IncludeHeader_CheckBox.Checked = ReportConfig?.ShowHeader ?? true;
-            IncludeFooter_CheckBox.Checked = ReportConfig?.ShowFooter ?? true;
         }
         private void StoreInitialSizes()
         {
@@ -118,10 +84,7 @@ namespace Sales_Tracker.ReportGenerator
         private void ScaleControls()
         {
             DpiHelper.ScaleComboBox(ExportFormat_ComboBox);
-            DpiHelper.ScaleComboBox(PageSize_ComboBox);
-            DpiHelper.ScaleComboBox(PageOrientation_ComboBox);
             DpiHelper.ScaleGroupBox(Preview_GroupBox);
-            DpiHelper.ScaleGroupBox(PageSettings_GroupBox);
             DpiHelper.ScaleGroupBox(ExportSettings_GroupBox);
         }
 
@@ -204,13 +167,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             UpdateQualityLabel();
         }
-        private void PageSettings_Changed(object sender, EventArgs e)
-        {
-            if (!_isUpdating)
-            {
-                GeneratePreview();
-            }
-        }
         private void ExportSettings_Changed(object sender, EventArgs e)
         {
             if (!_isUpdating)
@@ -218,43 +174,9 @@ namespace Sales_Tracker.ReportGenerator
                 UpdateExportSettingsFromUI();
             }
         }
-        private void IncludeHeader_Label_Click(object sender, EventArgs e)
-        {
-            IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
-        }
-        private void IncludeFooter_Label_Click(object sender, EventArgs e)
-        {
-            IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
-        }
         private void OpenAfterExport_Label_Click(object sender, EventArgs e)
         {
             OpenAfterExport_CheckBox.Checked = !OpenAfterExport_CheckBox.Checked;
-        }
-        private void IncludeHeader_CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_isUpdating && ReportConfig != null)
-            {
-                ReportConfig.ShowHeader = IncludeHeader_CheckBox.Checked;
-                GeneratePreview();
-            }
-        }
-        private void IncludeFooter_CheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_isUpdating && ReportConfig != null)
-            {
-                ReportConfig.ShowFooter = IncludeFooter_CheckBox.Checked;
-                GeneratePreview();
-            }
-        }
-        private void PageNumber_NumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            if (!_isUpdating && ReportConfig != null)
-            {
-                // Update the page number in the configuration
-                ReportConfig.CurrentPageNumber = (int)PageNumber_NumericUpDown.Value;
-
-                GeneratePreview();
-            }
         }
         private void ExportFormat_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -290,8 +212,6 @@ namespace Sales_Tracker.ReportGenerator
                     _zoomableViewer.Image = CreatePreviewPlaceholder();
                     return;
                 }
-
-                UpdateReportConfigFromPageSettings();
 
                 // Create renderer and generate preview
                 ReportRenderer renderer = new(ReportConfig, _exportSettings);
@@ -378,7 +298,6 @@ namespace Sales_Tracker.ReportGenerator
                 }
 
                 UpdateExportSettingsFromUI();
-                UpdateReportConfigFromPageSettings();
 
                 // Show progress indication
                 UseWaitCursor = true;
@@ -463,24 +382,6 @@ namespace Sales_Tracker.ReportGenerator
                 _ => 600       // Maximum quality
             };
         }
-        private void UpdateReportConfigFromPageSettings()
-        {
-            if (ReportConfig == null) { return; }
-
-            // Update page size
-            ReportConfig.PageSize = PageSize_ComboBox.SelectedIndex switch
-            {
-                0 => PageSize.A4,
-                1 => PageSize.Letter,
-                2 => PageSize.Legal,
-                3 => PageSize.Tabloid,
-                _ => PageSize.A4
-            };
-
-            // Update orientation
-            ReportConfig.PageOrientation = PageOrientation_ComboBox.SelectedIndex == 0 ?
-                PageOrientation.Portrait : PageOrientation.Landscape;
-        }
 
         // Helper methods
         private void UpdateQualityLabel()
@@ -542,11 +443,6 @@ namespace Sales_Tracker.ReportGenerator
 
             PerformUpdate(() =>
             {
-                // Load page settings
-                PageSize_ComboBox.SelectedIndex = (int)ReportConfig.PageSize;
-                PageOrientation_ComboBox.SelectedIndex = (int)ReportConfig.PageOrientation;
-                PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
-
                 // Set default export path if not set
                 if (string.IsNullOrEmpty(ExportPath_TextBox.Text))
                 {
@@ -565,9 +461,9 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Notifies the parent form that validation state has changed.
         /// </summary>
-        private void NotifyParentValidationChanged()
+        private static void NotifyParentValidationChanged()
         {
-            ParentReportForm?.OnChildFormValidationChanged();
+            ReportGenerator_Form.Instance.OnChildFormValidationChanged();
         }
 
         /// <summary>

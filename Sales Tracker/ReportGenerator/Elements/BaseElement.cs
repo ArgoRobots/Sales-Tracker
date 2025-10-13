@@ -22,11 +22,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Rectangle Bounds { get; set; }
 
         /// <summary>
-        /// Display name for the element (used in UI).
-        /// </summary>
-        public string DisplayName { get; set; }
-
-        /// <summary>
         /// Z-order for layering elements.
         /// </summary>
         public int ZOrder { get; set; }
@@ -65,11 +60,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config);
 
-        /// <summary>
-        /// Draws the element in the designer canvas.
-        /// </summary>
-        public abstract void DrawDesignerElement(Graphics graphics);
-
         private Panel _cachedPropertyPanel;
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];
@@ -86,11 +76,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _cachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
-                    Size = new Size(container.Width - 5, container.Height),
                     AutoSize = false,
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
+
+                SetCachedPropertiesPanelSize(container);
 
                 // Create common controls if element doesn't handle its own
                 if (!HandlesOwnCommonControls)
@@ -111,7 +102,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         _updateActionCache[kvp.Key] = kvp.Value;
                     }
 
-                    yPosition += ControlRowHeight * 5;
+                    yPosition += ControlRowHeight * 4;
                 }
 
                 // Let derived classes create their specific controls
@@ -124,12 +115,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
             {
                 container.Controls.Clear();
+                SetCachedPropertiesPanelSize(container);
                 container.Controls.Add(_cachedPropertyPanel);
             }
 
             UpdateAllControlValues();
 
             return yPosition;
+        }
+        private void SetCachedPropertiesPanelSize(Panel container)
+        {
+            _cachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
         }
 
         /// <summary>
@@ -178,22 +174,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Dictionary<string, Control> controls = [];
             updateActions = [];
-
-            // Name property
-            AddPropertyLabel(container, "Name:", yPosition);
-            Guna2TextBox nameTextBox = AddPropertyTextBox(container, element?.DisplayName ?? "", yPosition,
-                value =>
-                {
-                    if (element != null)
-                    {
-                        element.DisplayName = value;
-                        container.Invalidate();
-                        onPropertyChanged();
-                    }
-                });
-            controls["Name"] = nameTextBox;
-            updateActions["Name"] = () => nameTextBox.Text = element?.DisplayName ?? "";
-            yPosition += ControlRowHeight;
 
             // X position
             AddPropertyLabel(container, "X:", yPosition);
@@ -321,6 +301,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Minimum = min,
                 Maximum = max,
                 Value = value
+            };
+            numericUpDown.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    // Remove Windows "ding" noise when user presses enter
+                    e.SuppressKeyPress = true;
+                }
             };
 
             numericUpDown.DisableScrollAndForwardToPanel();
