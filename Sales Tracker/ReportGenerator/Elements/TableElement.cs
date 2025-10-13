@@ -55,6 +55,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         // Colors (Style tab)
         public Color HeaderBackgroundColor { get; set; } = Color.FromArgb(94, 148, 255);
         public Color HeaderTextColor { get; set; } = Color.White;
+        public Color DataRowTextColor { get; set; } = Color.Black;
         public Color GridLineColor { get; set; } = Color.LightGray;
         public Color BaseRowColor { get; set; } = Color.White;
         public Color AlternateRowColor { get; set; } = Color.FromArgb(248, 248, 248);
@@ -117,6 +118,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 CellPadding = CellPadding,
                 HeaderBackgroundColor = HeaderBackgroundColor,
                 HeaderTextColor = HeaderTextColor,
+                DataRowTextColor = DataRowTextColor,
                 GridLineColor = GridLineColor,
                 BaseRowColor = BaseRowColor,
                 AlternateRowColor = AlternateRowColor,
@@ -306,7 +308,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using Font dataFont = new(FontFamily, FontSize);
             using SolidBrush headerBgBrush = new(HeaderBackgroundColor);
             using SolidBrush headerTextBrush = new(HeaderTextColor);
-            using SolidBrush dataBrush = new(Color.Black);
+            using SolidBrush dataBrush = new(DataRowTextColor);
             using SolidBrush alternateBrush = new(AlternateRowColor);
             using Pen gridPen = new(GridLineColor, 0.5f);
 
@@ -662,7 +664,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 CacheControl(kvp.Key, null, kvp.Value);
             }
 
-            yPosition += ControlRowHeight * 5;
+            yPosition += ControlRowHeight * 4;
 
             // Data selection combo box
             AddPropertyLabel(panel, "Data:", yPosition);
@@ -796,6 +798,46 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }, 0, 20);
             cellPaddingNumeric.Left = 150;
             CacheControl("CellPadding", cellPaddingNumeric, () => cellPaddingNumeric.Value = CellPadding);
+            yPosition += ControlRowHeight;
+
+            // Header Background Color
+            AddPropertyLabel(panel, "Header BG:", yPosition);
+            Panel headerBgPicker = AddColorPicker(panel, yPosition, 150, HeaderBackgroundColor, color =>
+            {
+                HeaderBackgroundColor = color;
+                onPropertyChanged();
+            }, false);
+            CacheControl("HeaderBackgroundColor", headerBgPicker, () => headerBgPicker.BackColor = HeaderBackgroundColor);
+            yPosition += ControlRowHeight;
+
+            // Header Text Color
+            AddPropertyLabel(panel, "Header Text:", yPosition);
+            Panel headerTextPicker = AddColorPicker(panel, yPosition, 150, HeaderTextColor, color =>
+            {
+                HeaderTextColor = color;
+                onPropertyChanged();
+            }, false);
+            CacheControl("HeaderTextColor", headerTextPicker, () => headerTextPicker.BackColor = HeaderTextColor);
+            yPosition += ControlRowHeight;
+
+            // Data Row Text Color
+            AddPropertyLabel(panel, "Row Text:", yPosition);
+            Panel rowTextPicker = AddColorPicker(panel, yPosition, 150, DataRowTextColor, color =>
+            {
+                DataRowTextColor = color;
+                onPropertyChanged();
+            }, false);
+            CacheControl("DataRowTextColor", rowTextPicker, () => rowTextPicker.BackColor = DataRowTextColor);
+            yPosition += ControlRowHeight;
+
+            // Grid Line Color
+            AddPropertyLabel(panel, "Grid Lines:", yPosition);
+            Panel gridLinePicker = AddColorPicker(panel, yPosition, 150, GridLineColor, color =>
+            {
+                GridLineColor = color;
+                onPropertyChanged();
+            }, false);
+            CacheControl("GridLineColor", gridLinePicker, () => gridLinePicker.BackColor = GridLineColor);
             yPosition += ControlRowHeight;
 
             // Display option checkboxes
