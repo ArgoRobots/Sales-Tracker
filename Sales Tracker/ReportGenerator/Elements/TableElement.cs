@@ -477,11 +477,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 currentX = Bounds.X;
 
-                // Calculate totals
+                // Calculate totals for all numeric columns
+                decimal totalQuantity = transactions.Sum(t => t.Quantity);
+                decimal totalUnitPrice = transactions.Sum(t => t.UnitPrice);
                 decimal totalAmount = transactions.Sum(t => t.Total);
+                decimal totalShipping = transactions.Sum(t => t.Shipping);
                 int totalCount = transactions.Count;
 
-                // Draw totals label in first visible column
+                // Draw totals for each visible column
                 bool labelDrawn = false;
                 foreach ((string Header, float Width, bool Show, StringAlignment Align) in columns.Where(c => c.Show))
                 {
@@ -492,9 +495,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         DrawCellText(graphics, $"Totals ({totalCount} rows)", cellRect, headerFont, dataBrush, StringAlignment.Near);
                         labelDrawn = true;
                     }
+                    else if (Header == "Qty")
+                    {
+                        DrawCellText(graphics, $"{totalQuantity:N0}", cellRect, headerFont, dataBrush, StringAlignment.Far);
+                    }
+                    else if (Header == "Unit Price")
+                    {
+                        DrawCellText(graphics, $"${totalUnitPrice:N2}", cellRect, headerFont, dataBrush, StringAlignment.Far);
+                    }
                     else if (Header == "Total")
                     {
                         DrawCellText(graphics, $"${totalAmount:N2}", cellRect, headerFont, dataBrush, StringAlignment.Far);
+                    }
+                    else if (Header == "Shipping")
+                    {
+                        DrawCellText(graphics, $"${totalShipping:N2}", cellRect, headerFont, dataBrush, StringAlignment.Far);
                     }
 
                     if (ShowGridLines)
