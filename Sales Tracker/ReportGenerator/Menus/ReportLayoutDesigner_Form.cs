@@ -652,10 +652,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Update properties panel once at the end
-            if (wasInteracting && (_selectedElement != null || _selectedElements.Count > 0))
+            if (wasInteracting)
             {
                 _propertyUpdateTimer.Stop();
-                UpdatePropertyValues();
+                UpdatePropertiesForSelection();
                 NotifyParentValidationChanged();
             }
 
