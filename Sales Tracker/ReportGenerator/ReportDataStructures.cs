@@ -96,7 +96,8 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (element != null)
             {
-                element.ZOrder = Elements.Count;
+                // Set Z-order to be higher than any existing element
+                element.ZOrder = Elements.Count != 0 ? Elements.Max(e => e.ZOrder) + 1 : 0;
                 Elements.Add(element);
             }
         }
