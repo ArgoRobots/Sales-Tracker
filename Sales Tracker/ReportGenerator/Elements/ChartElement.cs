@@ -16,7 +16,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Chart element for displaying graphs and charts.
     /// </summary>
-    public class ChartElement : BaseElement
+    public class ChartElement : BaseElement, IDisposable
     {
         private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
 
@@ -131,24 +131,22 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private static bool ShouldReloadChart(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
         {
-            if (config?.Filters == null)
-            {
-                return false;
-            }
+            if (config?.Filters == null) { return false; }
 
-            // Check if we have a previous configuration for this chart type
-            if (!_lastLoadedConfig.TryGetValue(chartType, out (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses) lastConfig))
+            if (!_lastLoadedConfig.TryGetValue(chartType, out var lastConfig))
             {
                 return true; // Never loaded before
             }
 
-            // Check if any filter values have changed
-            bool configChanged = lastConfig.StartDate != config.Filters.StartDate ||
-                                lastConfig.EndDate != config.Filters.EndDate ||
-                                lastConfig.IncludeReturns != config.Filters.IncludeReturns ||
-                                lastConfig.IncludeLosses != config.Filters.IncludeLosses;
+            // Use tuple comparison for cleaner code
+            var currentConfig = (
+                config.Filters.StartDate,
+                config.Filters.EndDate,
+                config.Filters.IncludeReturns,
+                config.Filters.IncludeLosses
+            );
 
-            return configChanged;
+            return lastConfig != currentConfig;
         }
 
         // Load chart methods
@@ -753,6 +751,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
+        }
+
+        // Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _chartControl?.Dispose();
+                _chartControl = null;
+            }
+        }
+        ~ChartElement()
+        {
+            Dispose(false);
         }
     }
 }

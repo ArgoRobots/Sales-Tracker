@@ -1781,22 +1781,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private static BaseElement? GetElementAtPoint(Point point)
         {
-            if (ReportConfig?.Elements == null) { return null; }
-
-            // Check elements in reverse Z-order (top to bottom)
-            IOrderedEnumerable<BaseElement> sortedElements = ReportConfig.Elements
-                .Where(e => e.IsVisible)
-                .OrderByDescending(e => e.ZOrder);
-
-            foreach (BaseElement? element in sortedElements)
-            {
-                if (element.Bounds.Contains(point))
-                {
-                    return element;
-                }
-            }
-
-            return null;
+            return ReportConfig?.Elements?
+                .Where(e => e.IsVisible && e.Bounds.Contains(point))
+                .OrderByDescending(e => e.ZOrder)
+                .FirstOrDefault();
         }
 
         // Form implementation methods

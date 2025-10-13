@@ -20,7 +20,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// <summary>
     /// Image element for displaying PNG, JPEG, and SVG images.
     /// </summary>
-    public class ImageElement : BaseElement
+    public class ImageElement : BaseElement, IDisposable
     {
         // Properties
         public string ImagePath { get; set; } = "";
@@ -557,6 +557,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             return yPosition;
+        }
+
+        // Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _cachedImage?.Dispose();
+                _cachedImage = null;
+                _cachedSvg = null;
+            }
+        }
+        ~ImageElement()
+        {
+            Dispose(false);
         }
     }
 }

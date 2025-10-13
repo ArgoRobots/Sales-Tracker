@@ -111,6 +111,13 @@ namespace Sales_Tracker.ReportGenerator
             if (element != null)
             {
                 Elements.Remove(element);
+
+                // Dispose if element implements IDisposable
+                if (element is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
                 return true;
             }
             return false;
