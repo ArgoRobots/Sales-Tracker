@@ -29,7 +29,7 @@ namespace Sales_Tracker.GridView
         public static DataGridViewRow SelectedRowInMainMenu { get; set; }
 
         // Construct DataGridView
-        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
+        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control? parent) where TEnum : Enum
         {
             dataGridView.Name = name;
             dataGridView.ReadOnly = true;
@@ -67,7 +67,8 @@ namespace Sales_Tracker.GridView
 
             LoadColumns(dataGridView, columnHeaders, columnsToLoad);
             ThemeManager.UpdateDataGridViewHeaderTheme(dataGridView);
-            parent.Controls.Add(dataGridView);
+
+            parent?.Controls.Add(dataGridView);
         }
 
         // DataGridView event handlers

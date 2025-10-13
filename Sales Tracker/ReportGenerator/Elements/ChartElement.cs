@@ -360,7 +360,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     "FilteredPurchases_DataGridView",
                     MainMenu_Form.Instance.PurchaseColumnHeaders,
                     null,
-                    MainMenu_Form.Instance
+                    null
                 );
             }
             else
@@ -370,7 +370,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     "FilteredSales_DataGridView",
                     MainMenu_Form.Instance.SalesColumnHeaders,
                     null,
-                    MainMenu_Form.Instance
+                    null
                 );
             }
 
