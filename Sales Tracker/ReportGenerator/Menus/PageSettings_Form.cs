@@ -57,11 +57,22 @@ namespace Sales_Tracker.ReportGenerator
                 PageOrientation_ComboBox.Items.Add("Landscape");
 
                 PageOrientation_ComboBox.SelectedIndex = ReportConfig?.PageOrientation == PageOrientation.Landscape ? 1 : 0;
-                PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
 
                 // Setup header/footer checkboxes
                 IncludeHeader_CheckBox.Checked = ReportConfig?.ShowHeader ?? true;
                 IncludeFooter_CheckBox.Checked = ReportConfig?.ShowFooter ?? true;
+
+                // Setup page numbers checkbox and input
+                ShowPageNumbers_CheckBox.Checked = ReportConfig?.ShowPageNumbers ?? true;
+                PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
+
+                // Set initial enabled states based on footer and show page numbers
+                ShowPageNumbers_CheckBox.Enabled = IncludeFooter_CheckBox.Checked;
+                ShowPageNumbers_Label.Enabled = IncludeFooter_CheckBox.Checked;
+
+                bool enableStartingNumber = IncludeFooter_CheckBox.Checked && ShowPageNumbers_CheckBox.Checked;
+                PageNumber_NumericUpDown.Enabled = enableStartingNumber;
+                StartingNumber_Label.Enabled = enableStartingNumber;
             });
         }
         private void ScaleControls()
@@ -107,22 +118,50 @@ namespace Sales_Tracker.ReportGenerator
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
+        private void IncludeHeader_Label_Click(object sender, EventArgs e)
+        {
+            IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
+        }
         private void IncludeFooter_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (_isUpdating || ReportConfig == null) { return; }
 
             ReportConfig.ShowFooter = IncludeFooter_CheckBox.Checked;
 
+            // Enable/disable page numbers section when footer is toggled
+            ShowPageNumbers_CheckBox.Enabled = IncludeFooter_CheckBox.Checked;
+            ShowPageNumbers_Label.Enabled = IncludeFooter_CheckBox.Checked;
+
+            // Disable starting number if footer is off, or if show page numbers is off
+            bool enableStartingNumber = IncludeFooter_CheckBox.Checked && ShowPageNumbers_CheckBox.Checked;
+            PageNumber_NumericUpDown.Enabled = enableStartingNumber;
+            StartingNumber_Label.Enabled = enableStartingNumber;
+
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
-        }
-        private void IncludeHeader_Label_Click(object sender, EventArgs e)
-        {
-            IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
         }
         private void IncludeFooter_Label_Click(object sender, EventArgs e)
         {
             IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
+        }
+        private void ShowPageNumbers_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isUpdating || ReportConfig == null) { return; }
+
+            ReportConfig.ShowPageNumbers = ShowPageNumbers_CheckBox.Checked;
+
+            // Enable/disable the starting number input (only if footer is also enabled)
+            bool enableStartingNumber = ShowPageNumbers_CheckBox.Checked && IncludeFooter_CheckBox.Checked;
+            PageNumber_NumericUpDown.Enabled = enableStartingNumber;
+            StartingNumber_Label.Enabled = enableStartingNumber;
+
+            // Notify parent form to redraw
+            ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
+        }
+
+        private void ShowPageNumbers_Label_Click(object sender, EventArgs e)
+        {
+            ShowPageNumbers_CheckBox.Checked = !ShowPageNumbers_CheckBox.Checked;
         }
         private void PageNumber_NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
