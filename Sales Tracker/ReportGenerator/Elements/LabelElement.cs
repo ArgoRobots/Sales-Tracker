@@ -22,7 +22,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -68,17 +67,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 graphics.DrawString(Text, fallbackFont, fallbackBrush, Bounds, fallbackFormat);
             }
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            // Draw background
-            using SolidBrush bgBrush = new(Color.LightYellow);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(bgBrush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            // Draw text with actual settings
-            RenderElement(graphics, null);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {

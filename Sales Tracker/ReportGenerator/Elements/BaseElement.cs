@@ -22,11 +22,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Rectangle Bounds { get; set; }
 
         /// <summary>
-        /// Display name for the element (used in UI).
-        /// </summary>
-        public string DisplayName { get; set; }
-
-        /// <summary>
         /// Z-order for layering elements.
         /// </summary>
         public int ZOrder { get; set; }
@@ -64,11 +59,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// Renders the element to a graphics context for the report.
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config);
-
-        /// <summary>
-        /// Draws the element in the designer canvas.
-        /// </summary>
-        public abstract void DrawDesignerElement(Graphics graphics);
 
         private Panel _cachedPropertyPanel;
         private bool _controlsCreated = false;
@@ -112,7 +102,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         _updateActionCache[kvp.Key] = kvp.Value;
                     }
 
-                    yPosition += ControlRowHeight * 5;
+                    yPosition += ControlRowHeight * 4;
                 }
 
                 // Let derived classes create their specific controls
@@ -184,22 +174,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Dictionary<string, Control> controls = [];
             updateActions = [];
-
-            // Name property
-            AddPropertyLabel(container, "Name:", yPosition);
-            Guna2TextBox nameTextBox = AddPropertyTextBox(container, element?.DisplayName ?? "", yPosition,
-                value =>
-                {
-                    if (element != null)
-                    {
-                        element.DisplayName = value;
-                        container.Invalidate();
-                        onPropertyChanged();
-                    }
-                });
-            controls["Name"] = nameTextBox;
-            updateActions["Name"] = () => nameTextBox.Text = element?.DisplayName ?? "";
-            yPosition += ControlRowHeight;
 
             // X position
             AddPropertyLabel(container, "X:", yPosition);

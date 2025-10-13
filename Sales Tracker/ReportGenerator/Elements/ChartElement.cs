@@ -31,8 +31,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             set
             {
                 _chartType = value;
-                // Automatically update DisplayName when ChartType changes
-                DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
             }
         }
         public bool ShowLegend { get; set; } = true;
@@ -40,12 +38,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Color BorderColor { get; set; } = Color.Gray;
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 11f;
-
-        // Constructor
-        public ChartElement()
-        {
-            DisplayName = TranslatedChartTitles.GetChartDisplayName(_chartType);
-        }
 
         // Overrides
         public override ReportElementType GetElementType() => ReportElementType.Chart;
@@ -55,7 +47,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -634,24 +625,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using SKData data = image.Encode();
             using MemoryStream stream = new(data.ToArray());
             return new Bitmap(stream);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            using SolidBrush brush = new(Color.LightBlue);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Black);
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            string text = DisplayName ?? ChartType.ToString();
-            graphics.DrawString(text, font, textBrush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {

@@ -22,7 +22,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -64,16 +63,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(dateText, font, brush, Bounds, format);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            using SolidBrush brush = new(Color.LightGreen);
-            using Pen pen = new(Color.Gray, 1);
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            // Draw actual date range with current settings
-            RenderElement(graphics, null);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {

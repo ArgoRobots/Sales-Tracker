@@ -37,12 +37,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private SKSvg _cachedSvg;
         private string _cachedImagePath;
 
-        // Constructor
-        public ImageElement()
-        {
-            DisplayName = "Image";
-        }
-
         /// <summary>
         /// Calculates the actual corner radius in pixels based on the percentage and bounds.
         /// </summary>
@@ -64,7 +58,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
-                DisplayName = DisplayName,
                 ZOrder = ZOrder,
                 IsSelected = false,
                 IsVisible = IsVisible,
@@ -418,15 +411,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
-        }
-        public override void DrawDesignerElement(Graphics graphics)
-        {
-            // Draw same as RenderElement for consistency
-            RenderElement(graphics, null);
-
-            // Add a subtle overlay to indicate it's in designer mode
-            using SolidBrush overlayBrush = new(Color.FromArgb(10, 0, 0, 255));
-            graphics.FillRectangle(overlayBrush, Bounds);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {

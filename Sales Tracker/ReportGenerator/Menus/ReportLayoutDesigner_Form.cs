@@ -1387,7 +1387,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return;
             }
 
-            ElementProperties_Label.Text = $"Selected: {_selectedElement.DisplayName}";
+            ElementProperties_Label.Text = $"Selected: {_selectedElement.GetElementType()}";
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
@@ -1667,29 +1667,24 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 },
                 ReportElementType.TextLabel => new LabelElement
                 {
-                    DisplayName = "Text Label",
                     Bounds = new Rectangle(location, new Size(200, 30)),
                     Text = "Sample Text"
                 },
                 ReportElementType.DateRange => new DateRangeElement
                 {
-                    DisplayName = "Date Range",
                     Bounds = new Rectangle(location, new Size(250, 30))
                 },
                 ReportElementType.Summary => new SummaryElement
                 {
-                    DisplayName = "Summary",
                     Bounds = new Rectangle(location, new Size(300, 120))
                 },
                 ReportElementType.TransactionTable => new TableElement
                 {
-                    DisplayName = "Transaction Table",
                     Bounds = new Rectangle(location, new Size(400, 200))
                 },
                 ReportElementType.Image => new ImageElement
                 {
-                    Bounds = new Rectangle(location, new Size(200, 200)),
-                    DisplayName = "Image"
+                    Bounds = new Rectangle(location, new Size(200, 200))
                 },
                 _ => null
             };
