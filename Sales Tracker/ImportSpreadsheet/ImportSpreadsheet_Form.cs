@@ -16,6 +16,11 @@ namespace Sales_Tracker.ImportSpreadsheet
         private readonly MainMenu_Form.SelectedOption _oldOption;
         private string _selectedSourceCurrency = "USD";  // Default to USD
 
+        // Scaled dimensions
+        private static int ScaledPanelPadding => (int)(25 * DpiHelper.GetRelativeDpiScale());
+        private static int ScaledPanelHeight => (int)(240 * DpiHelper.GetRelativeDpiScale());
+        private static int ScaledPanelWidth => (int)(300 * DpiHelper.GetRelativeDpiScale());
+
         // Init.
         public ImportSpreadsheet_Form()
         {
@@ -370,7 +375,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             Panel emptyPanel = new()
             {
-                Size = new Size(_panelWidth, _panelHeight),
+                Size = new Size(ScaledPanelWidth, ScaledPanelHeight),
                 BackColor = CustomColors.ContentPanelBackground,
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -505,91 +510,134 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             if (summary.AccountantsImported > 0)
             {
-                importedItems.Add($"{summary.AccountantsImported} accountant{(summary.AccountantsImported == 1 ? "" : "s")}");
+                string template = summary.AccountantsImported == 1 
+                    ? LanguageManager.TranslateString("{0} accountant")
+                    : LanguageManager.TranslateString("{0} accountants");
+                importedItems.Add(string.Format(template, summary.AccountantsImported));
             }
             if (summary.CompaniesImported > 0)
             {
-                importedItems.Add($"{summary.CompaniesImported} compan{(summary.CompaniesImported == 1 ? "y" : "ies")}");
+                string template = summary.CompaniesImported == 1 
+                    ? LanguageManager.TranslateString("{0} company")
+                    : LanguageManager.TranslateString("{0} companies");
+                importedItems.Add(string.Format(template, summary.CompaniesImported));
             }
             if (summary.PurchaseProductsImported > 0)
             {
-                importedItems.Add($"{summary.PurchaseProductsImported} purchase product{(summary.PurchaseProductsImported == 1 ? "" : "s")}");
+                string template = summary.PurchaseProductsImported == 1 
+                    ? LanguageManager.TranslateString("{0} purchase product")
+                    : LanguageManager.TranslateString("{0} purchase products");
+                importedItems.Add(string.Format(template, summary.PurchaseProductsImported));
             }
             if (summary.SaleProductsImported > 0)
             {
-                importedItems.Add($"{summary.SaleProductsImported} sale product{(summary.SaleProductsImported == 1 ? "" : "s")}");
+                string template = summary.SaleProductsImported == 1 
+                    ? LanguageManager.TranslateString("{0} sale product")
+                    : LanguageManager.TranslateString("{0} sale products");
+                importedItems.Add(string.Format(template, summary.SaleProductsImported));
             }
             if (summary.PurchaseTransactionsImported > 0)
             {
-                importedItems.Add($"{summary.PurchaseTransactionsImported} purchase{(summary.PurchaseTransactionsImported == 1 ? "" : "s")}");
+                string template = summary.PurchaseTransactionsImported == 1 
+                    ? LanguageManager.TranslateString("{0} purchase")
+                    : LanguageManager.TranslateString("{0} purchases");
+                importedItems.Add(string.Format(template, summary.PurchaseTransactionsImported));
             }
             if (summary.SaleTransactionsImported > 0)
             {
-                importedItems.Add($"{summary.SaleTransactionsImported} sale{(summary.SaleTransactionsImported == 1 ? "" : "s")}");
+                string template = summary.SaleTransactionsImported == 1 
+                    ? LanguageManager.TranslateString("{0} sale")
+                    : LanguageManager.TranslateString("{0} sales");
+                importedItems.Add(string.Format(template, summary.SaleTransactionsImported));
             }
             if (summary.ReceiptsImported > 0)
             {
-                importedItems.Add($"{summary.ReceiptsImported} receipt{(summary.ReceiptsImported == 1 ? "" : "s")}");
+                string template = summary.ReceiptsImported == 1 
+                    ? LanguageManager.TranslateString("{0} receipt")
+                    : LanguageManager.TranslateString("{0} receipts");
+                importedItems.Add(string.Format(template, summary.ReceiptsImported));
             }
 
             string message;
             if (importedItems.Count == 0)
             {
-                message = "No items were imported.";
+                message = LanguageManager.TranslateString("No items were imported.");
             }
             else if (importedItems.Count == 1)
             {
-                message = $"Successfully imported {importedItems[0]}.";
+                string template = LanguageManager.TranslateString("Successfully imported {0}.");
+                message = string.Format(template, importedItems[0]);
             }
             else if (importedItems.Count == 2)
             {
-                message = $"Successfully imported {importedItems[0]} and {importedItems[1]}.";
+                string template = LanguageManager.TranslateString("Successfully imported {0} and {1}.");
+                message = string.Format(template, importedItems[0], importedItems[1]);
             }
             else
             {
-                message = $"Successfully imported {string.Join(", ", importedItems.Take(importedItems.Count - 1))}, and {importedItems.Last()}.";
+                string template = LanguageManager.TranslateString("Successfully imported {0}, and {1}.");
+                string itemsList = string.Join(", ", importedItems.Take(importedItems.Count - 1));
+                message = string.Format(template, itemsList, importedItems.Last());
             }
 
             // Only show skipped rows if there were actual problems (not just item rows)
             if (summary.SkippedRows > 0)
             {
-                message += $"\n\n{summary.SkippedRows} transaction{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped.";
+                string template = summary.SkippedRows == 1
+                    ? LanguageManager.TranslateString("\n\n{0} transaction skipped.")
+                    : LanguageManager.TranslateString("\n\n{0} transactions skipped.");
+                message += string.Format(template, summary.SkippedRows);
             }
 
             // Show item rows information if there were multi-item transactions
             if (summary.ItemRowsProcessed > 0)
             {
-                message += $"\n{summary.ItemRowsProcessed} item{(summary.ItemRowsProcessed == 1 ? "" : "s")} processed within multi-item transactions.";
+                string template = summary.ItemRowsProcessed == 1
+                    ? LanguageManager.TranslateString("\n{0} item processed within multi-item transactions.")
+                    : LanguageManager.TranslateString("\n{0} items processed within multi-item transactions.");
+                message += string.Format(template, summary.ItemRowsProcessed);
             }
 
             if (summary.Errors.Count > 0)
             {
-                message += $"\nTotal error{(summary.Errors.Count == 1 ? "" : "s")} encountered: {summary.Errors.Count}";
+                string template = summary.Errors.Count == 1
+                    ? LanguageManager.TranslateString("\nTotal {0} error encountered.")
+                    : LanguageManager.TranslateString("\nTotal {0} errors encountered.");
+                message += string.Format(template, summary.Errors.Count);
             }
 
-            CustomMessageBox.Show("Import Completed", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.Show(
+                LanguageManager.TranslateString("Import Completed"), 
+                message, 
+                CustomMessageBoxIcon.Success, 
+                CustomMessageBoxButtons.Ok);
         }
         private static void ShowNoImportMessage(ImportSummary summary)
         {
-            string message = "Nothing was imported.";
+            string message = LanguageManager.TranslateString("Nothing was imported.");
 
             if (summary.Errors.Count > 0)
             {
-                message += $"\n{summary.Errors.Count} errors were encountered during the import process.";
+                string errorsPart = LanguageManager.TranslateString("{0} errors were encountered during the import process.");
+                message += "\n" + string.Format(errorsPart, summary.Errors.Count);
 
                 // Show first few errors as examples
                 if (summary.Errors.Count > 0)
                 {
-                    message += "\nFirst error example:";
+                    message += "\n" + LanguageManager.TranslateString("First error example:");
                     ImportError firstError = summary.Errors.First();
-                    message += $"\nWorksheet: {firstError.WorksheetName}";
-                    message += $"\nRow: {firstError.RowNumber}";
-                    message += $"\nField: {firstError.FieldName}";
-                    message += $"\nInvalid Value: '{firstError.InvalidValue}'";
+                    message += "\n" + LanguageManager.TranslateString("Worksheet:") + " " + firstError.WorksheetName;
+                    message += "\n" + LanguageManager.TranslateString("Row:") + " " + firstError.RowNumber;
+                    message += "\n" + LanguageManager.TranslateString("Field:") + " " + firstError.FieldName;
+                    message += "\n" + LanguageManager.TranslateString("Invalid Value:") + " '" + firstError.InvalidValue + "'";
                 }
             }
 
-            CustomMessageBox.Show("No Data Imported", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.Show(
+                LanguageManager.TranslateString("No Data Imported"), 
+                message, 
+                CustomMessageBoxIcon.Info, 
+                CustomMessageBoxButtons.Ok);
         }
         private ImportSummary ImportSpreadsheetAndReceipts(ImportSession importSession)
         {
@@ -750,24 +798,28 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
 
         // Show things to import
-        private readonly byte _panelPadding = 25, _panelHeight = 240;
-        private readonly short _panelWidth = 300;
         private CenteredFlowLayoutPanel _centeredFlowPanel;
         private void InitContainerPanel()
         {
+            // Calculate bottom margin
+            int bottomMargin = (int)(70 * DpiHelper.GetRelativeDpiScale());
+            
             _centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-                Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
+                Size = new Size(ScaledPanelPadding * 6 + ScaledPanelWidth * 3 + 50, ScaledPanelHeight * 2 + ScaledPanelPadding),
                 Top = Currency_TextBox.Bottom + 40,
-                Spacing = _panelPadding
+                Spacing = (byte)ScaledPanelPadding
             };
+
+            // Set bottom position to ensure it doesn't overlap with buttons on different DPI settings
+            _centeredFlowPanel.Height = ClientSize.Height - _centeredFlowPanel.Top - bottomMargin;
         }
         private Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()
             {
-                Size = new Size(_panelWidth, _panelHeight),
+                Size = new Size(ScaledPanelWidth, ScaledPanelHeight),
                 BackColor = CustomColors.ContentPanelBackground,
                 BorderStyle = BorderStyle.FixedSingle,
                 Tag = worksheetName
