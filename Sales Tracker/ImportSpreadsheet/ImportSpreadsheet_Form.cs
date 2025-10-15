@@ -510,51 +510,51 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             if (summary.AccountantsImported > 0)
             {
-                string template = summary.AccountantsImported == 1 
-                    ? LanguageManager.TranslateString("{0} accountant")
-                    : LanguageManager.TranslateString("{0} accountants");
+                string template = summary.AccountantsImported == 1
+                    ? "{0}" + LanguageManager.TranslateString("accountant")
+                    : "{0}" + LanguageManager.TranslateString("accountants");
                 importedItems.Add(string.Format(template, summary.AccountantsImported));
             }
             if (summary.CompaniesImported > 0)
             {
                 string template = summary.CompaniesImported == 1 
-                    ? LanguageManager.TranslateString("{0} company")
-                    : LanguageManager.TranslateString("{0} companies");
+                    ? "{0}" + LanguageManager.TranslateString("company")
+                    : "{0}" + LanguageManager.TranslateString("companies");
                 importedItems.Add(string.Format(template, summary.CompaniesImported));
             }
             if (summary.PurchaseProductsImported > 0)
             {
                 string template = summary.PurchaseProductsImported == 1 
-                    ? LanguageManager.TranslateString("{0} purchase product")
-                    : LanguageManager.TranslateString("{0} purchase products");
+                    ? "{0}" + LanguageManager.TranslateString("purchase product")
+                    : "{0}" + LanguageManager.TranslateString("purchase products");
                 importedItems.Add(string.Format(template, summary.PurchaseProductsImported));
             }
             if (summary.SaleProductsImported > 0)
             {
                 string template = summary.SaleProductsImported == 1 
-                    ? LanguageManager.TranslateString("{0} sale product")
-                    : LanguageManager.TranslateString("{0} sale products");
+                    ? "{0}" + LanguageManager.TranslateString("sale product")
+                    : "{0}" + LanguageManager.TranslateString("sale products");
                 importedItems.Add(string.Format(template, summary.SaleProductsImported));
             }
             if (summary.PurchaseTransactionsImported > 0)
             {
                 string template = summary.PurchaseTransactionsImported == 1 
-                    ? LanguageManager.TranslateString("{0} purchase")
-                    : LanguageManager.TranslateString("{0} purchases");
+                    ? "{0}" + LanguageManager.TranslateString("purchase")
+                    : "{0}" + LanguageManager.TranslateString("purchases");
                 importedItems.Add(string.Format(template, summary.PurchaseTransactionsImported));
             }
             if (summary.SaleTransactionsImported > 0)
             {
                 string template = summary.SaleTransactionsImported == 1 
-                    ? LanguageManager.TranslateString("{0} sale")
-                    : LanguageManager.TranslateString("{0} sales");
+                    ? "{0}" + LanguageManager.TranslateString("sale")
+                    : "{0}" + LanguageManager.TranslateString("sales");
                 importedItems.Add(string.Format(template, summary.SaleTransactionsImported));
             }
             if (summary.ReceiptsImported > 0)
             {
                 string template = summary.ReceiptsImported == 1 
-                    ? LanguageManager.TranslateString("{0} receipt")
-                    : LanguageManager.TranslateString("{0} receipts");
+                    ? "{0}" + LanguageManager.TranslateString("receipt")
+                    : "{0}" + LanguageManager.TranslateString("receipts");
                 importedItems.Add(string.Format(template, summary.ReceiptsImported));
             }
 
@@ -565,17 +565,17 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             else if (importedItems.Count == 1)
             {
-                string template = LanguageManager.TranslateString("Successfully imported {0}.");
+                string template = LanguageManager.TranslateString("Successfully imported" + "{0}.");
                 message = string.Format(template, importedItems[0]);
             }
             else if (importedItems.Count == 2)
             {
-                string template = LanguageManager.TranslateString("Successfully imported {0} and {1}.");
+                string template = LanguageManager.TranslateString("Successfully imported") + "{0}" + LanguageManager.TranslateString("and") + "{1}.";
                 message = string.Format(template, importedItems[0], importedItems[1]);
             }
             else
             {
-                string template = LanguageManager.TranslateString("Successfully imported {0}, and {1}.");
+                string template = LanguageManager.TranslateString("Successfully imported") + "{0}," + LanguageManager.TranslateString("and") + "{1}.";
                 string itemsList = string.Join(", ", importedItems.Take(importedItems.Count - 1));
                 message = string.Format(template, itemsList, importedItems.Last());
             }
@@ -584,8 +584,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             if (summary.SkippedRows > 0)
             {
                 string template = summary.SkippedRows == 1
-                    ? LanguageManager.TranslateString("\n\n{0} transaction skipped.")
-                    : LanguageManager.TranslateString("\n\n{0} transactions skipped.");
+                    ? "\n\n{0}" + LanguageManager.TranslateString("transaction skipped.")
+                    : "\n\n{0}" + LanguageManager.TranslateString("transactions skipped.");
                 message += string.Format(template, summary.SkippedRows);
             }
 
@@ -593,16 +593,16 @@ namespace Sales_Tracker.ImportSpreadsheet
             if (summary.ItemRowsProcessed > 0)
             {
                 string template = summary.ItemRowsProcessed == 1
-                    ? LanguageManager.TranslateString("\n{0} item processed within multi-item transactions.")
-                    : LanguageManager.TranslateString("\n{0} items processed within multi-item transactions.");
+                    ? "\n{0}" + LanguageManager.TranslateString("item processed within multi-item transactions.")
+                    : "\n{0}" + LanguageManager.TranslateString("items processed within multi-item transactions.");
                 message += string.Format(template, summary.ItemRowsProcessed);
             }
 
             if (summary.Errors.Count > 0)
             {
                 string template = summary.Errors.Count == 1
-                    ? LanguageManager.TranslateString("\nTotal {0} error encountered.")
-                    : LanguageManager.TranslateString("\nTotal {0} errors encountered.");
+                    ? "\n" + LanguageManager.TranslateString("Total") + "{0}" + LanguageManager.TranslateString("error encountered.")
+                    : "\n" + LanguageManager.TranslateString("Total") + "{0}" + LanguageManager.TranslateString("errors encountered.");
                 message += string.Format(template, summary.Errors.Count);
             }
 
@@ -618,7 +618,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             if (summary.Errors.Count > 0)
             {
-                string errorsPart = LanguageManager.TranslateString("{0} errors were encountered during the import process.");
+                string errorsPart = "{0}" + LanguageManager.TranslateString("errors were encountered during the import process.");
                 message += "\n" + string.Format(errorsPart, summary.Errors.Count);
 
                 // Show first few errors as examples
