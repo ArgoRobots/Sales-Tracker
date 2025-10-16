@@ -244,7 +244,7 @@ namespace Sales_Tracker.Charts
 
             // Minimum sizes
             float minBulletSize = 10f * renderScale;
-            float minTextSize = 14f * renderScale;
+            float minTextSize = legendFontSize * renderScale;
 
             if (chartHeight >= normalHeight)
             {

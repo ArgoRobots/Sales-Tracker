@@ -869,7 +869,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Legend font size
             AddPropertyLabel(container, "Legend Size:", yPosition);
-            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition, value =>
+            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition, value =>
             {
                 LegendFontSize = (float)value;
                 onPropertyChanged();
