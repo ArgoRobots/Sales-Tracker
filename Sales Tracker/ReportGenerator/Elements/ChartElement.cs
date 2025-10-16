@@ -580,12 +580,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         {
                             Values = lineSeries.Values,
                             Name = lineSeries.Name,
-                            GeometrySize = lineSeries.GeometrySize * renderScale,
+                            GeometrySize = lineSeries.GeometrySize * renderScale * 0.75,
                             GeometryFill = new SolidColorPaint(SKColors.White),
                             GeometryStroke = lineSeries.GeometryStroke != null && lineSeries.GeometryStroke is SolidColorPaint gsPaint
                                 ? new SolidColorPaint(gsPaint.Color)
                                 {
-                                    StrokeThickness = (float)(gsPaint.StrokeThickness * renderScale)
+                                    StrokeThickness = (float)(gsPaint.StrokeThickness * renderScale * 0.75)
                                 }
                                 : lineSeries.GeometryStroke,
                             Fill = lineSeries.Fill != null && lineSeries.Fill is SolidColorPaint fillPaint
@@ -597,7 +597,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             Stroke = lineSeries.Stroke != null && lineSeries.Stroke is SolidColorPaint strokePaint
                                 ? new SolidColorPaint(strokePaint.Color)
                                 {
-                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale)
+                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale * 0.75)
                                 }
                                 : lineSeries.Stroke,
                             LineSmoothness = lineSeries.LineSmoothness,

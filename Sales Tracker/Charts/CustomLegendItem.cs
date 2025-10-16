@@ -92,10 +92,10 @@ namespace Sales_Tracker.Charts
         }
         private static SKColor GetActualSeriesColor(ISeries series)
         {
-            // Try to get the color directly from the series Fill property
             Type seriesType = series.GetType();
-            PropertyInfo? fillProperty = seriesType.GetProperty("Fill");
 
+            // Try Fill first (for bar/column/pie charts)
+            PropertyInfo? fillProperty = seriesType.GetProperty("Fill");
             if (fillProperty != null)
             {
                 object? fillValue = fillProperty.GetValue(series);
@@ -105,8 +105,19 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            // Try Stroke for line series
+            PropertyInfo? strokeProperty = seriesType.GetProperty("Stroke");
+            if (strokeProperty != null)
+            {
+                object? strokeValue = strokeProperty.GetValue(series);
+                if (strokeValue is SolidColorPaint solidStrokePaint)
+                {
+                    return solidStrokePaint.Color;
+                }
+            }
+
             // Fallback
-            return ChartColors.ToSKColor(CustomColors.Text);
+            return SKColors.Black;
         }
     }
 }
