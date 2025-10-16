@@ -111,6 +111,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Position the right panel
             RightSettings_Panel.Left = LeftPreview_Panel.Width;
         }
+        private void ReportPreviewExport_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _zoomableViewer?.Dispose();
+        }
 
         // Event handlers
         private void BrowseExportPath_Button_Click(object sender, EventArgs e)
@@ -458,16 +462,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 _isUpdating = false;
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _zoomableViewer?.Dispose();
-                components?.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

@@ -409,6 +409,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportPreviewExport_Form";
+            FormClosed += ReportPreviewExport_Form_FormClosed;
             VisibleChanged += ReportPreviewExport_Form_VisibleChanged;
             Resize += ReportPreviewExport_Form_Resize;
             RightSettings_Panel.ResumeLayout(false);
