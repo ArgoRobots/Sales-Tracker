@@ -68,14 +68,16 @@ namespace Sales_Tracker.ReportGenerator
             int exportWidth = (int)(pageSize.Width * scaleFactor);
             int exportHeight = (int)(pageSize.Height * scaleFactor);
 
-            using Bitmap bitmap = new(exportWidth, exportHeight);
-            using (Graphics graphics = Graphics.FromImage(bitmap))
+            using Bitmap originalBitmap = new(exportWidth, exportHeight);
+            using (Graphics graphics = Graphics.FromImage(originalBitmap))
             {
                 graphics.ScaleTransform(scaleFactor, scaleFactor);
                 RenderReport(graphics, pageSize, _config);
             }
 
-            SaveBitmap(bitmap);
+            // Reduce quality based on setting
+            using Bitmap finalBitmap = ReduceBitmapQuality(originalBitmap, _exportSettings.Quality);
+            SaveBitmap(finalBitmap);
         }
         private void ExportToPdf()
         {
@@ -88,47 +90,68 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             string fileName = Directories.GetNewFileNameIfItAlreadyExists(_exportSettings.FilePath);
+            _exportSettings.FilePath = fileName;
+
+            float scaleFactor = RenderScale;
+            int exportWidth = (int)(pageSize.Width * scaleFactor);
+            int exportHeight = (int)(pageSize.Height * scaleFactor);
+
+            using Bitmap originalBitmap = new(exportWidth, exportHeight);
+            using (Graphics graphics = Graphics.FromImage(originalBitmap))
+            {
+                graphics.ScaleTransform(scaleFactor, scaleFactor);
+                RenderReport(graphics, pageSize, _config);
+            }
+
+            // Reduce quality based on setting
+            using Bitmap finalBitmap = ReduceBitmapQuality(originalBitmap, _exportSettings.Quality);
 
             // Create PDF document using SkiaSharp
             using SKDocument document = SKDocument.CreatePdf(fileName);
             using SKCanvas canvas = document.BeginPage(pageSize.Width, pageSize.Height);
 
-            // Create a Bitmap to render graphics
-            using Bitmap bitmap = new(pageSize.Width, pageSize.Height);
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                RenderReport(graphics, pageSize, _config);
-            }
+            // Convert to SkiaSharp bitmap
+            using SKBitmap skBitmap = BitmapToSKBitmap(finalBitmap);
 
-            // Convert System.Drawing.Bitmap to SkiaSharp.SKBitmap
-            using SKBitmap skBitmap = BitmapToSKBitmap(bitmap);
-
-            // Draw the bitmap onto the PDF canvas
-            canvas.DrawBitmap(skBitmap, 0, 0);
+            // Draw scaled to fit the page
+            canvas.DrawBitmap(skBitmap, SKRect.Create(0, 0, pageSize.Width, pageSize.Height));
 
             document.EndPage();
             document.Close();
         }
 
         /// <summary>
-        /// Maps quality percentage to appropriate DPI value.
+        /// Reduces bitmap quality based on quality setting by resampling to lower resolution.
         /// </summary>
-        public static int GetDPIFromQuality(int quality)
+        private static Bitmap ReduceBitmapQuality(Bitmap originalBitmap, int quality)
         {
-            return quality switch
+            // Map quality (1-100) to scale factor (0.2 to 1.0)
+            // quality=1 -> 20%, quality=50 -> 60%, quality=100 -> 100%
+            float qualityScale = 0.2f + (quality / 100f * 0.8f);
+
+            int newWidth = (int)(originalBitmap.Width * qualityScale);
+            int newHeight = (int)(originalBitmap.Height * qualityScale);
+
+            // If scale is essentially 1.0, clone the original
+            if (qualityScale >= 0.95f)
             {
-                <= 10 => 72,   // Very low
-                <= 20 => 96,   // Low
-                <= 30 => 120,  // Low-medium
-                <= 40 => 150,  // Medium
-                <= 50 => 180,  // Medium-high
-                <= 60 => 200,  // High
-                <= 70 => 250,  // High quality print
-                <= 80 => 300,  // Professional print
-                <= 90 => 400,  // Very high quality
-                <= 95 => 500,  // Exceptional quality
-                _ => 600       // Maximum quality
-            };
+                return new Bitmap(originalBitmap);
+            }
+
+            // Create reduced size bitmap
+            Bitmap reducedBitmap = new(newWidth, newHeight);
+
+            using (Graphics g = Graphics.FromImage(reducedBitmap))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+
+                g.DrawImage(originalBitmap, 0, 0, newWidth, newHeight);
+            }
+
+            return reducedBitmap;
         }
 
         // Private rendering methods
@@ -224,6 +247,7 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             string fileName = Directories.GetNewFileNameIfItAlreadyExists(_exportSettings.FilePath);
+            _exportSettings.FilePath = fileName;
 
             ImageFormat format = _exportSettings.Format switch
             {
@@ -232,11 +256,12 @@ namespace Sales_Tracker.ReportGenerator
                 _ => ImageFormat.Png
             };
 
-            if (_exportSettings.Format == ExportFormat.JPG && _exportSettings.Quality < 100)
+            if (_exportSettings.Format == ExportFormat.JPG)
             {
-                // Use quality setting for JPEG
+                // Always use high JPEG compression quality (95)
+                // The quality slider controls bitmap size reduction only
                 EncoderParameters encoderParams = new(1);
-                encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, _exportSettings.Quality);
+                encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 95L);
                 ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
                 bitmap.Save(fileName, jpegCodec, encoderParams);
             }

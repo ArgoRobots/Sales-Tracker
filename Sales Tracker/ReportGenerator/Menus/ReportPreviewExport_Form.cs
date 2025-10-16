@@ -357,7 +357,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Map quality slider to both DPI and compression quality
             int quality = Quality_TrackBar.Value;
-            _exportSettings.DPI = ReportRenderer.GetDPIFromQuality(quality);
             _exportSettings.Quality = quality;  // JPEG compression quality
 
             _exportSettings.OpenAfterExport = OpenAfterExport_CheckBox.Checked;
