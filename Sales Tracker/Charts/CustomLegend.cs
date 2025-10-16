@@ -27,7 +27,7 @@ namespace Sales_Tracker.Charts
             float chartWidth = GetChartWidth(chart);
 
             // Calculate dynamic padding based on chart height
-            (float horizontalPadding, float verticalPadding) = CalculateDynamicPadding(chartHeight);
+            (float horizontalPadding, float verticalPadding) = CalculateDynamicPadding(chartHeight, forReport);
 
             // Determine legend position
             LegendPosition legendPosition = chart.LegendPosition;
@@ -82,14 +82,15 @@ namespace Sales_Tracker.Charts
             }
 
             // Calculate available width for legend with renderScale applied
-            float availableWidth = (chartWidth - (horizontalPadding * 2) - 40) * ReportRenderer.RenderScale;
+            float renderScale = forReport ? ReportRenderer.RenderScale : 1;
+            float availableWidth = (chartWidth - (horizontalPadding * 2) - 40) * renderScale;
             float currentRowWidth = 0;
             StackLayout currentRow = CreateNewRow();
 
             foreach (CustomLegendItem item in legendItems)
             {
                 // Estimate item width (this is approximate)
-                float estimatedItemWidth = EstimateLegendItemWidth(item, chartHeight, legendFontSize);
+                float estimatedItemWidth = EstimateLegendItemWidth(item, chartHeight);
 
                 // Check if item fits in current row
                 if (currentRow.Children.Count > 0 && currentRowWidth + estimatedItemWidth > availableWidth)
@@ -121,14 +122,15 @@ namespace Sales_Tracker.Charts
                 VerticalAlignment = Align.Start
             };
         }
-        private static float EstimateLegendItemWidth(CustomLegendItem item, float chartHeight, float legendFontSize)
+        private float EstimateLegendItemWidth(CustomLegendItem item, float chartHeight)
         {
             // Estimate width based on text length and chart height
             // This is an approximation - actual width depends on font metrics
-            (float bulletSize, float textSize, float textPadding) = CalculateDynamicSizes(chartHeight, legendFontSize);
+            (float bulletSize, float textSize, float textPadding) = CalculateDynamicSizes(chartHeight, forReport, legendFontSize);
 
             // Apply renderScale to bullet size
-            float scaledBulletSize = bulletSize * ReportRenderer.RenderScale;
+            float renderScale = forReport ? ReportRenderer.RenderScale : 1;
+            float scaledBulletSize = bulletSize * renderScale;
 
             // Rough estimation: bullet + padding + text width
             // Assume average character width is about 60% of text size
@@ -187,19 +189,21 @@ namespace Sales_Tracker.Charts
         /// <summary>
         /// Calculates dynamic padding based on chart height to prevent legend overflow.
         /// </summary>
-        private static (float horizontal, float vertical) CalculateDynamicPadding(float chartHeight)
+        private static (float horizontal, float vertical) CalculateDynamicPadding(float chartHeight, bool forReport)
         {
+            float renderScale = forReport ? ReportRenderer.RenderScale : 1;
+
             // Define height thresholds and corresponding padding values
-            const float minHeight = 200f;
-            const float normalHeight = 400f;
+            float minHeight = 200f * renderScale;
+            float normalHeight = 400f * renderScale;
 
             // Default padding values
-            const float defaultHorizontalPadding = 15f;
-            const float defaultVerticalPadding = 4f;
+            float defaultHorizontalPadding = 15f * renderScale;
+            float defaultVerticalPadding = 4f * renderScale;
 
             // Minimum padding values to maintain readability
-            const float minHorizontalPadding = 8f;
-            const float minVerticalPadding = 2f;
+            float minHorizontalPadding = 8f * renderScale;
+            float minVerticalPadding = 2f * renderScale;
 
             if (chartHeight >= normalHeight)
             {
@@ -225,9 +229,9 @@ namespace Sales_Tracker.Charts
         /// <summary>
         /// Calculates dynamic sizes for legend elements based on chart height.
         /// </summary>
-        public static (float bulletSize, float textSize, float textPadding) CalculateDynamicSizes(float chartHeight, float legendFontSize)
+        public static (float bulletSize, float textSize, float textPadding) CalculateDynamicSizes(float chartHeight, bool forReport, float legendFontSize)
         {
-            float renderScale = ReportRenderer.RenderScale;
+            float renderScale = forReport ? ReportRenderer.RenderScale : 1;
 
             // Define height thresholds
             float minHeight = 200f * renderScale;

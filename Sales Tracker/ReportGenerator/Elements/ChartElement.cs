@@ -863,7 +863,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 TitleFontSize = (float)value;
                 onPropertyChanged();
             }, 8, 20);
-            titleNumericUpDown.Left = 120;
+            titleNumericUpDown.Left = 130;
             CacheControl("FontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
             yPosition += ControlRowHeight;
 
@@ -874,7 +874,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 LegendFontSize = (float)value;
                 onPropertyChanged();
             }, 8, 20);
-            legendNumericUpDown.Left = 120;
+            legendNumericUpDown.Left = 130;
             CacheControl("FontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
             yPosition += ControlRowHeight;
 

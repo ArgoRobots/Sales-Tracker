@@ -27,7 +27,7 @@ namespace Sales_Tracker.Charts
             SKColor seriesColor = GetActualSeriesColor(series);
 
             // Calculate dynamic sizes based on chart height
-            (float bulletSize, float textSize, float textPadding) = CustomLegend.CalculateDynamicSizes(chartHeight, legendFontSize);
+            (float bulletSize, float textSize, float textPadding) = CustomLegend.CalculateDynamicSizes(chartHeight, forReport, legendFontSize);
 
             // Add colored circle as bullet point
             CircleGeometry bulletGeometry = new()
