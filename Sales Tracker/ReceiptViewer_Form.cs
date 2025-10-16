@@ -3,6 +3,7 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
 {
@@ -20,6 +21,14 @@ namespace Sales_Tracker
         // Panning properties
         private bool _isPanning = false;
         private Point _lastPanPoint;
+
+        // Rubber band animation
+        private Timer _rubberBandTimer;
+        private Point _rubberBandStartLocation;
+        private Point _rubberBandTargetLocation;
+        private DateTime _rubberBandStartTime;
+        private const int RubberBandDurationMs = 300;
+        private const float RubberBandResistance = 0.3f;
 
         // Supported file formats
         private static readonly HashSet<string> SupportedImageFormats = new(StringComparer.OrdinalIgnoreCase)
@@ -40,6 +49,8 @@ namespace Sales_Tracker
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
 
             _currentFilePath = filePath;
+            InitializeImagePanelDoubleBuffering();
+            InitializeRubberBandTimer();
             SetupMouseWheelEvents();
             SetupPanningEvents();
             LoadReceipt();
@@ -47,6 +58,23 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void InitializeImagePanelDoubleBuffering()
+        {
+            // Enable double buffering on the ImagePanel
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.SetProperty |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null, ImagePanel, [true]);
+        }
+        private void InitializeRubberBandTimer()
+        {
+            _rubberBandTimer = new Timer
+            {
+                Interval = 16  // ~60 FPS
+            };
+            _rubberBandTimer.Tick += RubberBandTimer_Tick;
         }
         private void UpdateTheme()
         {
@@ -104,6 +132,9 @@ namespace Sales_Tracker
         {
             if (e.Button == MouseButtons.Left && CanPan())
             {
+                // Stop any active rubber band animation
+                _rubberBandTimer.Stop();
+
                 _isPanning = true;
                 // Convert mouse position to ImagePanel coordinates
                 _lastPanPoint = ImagePanel.PointToClient(ReceiptPictureBox.PointToScreen(e.Location));
@@ -125,8 +156,9 @@ namespace Sales_Tracker
                     ReceiptPictureBox.Location.Y + deltaY
                 );
 
-                // Apply bounds checking to prevent panning too far
-                newLocation = ConstrainImageLocation(newLocation);
+                // Apply rubber band resistance when over-panning
+                newLocation = ApplyRubberBandResistance(newLocation);
+
                 ReceiptPictureBox.Location = newLocation;
 
                 // Update last pan point for next move
@@ -139,6 +171,12 @@ namespace Sales_Tracker
             {
                 _isPanning = false;
                 UpdateCursor();
+
+                // Check if we need to snap back
+                if (_originalImage != null && IsOutOfBounds(ReceiptPictureBox.Location))
+                {
+                    StartRubberBandAnimation(ReceiptPictureBox.Location, ConstrainImageLocation(ReceiptPictureBox.Location));
+                }
             }
         }
         private void ReceiptPictureBox_MouseLeave(object sender, EventArgs e)
@@ -147,8 +185,78 @@ namespace Sales_Tracker
             {
                 _isPanning = false;
                 UpdateCursor();
+
+                // Check if we need to snap back
+                if (_originalImage != null && IsOutOfBounds(ReceiptPictureBox.Location))
+                {
+                    StartRubberBandAnimation(ReceiptPictureBox.Location, ConstrainImageLocation(ReceiptPictureBox.Location));
+                }
             }
         }
+
+        // Rubber band animation
+        private void RubberBandTimer_Tick(object sender, EventArgs e)
+        {
+            double elapsed = (DateTime.Now - _rubberBandStartTime).TotalMilliseconds;
+            double progress = Math.Min(1.0, elapsed / RubberBandDurationMs);
+
+            // Ease out cubic for smooth deceleration
+            double easedProgress = 1 - Math.Pow(1 - progress, 3);
+
+            int x = Lerp(_rubberBandStartLocation.X, _rubberBandTargetLocation.X, (float)easedProgress);
+            int y = Lerp(_rubberBandStartLocation.Y, _rubberBandTargetLocation.Y, (float)easedProgress);
+
+            ReceiptPictureBox.Location = new Point(x, y);
+
+            if (progress >= 1.0)
+            {
+                _rubberBandTimer.Stop();
+                ReceiptPictureBox.Location = _rubberBandTargetLocation;
+            }
+        }
+        private void StartRubberBandAnimation(Point from, Point to)
+        {
+            _rubberBandStartLocation = from;
+            _rubberBandTargetLocation = to;
+            _rubberBandStartTime = DateTime.Now;
+            _rubberBandTimer.Start();
+        }
+        private static int Lerp(int start, int end, float t)
+        {
+            return (int)(start + (end - start) * t);
+        }
+        private bool IsOutOfBounds(Point location)
+        {
+            Point constrained = ConstrainImageLocation(location);
+            return Math.Abs(location.X - constrained.X) > 1 ||
+                   Math.Abs(location.Y - constrained.Y) > 1;
+        }
+        private Point ApplyRubberBandResistance(Point proposedLocation)
+        {
+            if (_originalImage == null) { return proposedLocation; }
+
+            Point constrained = ConstrainImageLocation(proposedLocation);
+
+            // Calculate how much we're over-panning
+            int overX = proposedLocation.X - constrained.X;
+            int overY = proposedLocation.Y - constrained.Y;
+
+            Point result = proposedLocation;
+
+            // Apply resistance to the overshoot
+            if (Math.Abs(overX) > 1)
+            {
+                result.X = constrained.X + (int)(overX * RubberBandResistance);
+            }
+
+            if (Math.Abs(overY) > 1)
+            {
+                result.Y = constrained.Y + (int)(overY * RubberBandResistance);
+            }
+
+            return result;
+        }
+
         private Point ConstrainImageLocation(Point proposedLocation)
         {
             if (_originalImage == null) { return proposedLocation; }
