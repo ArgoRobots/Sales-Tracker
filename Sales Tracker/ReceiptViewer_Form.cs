@@ -3,6 +3,8 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -11,24 +13,33 @@ namespace Sales_Tracker
     {
         // Properties
         private readonly string _currentFilePath;
-        private Image _originalImage;
+        private SKBitmap _skBitmap;
         private float _zoomFactor = 1.0f;
         private float _effectiveMaxZoom = 5.0f;
         private const float _zoomIncrement = 0.05f;
         private const float _minZoom = 0.1f;
         private const float _maxZoom = 5.0f;
 
+        // Transform properties
+        private float _offsetX = 0;
+        private float _offsetY = 0;
+
         // Panning properties
         private bool _isPanning = false;
-        private Point _lastPanPoint;
+        private Point _panStartPoint;
+        private float _startOffsetX;
+        private float _startOffsetY;
 
         // Rubber band animation
         private Timer _rubberBandTimer;
-        private Point _rubberBandStartLocation;
-        private Point _rubberBandTargetLocation;
+        private SKPoint _rubberBandStartOffset;
+        private SKPoint _rubberBandTargetOffset;
         private DateTime _rubberBandStartTime;
         private const int RubberBandDurationMs = 300;
-        private const float RubberBandResistance = 0.3f;
+        private const float RubberBandResistance = 0.3f;  // How much resistance when over-panning
+
+        // SkiaSharp control
+        private SKGLControl _skControl;
 
         // Supported file formats
         private static readonly HashSet<string> SupportedImageFormats = new(StringComparer.OrdinalIgnoreCase)
@@ -45,28 +56,40 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            // Enable double buffering for smoother rendering
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
-
             _currentFilePath = filePath;
-            InitializeImagePanelDoubleBuffering();
+            InitializeSkiaSharp();
             InitializeRubberBandTimer();
-            SetupMouseWheelEvents();
-            SetupPanningEvents();
             LoadReceipt();
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        private void InitializeImagePanelDoubleBuffering()
+        private void InitializeSkiaSharp()
         {
-            // Enable double buffering on the ImagePanel
-            typeof(Panel).InvokeMember("DoubleBuffered",
-                System.Reflection.BindingFlags.SetProperty |
-                System.Reflection.BindingFlags.Instance |
-                System.Reflection.BindingFlags.NonPublic,
-                null, ImagePanel, [true]);
+            // Remove the PictureBox if it exists
+            if (ReceiptPictureBox != null)
+            {
+                ImagePanel.Controls.Remove(ReceiptPictureBox);
+                ReceiptPictureBox.Dispose();
+                ReceiptPictureBox = null;
+            }
+
+            // Create SKGLControl for hardware acceleration
+            _skControl = new SKGLControl
+            {
+                Dock = DockStyle.Fill,
+                Visible = false
+            };
+
+            _skControl.PaintSurface += OnSkControlPaintSurface;
+            _skControl.MouseDown += OnSkControlMouseDown;
+            _skControl.MouseMove += OnSkControlMouseMove;
+            _skControl.MouseUp += OnSkControlMouseUp;
+            _skControl.MouseWheel += OnSkControlMouseWheel;
+            _skControl.MouseEnter += (s, e) => _skControl.Focus();
+
+            ImagePanel.Controls.Add(_skControl);
         }
         private void InitializeRubberBandTimer()
         {
@@ -79,7 +102,6 @@ namespace Sales_Tracker
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
-
             ImagePanel.BackColor = CustomColors.ControlBack;
             ControlsPanel.BackColor = CustomColors.ToolbarBackground;
         }
@@ -88,274 +110,274 @@ namespace Sales_Tracker
             Zoom_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
-        // Mouse wheel setup
-        private void SetupMouseWheelEvents()
+        // SkiaSharp Paint Event
+        private void OnSkControlPaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
-            // Add mouse wheel event handlers for zooming
-            ImagePanel.MouseWheel += ImagePanel_MouseWheel;
-            ReceiptPictureBox.MouseWheel += ImagePanel_MouseWheel;
+            SKCanvas canvas = e.Surface.Canvas;
+            canvas.Clear(SKColors.LightGray);
 
-            // Make sure the controls can receive focus for mouse wheel events
-            ImagePanel.MouseEnter += (s, e) => ImagePanel.Focus();
-            ReceiptPictureBox.MouseEnter += (s, e) => ReceiptPictureBox.Focus();
-        }
+            if (_skBitmap == null) { return; }
 
-        // Panning setup
-        private void SetupPanningEvents()
-        {
-            ReceiptPictureBox.MouseDown += ReceiptPictureBox_MouseDown;
-            ReceiptPictureBox.MouseMove += ReceiptPictureBox_MouseMove;
-            ReceiptPictureBox.MouseUp += ReceiptPictureBox_MouseUp;
-            ReceiptPictureBox.MouseLeave += ReceiptPictureBox_MouseLeave;
+            // Apply transformations
+            canvas.Save();
 
-            // Change cursor to indicate panning capability when image is larger than panel
-            ReceiptPictureBox.MouseEnter += (s, e) => UpdateCursor();
-        }
-        private void UpdateCursor()
-        {
-            if (_originalImage != null && ReceiptPictureBox.Visible && CanPan())
+            // Center the image and apply zoom
+            float centerX = _skControl.Width / 2f;
+            float centerY = _skControl.Height / 2f;
+
+            // Calculate scaled dimensions
+            float scaledWidth = _skBitmap.Width * _zoomFactor;
+            float scaledHeight = _skBitmap.Height * _zoomFactor;
+
+            // Calculate position to draw the image (centered + offset)
+            float drawX = centerX - scaledWidth / 2f + _offsetX;
+            float drawY = centerY - scaledHeight / 2f + _offsetY;
+
+            // Draw the bitmap with high quality
+            using (SKPaint paint = new()
             {
-                ReceiptPictureBox.Cursor = _isPanning ? Cursors.SizeAll : Cursors.Hand;
-            }
-            else
+                IsAntialias = true
+            })
             {
-                ReceiptPictureBox.Cursor = Cursors.Default;
+                SKRect destRect = SKRect.Create(drawX, drawY, scaledWidth, scaledHeight);
+                canvas.DrawBitmap(_skBitmap, destRect, paint);
             }
+
+            canvas.Restore();
         }
-        private bool CanPan()
-        {
-            return _originalImage != null &&
-                   (ReceiptPictureBox.Width > ImagePanel.ClientSize.Width ||
-                    ReceiptPictureBox.Height > ImagePanel.ClientSize.Height);
-        }
-        private void ReceiptPictureBox_MouseDown(object sender, MouseEventArgs e)
+
+        // Mouse Events for SkiaSharp Control
+        private void OnSkControlMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && CanPan())
             {
-                // Stop any active rubber band animation
                 _rubberBandTimer.Stop();
-
                 _isPanning = true;
-                // Convert mouse position to ImagePanel coordinates
-                _lastPanPoint = ImagePanel.PointToClient(ReceiptPictureBox.PointToScreen(e.Location));
-                UpdateCursor();
+                _panStartPoint = e.Location;
+                _startOffsetX = _offsetX;
+                _startOffsetY = _offsetY;
+                _skControl.Cursor = Cursors.SizeAll;
             }
         }
-        private void ReceiptPictureBox_MouseMove(object sender, MouseEventArgs e)
+        private void OnSkControlMouseMove(object sender, MouseEventArgs e)
         {
             if (_isPanning && e.Button == MouseButtons.Left)
             {
-                // Convert current mouse position to ImagePanel coordinates
-                Point currentPanPoint = ImagePanel.PointToClient(ReceiptPictureBox.PointToScreen(e.Location));
+                int deltaX = e.X - _panStartPoint.X;
+                int deltaY = e.Y - _panStartPoint.Y;
 
-                int deltaX = currentPanPoint.X - _lastPanPoint.X;
-                int deltaY = currentPanPoint.Y - _lastPanPoint.Y;
+                SKPoint newOffset = new(_startOffsetX + deltaX, _startOffsetY + deltaY);
+                newOffset = ApplyRubberBandResistance(newOffset);
 
-                Point newLocation = new(
-                    ReceiptPictureBox.Location.X + deltaX,
-                    ReceiptPictureBox.Location.Y + deltaY
-                );
+                _offsetX = newOffset.X;
+                _offsetY = newOffset.Y;
 
-                // Apply rubber band resistance when over-panning
-                newLocation = ApplyRubberBandResistance(newLocation);
-
-                ReceiptPictureBox.Location = newLocation;
-
-                // Update last pan point for next move
-                _lastPanPoint = currentPanPoint;
+                _skControl.Invalidate();
+            }
+            else if (CanPan())
+            {
+                _skControl.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                _skControl.Cursor = Cursors.Default;
             }
         }
-        private void ReceiptPictureBox_MouseUp(object sender, MouseEventArgs e)
+        private void OnSkControlMouseUp(object sender, MouseEventArgs e)
         {
             if (_isPanning)
             {
                 _isPanning = false;
-                UpdateCursor();
+                _skControl.Cursor = CanPan() ? Cursors.Hand : Cursors.Default;
 
                 // Check if we need to snap back
-                if (_originalImage != null && IsOutOfBounds(ReceiptPictureBox.Location))
+                if (IsOutOfBounds())
                 {
-                    StartRubberBandAnimation(ReceiptPictureBox.Location, ConstrainImageLocation(ReceiptPictureBox.Location));
+                    SKPoint constrained = ConstrainOffset(new SKPoint(_offsetX, _offsetY));
+                    StartRubberBandAnimation(new SKPoint(_offsetX, _offsetY), constrained);
                 }
             }
         }
-        private void ReceiptPictureBox_MouseLeave(object sender, EventArgs e)
+        private void OnSkControlMouseWheel(object sender, MouseEventArgs e)
         {
-            if (_isPanning)
-            {
-                _isPanning = false;
-                UpdateCursor();
+            if (_skBitmap == null) { return; }
 
-                // Check if we need to snap back
-                if (_originalImage != null && IsOutOfBounds(ReceiptPictureBox.Location))
-                {
-                    StartRubberBandAnimation(ReceiptPictureBox.Location, ConstrainImageLocation(ReceiptPictureBox.Location));
-                }
-            }
-        }
+            // Get mouse position relative to control
+            Point mousePos = e.Location;
 
-        // Rubber band animation
-        private void RubberBandTimer_Tick(object sender, EventArgs e)
-        {
-            double elapsed = (DateTime.Now - _rubberBandStartTime).TotalMilliseconds;
-            double progress = Math.Min(1.0, elapsed / RubberBandDurationMs);
-
-            // Ease out cubic for smooth deceleration
-            double easedProgress = 1 - Math.Pow(1 - progress, 3);
-
-            int x = Lerp(_rubberBandStartLocation.X, _rubberBandTargetLocation.X, (float)easedProgress);
-            int y = Lerp(_rubberBandStartLocation.Y, _rubberBandTargetLocation.Y, (float)easedProgress);
-
-            ReceiptPictureBox.Location = new Point(x, y);
-
-            if (progress >= 1.0)
-            {
-                _rubberBandTimer.Stop();
-                ReceiptPictureBox.Location = _rubberBandTargetLocation;
-            }
-        }
-        private void StartRubberBandAnimation(Point from, Point to)
-        {
-            _rubberBandStartLocation = from;
-            _rubberBandTargetLocation = to;
-            _rubberBandStartTime = DateTime.Now;
-            _rubberBandTimer.Start();
-        }
-        private static int Lerp(int start, int end, float t)
-        {
-            return (int)(start + (end - start) * t);
-        }
-        private bool IsOutOfBounds(Point location)
-        {
-            Point constrained = ConstrainImageLocation(location);
-            return Math.Abs(location.X - constrained.X) > 1 ||
-                   Math.Abs(location.Y - constrained.Y) > 1;
-        }
-        private Point ApplyRubberBandResistance(Point proposedLocation)
-        {
-            if (_originalImage == null) { return proposedLocation; }
-
-            Point constrained = ConstrainImageLocation(proposedLocation);
-
-            // Calculate how much we're over-panning
-            int overX = proposedLocation.X - constrained.X;
-            int overY = proposedLocation.Y - constrained.Y;
-
-            Point result = proposedLocation;
-
-            // Apply resistance to the overshoot
-            if (Math.Abs(overX) > 1)
-            {
-                result.X = constrained.X + (int)(overX * RubberBandResistance);
-            }
-
-            if (Math.Abs(overY) > 1)
-            {
-                result.Y = constrained.Y + (int)(overY * RubberBandResistance);
-            }
-
-            return result;
-        }
-
-        private Point ConstrainImageLocation(Point proposedLocation)
-        {
-            if (_originalImage == null) { return proposedLocation; }
-
-            int imageWidth = ReceiptPictureBox.Width;
-            int imageHeight = ReceiptPictureBox.Height;
-            int panelWidth = ImagePanel.ClientSize.Width;
-            int panelHeight = ImagePanel.ClientSize.Height;
-
-            int x = proposedLocation.X;
-            int y = proposedLocation.Y;
-
-            // If image is wider than panel, constrain horizontal movement
-            if (imageWidth > panelWidth)
-            {
-                int maxX = 0;
-                int minX = panelWidth - imageWidth;
-                x = Math.Max(minX, Math.Min(maxX, x));
-            }
-            else
-            {
-                // Center horizontally if image is smaller than panel
-                x = (panelWidth - imageWidth) / 2;
-            }
-
-            // If image is taller than panel, constrain vertical movement
-            if (imageHeight > panelHeight)
-            {
-                int maxY = 0;
-                int minY = panelHeight - imageHeight;
-                y = Math.Max(minY, Math.Min(maxY, y));
-            }
-            else
-            {
-                // Center vertically if image is smaller than panel
-                y = (panelHeight - imageHeight) / 2;
-            }
-
-            return new Point(x, y);
-        }
-        private void ImagePanel_MouseWheel(object sender, MouseEventArgs e)
-        {
-            // Only handle mouse wheel for images, not PDFs
-            if (!ReceiptPictureBox.Visible || _originalImage == null) return;
-
-            // Get mouse position relative to the ImagePanel
-            Point mousePos = ImagePanel.PointToClient(Cursor.Position);
-
-            // Determine zoom direction based on wheel delta
+            // Determine zoom direction
             bool zoomIn = e.Delta > 0;
             float oldZoomFactor = _zoomFactor;
 
             if (zoomIn && _zoomFactor < _effectiveMaxZoom)
             {
-                _zoomFactor += _zoomIncrement;
+                _zoomFactor = Math.Min(_zoomFactor + _zoomIncrement, _effectiveMaxZoom);
             }
             else if (!zoomIn && _zoomFactor > _minZoom)
             {
-                _zoomFactor -= _zoomIncrement;
+                _zoomFactor = Math.Max(_zoomFactor - _zoomIncrement, _minZoom);
             }
 
-            // Only apply zoom if the factor actually changed
             if (Math.Abs(_zoomFactor - oldZoomFactor) > 0.001f)
             {
-                ApplyZoomToPoint(mousePos);
+                // Calculate zoom point relative to center
+                float centerX = _skControl.Width / 2f;
+                float centerY = _skControl.Height / 2f;
+
+                // Calculate the point under the mouse in image coordinates
+                float mouseImageX = (mousePos.X - centerX - _offsetX) / oldZoomFactor;
+                float mouseImageY = (mousePos.Y - centerY - _offsetY) / oldZoomFactor;
+
+                // Calculate new offset to keep the same point under the mouse
+                _offsetX = mousePos.X - centerX - mouseImageX * _zoomFactor;
+                _offsetY = mousePos.Y - centerY - mouseImageY * _zoomFactor;
+
+                // Constrain the offset
+                SKPoint constrained = ConstrainOffset(new SKPoint(_offsetX, _offsetY));
+                _offsetX = constrained.X;
+                _offsetY = constrained.Y;
+
+                Zoom_Label.Text = $"{_zoomFactor * 100:F0}%";
+                _skControl.Invalidate();
             }
         }
 
-        // Form event handlers
+        // Helper Methods
+        private bool CanPan()
+        {
+            if (_skBitmap == null) { return false; }
+
+            float scaledWidth = _skBitmap.Width * _zoomFactor;
+            float scaledHeight = _skBitmap.Height * _zoomFactor;
+
+            return scaledWidth > _skControl.Width || scaledHeight > _skControl.Height;
+        }
+        private bool IsOutOfBounds()
+        {
+            SKPoint current = new(_offsetX, _offsetY);
+            SKPoint constrained = ConstrainOffset(current);
+            return Math.Abs(current.X - constrained.X) > 1 || Math.Abs(current.Y - constrained.Y) > 1;
+        }
+        private SKPoint ConstrainOffset(SKPoint offset)
+        {
+            if (_skBitmap == null) { return offset; }
+
+            float scaledWidth = _skBitmap.Width * _zoomFactor;
+            float scaledHeight = _skBitmap.Height * _zoomFactor;
+            float controlWidth = _skControl.Width;
+            float controlHeight = _skControl.Height;
+
+            float x = offset.X;
+            float y = offset.Y;
+
+            // If image is larger than control, limit panning
+            if (scaledWidth > controlWidth)
+            {
+                float maxX = (scaledWidth - controlWidth) / 2f;
+                x = Math.Max(-maxX, Math.Min(maxX, x));
+            }
+            else
+            {
+                x = 0; // Center if smaller
+            }
+
+            if (scaledHeight > controlHeight)
+            {
+                float maxY = (scaledHeight - controlHeight) / 2f;
+                y = Math.Max(-maxY, Math.Min(maxY, y));
+            }
+            else
+            {
+                y = 0; // Center if smaller
+            }
+
+            return new SKPoint(x, y);
+        }
+        private SKPoint ApplyRubberBandResistance(SKPoint proposedOffset)
+        {
+            if (_skBitmap == null) { return proposedOffset; }
+
+            SKPoint constrained = ConstrainOffset(proposedOffset);
+            float overX = proposedOffset.X - constrained.X;
+            float overY = proposedOffset.Y - constrained.Y;
+            SKPoint result = proposedOffset;
+
+            if (Math.Abs(overX) > 1)
+            {
+                result.X = constrained.X + overX * RubberBandResistance;
+            }
+
+            if (Math.Abs(overY) > 1)
+            {
+                result.Y = constrained.Y + overY * RubberBandResistance;
+            }
+
+            return result;
+        }
+
+        // Rubber Band Animation
+        private void StartRubberBandAnimation(SKPoint from, SKPoint to)
+        {
+            _rubberBandStartOffset = from;
+            _rubberBandTargetOffset = to;
+            _rubberBandStartTime = DateTime.Now;
+            _rubberBandTimer.Start();
+        }
+        private void RubberBandTimer_Tick(object sender, EventArgs e)
+        {
+            double elapsed = (DateTime.Now - _rubberBandStartTime).TotalMilliseconds;
+            double progress = Math.Min(1.0, elapsed / RubberBandDurationMs);
+
+            // Ease out cubic
+            double easedProgress = 1 - Math.Pow(1 - progress, 3);
+
+            _offsetX = Lerp(_rubberBandStartOffset.X, _rubberBandTargetOffset.X, (float)easedProgress);
+            _offsetY = Lerp(_rubberBandStartOffset.Y, _rubberBandTargetOffset.Y, (float)easedProgress);
+
+            _skControl.Invalidate();
+
+            if (progress >= 1.0)
+            {
+                _rubberBandTimer.Stop();
+                _offsetX = _rubberBandTargetOffset.X;
+                _offsetY = _rubberBandTargetOffset.Y;
+            }
+        }
+        private static float Lerp(float start, float end, float t)
+        {
+            return start + (end - start) * t;
+        }
+
+        // Form Events
         private void ReceiptViewer_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void ReceiptViewer_Form_Resize(object sender, EventArgs e)
         {
-            // Re-fit image if it was fitted to window
-            if (_originalImage != null && ReceiptPictureBox.Visible)
+            if (_skBitmap != null && _skControl.Visible)
             {
-                // Only auto-fit if image is smaller than the panel
-                if (_originalImage.Width <= ImagePanel.ClientSize.Width &&
-                    _originalImage.Height <= ImagePanel.ClientSize.Height)
-                {
-                    FitToWindow();
-                }
-                else
-                {
-                    // Ensure image stays properly positioned after resize
-                    ReceiptPictureBox.Location = ConstrainImageLocation(ReceiptPictureBox.Location);
-                    UpdateCursor();
-                }
+                // Constrain offset after resize
+                SKPoint constrained = ConstrainOffset(new SKPoint(_offsetX, _offsetY));
+                _offsetX = constrained.X;
+                _offsetY = constrained.Y;
+                _skControl.Invalidate();
             }
         }
+        private void ReceiptViewer_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _skBitmap?.Dispose();
+            _skControl?.Dispose();
+            _rubberBandTimer?.Dispose();
+            components?.Dispose();
+        }
 
-        // Button event handlers
+        // Button Events
         private void ZoomIn_Button_Click(object sender, EventArgs e)
         {
             if (_zoomFactor < _effectiveMaxZoom)
             {
-                _zoomFactor += _zoomIncrement;
+                _zoomFactor = Math.Min(_zoomFactor + _zoomIncrement, _effectiveMaxZoom);
                 ApplyZoom();
             }
         }
@@ -363,13 +385,15 @@ namespace Sales_Tracker
         {
             if (_zoomFactor > _minZoom)
             {
-                _zoomFactor -= _zoomIncrement;
+                _zoomFactor = Math.Max(_zoomFactor - _zoomIncrement, _minZoom);
                 ApplyZoom();
             }
         }
         private void ResetZoom_Button_Click(object sender, EventArgs e)
         {
             _zoomFactor = 1.0f;
+            _offsetX = 0;
+            _offsetY = 0;
             ApplyZoom();
         }
         private void FitToWindow_Button_Click(object sender, EventArgs e)
@@ -378,7 +402,6 @@ namespace Sales_Tracker
         }
         private void Export_Button_Click(object sender, EventArgs e)
         {
-            // Use SaveFileDialog to let user choose export location
             using SaveFileDialog dialog = new();
             dialog.FileName = Path.GetFileName(_currentFilePath);
             dialog.Filter = "All Files (*.*)|*.*";
@@ -400,7 +423,7 @@ namespace Sales_Tracker
             }
         }
 
-        // Receipt loading methods
+        // Loading Methods
         private void LoadReceipt()
         {
             if (!File.Exists(_currentFilePath))
@@ -413,7 +436,6 @@ namespace Sales_Tracker
             string extension = Path.GetExtension(_currentFilePath);
             FileInfo fileInfo = new(_currentFilePath);
 
-            // Update Form Text with file name and size
             Text = LanguageManager.TranslateString("Receipt Manager") +
                 $" • {Path.GetFileName(_currentFilePath)} • {Tools.ConvertBytesToReadableSize(fileInfo.Length)}";
 
@@ -444,14 +466,20 @@ namespace Sales_Tracker
         }
         private void LoadImageFile()
         {
-            // Load image from file
-            using (FileStream stream = new(_currentFilePath, FileMode.Open, FileAccess.Read))
+            // Load image using SkiaSharp
+            using (FileStream stream = File.OpenRead(_currentFilePath))
             {
-                _originalImage = Image.FromStream(stream);
+                _skBitmap = SKBitmap.Decode(stream);
             }
 
-            ReceiptPictureBox.Image = _originalImage;
-            ReceiptPictureBox.Visible = true;
+            if (_skBitmap == null)
+            {
+                CustomMessageBox.Show("Error loading image", "Failed to decode image file",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            _skControl.Visible = true;
             WebBrowser.Visible = false;
 
             SetZoomControlsEnabled(true);
@@ -459,17 +487,15 @@ namespace Sales_Tracker
         }
         private void LoadDocumentFile()
         {
-            // For PDFs, use WebBrowser control
             WebBrowser.Navigate(_currentFilePath);
             WebBrowser.Visible = true;
-            ReceiptPictureBox.Visible = false;
+            _skControl.Visible = false;
 
-            // Disable zoom controls for PDFs (browser handles its own zoom)
             SetZoomControlsEnabled(false);
             Zoom_Label.Text = "PDF";
         }
 
-        // Zoom and display methods
+        // Zoom Methods
         private void SetZoomControlsEnabled(bool enabled)
         {
             ZoomIn_Button.Enabled = enabled;
@@ -479,82 +505,42 @@ namespace Sales_Tracker
         }
         private void ApplyZoom()
         {
-            // Apply zoom with centering (for button clicks)
-            Point centerPoint = new(ImagePanel.ClientSize.Width / 2, ImagePanel.ClientSize.Height / 2);
-            ApplyZoomToPoint(centerPoint);
-        }
-        private void ApplyZoomToPoint(Point zoomPoint)
-        {
-            if (_originalImage == null) { return; }
+            // Constrain offset after zoom
+            SKPoint constrained = ConstrainOffset(new SKPoint(_offsetX, _offsetY));
+            _offsetX = constrained.X;
+            _offsetY = constrained.Y;
 
-            // Calculate old and new image dimensions
-            int oldWidth = ReceiptPictureBox.Width;
-            int oldHeight = ReceiptPictureBox.Height;
-            int newWidth = (int)(_originalImage.Width * _zoomFactor);
-            int newHeight = (int)(_originalImage.Height * _zoomFactor);
-
-            // Get the zoom point relative to the current image position
-            Point imageTopLeft = ReceiptPictureBox.Location;
-            float relativeX = (float)(zoomPoint.X - imageTopLeft.X) / oldWidth;
-            float relativeY = (float)(zoomPoint.Y - imageTopLeft.Y) / oldHeight;
-
-            // Clamp relative coordinates to [0, 1] range
-            relativeX = Math.Max(0, Math.Min(1, relativeX));
-            relativeY = Math.Max(0, Math.Min(1, relativeY));
-
-            // Apply new size
-            ReceiptPictureBox.Size = new Size(newWidth, newHeight);
-            ReceiptPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-
-            // Calculate new position to keep the zoom point in the same location
-            int newImageX = zoomPoint.X - (int)(relativeX * newWidth);
-            int newImageY = zoomPoint.Y - (int)(relativeY * newHeight);
-
-            // Apply position constraints
-            Point newLocation = ConstrainImageLocation(new Point(newImageX, newImageY));
-            ReceiptPictureBox.Location = newLocation;
-
-            // Update zoom label and cursor
             Zoom_Label.Text = $"{_zoomFactor * 100:F0}%";
-            UpdateCursor();
+            _skControl.Invalidate();
         }
         private void FitToWindow()
         {
-            if (_originalImage == null) { return; }
+            if (_skBitmap == null) { return; }
 
-            float scaleWidth = (float)ImagePanel.ClientSize.Width / _originalImage.Width;
-            float scaleHeight = (float)ImagePanel.ClientSize.Height / _originalImage.Height;
+            float scaleWidth = (float)_skControl.Width / _skBitmap.Width;
+            float scaleHeight = (float)_skControl.Height / _skBitmap.Height;
             _zoomFactor = Math.Min(scaleWidth, scaleHeight);
-
-            // Ensure we don't go below minimum zoom
             _zoomFactor = Math.Max(_zoomFactor, _minZoom);
 
-            // Update effective max zoom to be either the default MaxZoom or the fit-to-window zoom, whichever is larger
             _effectiveMaxZoom = Math.Max(_maxZoom, _zoomFactor);
+
+            _offsetX = 0;
+            _offsetY = 0;
 
             ApplyZoom();
         }
 
-        // Helper methods
-        /// <summary>
-        /// Checks if a file format is supported by the receipt viewer.
-        /// </summary>
+        // Helper Methods
         public static bool IsFormatSupported(string filePath)
         {
             if (string.IsNullOrEmpty(filePath)) { return false; }
-
             string extension = Path.GetExtension(filePath);
             return SupportedImageFormats.Contains(extension) || SupportedDocumentFormats.Contains(extension);
         }
-
-        /// <summary>
-        /// Gets a user-friendly description of supported formats.
-        /// </summary>
         public static string GetSupportedFormatsDescription()
         {
             string imageFormats = string.Join(", ", SupportedImageFormats.Select(f => f.ToUpper()));
             string documentFormats = string.Join(", ", SupportedDocumentFormats.Select(f => f.ToUpper()));
-
             return $"Images: {imageFormats}\nDocuments: {documentFormats}";
         }
     }

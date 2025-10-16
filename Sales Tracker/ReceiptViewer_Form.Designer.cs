@@ -17,7 +17,6 @@
             {
                 components.Dispose();
             }
-            _originalImage?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -246,6 +245,7 @@
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Receipt Viewer";
+            FormClosed += ReceiptViewer_Form_FormClosed;
             Shown += ReceiptViewer_Form_Shown;
             Resize += ReceiptViewer_Form_Resize;
             ControlsPanel.ResumeLayout(false);
