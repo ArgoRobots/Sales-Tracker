@@ -407,7 +407,7 @@ namespace Sales_Tracker.AnonymousData
 
                 if (!newLines.Any())
                 {
-                    return null; // No new data to upload
+                    return null;  // No new data to upload
                 }
 
                 List<JObject> newDataPoints = [];

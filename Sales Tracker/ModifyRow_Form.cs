@@ -210,7 +210,7 @@ namespace Sales_Tracker
                 Height += (int)(180 * scale);
             }
 
-            MinimumSize = new Size(Math.Max((int)(600 * scale), Width), Height); // Increased minimum width
+            MinimumSize = new Size(Math.Max((int)(600 * scale), Width), Height);
         }
         private void CenterControls()
         {

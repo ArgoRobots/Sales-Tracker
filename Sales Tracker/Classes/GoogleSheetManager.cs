@@ -745,7 +745,7 @@ namespace Sales_Tracker.Classes
                 for (int i = 1; i <= seriesNames.Count; i++)
                 {
                     activeCancellationToken.ThrowIfCancellationRequested();
-                    requests.Add(CreateNumberFormatRequest(1, values.Count - 1, i, i, "#,##0")); // No decimals
+                    requests.Add(CreateNumberFormatRequest(1, values.Count - 1, i, i, "#,##0"));  // No decimals
                 }
 
                 // Add chart with multiple series

@@ -120,6 +120,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             if (Visible)
             {
+                ClearAllSelections();
+
                 if (ReportConfig == null)
                 {
                     NotifyParentValidationChanged();
@@ -273,7 +275,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private Point ScaledToPageCoordinates(Point scaledPoint)
         {
-            if (_canvasScaleFactor <= 0) return scaledPoint;
+            if (_canvasScaleFactor <= 0) { return scaledPoint; }
             return new Point(
                 (int)(scaledPoint.X / _canvasScaleFactor),
                 (int)(scaledPoint.Y / _canvasScaleFactor)
@@ -293,9 +295,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Get the actual page size (not the scaled canvas size)
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
 
-            // Apply scaling transformation (just like the preview does)
             graphics.ScaleTransform(_canvasScaleFactor, _canvasScaleFactor);
-
             ReportRenderer.RenderReport(graphics, pageSize, ReportConfig);
 
             if (_snapToGrid)
@@ -1133,7 +1133,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             using Pen pen = new(Color.FromArgb(30, CustomColors.ControlBorder), 1);
             pen.DashStyle = DashStyle.Dot;
 
-            // Draw in page coordinates - ScaleTransform handles the visual scaling
+            // Draw in page coordinates
             for (int x = 0; x < pageSize.Width; x += GRID_SIZE)
             {
                 g.DrawLine(pen, x, 0, x, pageSize.Height);

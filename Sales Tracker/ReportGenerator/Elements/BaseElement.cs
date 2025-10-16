@@ -58,7 +58,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Renders the element to a graphics context for the report.
         /// </summary>
-        public abstract void RenderElement(Graphics graphics, ReportConfiguration config);
+        public abstract void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale);
 
         private Panel _cachedPropertyPanel;
         private bool _controlsCreated = false;

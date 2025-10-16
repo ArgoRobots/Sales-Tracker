@@ -34,7 +34,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 VerticalAlignment = VerticalAlignment
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             if (config?.Filters == null) return;
 

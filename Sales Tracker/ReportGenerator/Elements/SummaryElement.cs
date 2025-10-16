@@ -59,7 +59,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 VerticalAlignment = VerticalAlignment
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             // Draw background
             using SolidBrush bgBrush = new(BackgroundColor);
