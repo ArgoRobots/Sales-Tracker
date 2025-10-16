@@ -15,6 +15,8 @@ namespace Sales_Tracker.ReportGenerator
         private readonly ReportConfiguration _config = config ?? throw new ArgumentNullException(nameof(config));
         private readonly ExportSettings _exportSettings = exportSettings ?? throw new ArgumentNullException(nameof(exportSettings));
 
+        public static float RenderScale { get; } = 3;
+
         // Init.
         /// <summary>
         /// Renders the report to a Bitmap for preview purposes.
@@ -62,8 +64,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             Size pageSize = PageDimensions.GetDimensions(_config.PageSize, _config.PageOrientation);
 
-            // Calculate dimensions based on DPI
-            float scaleFactor = _exportSettings.DPI / 96f;  // 96 DPI is standard
+            float scaleFactor = RenderScale;
             int exportWidth = (int)(pageSize.Width * scaleFactor);
             int exportHeight = (int)(pageSize.Height * scaleFactor);
 
@@ -92,14 +93,14 @@ namespace Sales_Tracker.ReportGenerator
             using SKDocument document = SKDocument.CreatePdf(fileName);
             using SKCanvas canvas = document.BeginPage(pageSize.Width, pageSize.Height);
 
-            // Create a Bitmap to render GDI+ content
+            // Create a Bitmap to render graphics
             using Bitmap bitmap = new(pageSize.Width, pageSize.Height);
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 RenderReport(graphics, pageSize, _config);
             }
 
-            // Convert System.Drawing.Bitmap to SKBitmap
+            // Convert System.Drawing.Bitmap to SkiaSharp.SKBitmap
             using SKBitmap skBitmap = BitmapToSKBitmap(bitmap);
 
             // Draw the bitmap onto the PDF canvas
@@ -107,6 +108,27 @@ namespace Sales_Tracker.ReportGenerator
 
             document.EndPage();
             document.Close();
+        }
+
+        /// <summary>
+        /// Maps quality percentage to appropriate DPI value.
+        /// </summary>
+        public static int GetDPIFromQuality(int quality)
+        {
+            return quality switch
+            {
+                <= 10 => 72,   // Very low
+                <= 20 => 96,   // Low
+                <= 30 => 120,  // Low-medium
+                <= 40 => 150,  // Medium
+                <= 50 => 180,  // Medium-high
+                <= 60 => 200,  // High
+                <= 70 => 250,  // High quality print
+                <= 80 => 300,  // Professional print
+                <= 90 => 400,  // Very high quality
+                <= 95 => 500,  // Exceptional quality
+                _ => 600       // Maximum quality
+            };
         }
 
         // Private rendering methods
@@ -139,7 +161,7 @@ namespace Sales_Tracker.ReportGenerator
             List<BaseElement> elements = config.GetElementsByZOrder();
             foreach (BaseElement element in elements.Where(e => e.IsVisible))
             {
-                element.RenderElement(graphics, config);
+                element.RenderElement(graphics, config, RenderScale);
             }
         }
         private static void RenderHeader(Graphics graphics, Size pageSize, ReportConfiguration config)

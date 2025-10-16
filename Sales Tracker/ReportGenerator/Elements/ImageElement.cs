@@ -71,7 +71,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Opacity = Opacity
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             try
             {

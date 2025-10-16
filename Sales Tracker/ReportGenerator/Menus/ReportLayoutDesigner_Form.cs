@@ -273,7 +273,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private Point ScaledToPageCoordinates(Point scaledPoint)
         {
-            if (_canvasScaleFactor <= 0) return scaledPoint;
+            if (_canvasScaleFactor <= 0) { return scaledPoint; }
             return new Point(
                 (int)(scaledPoint.X / _canvasScaleFactor),
                 (int)(scaledPoint.Y / _canvasScaleFactor)

@@ -12,7 +12,7 @@ namespace Sales_Tracker.Charts
 {
     public class CustomLegendItem : StackLayout
     {
-        public CustomLegendItem(ISeries series, float chartHeight = 400f)
+        public CustomLegendItem(ISeries series, float chartHeight, bool forReport, float legendFontSize)
         {
             Orientation = ContainerOrientation.Horizontal;
 
@@ -27,7 +27,7 @@ namespace Sales_Tracker.Charts
             SKColor seriesColor = GetActualSeriesColor(series);
 
             // Calculate dynamic sizes based on chart height
-            (float bulletSize, float textSize, float textPadding) = CustomLegend.CalculateDynamicSizes(chartHeight);
+            (float bulletSize, float textSize, float textPadding) = CustomLegend.CalculateDynamicSizes(chartHeight, legendFontSize);
 
             // Add colored circle as bullet point
             CircleGeometry bulletGeometry = new()
@@ -37,12 +37,16 @@ namespace Sales_Tracker.Charts
                 Fill = new SolidColorPaint(seriesColor)
             };
 
+            SKColor foreCcolor = forReport
+                ? SKColors.Black  // Report generator does not have dark theme yet 
+                : ChartColors.ToSKColor(CustomColors.Text);
+
             // Add text label
             LabelGeometry textGeometry = new()
             {
                 Text = series.Name ?? "?",
                 TextSize = textSize,
-                Paint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                Paint = new SolidColorPaint(foreCcolor),
                 Padding = new Padding(textPadding, -5, 0, -5),
                 VerticalAlign = Align.Start,
                 HorizontalAlign = Align.Start

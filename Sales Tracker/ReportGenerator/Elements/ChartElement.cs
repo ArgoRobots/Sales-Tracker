@@ -38,7 +38,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowTitle { get; set; } = true;
         public Color BorderColor { get; set; } = Color.Gray;
         public string FontFamily { get; set; } = "Segoe UI";
-        public float FontSize { get; set; } = 11f;
+        public float TitleFontSize { get; set; } = 12f;
+        public float LegendFontSize { get; set; } = 11f;
 
         // Overrides
         public override ReportElementType GetElementType() => ReportElementType.Chart;
@@ -56,10 +57,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowTitle = ShowTitle,
                 BorderColor = BorderColor,
                 FontFamily = FontFamily,
-                FontSize = FontSize
+                TitleFontSize = TitleFontSize
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             try
             {
@@ -82,7 +83,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Get the current graphics transform to calculate render scale
                 float scaleX = graphics.Transform.Elements[0];
                 float scaleY = graphics.Transform.Elements[3];
-                float renderScale = Math.Max(scaleX, scaleY);
 
                 if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
                 {
@@ -564,7 +564,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = (FontSize + 3) * renderScale,
+                    TextSize = (TitleFontSize + 3) * renderScale,
                     Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5 * renderScale)
                 };
@@ -582,13 +582,65 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             Name = lineSeries.Name,
                             GeometrySize = lineSeries.GeometrySize * renderScale,
                             GeometryFill = new SolidColorPaint(SKColors.White),
-                            GeometryStroke = lineSeries.GeometryStroke,
-                            Fill = lineSeries.Fill,
-                            Stroke = lineSeries.Stroke,
+                            GeometryStroke = lineSeries.GeometryStroke != null && lineSeries.GeometryStroke is SolidColorPaint gsPaint
+                                ? new SolidColorPaint(gsPaint.Color)
+                                {
+                                    StrokeThickness = (float)(gsPaint.StrokeThickness * renderScale)
+                                }
+                                : lineSeries.GeometryStroke,
+                            Fill = lineSeries.Fill != null && lineSeries.Fill is SolidColorPaint fillPaint
+                                ? new SolidColorPaint(fillPaint.Color)
+                                {
+                                    StrokeThickness = (float)(fillPaint.StrokeThickness * renderScale)
+                                }
+                                : lineSeries.Fill,
+                            Stroke = lineSeries.Stroke != null && lineSeries.Stroke is SolidColorPaint strokePaint
+                                ? new SolidColorPaint(strokePaint.Color)
+                                {
+                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale)
+                                }
+                                : lineSeries.Stroke,
                             LineSmoothness = lineSeries.LineSmoothness,
                             DataLabelsSize = lineSeries.DataLabelsSize * renderScale,
-                            DataLabelsPaint = lineSeries.DataLabelsPaint,
+                            DataLabelsPaint = lineSeries.DataLabelsPaint != null && lineSeries.DataLabelsPaint is SolidColorPaint dlPaint
+                                ? new SolidColorPaint(dlPaint.Color)
+                                {
+                                    SKTypeface = typeface
+                                }
+                                : lineSeries.DataLabelsPaint,
                             DataLabelsPosition = lineSeries.DataLabelsPosition
+                        };
+                    }
+                    else if (series is ColumnSeries<double> columnSeries)
+                    {
+                        return new ColumnSeries<double>
+                        {
+                            Values = columnSeries.Values,
+                            Name = columnSeries.Name,
+                            MaxBarWidth = columnSeries.MaxBarWidth * renderScale,
+                            Padding = columnSeries.Padding * renderScale,
+                            Rx = columnSeries.Rx > 0 ? columnSeries.Rx * renderScale : 2 * renderScale,
+                            Ry = columnSeries.Ry > 0 ? columnSeries.Ry * renderScale : 2 * renderScale,
+                            Fill = columnSeries.Fill != null && columnSeries.Fill is SolidColorPaint fillPaint
+                                ? new SolidColorPaint(fillPaint.Color)
+                                {
+                                    StrokeThickness = (float)(fillPaint.StrokeThickness * renderScale)
+                                }
+                                : columnSeries.Fill,
+                            Stroke = columnSeries.Stroke != null && columnSeries.Stroke is SolidColorPaint strokePaint
+                                ? new SolidColorPaint(strokePaint.Color)
+                                {
+                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale)
+                                }
+                                : columnSeries.Stroke,
+                            DataLabelsSize = columnSeries.DataLabelsSize * renderScale,
+                            DataLabelsPaint = columnSeries.DataLabelsPaint != null && columnSeries.DataLabelsPaint is SolidColorPaint dlPaint
+                                ? new SolidColorPaint(dlPaint.Color)
+                                {
+                                    SKTypeface = typeface
+                                }
+                                : columnSeries.DataLabelsPaint,
+                            DataLabelsPosition = columnSeries.DataLabelsPosition
                         };
                     }
                     return series;
@@ -612,7 +664,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
                         LabelsPaint = labelPaint,
-                        TextSize = FontSize * renderScale
+                        TextSize = LegendFontSize * renderScale
                     };
                     return newAxis;
                 }).ToArray();
@@ -638,7 +690,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         {
                             StrokeThickness = 1 * renderScale
                         },
-                        TextSize = FontSize * renderScale
+                        TextSize = LegendFontSize * renderScale
                     };
                     return newAxis;
                 }).ToArray();
@@ -653,14 +705,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 SKTypeface = typeface
             };
             skChart.LegendTextPaint = legendPaint;
-            skChart.LegendTextSize = (FontSize + 1) * renderScale;
+            skChart.LegendTextSize = (LegendFontSize + 1) * renderScale;
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
             using MemoryStream stream = new(data.ToArray());
             return new Bitmap(stream);
         }
-        private Bitmap GeneratePieChartImage(PieChart sourceChart, float renderScale = 1.0f)
+        private Bitmap GeneratePieChartImage(PieChart sourceChart, float renderScale)
         {
             // Render at much higher resolution for quality
             int renderWidth = (int)(Bounds.Width * renderScale);
@@ -689,11 +741,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = (FontSize + 3) * renderScale,
+                    TextSize = (TitleFontSize + 3) * renderScale,
                     Paint = titlePaint,
                     Padding = new LiveChartsCore.Drawing.Padding(5 * renderScale)
                 };
             }
+
+            skChart.Legend = new CustomLegend(true, LegendFontSize);
 
             // Clone and scale series for pie charts
             if (sourceChart.Series != null)
@@ -728,13 +782,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             skChart.LegendPosition = ShowLegend
                 ? LegendPosition.Right
                 : LegendPosition.Hidden;
-
-            SolidColorPaint legendPaint = new(SKColors.Black)
-            {
-                SKTypeface = typeface
-            };
-            skChart.LegendTextPaint = legendPaint;
-            skChart.LegendTextSize = (FontSize + 1) * renderScale;
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
@@ -809,15 +856,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
-            // Font size
-            AddPropertyLabel(container, "Font Size:", yPosition);
-            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            // Title font size
+            AddPropertyLabel(container, "Title Size:", yPosition);
+            Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition, value =>
             {
-                FontSize = (float)value;
+                TitleFontSize = (float)value;
                 onPropertyChanged();
             }, 8, 20);
-            numericUpDown.Left = 110;
-            CacheControl("FontSize", numericUpDown, () => numericUpDown.Value = (decimal)FontSize);
+            titleNumericUpDown.Left = 120;
+            CacheControl("FontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
+            yPosition += ControlRowHeight;
+
+            // Legend font size
+            AddPropertyLabel(container, "Legend Size:", yPosition);
+            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition, value =>
+            {
+                LegendFontSize = (float)value;
+                onPropertyChanged();
+            }, 8, 20);
+            legendNumericUpDown.Left = 120;
+            CacheControl("FontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox

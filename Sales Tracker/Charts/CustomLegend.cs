@@ -6,6 +6,7 @@ using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
 using LiveChartsCore.SkiaSharpView.Drawing.Layouts;
 using LiveChartsCore.SkiaSharpView.SKCharts;
+using Sales_Tracker.ReportGenerator;
 using Padding = LiveChartsCore.Drawing.Padding;
 
 namespace Sales_Tracker.Charts
@@ -15,7 +16,7 @@ namespace Sales_Tracker.Charts
     /// based on the chart height to improve visual fit and avoid overflow.
     /// Supports multiline wrapping for bottom legends.
     /// </summary>
-    public class CustomLegend : SKDefaultLegend
+    public class CustomLegend(bool forReport = false, float legendFontSize = 11f) : SKDefaultLegend
     {
         private StackLayout _existingLayout;
         private StackLayout _existingBottomLayout;
@@ -51,7 +52,7 @@ namespace Sales_Tracker.Charts
             // Add fresh legend items
             foreach (ISeries series in chart.Series.Where(x => x.IsVisibleAtLegend))
             {
-                _existingLayout.Children.Add(new CustomLegendItem(series, chartHeight));
+                _existingLayout.Children.Add(new CustomLegendItem(series, chartHeight, forReport, legendFontSize));
             }
 
             return _existingLayout;
@@ -72,7 +73,7 @@ namespace Sales_Tracker.Charts
 
             List<CustomLegendItem> legendItems = chart.Series
                 .Where(x => x.IsVisibleAtLegend)
-                .Select(series => new CustomLegendItem(series, chartHeight))
+                .Select(series => new CustomLegendItem(series, chartHeight, forReport, legendFontSize))
                 .ToList();
 
             if (legendItems.Count == 0)
@@ -80,15 +81,15 @@ namespace Sales_Tracker.Charts
                 return _existingBottomLayout;
             }
 
-            // Calculate available width for legend (leave some margin)
-            float availableWidth = chartWidth - (horizontalPadding * 2) - 40;
+            // Calculate available width for legend with renderScale applied
+            float availableWidth = (chartWidth - (horizontalPadding * 2) - 40) * ReportRenderer.RenderScale;
             float currentRowWidth = 0;
             StackLayout currentRow = CreateNewRow();
 
             foreach (CustomLegendItem item in legendItems)
             {
                 // Estimate item width (this is approximate)
-                float estimatedItemWidth = EstimateLegendItemWidth(item, chartHeight);
+                float estimatedItemWidth = EstimateLegendItemWidth(item, chartHeight, legendFontSize);
 
                 // Check if item fits in current row
                 if (currentRow.Children.Count > 0 && currentRowWidth + estimatedItemWidth > availableWidth)
@@ -120,18 +121,21 @@ namespace Sales_Tracker.Charts
                 VerticalAlignment = Align.Start
             };
         }
-        private static float EstimateLegendItemWidth(CustomLegendItem item, float chartHeight)
+        private static float EstimateLegendItemWidth(CustomLegendItem item, float chartHeight, float legendFontSize)
         {
             // Estimate width based on text length and chart height
             // This is an approximation - actual width depends on font metrics
-            (float bulletSize, float textSize, float textPadding) = CalculateDynamicSizes(chartHeight);
+            (float bulletSize, float textSize, float textPadding) = CalculateDynamicSizes(chartHeight, legendFontSize);
+
+            // Apply renderScale to bullet size
+            float scaledBulletSize = bulletSize * ReportRenderer.RenderScale;
 
             // Rough estimation: bullet + padding + text width
             // Assume average character width is about 60% of text size
             string text = item.Children.OfType<LabelGeometry>().FirstOrDefault()?.Text ?? "";
             float estimatedTextWidth = text.Length * textSize * 0.6f;
 
-            return bulletSize + textPadding + estimatedTextWidth + 20;  // Add some extra margin
+            return scaledBulletSize + textPadding + estimatedTextWidth + 20;  // Add some extra margin
         }
         public void ClearLayout()
         {
@@ -221,20 +225,22 @@ namespace Sales_Tracker.Charts
         /// <summary>
         /// Calculates dynamic sizes for legend elements based on chart height.
         /// </summary>
-        public static (float bulletSize, float textSize, float textPadding) CalculateDynamicSizes(float chartHeight)
+        public static (float bulletSize, float textSize, float textPadding) CalculateDynamicSizes(float chartHeight, float legendFontSize)
         {
+            float renderScale = ReportRenderer.RenderScale;
+
             // Define height thresholds
-            const float minHeight = 200f;
-            const float normalHeight = 400f;
+            float minHeight = 200f * renderScale;
+            float normalHeight = 400f * renderScale;
 
             // Default sizes
-            const float defaultBulletSize = 14f;
-            const float defaultTextSize = 20f;
-            const float defaultTextPadding = 10f;
+            float defaultBulletSize = 14f * renderScale;
+            float defaultTextSize = legendFontSize * renderScale;
+            float defaultTextPadding = 10f * renderScale;
 
             // Minimum sizes
-            const float minBulletSize = 10f;
-            const float minTextSize = 14f;
+            float minBulletSize = 10f * renderScale;
+            float minTextSize = 14f * renderScale;
 
             if (chartHeight >= normalHeight)
             {
