@@ -459,5 +459,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _isUpdating = false;
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _zoomableViewer?.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

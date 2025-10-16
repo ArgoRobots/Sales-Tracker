@@ -1,12 +1,14 @@
 ﻿using System.Drawing.Drawing2D;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Adds zoom and pan functionality to an existing PictureBox control.
     /// Attaches event handlers to enable mouse wheel zoom-to-cursor and drag-to-pan.
+    /// Includes rubber band effect when panning beyond boundaries.
     /// </summary>
-    public class ZoomableImageViewer
+    public class ZoomableImageViewer : IDisposable
     {
         // Target control
         private readonly PictureBox _pictureBox;
@@ -22,6 +24,14 @@ namespace Sales_Tracker.UI
         private bool _isPanning = false;
         private Point _panStartPoint;
         private PointF _panStartOffset;
+
+        // Rubber band animation
+        private Timer _rubberBandTimer;
+        private PointF _rubberBandStartOffset;
+        private PointF _rubberBandTargetOffset;
+        private DateTime _rubberBandStartTime;
+        private const int RubberBandDurationMs = 300;
+        private const float RubberBandResistance = 0.3f;  // How much resistance when over-panning
 
         // Configuration
         private const float MinZoom = 0.1f;
@@ -66,6 +76,7 @@ namespace Sales_Tracker.UI
             _vScrollBar = vScrollBar;
             _hScrollBar = hScrollBar;
 
+            InitializeRubberBandTimer();
             AttachEventHandlers();
             ConfigurePictureBox();
         }
@@ -79,6 +90,14 @@ namespace Sales_Tracker.UI
             {
                 _originalImage = _pictureBox.Image;
             }
+        }
+        private void InitializeRubberBandTimer()
+        {
+            _rubberBandTimer = new Timer
+            {
+                Interval = 16  // ~60 FPS
+            };
+            _rubberBandTimer.Tick += RubberBandTimer_Tick;
         }
         private void AttachEventHandlers()
         {
@@ -200,6 +219,9 @@ namespace Sales_Tracker.UI
         {
             if (e.Button == MouseButtons.Left && _originalImage != null)
             {
+                // Stop any active rubber band animation
+                _rubberBandTimer.Stop();
+
                 _isPanning = true;
                 _panStartPoint = e.Location;
                 _panStartOffset = _imageOffset;
@@ -210,10 +232,15 @@ namespace Sales_Tracker.UI
         {
             if (_isPanning && _originalImage != null)
             {
-                _imageOffset.X = _panStartOffset.X + (e.X - _panStartPoint.X);
-                _imageOffset.Y = _panStartOffset.Y + (e.Y - _panStartPoint.Y);
+                float deltaX = e.X - _panStartPoint.X;
+                float deltaY = e.Y - _panStartPoint.Y;
 
-                ConstrainOffset();
+                _imageOffset.X = _panStartOffset.X + deltaX;
+                _imageOffset.Y = _panStartOffset.Y + deltaY;
+
+                // Apply rubber band resistance when over-panning
+                ApplyRubberBandResistance(ref _imageOffset);
+
                 UpdateScrollBars();
                 _pictureBox.Invalidate();
             }
@@ -224,6 +251,12 @@ namespace Sales_Tracker.UI
             {
                 _isPanning = false;
                 _pictureBox.Cursor = Cursors.Default;
+
+                // Check if we need to snap back
+                if (_originalImage != null && IsOutOfBounds(_imageOffset))
+                {
+                    StartRubberBandAnimation(_imageOffset, GetConstrainedOffset(_imageOffset));
+                }
             }
         }
         private void PictureBox_MouseWheel(object sender, MouseEventArgs e)
@@ -257,6 +290,40 @@ namespace Sales_Tracker.UI
         {
             _imageOffset.X = -e.NewValue;
             _pictureBox.Invalidate();
+        }
+
+        // Rubber band animation
+        private void RubberBandTimer_Tick(object sender, EventArgs e)
+        {
+            double elapsed = (DateTime.Now - _rubberBandStartTime).TotalMilliseconds;
+            double progress = Math.Min(1.0, elapsed / RubberBandDurationMs);
+
+            // Ease out cubic for smooth deceleration
+            double easedProgress = 1 - Math.Pow(1 - progress, 3);
+
+            _imageOffset.X = Lerp(_rubberBandStartOffset.X, _rubberBandTargetOffset.X, (float)easedProgress);
+            _imageOffset.Y = Lerp(_rubberBandStartOffset.Y, _rubberBandTargetOffset.Y, (float)easedProgress);
+
+            _pictureBox.Invalidate();
+            UpdateScrollBars();
+
+            if (progress >= 1.0)
+            {
+                _rubberBandTimer.Stop();
+                _imageOffset = _rubberBandTargetOffset;
+                _pictureBox.Invalidate();
+            }
+        }
+        private void StartRubberBandAnimation(PointF from, PointF to)
+        {
+            _rubberBandStartOffset = from;
+            _rubberBandTargetOffset = to;
+            _rubberBandStartTime = DateTime.Now;
+            _rubberBandTimer.Start();
+        }
+        private static float Lerp(float start, float end, float t)
+        {
+            return start + (end - start) * t;
         }
 
         // Private helper methods
@@ -298,32 +365,66 @@ namespace Sales_Tracker.UI
         }
         private void ConstrainOffset()
         {
-            if (_originalImage == null) return;
+            _imageOffset = GetConstrainedOffset(_imageOffset);
+        }
+        private PointF GetConstrainedOffset(PointF offset)
+        {
+            if (_originalImage == null) { return offset; }
 
             float scaledWidth = _originalImage.Width * _zoomFactor;
             float scaledHeight = _originalImage.Height * _zoomFactor;
+            PointF constrained = offset;
 
             // If image is smaller than view, center it
             if (scaledWidth <= _pictureBox.Width)
             {
-                _imageOffset.X = (_pictureBox.Width - scaledWidth) / 2;
+                constrained.X = (_pictureBox.Width - scaledWidth) / 2;
             }
             else
             {
                 // Constrain panning
-                _imageOffset.X = Math.Min(0, _imageOffset.X);
-                _imageOffset.X = Math.Max(_pictureBox.Width - scaledWidth, _imageOffset.X);
+                constrained.X = Math.Min(0, constrained.X);
+                constrained.X = Math.Max(_pictureBox.Width - scaledWidth, constrained.X);
             }
 
             if (scaledHeight <= _pictureBox.Height)
             {
-                _imageOffset.Y = (_pictureBox.Height - scaledHeight) / 2;
+                constrained.Y = (_pictureBox.Height - scaledHeight) / 2;
             }
             else
             {
                 // Constrain panning
-                _imageOffset.Y = Math.Min(0, _imageOffset.Y);
-                _imageOffset.Y = Math.Max(_pictureBox.Height - scaledHeight, _imageOffset.Y);
+                constrained.Y = Math.Min(0, constrained.Y);
+                constrained.Y = Math.Max(_pictureBox.Height - scaledHeight, constrained.Y);
+            }
+
+            return constrained;
+        }
+        private bool IsOutOfBounds(PointF offset)
+        {
+            PointF constrained = GetConstrainedOffset(offset);
+            return Math.Abs(offset.X - constrained.X) > 0.1f ||
+                   Math.Abs(offset.Y - constrained.Y) > 0.1f;
+        }
+        private void ApplyRubberBandResistance(ref PointF offset)
+        {
+            if (_originalImage == null) { return; }
+
+            PointF constrained = GetConstrainedOffset(offset);
+
+            // Calculate how much we're over-panning
+            float overX = offset.X - constrained.X;
+            float overY = offset.Y - constrained.Y;
+
+            // Apply resistance to the overshoot
+            if (Math.Abs(overX) > 0.1f)
+            {
+                offset.X = constrained.X + overX * RubberBandResistance;
+            }
+
+            if (Math.Abs(overY) > 0.1f)
+            {
+                offset.Y = constrained.Y + overY * RubberBandResistance;
             }
         }
         private void UpdateScrollBars()
@@ -376,6 +477,23 @@ namespace Sales_Tracker.UI
         {
             // Force repaint
             _pictureBox.Invalidate();
+        }
+
+        // Cleanup
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _rubberBandTimer?.Stop();
+                _rubberBandTimer?.Dispose();
+                DetachEventHandlers();
+                _originalImage?.Dispose();
+            }
         }
     }
 }
