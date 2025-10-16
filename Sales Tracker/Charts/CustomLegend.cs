@@ -32,8 +32,8 @@ namespace Sales_Tracker.Charts
             // Determine legend position
             LegendPosition legendPosition = chart.LegendPosition;
 
-            // For bottom legends, use a wrapping layout
-            if (legendPosition == LegendPosition.Bottom)
+            // For bottom or top legends, use a wrapping layout
+            if (legendPosition == LegendPosition.Bottom || legendPosition == LegendPosition.Top)
             {
                 return CreateCachedWrappingLayout(chart, chartWidth, chartHeight, horizontalPadding, verticalPadding);
             }

@@ -696,6 +696,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }).ToArray();
             }
 
+            skChart.Legend = new CustomLegend(true, LegendFontSize);
+
             skChart.LegendPosition = ShowLegend
                 ? LegendPosition.Top
                 : LegendPosition.Hidden;
@@ -747,8 +749,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 };
             }
 
-            skChart.Legend = new CustomLegend(true, LegendFontSize);
-
             // Clone and scale series for pie charts
             if (sourceChart.Series != null)
             {
@@ -778,6 +778,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     return series;
                 }).ToArray();
             }
+
+            skChart.Legend = new CustomLegend(true, LegendFontSize);
 
             skChart.LegendPosition = ShowLegend
                 ? LegendPosition.Right
