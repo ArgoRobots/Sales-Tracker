@@ -120,6 +120,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             if (Visible)
             {
+                ClearAllSelections();
+
                 if (ReportConfig == null)
                 {
                     NotifyParentValidationChanged();
