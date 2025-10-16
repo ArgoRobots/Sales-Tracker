@@ -66,9 +66,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Setup quality slider
             Quality_TrackBar.Value = _exportSettings.Quality;
             UpdateQualityLabel();
-
-            // Setup checkboxes
-            OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
         }
         private void StoreInitialSizes()
         {
@@ -313,21 +310,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     ReportRenderer renderer = new(ReportConfig, _exportSettings);
                     renderer.ExportReport();
 
-                    CustomMessageBox.Show(
-                        "Export Complete",
-                        "Report exported successfully!",
-                        CustomMessageBoxIcon.Info,
-                        CustomMessageBoxButtons.Ok
-                    );
-
                     // Open file if option is set
-                    if (_exportSettings.OpenAfterExport && File.Exists(_exportSettings.FilePath))
+                    if (OpenAfterExport_CheckBox.Checked && File.Exists(_exportSettings.FilePath))
                     {
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = _exportSettings.FilePath,
                             UseShellExecute = true
                         });
+                    }
+                    else
+                    {
+                        CustomMessageBox.Show(
+                            "Export Complete",
+                            "Report exported successfully!",
+                            CustomMessageBoxIcon.Info,
+                            CustomMessageBoxButtons.Ok
+                        );
                     }
 
                     return true;
@@ -360,7 +359,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             };
 
             _exportSettings.Quality = Quality_TrackBar.Value;
-            _exportSettings.OpenAfterExport = OpenAfterExport_CheckBox.Checked;
         }
 
         // Helper methods

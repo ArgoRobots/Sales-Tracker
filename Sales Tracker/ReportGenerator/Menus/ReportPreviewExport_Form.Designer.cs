@@ -123,6 +123,7 @@
             // 
             OpenAfterExport_CheckBox.Animated = true;
             OpenAfterExport_CheckBox.BackColor = Color.Transparent;
+            OpenAfterExport_CheckBox.Checked = true;
             OpenAfterExport_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             OpenAfterExport_CheckBox.CheckedState.BorderRadius = 2;
             OpenAfterExport_CheckBox.CheckedState.BorderThickness = 0;

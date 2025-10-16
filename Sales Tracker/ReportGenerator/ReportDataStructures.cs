@@ -268,11 +268,6 @@ namespace Sales_Tracker.ReportGenerator
         /// Quality setting (0-100).
         /// </summary>
         public int Quality { get; set; } = 95;
-
-        /// <summary>
-        /// Whether to open the file after export.
-        /// </summary>
-        public bool OpenAfterExport { get; set; } = true;
     }
 
     /// <summary>
