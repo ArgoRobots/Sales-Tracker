@@ -63,7 +63,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ExportFormat_ComboBox.Items.Add("PDF Image (*.pdf)");
             ExportFormat_ComboBox.SelectedIndex = 0;
 
-            // Setup quality slider (controls both resolution and compression)
+            // Setup quality slider
             Quality_TrackBar.Value = _exportSettings.Quality;
             UpdateQualityLabel();
 
@@ -355,10 +355,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _ => ExportFormat.PNG
             };
 
-            // Map quality slider to both DPI and compression quality
-            int quality = Quality_TrackBar.Value;
-            _exportSettings.Quality = quality;  // JPEG compression quality
-
+            _exportSettings.Quality = Quality_TrackBar.Value;
             _exportSettings.OpenAfterExport = OpenAfterExport_CheckBox.Checked;
         }
 
