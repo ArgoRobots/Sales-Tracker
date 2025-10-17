@@ -112,7 +112,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Set initial button states
             UpdateUndoRedoButtonStates();
-
         }
         private void SetToolTips()
         {

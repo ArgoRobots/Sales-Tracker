@@ -12,13 +12,16 @@ namespace Sales_Tracker.UI
         // Constants
         private const int ITEM_HEIGHT = 30;
         private const int MAX_VISIBLE_ITEMS = 10;
-        private const int PANEL_WIDTH = 250;
+        private const int PANEL_WIDTH = 350;
         private const int PANEL_PADDING = 5;
+        private const int LABEL_HEIGHT = 35;
 
         // Static fields for tracking current dropdown
         public static Guna2Panel? Panel { get; private set; }
         private static Panel? _itemsPanel;
+        private static Label? _actionLabel;
         private static readonly List<HistoryItem> _historyItems = [];
+        private static bool _isUndoHistory;
 
         /// <summary>
         /// Represents a single item in the history list.
@@ -64,10 +67,24 @@ namespace Sales_Tracker.UI
             {
                 Location = new Point(PANEL_PADDING, PANEL_PADDING),
                 Width = PANEL_WIDTH,
-                AutoScroll = false
+                AutoScroll = true
+            };
+
+            // Action count label at bottom
+            _actionLabel = new Label
+            {
+                Width = PANEL_WIDTH,
+                Height = LABEL_HEIGHT,
+                Text = "",
+                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                ForeColor = CustomColors.Text,
+                BackColor = CustomColors.MainBackground,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Visible = false
             };
 
             Panel.Controls.Add(_itemsPanel);
+            Panel.Controls.Add(_actionLabel);
         }
 
         /// <summary>
@@ -78,6 +95,8 @@ namespace Sales_Tracker.UI
         {
             // Remove any existing dropdown
             Remove();
+
+            _isUndoHistory = isUndoHistory;
 
             parent.Controls.Add(Panel);
             Panel.Location = location;
@@ -96,15 +115,18 @@ namespace Sales_Tracker.UI
         {
             Panel.Parent?.Controls.Remove(Panel);
             _historyItems.Clear();
+            if (_actionLabel != null)
+            {
+                _actionLabel.Visible = false;
+            }
         }
 
         /// <summary>
         /// Populates the dropdown with history items.
         /// </summary>
-        private static void PopulateHistory(UndoRedoManager undoRedoManager, bool isUndoHistory,
-            Action onActionPerformed)
+        private static void PopulateHistory(UndoRedoManager undoRedoManager, bool isUndoHistory, Action onActionPerformed)
         {
-            if (_itemsPanel == null || Panel == null) { return; }
+            if (_itemsPanel == null || Panel == null || _actionLabel == null) { return; }
 
             _historyItems.Clear();
             _itemsPanel.Controls.Clear();
@@ -113,6 +135,12 @@ namespace Sales_Tracker.UI
                 ? undoRedoManager.GetUndoDescriptions()
                 : undoRedoManager.GetRedoDescriptions();
 
+            // Calculate button width based on whether scrollbar will appear
+            bool willHaveScrollbar = descriptions.Length > MAX_VISIBLE_ITEMS;
+            int buttonWidth = willHaveScrollbar
+                ? PANEL_WIDTH - SystemInformation.VerticalScrollBarWidth - 4
+                : PANEL_WIDTH;
+
             int yPosition = 0;
             for (int i = 0; i < descriptions.Length; i++)
             {
@@ -120,7 +148,7 @@ namespace Sales_Tracker.UI
                     (index) => OnItemClick(index, undoRedoManager, isUndoHistory, onActionPerformed))
                 {
                     Location = new Point(0, yPosition),
-                    Width = _itemsPanel.Width
+                    Size = new Size(buttonWidth, ITEM_HEIGHT)
                 };
 
                 // Add hover event handlers
@@ -137,8 +165,24 @@ namespace Sales_Tracker.UI
             if (_historyItems.Count > 0)
             {
                 int totalHeight = _historyItems.Count * ITEM_HEIGHT;
-                _itemsPanel.Height = Math.Min(totalHeight, MAX_VISIBLE_ITEMS * ITEM_HEIGHT);
-                Panel.Height = Math.Min(totalHeight, MAX_VISIBLE_ITEMS * ITEM_HEIGHT) + PANEL_PADDING * 2;
+                int itemsPanelHeight = Math.Min(totalHeight, MAX_VISIBLE_ITEMS * ITEM_HEIGHT);
+                _itemsPanel.Height = itemsPanelHeight;
+
+                // Position and size the label
+                _actionLabel.Location = new Point(PANEL_PADDING, itemsPanelHeight + PANEL_PADDING);
+                _actionLabel.Width = PANEL_WIDTH;
+
+                // Set total panel height including label
+                Panel.Height = itemsPanelHeight + LABEL_HEIGHT + PANEL_PADDING * 2;
+
+                // Show the label with default text
+                UpdateActionLabel(1);
+
+                // Apply custom scrollbar theme after the scrollbar is created
+                if (willHaveScrollbar)
+                {
+                    ThemeManager.CustomizeScrollBar(_itemsPanel);
+                }
             }
         }
 
@@ -160,6 +204,9 @@ namespace Sales_Tracker.UI
                 _historyItems[i].BorderThickness = 0;
                 _historyItems[i].FillColor = CustomColors.ControlBack;
             }
+
+            // Update the action label
+            UpdateActionLabel(hoveredIndex + 1);
         }
 
         /// <summary>
@@ -172,6 +219,23 @@ namespace Sales_Tracker.UI
                 item.BorderThickness = 0;
                 item.FillColor = CustomColors.ControlBack;
             }
+
+            // Reset the action label to default (1 action)
+            UpdateActionLabel(1);
+        }
+
+        /// <summary>
+        /// Updates the action label text based on the number of selected actions.
+        /// </summary>
+        private static void UpdateActionLabel(int count)
+        {
+            if (_actionLabel == null) { return; }
+
+            string actionType = _isUndoHistory ? "Undo" : "Redo";
+            string pluralSuffix = count == 1 ? "" : "s";
+
+            _actionLabel.Text = $"{actionType} {count} Action{pluralSuffix}";
+            _actionLabel.Visible = true;
         }
 
         /// <summary>
