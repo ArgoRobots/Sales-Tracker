@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Guna.UI2.WinForms.Enums;
 using Sales_Tracker.Classes;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -42,7 +43,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static byte ControlRowHeight { get; } = 55;
         public static byte CheckBoxRowHeight { get; } = 40;
 
-        private const int ControlHeight = 45;
+        public const int ControlHeight = 45;
 
         // Abstract methods
         /// <summary>
@@ -63,7 +64,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private Panel _cachedPropertyPanel;
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];
-        private readonly Dictionary<string, Action> _updateActionCache = [];
+        public Dictionary<string, Action> UpdateActionCache { get; } = [];
 
         /// <summary>
         /// Creates or retrieves cached property controls. Only creates controls once.
@@ -99,7 +100,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     }
                     foreach (KeyValuePair<string, Action> kvp in commonUpdateActions)
                     {
-                        _updateActionCache[kvp.Key] = kvp.Value;
+                        UpdateActionCache[kvp.Key] = kvp.Value;
                     }
 
                     yPosition += ControlRowHeight * 4;
@@ -142,7 +143,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         protected void UpdateAllControlValues()
         {
-            foreach (Action updateAction in _updateActionCache.Values)
+            foreach (Action updateAction in UpdateActionCache.Values)
             {
                 updateAction?.Invoke();
             }
@@ -156,7 +157,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             _controlCache[key] = control;
             if (updateAction != null)
             {
-                _updateActionCache[key] = updateAction;
+                UpdateActionCache[key] = updateAction;
             }
         }
 
@@ -175,16 +176,37 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Dictionary<string, Control> controls = [];
             updateActions = [];
 
+            // Get the UndoRedoManager instance
+            UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // X position
             AddPropertyLabel(container, "X:", yPosition);
-            Guna2NumericUpDown xNumeric = AddPropertyNumericUpDown(container, element?.Bounds.X ?? 0, yPosition,
+            int oldX = element?.Bounds.X ?? 0;
+            Guna2NumericUpDown xNumeric = AddPropertyNumericUpDown(container, oldX, yPosition,
                 value =>
                 {
                     if (element != null)
                     {
-                        Rectangle bounds = element.Bounds;
-                        bounds.X = (int)value;
-                        element.Bounds = bounds;
+                        Rectangle oldBounds = element.Bounds;
+                        Rectangle newBounds = element.Bounds;
+                        newBounds.X = (int)value;
+
+                        // Record undo action if value actually changed
+                        if (oldBounds.X != newBounds.X && undoRedoManager != null)
+                        {
+                            undoRedoManager.RecordAction(new PropertyChangeAction(
+                                element,
+                                nameof(Bounds),
+                                oldBounds,
+                                newBounds,
+                                () =>
+                                {
+                                    container.Invalidate();
+                                    onPropertyChanged();
+                                }));
+                        }
+
+                        element.Bounds = newBounds;
                         container.Invalidate();
                         onPropertyChanged();
                     }
@@ -195,14 +217,31 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Y position
             AddPropertyLabel(container, "Y:", yPosition);
-            Guna2NumericUpDown yNumeric = AddPropertyNumericUpDown(container, element?.Bounds.Y ?? 0, yPosition,
+            int oldY = element?.Bounds.Y ?? 0;
+            Guna2NumericUpDown yNumeric = AddPropertyNumericUpDown(container, oldY, yPosition,
                 value =>
                 {
                     if (element != null)
                     {
-                        Rectangle bounds = element.Bounds;
-                        bounds.Y = (int)value;
-                        element.Bounds = bounds;
+                        Rectangle oldBounds = element.Bounds;
+                        Rectangle newBounds = element.Bounds;
+                        newBounds.Y = (int)value;
+
+                        if (oldBounds.Y != newBounds.Y && undoRedoManager != null)
+                        {
+                            undoRedoManager.RecordAction(new PropertyChangeAction(
+                                element,
+                                nameof(Bounds),
+                                oldBounds,
+                                newBounds,
+                                () =>
+                                {
+                                    container.Invalidate();
+                                    onPropertyChanged();
+                                }));
+                        }
+
+                        element.Bounds = newBounds;
                         container.Invalidate();
                         onPropertyChanged();
                     }
@@ -213,36 +252,70 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Width
             AddPropertyLabel(container, "Width:", yPosition);
-            Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, element?.Bounds.Width ?? 100, yPosition,
+            int oldWidth = element?.Bounds.Width ?? 100;
+            Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, oldWidth, yPosition,
                 value =>
                 {
                     if (element != null)
                     {
-                        Rectangle bounds = element.Bounds;
-                        bounds.Width = Math.Max(50, (int)value);
-                        element.Bounds = bounds;
+                        Rectangle oldBounds = element.Bounds;
+                        Rectangle newBounds = element.Bounds;
+                        newBounds.Width = (int)value;
+
+                        if (oldBounds.Width != newBounds.Width && undoRedoManager != null)
+                        {
+                            undoRedoManager.RecordAction(new PropertyChangeAction(
+                                element,
+                                nameof(Bounds),
+                                oldBounds,
+                                newBounds,
+                                () =>
+                                {
+                                    container.Invalidate();
+                                    onPropertyChanged();
+                                }));
+                        }
+
+                        element.Bounds = newBounds;
                         container.Invalidate();
                         onPropertyChanged();
                     }
-                }, 50, 9999);
+                }, 10, 9999);
             controls["Width"] = widthNumeric;
             updateActions["Width"] = () => widthNumeric.Value = element?.Bounds.Width ?? 100;
             yPosition += ControlRowHeight;
 
             // Height
             AddPropertyLabel(container, "Height:", yPosition);
-            Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, element?.Bounds.Height ?? 100, yPosition,
+            int oldHeight = element?.Bounds.Height ?? 100;
+            Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, oldHeight, yPosition,
                 value =>
                 {
                     if (element != null)
                     {
-                        Rectangle bounds = element.Bounds;
-                        bounds.Height = Math.Max(30, (int)value);
-                        element.Bounds = bounds;
+                        Rectangle oldBounds = element.Bounds;
+                        Rectangle newBounds = element.Bounds;
+                        newBounds.Height = (int)value;
+
+                        if (oldBounds.Height != newBounds.Height && undoRedoManager != null)
+                        {
+                            undoRedoManager.RecordAction(new PropertyChangeAction(
+                                element,
+                                nameof(Bounds),
+                                oldBounds,
+                                newBounds,
+                                () =>
+                                {
+                                    container.Invalidate();
+                                    onPropertyChanged();
+                                }));
+                        }
+
+                        element.Bounds = newBounds;
                         container.Invalidate();
                         onPropertyChanged();
                     }
-                }, 30, 9999);
+                }, 10, 9999);
             controls["Height"] = heightNumeric;
             updateActions["Height"] = () => heightNumeric.Value = element?.Bounds.Height ?? 100;
 
@@ -558,7 +631,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 };
             }
         }
-        private static Guna2Button CreateFontStyleButton(
+        public static Guna2Button CreateFontStyleButton(
             string text,
             FontStyle fontStyle,
             int x,

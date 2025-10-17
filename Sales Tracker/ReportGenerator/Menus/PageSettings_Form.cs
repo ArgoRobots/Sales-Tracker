@@ -191,7 +191,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// </summary>
         private void PerformUpdate(Action updateAction)
         {
-            if (updateAction == null) return;
+            if (updateAction == null) { return; }
 
             _isUpdating = true;
             try

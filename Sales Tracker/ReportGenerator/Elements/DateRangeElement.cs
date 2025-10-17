@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.ReportGenerator.Menus;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -36,7 +37,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            if (config?.Filters == null) return;
+            if (config?.Filters == null) { return; }
 
             DateTime? startDate = config.Filters.StartDate;
             DateTime? endDate = config.Filters.EndDate;
@@ -66,80 +67,266 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager for recording property changes
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Date format
             AddPropertyLabel(container, "Format:", yPosition);
-            Guna2ComboBox formatCombo = AddPropertyComboBox(container, DateFormat, yPosition,
-                ["yyyy-MM-dd", "MM/dd/yyyy", "dd/MM/yyyy", "MMM dd, yyyy", "MMMM dd, yyyy"],
+            string[] dateFormats = ["yyyy-MM-dd", "MM/dd/yyyy", "dd/MM/yyyy", "MMM dd, yyyy", "MMMM dd, yyyy",
+                            "dd-MMM-yyyy", "yyyy/MM/dd", "dd.MM.yyyy"];
+            Guna2ComboBox formatCombo = AddPropertyComboBox(container, DateFormat, yPosition, dateFormats,
                 value =>
                 {
-                    DateFormat = value;
-                    onPropertyChanged();
+                    if (DateFormat != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(DateFormat),
+                            DateFormat,
+                            value,
+                            onPropertyChanged));
+                        DateFormat = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("DateFormat", formatCombo, () => formatCombo.SelectedItem = DateFormat);
             yPosition += ControlRowHeight;
 
-            // Font family
+            // Font Family
             AddPropertyLabel(container, "Font:", yPosition);
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
-                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+            string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
+                             "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
+                             "Times New Roman", "Trebuchet MS", "Verdana"];
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    FontFamily = value;
-                    onPropertyChanged();
+                    if (FontFamily != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontFamily),
+                            FontFamily,
+                            value,
+                            onPropertyChanged));
+                        FontFamily = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
-            // Font size
+            // Font Size
             AddPropertyLabel(container, "Size:", yPosition);
-            Guna2NumericUpDown sizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
-            {
-                FontSize = (float)value;
-                onPropertyChanged();
-            }, 6, 24);
-            CacheControl("FontSize", sizeNumeric, () => sizeNumeric.Value = (decimal)FontSize);
+            Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
+                value =>
+                {
+                    float newFontSize = (float)value;
+                    if (Math.Abs(FontSize - newFontSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontSize),
+                            FontSize,
+                            newFontSize,
+                            onPropertyChanged));
+                        FontSize = newFontSize;
+                        onPropertyChanged();
+                    }
+                }, 6, 72);
+            CacheControl("FontSize", fontSizeNumeric, () => fontSizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
-            // Font style toggle buttons
+            // Font Style (Bold, Italic, Underline)
             AddPropertyLabel(container, "Style:", yPosition);
-            AddFontStyleToggleButtons(container, yPosition, FontStyle, style =>
+
+            // Create the font style buttons
+            int xPosition = 85;
+            const int buttonWidth = 35;
+            const int buttonHeight = 30;
+            const int spacing = 5;
+            int buttonY = yPosition + 2;
+
+            // Bold button
+            Guna2Button boldButton = CreateFontStyleButton("B", FontStyle.Bold, xPosition, buttonY, buttonWidth, buttonHeight);
+            boldButton.Checked = FontStyle.HasFlag(FontStyle.Bold);
+            boldButton.Tag = "Bold";
+            container.Controls.Add(boldButton);
+            xPosition += buttonWidth + spacing;
+
+            // Italic button
+            Guna2Button italicButton = CreateFontStyleButton("I", FontStyle.Italic, xPosition, buttonY, buttonWidth, buttonHeight);
+            italicButton.Checked = FontStyle.HasFlag(FontStyle.Italic);
+            italicButton.Tag = "Italic";
+            container.Controls.Add(italicButton);
+            xPosition += buttonWidth + spacing;
+
+            // Underline button
+            Guna2Button underlineButton = CreateFontStyleButton("U", FontStyle.Underline, xPosition, buttonY, buttonWidth, buttonHeight);
+            underlineButton.Checked = FontStyle.HasFlag(FontStyle.Underline);
+            underlineButton.Tag = "Underline";
+            container.Controls.Add(underlineButton);
+
+            // Store the buttons in cache for later updates
+            CacheControl("BoldButton", boldButton, () => boldButton.Checked = FontStyle.HasFlag(FontStyle.Bold));
+            CacheControl("ItalicButton", italicButton, () => italicButton.Checked = FontStyle.HasFlag(FontStyle.Italic));
+            CacheControl("UnderlineButton", underlineButton, () => underlineButton.Checked = FontStyle.HasFlag(FontStyle.Underline));
+
+            // Attach event handlers to update the FontStyle property
+            FontStyle currentFontStyle = FontStyle;
+
+            boldButton.CheckedChanged += (s, e) =>
             {
-                FontStyle = style;
-                onPropertyChanged();
-            });
+                FontStyle newStyle = currentFontStyle;
+                if (boldButton.Checked)
+                {
+                    newStyle |= FontStyle.Bold;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Bold;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
+                    onPropertyChanged();
+                }
+            };
+
+            italicButton.CheckedChanged += (s, e) =>
+            {
+                FontStyle newStyle = currentFontStyle;
+                if (italicButton.Checked)
+                {
+                    newStyle |= FontStyle.Italic;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Italic;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
+                    onPropertyChanged();
+                }
+            };
+
+            underlineButton.CheckedChanged += (s, e) =>
+            {
+                FontStyle newStyle = currentFontStyle;
+                if (underlineButton.Checked)
+                {
+                    newStyle |= FontStyle.Underline;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Underline;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
+                    onPropertyChanged();
+                }
+            };
+
             yPosition += ControlRowHeight;
 
-            // Horizontal alignment
-            AddPropertyLabel(container, "Align:", yPosition);
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(Alignment), yPosition,
-                ["Left", "Center", "Right"],
+            // Horizontal Alignment
+            AddPropertyLabel(container, "H-Align:", yPosition);
+            string[] hAlignmentOptions = ["Near", "Center", "Far"];
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
                 value =>
                 {
-                    Alignment = AlignmentHelper.FromDisplayText(value);
-                    onPropertyChanged();
+                    StringAlignment newAlignment = Enum.Parse<StringAlignment>(value);
+                    if (Alignment != newAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(Alignment),
+                            Alignment,
+                            newAlignment,
+                            onPropertyChanged));
+                        Alignment = newAlignment;
+                        onPropertyChanged();
+                    }
                 });
-            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentHelper.ToDisplayText(Alignment));
+            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = Alignment.ToString());
             yPosition += ControlRowHeight;
 
-            // Vertical alignment
+            // Vertical Alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, AlignmentHelper.ToDisplayText(VerticalAlignment), yPosition,
-                ["Top", "Middle", "Bottom"],
+            string[] vAlignmentOptions = ["Near", "Center", "Far"];
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignment.ToString(), yPosition, vAlignmentOptions,
                 value =>
                 {
-                    VerticalAlignment = AlignmentHelper.FromDisplayText(value);
-                    onPropertyChanged();
+                    StringAlignment newVAlignment = Enum.Parse<StringAlignment>(value);
+                    if (VerticalAlignment != newVAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(VerticalAlignment),
+                            VerticalAlignment,
+                            newVAlignment,
+                            onPropertyChanged));
+                        VerticalAlignment = newVAlignment;
+                        onPropertyChanged();
+                    }
                 });
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VerticalAlignment));
+            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
             yPosition += ControlRowHeight;
 
-            // Text color
+            // Text Color
             AddPropertyLabel(container, "Color:", yPosition);
-            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor, color =>
+            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
+                color =>
+                {
+                    if (TextColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TextColor),
+                            TextColor,
+                            color,
+                            onPropertyChanged));
+                        TextColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
+
+            // Add label next to color picker
+            Label colorLabel = new()
             {
-                TextColor = color;
-                onPropertyChanged();
-            });
+                Text = "Click to change",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(140, yPosition + 11),
+                AutoSize = true
+            };
+            container.Controls.Add(colorLabel);
+
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 

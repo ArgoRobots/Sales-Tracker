@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
 using Svg.Skia;
 using System.Drawing.Drawing2D;
@@ -28,7 +29,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public Color BackgroundColor { get; set; } = Color.Transparent;
         public Color BorderColor { get; set; } = Color.Transparent;
         public int BorderThickness { get; set; } = 0;
-        public bool MaintainAspectRatio { get; set; } = true;
         public int CornerRadius_Percent { get; set; } = 0;
         public byte Opacity { get; set; } = 255;
 
@@ -66,7 +66,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 BackgroundColor = BackgroundColor,
                 BorderColor = BorderColor,
                 BorderThickness = BorderThickness,
-                MaintainAspectRatio = MaintainAspectRatio,
                 CornerRadius_Percent = CornerRadius_Percent,
                 Opacity = Opacity
             };
@@ -142,7 +141,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _cachedImagePath = ImagePath;
             }
 
-            if (_cachedImage == null) return;
+            if (_cachedImage == null) { return; }
 
             // Save graphics state
             GraphicsState state = graphics.Save();
@@ -192,7 +191,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 _cachedImagePath = ImagePath;
             }
 
-            if (_cachedSvg?.Picture == null) return;
+            if (_cachedSvg?.Picture == null) { return; }
 
             // Save graphics state
             GraphicsState state = graphics.Save();
@@ -414,32 +413,32 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            // Image path
+            // Get undo manager for recording property changes
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
+            // Image path with browse button
             AddPropertyLabel(container, "Image:", yPosition);
 
-            // Browse button
             Guna2Button browseButton = new()
             {
-                Text = "Browse...",
-                Size = new Size(container.Width - 95, 45),
+                Text = "Select Image",
+                Size = new Size(container.Width - 95, ControlHeight),
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
                 BorderThickness = 1,
                 Font = new Font("Segoe UI", 9),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
-
             container.Controls.Add(browseButton);
-            CacheControl("BrowseButton", browseButton, null);  // No update action needed
-            yPosition += ControlRowHeight;
+            CacheControl("BrowseButton", browseButton, null);
 
-            // Path label
+            // Display the selected file name below the button
             Label pathLabel = new()
             {
                 Text = !string.IsNullOrEmpty(ImagePath) ? Path.GetFileName(ImagePath) : "No image selected",
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
-                Location = new Point(85, yPosition),
+                Location = new Point(85, yPosition + ControlHeight + 2),
                 AutoSize = true
             };
             container.Controls.Add(pathLabel);
@@ -460,20 +459,39 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (openDialog.ShowDialog() == DialogResult.OK)
                 {
-                    ImagePath = openDialog.FileName;
-                    _cachedImage?.Dispose();
-                    _cachedImage = null;
-                    _cachedSvg = null;
-                    _cachedImagePath = null;
+                    string newPath = openDialog.FileName;
+                    if (ImagePath != newPath)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ImagePath),
+                            ImagePath,
+                            newPath,
+                            () =>
+                            {
+                                // Clear cached image when path changes
+                                _cachedImage?.Dispose();
+                                _cachedImage = null;
+                                _cachedSvg = null;
+                                _cachedImagePath = null;
+                                pathLabel.Text = Path.GetFileName(ImagePath);
+                                onPropertyChanged();
+                            }));
 
-                    // Update the label immediately
-                    pathLabel.Text = Path.GetFileName(ImagePath);
+                        ImagePath = newPath;
+                        _cachedImage?.Dispose();
+                        _cachedImage = null;
+                        _cachedSvg = null;
+                        _cachedImagePath = null;
 
-                    onPropertyChanged();
+                        // Update the label immediately
+                        pathLabel.Text = Path.GetFileName(ImagePath);
+                        onPropertyChanged();
+                    }
                 }
             };
 
-            yPosition += 35;
+            yPosition += ControlHeight + 35;  // Account for button height plus label
 
             // Scale mode
             AddPropertyLabel(container, "Scale:", yPosition);
@@ -481,62 +499,125 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Enum.GetNames<ImageScaleMode>(),
                 value =>
                 {
-                    ScaleMode = Enum.Parse<ImageScaleMode>(value);
-                    onPropertyChanged();
+                    ImageScaleMode newScaleMode = Enum.Parse<ImageScaleMode>(value);
+                    if (ScaleMode != newScaleMode)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ScaleMode),
+                            ScaleMode,
+                            newScaleMode,
+                            onPropertyChanged));
+                        ScaleMode = newScaleMode;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ScaleMode", scaleCombo, () => scaleCombo.SelectedItem = ScaleMode.ToString());
             yPosition += ControlRowHeight;
 
             // Opacity
             AddPropertyLabel(container, "Opacity:", yPosition);
-            Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition, value =>
-            {
-                Opacity = (byte)value;
-                onPropertyChanged();
-            }, 0, 255);
+            Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition,
+                value =>
+                {
+                    byte newOpacity = (byte)value;
+                    if (Opacity != newOpacity)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(Opacity),
+                            Opacity,
+                            newOpacity,
+                            onPropertyChanged));
+                        Opacity = newOpacity;
+                        onPropertyChanged();
+                    }
+                }, 0, 255);
             opacityNumeric.Left = 170;
             CacheControl("Opacity", opacityNumeric, () => opacityNumeric.Value = Opacity);
             yPosition += ControlRowHeight;
 
             // Corner radius
             AddPropertyLabel(container, "Border radius %:", yPosition);
-            Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition, value =>
-            {
-                CornerRadius_Percent = (int)value;
-                onPropertyChanged();
-            }, 0, 100);
+            Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition,
+                value =>
+                {
+                    int newRadius = (int)value;
+                    if (CornerRadius_Percent != newRadius)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(CornerRadius_Percent),
+                            CornerRadius_Percent,
+                            newRadius,
+                            onPropertyChanged));
+                        CornerRadius_Percent = newRadius;
+                        onPropertyChanged();
+                    }
+                }, 0, 100);
             radiusNumeric.Left = 170;
             CacheControl("CornerRadius_Percent", radiusNumeric, () => radiusNumeric.Value = CornerRadius_Percent);
             yPosition += ControlRowHeight;
 
             // Border thickness
             AddPropertyLabel(container, "Border thickness:", yPosition);
-            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition, value =>
-            {
-                BorderThickness = (int)value;
-                onPropertyChanged();
-            }, 0, 20);
+            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
+                value =>
+                {
+                    int newThickness = (int)value;
+                    if (BorderThickness != newThickness)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderThickness),
+                            BorderThickness,
+                            newThickness,
+                            onPropertyChanged));
+                        BorderThickness = newThickness;
+                        onPropertyChanged();
+                    }
+                }, 0, 20);
             thicknessNumeric.Left = 170;
             CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             AddPropertyLabel(container, "Border Color:", yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor, color =>
-            {
-                BorderColor = color;
-                onPropertyChanged();
-            }, showLabel: false);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor,
+                color =>
+                {
+                    if (BorderColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderColor),
+                            BorderColor,
+                            color,
+                            onPropertyChanged));
+                        BorderColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Background color
             AddPropertyLabel(container, "Background color:", yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor, color =>
-            {
-                BackgroundColor = color;
-                onPropertyChanged();
-            }, showLabel: false);
+            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor,
+                color =>
+                {
+                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BackgroundColor),
+                            BackgroundColor,
+                            color,
+                            onPropertyChanged));
+                        BackgroundColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 

@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.ReportGenerator.Menus;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -327,6 +328,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager for recording property changes
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Section header for included metrics
             AddPropertyLabel(container, "Include:", yPosition, true);
             yPosition += 35;
@@ -337,63 +341,261 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ["Sales", "Purchases", "Both"],
                 value =>
                 {
-                    TransactionType = Enum.Parse<TransactionType>(value);
-                    onPropertyChanged();
+                    TransactionType newType = Enum.Parse<TransactionType>(value);
+                    if (TransactionType != newType)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TransactionType),
+                            TransactionType,
+                            newType,
+                            onPropertyChanged));
+                        TransactionType = newType;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
 
-            // Font family
+            // Font Family
             AddPropertyLabel(container, "Font:", yPosition);
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
-                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+            string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
+                             "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
+                             "Times New Roman", "Trebuchet MS", "Verdana"];
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    FontFamily = value;
-                    onPropertyChanged();
+                    if (FontFamily != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontFamily),
+                            FontFamily,
+                            value,
+                            onPropertyChanged));
+                        FontFamily = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
-            // Font size
+            // Font Size
             AddPropertyLabel(container, "Size:", yPosition);
-            Guna2NumericUpDown sizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
-            {
-                FontSize = (float)value;
-                onPropertyChanged();
-            }, 8, 20);
-            CacheControl("FontSize", sizeNumeric, () => sizeNumeric.Value = (decimal)FontSize);
-            yPosition += ControlRowHeight;
-
-            // Font style toggle buttons
-            AddPropertyLabel(container, "Style:", yPosition);
-            AddFontStyleToggleButtons(container, yPosition, FontStyle, style =>
-            {
-                FontStyle = style;
-                onPropertyChanged();
-            });
-            yPosition += ControlRowHeight;
-
-            // Horizontal alignment
-            AddPropertyLabel(container, "Align:", yPosition);
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition,
-                ["Left", "Center", "Right"],
+            Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
-                    Alignment = DisplayTextToAlignment(value);
+                    float newFontSize = (float)value;
+                    if (Math.Abs(FontSize - newFontSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontSize),
+                            FontSize,
+                            newFontSize,
+                            onPropertyChanged));
+                        FontSize = newFontSize;
+                        onPropertyChanged();
+                    }
+                }, 6, 72);
+            CacheControl("FontSize", fontSizeNumeric, () => fontSizeNumeric.Value = (decimal)FontSize);
+            yPosition += ControlRowHeight;
+
+            // Font Style (Bold, Italic, Underline)
+            AddPropertyLabel(container, "Style:", yPosition);
+
+            // Create the font style buttons
+            int xPosition = 85;
+            const int buttonWidth = 35;
+            const int buttonHeight = 30;
+            const int spacing = 5;
+            int buttonY = yPosition + 2;
+
+            // Bold button
+            Guna2Button boldButton = CreateFontStyleButton("B", FontStyle.Bold, xPosition, buttonY, buttonWidth, buttonHeight);
+            boldButton.Checked = FontStyle.HasFlag(FontStyle.Bold);
+            container.Controls.Add(boldButton);
+            xPosition += buttonWidth + spacing;
+
+            // Italic button
+            Guna2Button italicButton = CreateFontStyleButton("I", FontStyle.Italic, xPosition, buttonY, buttonWidth, buttonHeight);
+            italicButton.Checked = FontStyle.HasFlag(FontStyle.Italic);
+            container.Controls.Add(italicButton);
+            xPosition += buttonWidth + spacing;
+
+            // Underline button
+            Guna2Button underlineButton = CreateFontStyleButton("U", FontStyle.Underline, xPosition, buttonY, buttonWidth, buttonHeight);
+            underlineButton.Checked = FontStyle.HasFlag(FontStyle.Underline);
+            container.Controls.Add(underlineButton);
+
+            // Store the buttons in cache for later updates
+            CacheControl("BoldButton", boldButton, () => boldButton.Checked = FontStyle.HasFlag(FontStyle.Bold));
+            CacheControl("ItalicButton", italicButton, () => italicButton.Checked = FontStyle.HasFlag(FontStyle.Italic));
+            CacheControl("UnderlineButton", underlineButton, () => underlineButton.Checked = FontStyle.HasFlag(FontStyle.Underline));
+
+            // Attach event handlers to update the FontStyle property
+            FontStyle currentFontStyle = FontStyle;
+
+            boldButton.CheckedChanged += (s, e) =>
+            {
+                FontStyle newStyle = currentFontStyle;
+                if (boldButton.Checked)
+                {
+                    newStyle |= FontStyle.Bold;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Bold;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
                     onPropertyChanged();
+                }
+            };
+
+            italicButton.CheckedChanged += (s, e) =>
+            {
+                FontStyle newStyle = currentFontStyle;
+                if (italicButton.Checked)
+                {
+                    newStyle |= FontStyle.Italic;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Italic;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
+                    onPropertyChanged();
+                }
+            };
+
+            underlineButton.CheckedChanged += (s, e) =>
+            {
+                FontStyle newStyle = currentFontStyle;
+                if (underlineButton.Checked)
+                {
+                    newStyle |= FontStyle.Underline;
+                }
+                else
+                {
+                    newStyle &= ~FontStyle.Underline;
+                }
+
+                if (currentFontStyle != newStyle)
+                {
+                    undoRedoManager?.RecordAction(new PropertyChangeAction(
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
+                    FontStyle = newStyle;
+                    currentFontStyle = newStyle;
+                    onPropertyChanged();
+                }
+            };
+
+            yPosition += ControlRowHeight;
+
+            // Background Color
+            AddPropertyLabel(container, "BG Color:", yPosition);
+            Panel bgColorPanel = AddColorPicker(container, yPosition, 85, BackgroundColor,
+                color =>
+                {
+                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BackgroundColor),
+                            BackgroundColor,
+                            color,
+                            onPropertyChanged));
+                        BackgroundColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
+            CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
+            yPosition += ControlRowHeight;
+
+            // Border Color
+            AddPropertyLabel(container, "Border:", yPosition);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+                color =>
+                {
+                    if (BorderColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderColor),
+                            BorderColor,
+                            color,
+                            onPropertyChanged));
+                        BorderColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
+            CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
+            yPosition += ControlRowHeight;
+
+            // Horizontal Alignment
+            AddPropertyLabel(container, "H-Align:", yPosition);
+            string[] hAlignmentOptions = ["Left", "Center", "Right"];
+            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition, hAlignmentOptions,
+                value =>
+                {
+                    StringAlignment newAlignment = DisplayTextToAlignment(value);
+                    if (Alignment != newAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(Alignment),
+                            Alignment,
+                            newAlignment,
+                            onPropertyChanged));
+                        Alignment = newAlignment;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
-            // Vertical alignment
+            // Vertical Alignment
             AddPropertyLabel(container, "V-Align:", yPosition);
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition,
-                ["Top", "Middle", "Bottom"],
+            string[] vAlignmentOptions = ["Top", "Middle", "Bottom"];
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition, vAlignmentOptions,
                 value =>
                 {
-                    VerticalAlignment = DisplayTextToVerticalAlignment(value);
-                    onPropertyChanged();
+                    StringAlignment newVAlignment = DisplayTextToVerticalAlignment(value);
+                    if (VerticalAlignment != newVAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(VerticalAlignment),
+                            VerticalAlignment,
+                            newVAlignment,
+                            onPropertyChanged));
+                        VerticalAlignment = newVAlignment;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
@@ -402,58 +604,112 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
                 value =>
                 {
-                    IncludeReturns = value;
-                    onPropertyChanged();
+                    if (IncludeReturns != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(IncludeReturns),
+                            IncludeReturns,
+                            value,
+                            onPropertyChanged));
+                        IncludeReturns = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
 
-            // Include losses checkbox  
+            // Include losses checkbox
             Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
                 value =>
                 {
-                    IncludeLosses = value;
-                    onPropertyChanged();
+                    if (IncludeLosses != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(IncludeLosses),
+                            IncludeLosses,
+                            value,
+                            onPropertyChanged));
+                        IncludeLosses = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
-            // Total Sales checkbox with clickable label
-            Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, "Total Sales", ShowTotalSales, yPosition,
+            // Total Sales checkbox
+            Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, "Show Total Sales", ShowTotalSales, yPosition,
                 value =>
                 {
-                    ShowTotalSales = value;
-                    onPropertyChanged();
+                    if (ShowTotalSales != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTotalSales),
+                            ShowTotalSales,
+                            value,
+                            onPropertyChanged));
+                        ShowTotalSales = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowTotalSales", salesCheck, () => salesCheck.Checked = ShowTotalSales);
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
-            Guna2CustomCheckBox transactionsCheck = AddPropertyCheckBoxWithLabel(container, "Total Transactions", ShowTotalTransactions, yPosition,
+            Guna2CustomCheckBox transactionsCheck = AddPropertyCheckBoxWithLabel(container, "Show Transactions", ShowTotalTransactions, yPosition,
                 value =>
                 {
-                    ShowTotalTransactions = value;
-                    onPropertyChanged();
+                    if (ShowTotalTransactions != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTotalTransactions),
+                            ShowTotalTransactions,
+                            value,
+                            onPropertyChanged));
+                        ShowTotalTransactions = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowTotalTransactions", transactionsCheck, () => transactionsCheck.Checked = ShowTotalTransactions);
             yPosition += CheckBoxRowHeight;
 
             // Average Value checkbox
-            Guna2CustomCheckBox avgCheck = AddPropertyCheckBoxWithLabel(container, "Average Value", ShowAverageValue, yPosition,
+            Guna2CustomCheckBox avgCheck = AddPropertyCheckBoxWithLabel(container, "Show Average Value", ShowAverageValue, yPosition,
                 value =>
                 {
-                    ShowAverageValue = value;
-                    onPropertyChanged();
+                    if (ShowAverageValue != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowAverageValue),
+                            ShowAverageValue,
+                            value,
+                            onPropertyChanged));
+                        ShowAverageValue = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowAverageValue", avgCheck, () => avgCheck.Checked = ShowAverageValue);
             yPosition += CheckBoxRowHeight;
 
             // Growth Rate checkbox
-            Guna2CustomCheckBox growthCheck = AddPropertyCheckBoxWithLabel(container, "Growth Rate", ShowGrowthRate, yPosition,
+            Guna2CustomCheckBox growthCheck = AddPropertyCheckBoxWithLabel(container, "Show Growth Rate", ShowGrowthRate, yPosition,
                 value =>
                 {
-                    ShowGrowthRate = value;
-                    onPropertyChanged();
+                    if (ShowGrowthRate != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowGrowthRate),
+                            ShowGrowthRate,
+                            value,
+                            onPropertyChanged));
+                        ShowGrowthRate = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowGrowthRate", growthCheck, () => growthCheck.Checked = ShowGrowthRate);
             yPosition += CheckBoxRowHeight + 10;

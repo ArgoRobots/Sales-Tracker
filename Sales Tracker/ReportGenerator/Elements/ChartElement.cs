@@ -9,6 +9,7 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.GridView;
+using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
 using System.Drawing.Drawing2D;
 
@@ -834,68 +835,171 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager for recording property changes
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Chart type selector
             AddPropertyLabel(container, "Chart:", yPosition);
             Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
                 GetAvailableChartTypes(),
                 value =>
                 {
-                    ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
-                    onPropertyChanged();
+                    MainMenu_Form.ChartDataType newChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                    if (ChartType != newChartType)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ChartType),
+                            ChartType,
+                            newChartType,
+                            () =>
+                            {
+                                // Dispose old chart control when type changes
+                                _chartControl?.Dispose();
+                                _chartControl = null;
+                                onPropertyChanged();
+                            }));
+                        ChartType = newChartType;
+                        _chartControl?.Dispose();
+                        _chartControl = null;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
             yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
-                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
+                             "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    FontFamily = value;
-                    onPropertyChanged();
+                    if (FontFamily != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontFamily),
+                            FontFamily,
+                            value,
+                            onPropertyChanged));
+                        FontFamily = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Title font size
             AddPropertyLabel(container, "Title Size:", yPosition);
-            Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition, value =>
-            {
-                TitleFontSize = (float)value;
-                onPropertyChanged();
-            }, 8, 20);
+            Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
+                value =>
+                {
+                    float newTitleSize = (float)value;
+                    if (Math.Abs(TitleFontSize - newTitleSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TitleFontSize),
+                            TitleFontSize,
+                            newTitleSize,
+                            onPropertyChanged));
+                        TitleFontSize = newTitleSize;
+                        onPropertyChanged();
+                    }
+                }, 8, 20);
             titleNumericUpDown.Left = 130;
-            CacheControl("FontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
+            CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
             yPosition += ControlRowHeight;
 
             // Legend font size
             AddPropertyLabel(container, "Legend Size:", yPosition);
-            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition, value =>
-            {
-                LegendFontSize = (float)value;
-                onPropertyChanged();
-            }, 8, 20);
+            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
+                value =>
+                {
+                    float newLegendSize = (float)value;
+                    if (Math.Abs(LegendFontSize - newLegendSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(LegendFontSize),
+                            LegendFontSize,
+                            newLegendSize,
+                            onPropertyChanged));
+                        LegendFontSize = newLegendSize;
+                        onPropertyChanged();
+                    }
+                }, 8, 20);
             legendNumericUpDown.Left = 130;
-            CacheControl("FontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
+            CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
+            yPosition += ControlRowHeight;
+
+            // Border color
+            AddPropertyLabel(container, "Border:", yPosition);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+                color =>
+                {
+                    if (BorderColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderColor),
+                            BorderColor,
+                            color,
+                            onPropertyChanged));
+                        BorderColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
+
+            // Add label next to color picker
+            Label borderColorLabel = new()
+            {
+                Text = "Click to change",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(140, yPosition + 11),
+                AutoSize = true
+            };
+            container.Controls.Add(borderColorLabel);
+
+            CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
-            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
+            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Show Legend", ShowLegend, yPosition,
                 value =>
                 {
-                    ShowLegend = value;
-                    onPropertyChanged();
+                    if (ShowLegend != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowLegend),
+                            ShowLegend,
+                            value,
+                            onPropertyChanged));
+                        ShowLegend = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
             yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
-            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
+            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Show Title", ShowTitle, yPosition,
                 value =>
                 {
-                    ShowTitle = value;
-                    onPropertyChanged();
+                    if (ShowTitle != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTitle),
+                            ShowTitle,
+                            value,
+                            onPropertyChanged));
+                        ShowTitle = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
             yPosition += CheckBoxRowHeight;
