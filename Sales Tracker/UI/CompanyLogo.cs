@@ -18,7 +18,7 @@ namespace Sales_Tracker.UI
         public static Guna2Panel CompanyLogoRightClick_Panel { get; private set; }
 
         // Public methods
-        public static void ConstructCompanyLogoRightClickMenu()
+        public static void ConstructRightClickMenu()
         {
             CompanyLogoRightClick_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),

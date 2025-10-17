@@ -323,6 +323,26 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DropDownBlack {
+            get {
+                object obj = ResourceManager.GetObject("DropDownBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DropDownWhite {
+            get {
+                object obj = ResourceManager.GetObject("DropDownWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Earth {
             get {
                 object obj = ResourceManager.GetObject("Earth", resourceCulture);
@@ -563,6 +583,26 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RedoBlack {
+            get {
+                object obj = ResourceManager.GetObject("RedoBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RedoWhite {
+            get {
+                object obj = ResourceManager.GetObject("RedoWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Return {
             get {
                 object obj = ResourceManager.GetObject("Return", resourceCulture);
@@ -716,6 +756,26 @@ namespace Sales_Tracker.Properties {
         internal static System.Drawing.Bitmap ThreeDotsWhite {
             get {
                 object obj = ResourceManager.GetObject("ThreeDotsWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UndoBlack {
+            get {
+                object obj = ResourceManager.GetObject("UndoBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UndoWhite {
+            get {
+                object obj = ResourceManager.GetObject("UndoWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,0 +1,210 @@
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.Theme;
+
+namespace Sales_Tracker.UI
+{
+    /// <summary>
+    /// Static helper for displaying undo/redo history dropdown panels.
+    /// </summary>
+    public static class UndoRedoHistoryDropdown
+    {
+        // Constants
+        private const int ITEM_HEIGHT = 30;
+        private const int MAX_VISIBLE_ITEMS = 10;
+        private const int PANEL_WIDTH = 250;
+        private const int PANEL_PADDING = 5;
+
+        // Static fields for tracking current dropdown
+        public static Guna2Panel? Panel { get; private set; }
+        private static Panel? _itemsPanel;
+        private static readonly List<HistoryItem> _historyItems = [];
+
+        /// <summary>
+        /// Represents a single item in the history list.
+        /// </summary>
+        private class HistoryItem : Guna2Button
+        {
+            public int Index { get; }
+
+            public HistoryItem(int index, string description, Action<int> onClick)
+            {
+                Index = index;
+                Height = ITEM_HEIGHT;
+                Text = description;
+                Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                Location = new Point(35, 0);
+                Size = new Size(PANEL_WIDTH - 40, ITEM_HEIGHT);
+                FillColor = CustomColors.ControlBack;
+                ForeColor = CustomColors.Text;
+                BorderColor = CustomColors.ControlPanelBorder;
+
+                // Click event
+                Click += (s, e) => onClick(index);
+            }
+        }
+
+        /// <summary>
+        /// Creates the base panel structure for the dropdown.
+        /// </summary>
+        public static void Construct()
+        {
+            Panel = new()
+            {
+                BorderThickness = 1,
+                BorderRadius = 4,
+                Visible = true,
+                Width = PANEL_WIDTH + PANEL_PADDING * 2,
+                FillColor = CustomColors.ControlBack,
+                BorderColor = CustomColors.ControlPanelBorder
+            };
+
+            // Items container panel
+            _itemsPanel = new Panel
+            {
+                Location = new Point(PANEL_PADDING, PANEL_PADDING),
+                Width = PANEL_WIDTH,
+                AutoScroll = false
+            };
+
+            Panel.Controls.Add(_itemsPanel);
+        }
+
+        /// <summary>
+        /// Shows the undo/redo history dropdown at the specified location.
+        /// </summary>
+        public static void Show(Control parent, Point location, UndoRedoManager undoRedoManager,
+            bool isUndoHistory, Action onActionPerformed)
+        {
+            // Remove any existing dropdown
+            Remove();
+
+            parent.Controls.Add(Panel);
+            Panel.Location = location;
+
+            // Populate with history items
+            PopulateHistory(undoRedoManager, isUndoHistory, onActionPerformed);
+
+            Panel.BringToFront();
+            Panel.Focus();
+        }
+
+        /// <summary>
+        /// Removes the current dropdown from view.
+        /// </summary>
+        public static void Remove()
+        {
+            Panel.Parent?.Controls.Remove(Panel);
+            _historyItems.Clear();
+        }
+
+        /// <summary>
+        /// Populates the dropdown with history items.
+        /// </summary>
+        private static void PopulateHistory(UndoRedoManager undoRedoManager, bool isUndoHistory,
+            Action onActionPerformed)
+        {
+            if (_itemsPanel == null || Panel == null) { return; }
+
+            _historyItems.Clear();
+            _itemsPanel.Controls.Clear();
+
+            string[] descriptions = isUndoHistory
+                ? undoRedoManager.GetUndoDescriptions()
+                : undoRedoManager.GetRedoDescriptions();
+
+            int yPosition = 0;
+            for (int i = 0; i < descriptions.Length; i++)
+            {
+                HistoryItem item = new(i, descriptions[i],
+                    (index) => OnItemClick(index, undoRedoManager, isUndoHistory, onActionPerformed))
+                {
+                    Location = new Point(0, yPosition),
+                    Width = _itemsPanel.Width
+                };
+
+                // Add hover event handlers
+                item.MouseEnter += (s, e) => OnItemHover(item.Index);
+                item.MouseLeave += (s, e) => OnItemLeave();
+
+                _historyItems.Add(item);
+                _itemsPanel.Controls.Add(item);
+
+                yPosition += ITEM_HEIGHT;
+            }
+
+            // Set panel height for scrolling
+            if (_historyItems.Count > 0)
+            {
+                int totalHeight = _historyItems.Count * ITEM_HEIGHT;
+                _itemsPanel.Height = Math.Min(totalHeight, MAX_VISIBLE_ITEMS * ITEM_HEIGHT);
+                Panel.Height = Math.Min(totalHeight, MAX_VISIBLE_ITEMS * ITEM_HEIGHT) + PANEL_PADDING * 2;
+            }
+        }
+
+        /// <summary>
+        /// Handles hover effect over history items.
+        /// </summary>
+        private static void OnItemHover(int hoveredIndex)
+        {
+            // Set border thickness for hovered item and all items above it
+            for (int i = 0; i <= hoveredIndex && i < _historyItems.Count; i++)
+            {
+                _historyItems[i].BorderThickness = 1;
+                _historyItems[i].FillColor = CustomColors.PanelBtnHover;
+            }
+
+            // Reset border thickness for items below the hovered item
+            for (int i = hoveredIndex + 1; i < _historyItems.Count; i++)
+            {
+                _historyItems[i].BorderThickness = 0;
+                _historyItems[i].FillColor = CustomColors.ControlBack;
+            }
+        }
+
+        /// <summary>
+        /// Resets hover effects when mouse leaves items.
+        /// </summary>
+        private static void OnItemLeave()
+        {
+            foreach (HistoryItem item in _historyItems)
+            {
+                item.BorderThickness = 0;
+                item.FillColor = CustomColors.ControlBack;
+            }
+        }
+
+        /// <summary>
+        /// Handles clicking on a history item.
+        /// </summary>
+        private static void OnItemClick(int index, UndoRedoManager undoRedoManager,
+            bool isUndoHistory, Action onActionPerformed)
+        {
+            // Perform multiple undo/redo operations to reach the selected point
+            int operationCount = index + 1;
+
+            for (int i = 0; i < operationCount; i++)
+            {
+                if (isUndoHistory)
+                {
+                    if (undoRedoManager.CanUndo)
+                    {
+                        undoRedoManager.Undo();
+                    }
+                }
+                else
+                {
+                    if (undoRedoManager.CanRedo)
+                    {
+                        undoRedoManager.Redo();
+                    }
+                }
+            }
+
+            // Notify that an action was performed
+            onActionPerformed?.Invoke();
+
+            Remove();
+        }
+    }
+}

@@ -17,6 +17,16 @@ namespace Sales_Tracker.ReportGenerator
         public event EventHandler StateChanged;
 
         /// <summary>
+        /// Gets the count of actions in the undo stack.
+        /// </summary>
+        public int UndoCount => _undoStack.Count;
+
+        /// <summary>
+        /// Gets the count of actions in the redo stack.
+        /// </summary>
+        public int RedoCount => _redoStack.Count;
+
+        /// <summary>
         /// Gets whether an undo operation can be performed.
         /// </summary>
         public bool CanUndo => _undoStack.Count > 0;
@@ -110,6 +120,22 @@ namespace Sales_Tracker.ReportGenerator
             _undoStack.Clear();
             _redoStack.Clear();
             OnStateChanged();
+        }
+
+        /// <summary>
+        /// Gets descriptions of all actions in the undo stack (most recent first).
+        /// </summary>
+        public string[] GetUndoDescriptions()
+        {
+            return _undoStack.Select(action => action.Description).ToArray();
+        }
+
+        /// <summary>
+        /// Gets descriptions of all actions in the redo stack (next to redo first).
+        /// </summary>
+        public string[] GetRedoDescriptions()
+        {
+            return _redoStack.Select(action => action.Description).ToArray();
         }
 
         protected virtual void OnStateChanged()
@@ -326,11 +352,11 @@ namespace Sales_Tracker.ReportGenerator
             {
                 UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
                 undoRedoManager?.RecordAction(new PropertyChangeAction(
-                        _element,
-                        _propertyName,
-                        _pendingOldValue,
-                        _pendingNewValue,
-                        _onPropertyChanged));
+                    _element,
+                    _propertyName,
+                    _pendingOldValue,
+                    _pendingNewValue,
+                    _onPropertyChanged));
 
                 _pendingOldValue = null;
                 _pendingNewValue = null;

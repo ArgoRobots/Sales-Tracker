@@ -22,7 +22,7 @@ namespace Sales_Tracker.Charts
         public static Guna2Panel Panel { get; private set; }
 
         // Right click menu methods
-        public static void ConstructRightClickChartMenu()
+        public static void Construct()
         {
             Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
