@@ -9,7 +9,9 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.GridView;
+using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
+using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -37,7 +39,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowTitle { get; set; } = true;
         public Color BorderColor { get; set; } = Color.Gray;
         public string FontFamily { get; set; } = "Segoe UI";
-        public float FontSize { get; set; } = 11f;
+        public float TitleFontSize { get; set; } = 12f;
+        public float LegendFontSize { get; set; } = 11f;
 
         // Overrides
         public override ReportElementType GetElementType() => ReportElementType.Chart;
@@ -55,10 +58,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowTitle = ShowTitle,
                 BorderColor = BorderColor,
                 FontFamily = FontFamily,
-                FontSize = FontSize
+                TitleFontSize = TitleFontSize
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             try
             {
@@ -77,29 +80,111 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     LoadChartData(ChartType, config);
                 }
 
-                // Generate server-side image
+                // Generate server-side image with quality scaling
+                // Get the current graphics transform to calculate render scale
+                float scaleX = graphics.Transform.Elements[0];
+                float scaleY = graphics.Transform.Elements[3];
+
                 if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
                 {
-                    using Bitmap chartImage = GenerateCartesianChartImage(cartesianChart);
+                    using Bitmap chartImage = GenerateCartesianChartImage(cartesianChart, renderScale);
                     if (chartImage != null)
                     {
-                        graphics.DrawImage(chartImage, Bounds);
+                        // Save graphics state to preserve transformation
+                        GraphicsState state = graphics.Save();
+                        try
+                        {
+                            // Reset transform for drawing
+                            graphics.ResetTransform();
+
+                            // Calculate the actual screen position accounting for the original transform
+                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                            tempTransform.TransformPoints(points);
+
+                            // Calculate target rectangle in screen coordinates
+                            Rectangle targetRect = new(
+                                (int)points[0].X,
+                                (int)points[0].Y,
+                                (int)(Bounds.Width * scaleX),
+                                (int)(Bounds.Height * scaleY)
+                            );
+
+                            // Draw with high quality interpolation
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.CompositingQuality = CompositingQuality.HighQuality;
+                            graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                            graphics.DrawImage(chartImage, targetRect);
+                        }
+                        finally
+                        {
+                            graphics.Restore(state);
+                        }
                     }
                 }
                 else if (_chartControl != null && _chartControl is PieChart pieChart)
                 {
-                    using Bitmap chartImage = GeneratePieChartImage(pieChart);
+                    using Bitmap chartImage = GeneratePieChartImage(pieChart, renderScale);
                     if (chartImage != null)
                     {
-                        graphics.DrawImage(chartImage, Bounds);
+                        GraphicsState state = graphics.Save();
+                        try
+                        {
+                            graphics.ResetTransform();
+                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                            tempTransform.TransformPoints(points);
+
+                            Rectangle targetRect = new(
+                                (int)points[0].X,
+                                (int)points[0].Y,
+                                (int)(Bounds.Width * scaleX),
+                                (int)(Bounds.Height * scaleY)
+                            );
+
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.CompositingQuality = CompositingQuality.HighQuality;
+                            graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                            graphics.DrawImage(chartImage, targetRect);
+                        }
+                        finally
+                        {
+                            graphics.Restore(state);
+                        }
                     }
                 }
                 else if (_chartControl != null && _chartControl is GeoMap geoMap)
                 {
-                    using Bitmap chartImage = GenerateGeoMapImage(geoMap);
+                    using Bitmap chartImage = GenerateGeoMapImage(geoMap, renderScale);
                     if (chartImage != null)
                     {
-                        graphics.DrawImage(chartImage, Bounds);
+                        GraphicsState state = graphics.Save();
+                        try
+                        {
+                            graphics.ResetTransform();
+                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                            tempTransform.TransformPoints(points);
+
+                            Rectangle targetRect = new(
+                                (int)points[0].X,
+                                (int)points[0].Y,
+                                (int)(Bounds.Width * scaleX),
+                                (int)(Bounds.Height * scaleY)
+                            );
+
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.CompositingQuality = CompositingQuality.HighQuality;
+                            graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                            graphics.DrawImage(chartImage, targetRect);
+                        }
+                        finally
+                        {
+                            graphics.Restore(state);
+                        }
                     }
                 }
                 else
@@ -124,13 +209,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             if (config?.Filters == null) { return false; }
 
-            if (!_lastLoadedConfig.TryGetValue(chartType, out var lastConfig))
+            if (!_lastLoadedConfig.TryGetValue(chartType, out (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses) lastConfig))
             {
-                return true; // Never loaded before
+                return true;  // Never loaded before
             }
 
             // Use tuple comparison for cleaner code
-            var currentConfig = (
+            (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses) currentConfig = (
                 config.Filters.StartDate,
                 config.Filters.EndDate,
                 config.Filters.IncludeReturns,
@@ -451,12 +536,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Render chart methods
-        private Bitmap GenerateCartesianChartImage(CartesianChart sourceChart)
+        private Bitmap GenerateCartesianChartImage(CartesianChart sourceChart, float renderScale = 1.0f)
         {
+            // Render at much higher resolution for quality
+            int renderWidth = (int)(Bounds.Width * renderScale);
+            int renderHeight = (int)(Bounds.Height * renderScale);
+
             SKCartesianChart skChart = new()
             {
-                Width = Bounds.Width,
-                Height = Bounds.Height,
+                Width = renderWidth,
+                Height = renderHeight,
                 Background = SKColors.White
             };
 
@@ -476,15 +565,87 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    TextSize = (TitleFontSize + 3) * renderScale,
                     Paint = titlePaint,
-                    Padding = new LiveChartsCore.Drawing.Padding(5)
+                    Padding = new LiveChartsCore.Drawing.Padding(5 * renderScale)
                 };
             }
 
             if (sourceChart.Series != null)
             {
-                skChart.Series = sourceChart.Series;
+                skChart.Series = sourceChart.Series.Select(series =>
+                {
+                    if (series is LineSeries<double> lineSeries)
+                    {
+                        return new LineSeries<double>
+                        {
+                            Values = lineSeries.Values,
+                            Name = lineSeries.Name,
+                            GeometrySize = lineSeries.GeometrySize * renderScale * 0.75,
+                            GeometryFill = new SolidColorPaint(SKColors.White),
+                            GeometryStroke = lineSeries.GeometryStroke != null && lineSeries.GeometryStroke is SolidColorPaint gsPaint
+                                ? new SolidColorPaint(gsPaint.Color)
+                                {
+                                    StrokeThickness = (float)(gsPaint.StrokeThickness * renderScale * 0.75)
+                                }
+                                : lineSeries.GeometryStroke,
+                            Fill = lineSeries.Fill != null && lineSeries.Fill is SolidColorPaint fillPaint
+                                ? new SolidColorPaint(fillPaint.Color)
+                                {
+                                    StrokeThickness = (float)(fillPaint.StrokeThickness * renderScale)
+                                }
+                                : lineSeries.Fill,
+                            Stroke = lineSeries.Stroke != null && lineSeries.Stroke is SolidColorPaint strokePaint
+                                ? new SolidColorPaint(strokePaint.Color)
+                                {
+                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale * 0.75)
+                                }
+                                : lineSeries.Stroke,
+                            LineSmoothness = lineSeries.LineSmoothness,
+                            DataLabelsSize = lineSeries.DataLabelsSize * renderScale,
+                            DataLabelsPaint = lineSeries.DataLabelsPaint != null && lineSeries.DataLabelsPaint is SolidColorPaint dlPaint
+                                ? new SolidColorPaint(dlPaint.Color)
+                                {
+                                    SKTypeface = typeface
+                                }
+                                : lineSeries.DataLabelsPaint,
+                            DataLabelsPosition = lineSeries.DataLabelsPosition
+                        };
+                    }
+                    else if (series is ColumnSeries<double> columnSeries)
+                    {
+                        return new ColumnSeries<double>
+                        {
+                            Values = columnSeries.Values,
+                            Name = columnSeries.Name,
+                            MaxBarWidth = columnSeries.MaxBarWidth * renderScale,
+                            Padding = columnSeries.Padding * renderScale,
+                            Rx = columnSeries.Rx > 0 ? columnSeries.Rx * renderScale : 2 * renderScale,
+                            Ry = columnSeries.Ry > 0 ? columnSeries.Ry * renderScale : 2 * renderScale,
+                            Fill = columnSeries.Fill != null && columnSeries.Fill is SolidColorPaint fillPaint
+                                ? new SolidColorPaint(fillPaint.Color)
+                                {
+                                    StrokeThickness = (float)(fillPaint.StrokeThickness * renderScale)
+                                }
+                                : columnSeries.Fill,
+                            Stroke = columnSeries.Stroke != null && columnSeries.Stroke is SolidColorPaint strokePaint
+                                ? new SolidColorPaint(strokePaint.Color)
+                                {
+                                    StrokeThickness = (float)(strokePaint.StrokeThickness * renderScale)
+                                }
+                                : columnSeries.Stroke,
+                            DataLabelsSize = columnSeries.DataLabelsSize * renderScale,
+                            DataLabelsPaint = columnSeries.DataLabelsPaint != null && columnSeries.DataLabelsPaint is SolidColorPaint dlPaint
+                                ? new SolidColorPaint(dlPaint.Color)
+                                {
+                                    SKTypeface = typeface
+                                }
+                                : columnSeries.DataLabelsPaint,
+                            DataLabelsPosition = columnSeries.DataLabelsPosition
+                        };
+                    }
+                    return series;
+                }).ToArray();
             }
 
             // Copy axis configuration with font properties
@@ -504,7 +665,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
                         LabelsPaint = labelPaint,
-                        TextSize = FontSize  // Use FontSize property
+                        TextSize = LegendFontSize * renderScale
                     };
                     return newAxis;
                 }).ToArray();
@@ -526,12 +687,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         MinLimit = axis.MinLimit,
                         MaxLimit = axis.MaxLimit,
                         LabelsPaint = labelPaint,
-                        SeparatorsPaint = new SolidColorPaint(SKColors.LightGray),
-                        TextSize = FontSize  // Use FontSize property
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightGray)
+                        {
+                            StrokeThickness = 1 * renderScale
+                        },
+                        TextSize = LegendFontSize * renderScale
                     };
                     return newAxis;
                 }).ToArray();
             }
+
+            skChart.Legend = new CustomLegend(true, LegendFontSize);
 
             skChart.LegendPosition = ShowLegend
                 ? LegendPosition.Top
@@ -542,19 +708,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 SKTypeface = typeface
             };
             skChart.LegendTextPaint = legendPaint;
-            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
+            skChart.LegendTextSize = (LegendFontSize + 1) * renderScale;
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
             using MemoryStream stream = new(data.ToArray());
             return new Bitmap(stream);
         }
-        private Bitmap GeneratePieChartImage(PieChart sourceChart)
+        private Bitmap GeneratePieChartImage(PieChart sourceChart, float renderScale)
         {
+            // Render at much higher resolution for quality
+            int renderWidth = (int)(Bounds.Width * renderScale);
+            int renderHeight = (int)(Bounds.Height * renderScale);
+
             SKPieChart skChart = new()
             {
-                Width = Bounds.Width,
-                Height = Bounds.Height,
+                Width = renderWidth,
+                Height = renderHeight,
                 Background = SKColors.White
             };
 
@@ -574,47 +744,84 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 skChart.Title = new LabelVisual
                 {
                     Text = titleText,
-                    TextSize = FontSize + 3,  // Title slightly larger than base font
+                    TextSize = (TitleFontSize + 3) * renderScale,
                     Paint = titlePaint,
-                    Padding = new LiveChartsCore.Drawing.Padding(5)
+                    Padding = new LiveChartsCore.Drawing.Padding(5 * renderScale)
                 };
             }
 
+            // Clone and scale series for pie charts
             if (sourceChart.Series != null)
             {
-                skChart.Series = sourceChart.Series;
+                skChart.Series = sourceChart.Series.Select(series =>
+                {
+                    if (series is PieSeries<double> pieSeries)
+                    {
+                        PieSeries<double> newPieSeries = new()
+                        {
+                            Values = pieSeries.Values,
+                            Name = pieSeries.Name,
+                            Fill = pieSeries.Fill,
+                            Stroke = pieSeries.Stroke != null ?
+                                new SolidColorPaint(((SolidColorPaint)pieSeries.Stroke).Color)
+                                {
+                                    StrokeThickness = (float)(pieSeries.Stroke.StrokeThickness * renderScale)
+                                } : null,
+                            Pushout = pieSeries.Pushout * renderScale,
+                            InnerRadius = pieSeries.InnerRadius * renderScale,
+                            HoverPushout = pieSeries.HoverPushout * renderScale,
+                            DataLabelsSize = pieSeries.DataLabelsSize * renderScale,
+                            DataLabelsPaint = pieSeries.DataLabelsPaint,
+                            DataLabelsPosition = pieSeries.DataLabelsPosition
+                        };
+                        return newPieSeries;
+                    }
+                    return series;
+                }).ToArray();
             }
+
+            skChart.Legend = new CustomLegend(true, LegendFontSize);
 
             skChart.LegendPosition = ShowLegend
                 ? LegendPosition.Right
                 : LegendPosition.Hidden;
-
-            SolidColorPaint legendPaint = new(SKColors.Black)
-            {
-                SKTypeface = typeface
-            };
-            skChart.LegendTextPaint = legendPaint;
-            skChart.LegendTextSize = FontSize + 1;  // Legend slightly larger than base font
 
             using SKImage image = skChart.GetImage();
             using SKData data = image.Encode();
             using MemoryStream stream = new(data.ToArray());
             return new Bitmap(stream);
         }
-        private Bitmap GenerateGeoMapImage(GeoMap sourceMap)
+        private Bitmap GenerateGeoMapImage(GeoMap sourceMap, float renderScale = 1.0f)
         {
+            // Render at much higher resolution for quality
+            int renderWidth = (int)(Bounds.Width * renderScale);
+            int renderHeight = (int)(Bounds.Height * renderScale);
+
             // Create an SK map with the same data
             SKGeoMap skMap = new()
             {
-                Width = Bounds.Width,
-                Height = Bounds.Height,
+                Width = renderWidth,
+                Height = renderHeight,
                 Background = SKColors.White
             };
 
-            // Copy series data from source map to SK map
+            // Copy and scale series data from source map to SK map
             if (sourceMap.Series != null)
             {
-                skMap.Series = sourceMap.Series;
+                skMap.Series = sourceMap.Series.Select(series =>
+                {
+                    if (series is HeatLandSeries heatSeries)
+                    {
+                        HeatLandSeries newHeatSeries = new()
+                        {
+                            Lands = heatSeries.Lands,
+                            Name = heatSeries.Name,
+                            HeatMap = heatSeries.HeatMap
+                        };
+                        return newHeatSeries;
+                    }
+                    return series;
+                }).ToArray();
             }
 
             // Copy map projection
@@ -628,57 +835,171 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager for recording property changes
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Chart type selector
             AddPropertyLabel(container, "Chart:", yPosition);
             Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
                 GetAvailableChartTypes(),
                 value =>
                 {
-                    ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
-                    onPropertyChanged();
+                    MainMenu_Form.ChartDataType newChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                    if (ChartType != newChartType)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ChartType),
+                            ChartType,
+                            newChartType,
+                            () =>
+                            {
+                                // Dispose old chart control when type changes
+                                _chartControl?.Dispose();
+                                _chartControl = null;
+                                onPropertyChanged();
+                            }));
+                        ChartType = newChartType;
+                        _chartControl?.Dispose();
+                        _chartControl = null;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
             yPosition += ControlRowHeight;
 
             // Font family
             AddPropertyLabel(container, "Font:", yPosition);
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition,
-                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
+                             "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
+            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    FontFamily = value;
-                    onPropertyChanged();
+                    if (FontFamily != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontFamily),
+                            FontFamily,
+                            value,
+                            onPropertyChanged));
+                        FontFamily = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
-            // Font size
-            AddPropertyLabel(container, "Font Size:", yPosition);
-            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition, value =>
+            // Title font size
+            AddPropertyLabel(container, "Title Size:", yPosition);
+            Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
+                value =>
+                {
+                    float newTitleSize = (float)value;
+                    if (Math.Abs(TitleFontSize - newTitleSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TitleFontSize),
+                            TitleFontSize,
+                            newTitleSize,
+                            onPropertyChanged));
+                        TitleFontSize = newTitleSize;
+                        onPropertyChanged();
+                    }
+                }, 8, 20);
+            titleNumericUpDown.Left = 130;
+            CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
+            yPosition += ControlRowHeight;
+
+            // Legend font size
+            AddPropertyLabel(container, "Legend Size:", yPosition);
+            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
+                value =>
+                {
+                    float newLegendSize = (float)value;
+                    if (Math.Abs(LegendFontSize - newLegendSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(LegendFontSize),
+                            LegendFontSize,
+                            newLegendSize,
+                            onPropertyChanged));
+                        LegendFontSize = newLegendSize;
+                        onPropertyChanged();
+                    }
+                }, 8, 20);
+            legendNumericUpDown.Left = 130;
+            CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
+            yPosition += ControlRowHeight;
+
+            // Border color
+            AddPropertyLabel(container, "Border:", yPosition);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+                color =>
+                {
+                    if (BorderColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderColor),
+                            BorderColor,
+                            color,
+                            onPropertyChanged));
+                        BorderColor = color;
+                        onPropertyChanged();
+                    }
+                }, showLabel: false);
+
+            // Add label next to color picker
+            Label borderColorLabel = new()
             {
-                FontSize = (float)value;
-                onPropertyChanged();
-            }, 8, 20);
-            numericUpDown.Left = 110;
-            CacheControl("FontSize", numericUpDown, () => numericUpDown.Value = (decimal)FontSize);
+                Text = "Click to change",
+                Font = new Font("Segoe UI", 8),
+                ForeColor = Color.Gray,
+                Location = new Point(140, yPosition + 11),
+                AutoSize = true
+            };
+            container.Controls.Add(borderColorLabel);
+
+            CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
-            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Legend", ShowLegend, yPosition,
+            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Show Legend", ShowLegend, yPosition,
                 value =>
                 {
-                    ShowLegend = value;
-                    onPropertyChanged();
+                    if (ShowLegend != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowLegend),
+                            ShowLegend,
+                            value,
+                            onPropertyChanged));
+                        ShowLegend = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
             yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
-            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Title", ShowTitle, yPosition,
+            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Show Title", ShowTitle, yPosition,
                 value =>
                 {
-                    ShowTitle = value;
-                    onPropertyChanged();
+                    if (ShowTitle != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTitle),
+                            ShowTitle,
+                            value,
+                            onPropertyChanged));
+                        ShowTitle = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
             yPosition += CheckBoxRowHeight;

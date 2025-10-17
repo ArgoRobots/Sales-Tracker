@@ -123,6 +123,7 @@
             // 
             OpenAfterExport_CheckBox.Animated = true;
             OpenAfterExport_CheckBox.BackColor = Color.Transparent;
+            OpenAfterExport_CheckBox.Checked = true;
             OpenAfterExport_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             OpenAfterExport_CheckBox.CheckedState.BorderRadius = 2;
             OpenAfterExport_CheckBox.CheckedState.BorderThickness = 0;
@@ -409,6 +410,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 5, 4, 5);
             Name = "ReportPreviewExport_Form";
+            FormClosed += ReportPreviewExport_Form_FormClosed;
             VisibleChanged += ReportPreviewExport_Form_VisibleChanged;
             Resize += ReportPreviewExport_Form_Resize;
             RightSettings_Panel.ResumeLayout(false);

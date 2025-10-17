@@ -265,19 +265,9 @@ namespace Sales_Tracker.ReportGenerator
         public string FilePath { get; set; }
 
         /// <summary>
-        /// DPI for image exports.
-        /// </summary>
-        public int DPI { get; set; } = 300;
-
-        /// <summary>
         /// Quality setting (0-100).
         /// </summary>
         public int Quality { get; set; } = 95;
-
-        /// <summary>
-        /// Whether to open the file after export.
-        /// </summary>
-        public bool OpenAfterExport { get; set; } = true;
     }
 
     /// <summary>

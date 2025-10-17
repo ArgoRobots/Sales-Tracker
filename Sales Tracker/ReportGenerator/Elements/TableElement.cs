@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.ReportGenerator.Menus;
 using System.Data;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -134,7 +135,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowShippingColumn = ShowShippingColumn
             };
         }
-        public override void RenderElement(Graphics graphics, ReportConfiguration config)
+        public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
             try
             {
@@ -644,6 +645,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition + 45;
         }
+
         private static Panel CreateTabPanel(Panel container, bool visible) => new()
         {
             Location = new Point(0, 45),
@@ -652,9 +654,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AutoScroll = true,
             Visible = visible
         };
+
         private void CreateGeneralTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
-            // Add common controls first
+            // Get undo manager
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
+            // Add common controls first (X, Y, Width, Height)
             CreateCommonPropertyControls(panel, this, yPosition, onPropertyChanged,
                 out Dictionary<string, Action> commonUpdateActions);
 
@@ -672,8 +678,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Enum.GetNames<TableDataSelection>(),
                 value =>
                 {
-                    DataSelection = Enum.Parse<TableDataSelection>(value);
-                    onPropertyChanged();
+                    TableDataSelection newSelection = Enum.Parse<TableDataSelection>(value);
+                    if (DataSelection != newSelection)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(DataSelection),
+                            DataSelection,
+                            newSelection,
+                            onPropertyChanged));
+                        DataSelection = newSelection;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("DataSelection", dataCombo, () => dataCombo.SelectedItem = DataSelection.ToString());
             yPosition += ControlRowHeight;
@@ -684,8 +700,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ["Sales", "Purchases", "Both"],
                 value =>
                 {
-                    TransactionType = Enum.Parse<TransactionType>(value);
-                    onPropertyChanged();
+                    TransactionType newType = Enum.Parse<TransactionType>(value);
+                    if (TransactionType != newType)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TransactionType),
+                            TransactionType,
+                            newType,
+                            onPropertyChanged));
+                        TransactionType = newType;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
@@ -694,8 +720,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(panel, "Include Returns", IncludeReturns, yPosition,
                 value =>
                 {
-                    IncludeReturns = value;
-                    onPropertyChanged();
+                    if (IncludeReturns != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(IncludeReturns),
+                            IncludeReturns,
+                            value,
+                            onPropertyChanged));
+                        IncludeReturns = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("IncludeReturns", returnsCheck, () => returnsCheck.Checked = IncludeReturns);
             yPosition += CheckBoxRowHeight;
@@ -704,8 +739,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(panel, "Include Losses", IncludeLosses, yPosition,
                 value =>
                 {
-                    IncludeLosses = value;
-                    onPropertyChanged();
+                    if (IncludeLosses != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(IncludeLosses),
+                            IncludeLosses,
+                            value,
+                            onPropertyChanged));
+                        IncludeLosses = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
@@ -716,19 +760,40 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ["Date ↓", "Date ↑", "Amount ↓", "Amount ↑"],
                 value =>
                 {
-                    SortOrder = ParseSortOrder(value);
-                    onPropertyChanged();
+                    TableSortOrder newOrder = ParseSortOrder(value);
+                    if (SortOrder != newOrder)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(SortOrder),
+                            SortOrder,
+                            newOrder,
+                            onPropertyChanged));
+                        SortOrder = newOrder;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("SortOrder", sortCombo, () => sortCombo.SelectedItem = FormatSortOrder(SortOrder));
             yPosition += ControlRowHeight;
 
             // Max rows
             AddPropertyLabel(panel, "Max Rows:", yPosition);
-            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, MaxRows, yPosition, value =>
-            {
-                MaxRows = (int)value;
-                onPropertyChanged();
-            }, 1, 100);
+            Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, MaxRows, yPosition,
+                value =>
+                {
+                    int newMaxRows = (int)value;
+                    if (MaxRows != newMaxRows)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(MaxRows),
+                            MaxRows,
+                            newMaxRows,
+                            onPropertyChanged));
+                        MaxRows = newMaxRows;
+                        onPropertyChanged();
+                    }
+                }, 1, 100);
             numericUpDown.Left = 110;
             CacheControl("MaxRows", numericUpDown, () => numericUpDown.Value = MaxRows);
             yPosition += ControlRowHeight;
@@ -737,174 +802,454 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2CustomCheckBox totalsCheck = AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
                 value =>
                 {
-                    ShowTotalsRow = value;
-                    onPropertyChanged();
+                    if (ShowTotalsRow != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTotalsRow),
+                            ShowTotalsRow,
+                            value,
+                            onPropertyChanged));
+                        ShowTotalsRow = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("ShowTotalsRow", totalsCheck, () => totalsCheck.Checked = ShowTotalsRow);
         }
+
         private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Font family
             AddPropertyLabel(panel, "Font:", yPosition);
-            Guna2ComboBox fontCombo = AddPropertyComboBox(panel, FontFamily, yPosition,
-                ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana"],
+            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
+                             "Tahoma", "Georgia", "Courier New", "Consolas"];
+            Guna2ComboBox fontCombo = AddPropertyComboBox(panel, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    FontFamily = value;
-                    onPropertyChanged();
+                    if (FontFamily != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontFamily),
+                            FontFamily,
+                            value,
+                            onPropertyChanged));
+                        FontFamily = value;
+                        onPropertyChanged();
+                    }
                 });
             CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
             AddPropertyLabel(panel, "Font Size:", yPosition);
-            Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition, value =>
-            {
-                FontSize = (float)value;
-                onPropertyChanged();
-            }, 6, 14);
+            Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition,
+                value =>
+                {
+                    float newFontSize = (float)value;
+                    if (Math.Abs(FontSize - newFontSize) > 0.01f)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(FontSize),
+                            FontSize,
+                            newFontSize,
+                            onPropertyChanged));
+                        FontSize = newFontSize;
+                        onPropertyChanged();
+                    }
+                }, 6, 14);
             fontSizeNumeric.Left = 150;
             CacheControl("FontSize", fontSizeNumeric, () => fontSizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Row Height
             AddPropertyLabel(panel, "Row Height:", yPosition);
-            Guna2NumericUpDown rowHeightNumeric = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition, value =>
-            {
-                DataRowHeight = (int)value;
-                onPropertyChanged();
-            }, 15, 50);
+            Guna2NumericUpDown rowHeightNumeric = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition,
+                value =>
+                {
+                    int newRowHeight = (int)value;
+                    if (DataRowHeight != newRowHeight)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(DataRowHeight),
+                            DataRowHeight,
+                            newRowHeight,
+                            onPropertyChanged));
+                        DataRowHeight = newRowHeight;
+                        onPropertyChanged();
+                    }
+                }, 15, 50);
             rowHeightNumeric.Left = 150;
             CacheControl("DataRowHeight", rowHeightNumeric, () => rowHeightNumeric.Value = DataRowHeight);
             yPosition += ControlRowHeight;
 
             // Header Row Height
             AddPropertyLabel(panel, "Header Height:", yPosition);
-            Guna2NumericUpDown headerHeightNumeric = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition, value =>
-            {
-                HeaderRowHeight = (int)value;
-                onPropertyChanged();
-            }, 20, 60);
+            Guna2NumericUpDown headerHeightNumeric = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition,
+                value =>
+                {
+                    int newHeaderHeight = (int)value;
+                    if (HeaderRowHeight != newHeaderHeight)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(HeaderRowHeight),
+                            HeaderRowHeight,
+                            newHeaderHeight,
+                            onPropertyChanged));
+                        HeaderRowHeight = newHeaderHeight;
+                        onPropertyChanged();
+                    }
+                }, 20, 60);
             headerHeightNumeric.Left = 150;
             CacheControl("HeaderRowHeight", headerHeightNumeric, () => headerHeightNumeric.Value = HeaderRowHeight);
             yPosition += ControlRowHeight;
 
             // Cell Padding
             AddPropertyLabel(panel, "Cell Padding:", yPosition);
-            Guna2NumericUpDown cellPaddingNumeric = AddPropertyNumericUpDown(panel, CellPadding, yPosition, value =>
-            {
-                CellPadding = (int)value;
-                onPropertyChanged();
-            }, 0, 20);
+            Guna2NumericUpDown cellPaddingNumeric = AddPropertyNumericUpDown(panel, CellPadding, yPosition,
+                value =>
+                {
+                    int newPadding = (int)value;
+                    if (CellPadding != newPadding)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(CellPadding),
+                            CellPadding,
+                            newPadding,
+                            onPropertyChanged));
+                        CellPadding = newPadding;
+                        onPropertyChanged();
+                    }
+                }, 0, 20);
             cellPaddingNumeric.Left = 150;
             CacheControl("CellPadding", cellPaddingNumeric, () => cellPaddingNumeric.Value = CellPadding);
             yPosition += ControlRowHeight;
 
             // Header Background Color
             AddPropertyLabel(panel, "Header BG:", yPosition);
-            Panel headerBgPicker = AddColorPicker(panel, yPosition, 150, HeaderBackgroundColor, color =>
-            {
-                HeaderBackgroundColor = color;
-                onPropertyChanged();
-            }, false);
+            Panel headerBgPicker = AddColorPicker(panel, yPosition, 150, HeaderBackgroundColor,
+                color =>
+                {
+                    if (HeaderBackgroundColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(HeaderBackgroundColor),
+                            HeaderBackgroundColor,
+                            color,
+                            onPropertyChanged));
+                        HeaderBackgroundColor = color;
+                        onPropertyChanged();
+                    }
+                }, false);
             CacheControl("HeaderBackgroundColor", headerBgPicker, () => headerBgPicker.BackColor = HeaderBackgroundColor);
             yPosition += ControlRowHeight;
 
             // Header Text Color
             AddPropertyLabel(panel, "Header Text:", yPosition);
-            Panel headerTextPicker = AddColorPicker(panel, yPosition, 150, HeaderTextColor, color =>
-            {
-                HeaderTextColor = color;
-                onPropertyChanged();
-            }, false);
+            Panel headerTextPicker = AddColorPicker(panel, yPosition, 150, HeaderTextColor,
+                color =>
+                {
+                    if (HeaderTextColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(HeaderTextColor),
+                            HeaderTextColor,
+                            color,
+                            onPropertyChanged));
+                        HeaderTextColor = color;
+                        onPropertyChanged();
+                    }
+                }, false);
             CacheControl("HeaderTextColor", headerTextPicker, () => headerTextPicker.BackColor = HeaderTextColor);
             yPosition += ControlRowHeight;
 
             // Data Row Text Color
             AddPropertyLabel(panel, "Row Text:", yPosition);
-            Panel rowTextPicker = AddColorPicker(panel, yPosition, 150, DataRowTextColor, color =>
-            {
-                DataRowTextColor = color;
-                onPropertyChanged();
-            }, false);
+            Panel rowTextPicker = AddColorPicker(panel, yPosition, 150, DataRowTextColor,
+                color =>
+                {
+                    if (DataRowTextColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(DataRowTextColor),
+                            DataRowTextColor,
+                            color,
+                            onPropertyChanged));
+                        DataRowTextColor = color;
+                        onPropertyChanged();
+                    }
+                }, false);
             CacheControl("DataRowTextColor", rowTextPicker, () => rowTextPicker.BackColor = DataRowTextColor);
             yPosition += ControlRowHeight;
 
             // Grid Line Color
             AddPropertyLabel(panel, "Grid Lines:", yPosition);
-            Panel gridLinePicker = AddColorPicker(panel, yPosition, 150, GridLineColor, color =>
-            {
-                GridLineColor = color;
-                onPropertyChanged();
-            }, false);
+            Panel gridLinePicker = AddColorPicker(panel, yPosition, 150, GridLineColor,
+                color =>
+                {
+                    if (GridLineColor.ToArgb() != color.ToArgb())
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(GridLineColor),
+                            GridLineColor,
+                            color,
+                            onPropertyChanged));
+                        GridLineColor = color;
+                        onPropertyChanged();
+                    }
+                }, false);
             CacheControl("GridLineColor", gridLinePicker, () => gridLinePicker.BackColor = GridLineColor);
             yPosition += ControlRowHeight;
 
             // Display option checkboxes
             Guna2CustomCheckBox headersCheck = AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
-                value => { ShowHeaders = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowHeaders != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowHeaders),
+                            ShowHeaders,
+                            value,
+                            onPropertyChanged));
+                        ShowHeaders = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowHeaders", headersCheck, () => headersCheck.Checked = ShowHeaders);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox alternateCheck = AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
-                value => { AlternateRowColors = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (AlternateRowColors != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(AlternateRowColors),
+                            AlternateRowColors,
+                            value,
+                            onPropertyChanged));
+                        AlternateRowColors = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("AlternateRowColors", alternateCheck, () => alternateCheck.Checked = AlternateRowColors);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox gridCheck = AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
-                value => { ShowGridLines = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowGridLines != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowGridLines),
+                            ShowGridLines,
+                            value,
+                            onPropertyChanged));
+                        ShowGridLines = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowGridLines", gridCheck, () => gridCheck.Checked = ShowGridLines);
         }
+
         private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
+            // Get undo manager
+            UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+
             // Add column visibility checkboxes
             Guna2CustomCheckBox dateCheck = AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
-                value => { ShowDateColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowDateColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowDateColumn),
+                            ShowDateColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowDateColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowDateColumn", dateCheck, () => dateCheck.Checked = ShowDateColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox idCheck = AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
-                value => { ShowTransactionIdColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowTransactionIdColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTransactionIdColumn),
+                            ShowTransactionIdColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowTransactionIdColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowTransactionIdColumn", idCheck, () => idCheck.Checked = ShowTransactionIdColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox customerCheck = AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
-                value => { ShowCustomerSupplierColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowCustomerSupplierColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowCustomerSupplierColumn),
+                            ShowCustomerSupplierColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowCustomerSupplierColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowCustomerSupplierColumn", customerCheck, () => customerCheck.Checked = ShowCustomerSupplierColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox productCheck = AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
-                value => { ShowProductColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowProductColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowProductColumn),
+                            ShowProductColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowProductColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowProductColumn", productCheck, () => productCheck.Checked = ShowProductColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox quantityCheck = AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
-                value => { ShowQuantityColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowQuantityColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowQuantityColumn),
+                            ShowQuantityColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowQuantityColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowQuantityColumn", quantityCheck, () => quantityCheck.Checked = ShowQuantityColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox unitPriceCheck = AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
-                value => { ShowUnitPriceColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowUnitPriceColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowUnitPriceColumn),
+                            ShowUnitPriceColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowUnitPriceColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowUnitPriceColumn", unitPriceCheck, () => unitPriceCheck.Checked = ShowUnitPriceColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox totalCheck = AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
-                value => { ShowTotalColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowTotalColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowTotalColumn),
+                            ShowTotalColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowTotalColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowTotalColumn", totalCheck, () => totalCheck.Checked = ShowTotalColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox statusCheck = AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
-                value => { ShowStatusColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowStatusColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowStatusColumn),
+                            ShowStatusColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowStatusColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowStatusColumn", statusCheck, () => statusCheck.Checked = ShowStatusColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox accountantCheck = AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
-                value => { ShowAccountantColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowAccountantColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowAccountantColumn),
+                            ShowAccountantColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowAccountantColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowAccountantColumn", accountantCheck, () => accountantCheck.Checked = ShowAccountantColumn);
             yPosition += CheckBoxRowHeight;
 
             Guna2CustomCheckBox shippingCheck = AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
-                value => { ShowShippingColumn = value; onPropertyChanged(); });
+                value =>
+                {
+                    if (ShowShippingColumn != value)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(ShowShippingColumn),
+                            ShowShippingColumn,
+                            value,
+                            onPropertyChanged));
+                        ShowShippingColumn = value;
+                        onPropertyChanged();
+                    }
+                });
             CacheControl("ShowShippingColumn", shippingCheck, () => shippingCheck.Checked = ShowShippingColumn);
         }
 

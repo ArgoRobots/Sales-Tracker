@@ -648,7 +648,7 @@
             AddLabelElement_Button.Size = new Size(304, 40);
             AddLabelElement_Button.TabIndex = 3;
             AddLabelElement_Button.Text = "Add label element";
-            AddLabelElement_Button.Click += AddTextElement_Button_Click;
+            AddLabelElement_Button.Click += AddLabelElement_Button_Click;
             // 
             // AddChartElement_Button
             // 

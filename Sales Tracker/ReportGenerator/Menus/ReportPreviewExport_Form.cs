@@ -63,12 +63,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ExportFormat_ComboBox.Items.Add("PDF Image (*.pdf)");
             ExportFormat_ComboBox.SelectedIndex = 0;
 
-            // Setup quality slider (controls both resolution and compression)
+            // Setup quality slider
             Quality_TrackBar.Value = _exportSettings.Quality;
             UpdateQualityLabel();
-
-            // Setup checkboxes
-            OpenAfterExport_CheckBox.Checked = _exportSettings.OpenAfterExport;
         }
         private void StoreInitialSizes()
         {
@@ -110,6 +107,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Position the right panel
             RightSettings_Panel.Left = LeftPreview_Panel.Width;
+        }
+        private void ReportPreviewExport_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _zoomableViewer?.Dispose();
         }
 
         // Event handlers
@@ -166,6 +167,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void Quality_TrackBar_ValueChanged(object sender, EventArgs e)
         {
             UpdateQualityLabel();
+            ExportSettings_Changed(sender, e);
         }
         private void ExportSettings_Changed(object sender, EventArgs e)
         {
@@ -308,21 +310,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     ReportRenderer renderer = new(ReportConfig, _exportSettings);
                     renderer.ExportReport();
 
-                    CustomMessageBox.Show(
-                        "Export Complete",
-                        "Report exported successfully!",
-                        CustomMessageBoxIcon.Info,
-                        CustomMessageBoxButtons.Ok
-                    );
-
                     // Open file if option is set
-                    if (_exportSettings.OpenAfterExport && File.Exists(_exportSettings.FilePath))
+                    if (OpenAfterExport_CheckBox.Checked && File.Exists(_exportSettings.FilePath))
                     {
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = _exportSettings.FilePath,
                             UseShellExecute = true
                         });
+                    }
+                    else
+                    {
+                        CustomMessageBox.Show(
+                            "Export Complete",
+                            "Report exported successfully!",
+                            CustomMessageBoxIcon.Info,
+                            CustomMessageBoxButtons.Ok
+                        );
                     }
 
                     return true;
@@ -354,33 +358,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _ => ExportFormat.PNG
             };
 
-            // Map quality slider to both DPI and compression quality
-            int quality = Quality_TrackBar.Value;
-            _exportSettings.DPI = GetDPIFromQuality(quality);
-            _exportSettings.Quality = quality;  // JPEG compression quality
-
-            _exportSettings.OpenAfterExport = OpenAfterExport_CheckBox.Checked;
-        }
-
-        /// <summary>
-        /// Maps quality percentage to appropriate DPI value.
-        /// </summary>
-        private static int GetDPIFromQuality(int quality)
-        {
-            return quality switch
-            {
-                <= 10 => 72,   // Very low
-                <= 20 => 96,   // Low
-                <= 30 => 120,  // Low-medium
-                <= 40 => 150,  // Medium
-                <= 50 => 180,  // Medium-high
-                <= 60 => 200,  // High
-                <= 70 => 250,  // High quality print
-                <= 80 => 300,  // Professional print
-                <= 90 => 400,  // Very high quality
-                <= 95 => 500,  // Exceptional quality
-                _ => 600       // Maximum quality
-            };
+            _exportSettings.Quality = Quality_TrackBar.Value;
         }
 
         // Helper methods

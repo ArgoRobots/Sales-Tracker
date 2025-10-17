@@ -36,7 +36,7 @@
     <PackageReference Include="EPPlus" Version="8.2.1" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.71.0.3905" />
-    <PackageReference Include="Google.Apis.Iam.v1" Version="1.71.0.3920" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.72.0.3928" />
     <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.71.0.3914" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.70.0.3819" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
@@ -44,11 +44,12 @@
     <PackageReference Include="NetSparkleUpdater.SparkleUpdater" Version="3.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
-    <PackageReference Include="SharpCompress" Version="0.40.0" />
-    <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.119.1" />
+    <PackageReference Include="SharpCompress" Version="0.41.0" />
+    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="3.119.2-preview.1" />
+    <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.119.2-preview.1" />
     <PackageReference Include="Svg.Skia" Version="3.2.1" />
-    <PackageReference Include="System.Formats.Asn1" Version="10.0.0-rc.1.25451.107" />
-    <PackageReference Include="System.IO.Packaging" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.0-rc.2.25502.107" />
+    <PackageReference Include="System.IO.Packaging" Version="10.0.0-rc.2.25502.107" />
   </ItemGroup>
 
   <ItemGroup>

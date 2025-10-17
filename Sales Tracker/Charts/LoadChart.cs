@@ -68,7 +68,7 @@ namespace Sales_Tracker.Charts
         public static void ConfigurePieChart(PieChart chart)
         {
             ClearChart(chart);
-            chart.Legend = new CustomLegend();
+            chart.Legend = new CustomLegend(false, 20);
 
             SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
 
@@ -122,7 +122,7 @@ namespace Sales_Tracker.Charts
             ShowGeoMapOverlay(geoMap);
         }
 
-        // This is a temporary workaround for the GeoMap not being cleared. It adds an panel over the GeoMap when there's no data.
+        // This is a temporary workaround for the GeoMap not being cleared. It adds a panel over the GeoMap when there's no data.
         private static Panel _geoMapOverlay;
         private static void ShowGeoMapOverlay(GeoMap geoMap)
         {
