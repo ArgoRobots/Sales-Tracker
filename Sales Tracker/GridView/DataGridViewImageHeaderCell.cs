@@ -117,8 +117,9 @@
 
                 if (imgBounds.Contains(clickLocation))
                 {
+                    string translatedMessage = Language.LanguageManager.TranslateString(_messageBoxText);
                     CustomMessageBox.Show(
-                        "Argo Sales Tracker", _messageBoxText,
+                        "Argo Sales Tracker", translatedMessage,
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
