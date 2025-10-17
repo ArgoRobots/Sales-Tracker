@@ -8,6 +8,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class LabelElement : BaseElement
     {
+        // Properties
         public string Text { get; set; } = "Sample Text";
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 12f;
@@ -16,6 +17,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment Alignment { get; set; } = StringAlignment.Center;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
+        // Overrides
+        public override string DisplayName => "Label";
         public override ReportElementType GetElementType() => ReportElementType.Label;
         public override BaseElement Clone()
         {

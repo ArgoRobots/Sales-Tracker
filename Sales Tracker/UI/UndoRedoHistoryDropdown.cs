@@ -12,7 +12,7 @@ namespace Sales_Tracker.UI
         // Constants
         private const int ITEM_HEIGHT = 30;
         private const int MAX_VISIBLE_ITEMS = 10;
-        private const int PANEL_WIDTH = 350;
+        private const int PANEL_WIDTH = 300;
         private const int PANEL_PADDING = 5;
         private const int LABEL_HEIGHT = 35;
 

@@ -1566,7 +1566,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 g.DrawRectangle(pen, element.Bounds);
             }
         }
-        private void ClearAllSelections()
+        public void ClearAllSelections()
         {
             foreach (BaseElement element in _selectedElements)
             {

@@ -91,6 +91,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             public TransactionType Type { get; set; }
         }
 
+        // Overrides
+        public override string DisplayName => "Transaction Table";
         public override ReportElementType GetElementType() => ReportElementType.TransactionTable;
         public override BaseElement Clone()
         {

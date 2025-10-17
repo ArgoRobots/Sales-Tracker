@@ -9,6 +9,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class SummaryElement : BaseElement
     {
+        // Properties
         public TransactionType TransactionType { get; set; } = TransactionType.Both;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
@@ -34,6 +35,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             public decimal GrowthRate { get; set; }
         }
 
+        // Overrides
+        public override string DisplayName => "Summary";
         public override ReportElementType GetElementType() => ReportElementType.Summary;
         public override BaseElement Clone()
         {

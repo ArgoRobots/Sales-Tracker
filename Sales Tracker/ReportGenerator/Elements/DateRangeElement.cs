@@ -8,6 +8,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class DateRangeElement : BaseElement
     {
+        // Properties
         public string DateFormat { get; set; } = "yyyy-MM-dd";
         public Color TextColor { get; set; } = Color.Gray;
         public float FontSize { get; set; } = 10f;
@@ -16,6 +17,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment Alignment { get; set; } = StringAlignment.Near;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
+        // Overrides
+        public override string DisplayName => "Date Range";
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()
         {

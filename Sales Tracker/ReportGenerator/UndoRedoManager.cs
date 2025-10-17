@@ -80,6 +80,9 @@ namespace Sales_Tracker.ReportGenerator
             _isExecutingUndoRedo = true;
             try
             {
+                // Clear selections before undoing
+                ReportLayoutDesigner_Form.Instance.ClearAllSelections();
+
                 IUndoableAction action = _undoStack.Pop();
                 action.Undo();
                 _redoStack.Push(action);
@@ -101,6 +104,9 @@ namespace Sales_Tracker.ReportGenerator
             _isExecutingUndoRedo = true;
             try
             {
+                // Clear selections before redoing
+                ReportLayoutDesigner_Form.Instance.ClearAllSelections();
+
                 IUndoableAction action = _redoStack.Pop();
                 action.Redo();
                 _undoStack.Push(action);
@@ -163,7 +169,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly ReportConfiguration _reportConfig = reportConfig;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Add {_element.GetType().Name}";
+        public string Description => $"Add {_element.DisplayName}";
 
         public void Undo()
         {
@@ -187,7 +193,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly int _originalIndex = reportConfig.Elements.IndexOf(element);
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Remove {_element.GetType().Name}";
+        public string Description => $"Remove {_element.DisplayName}";
 
         public void Undo()
         {
@@ -267,7 +273,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly Rectangle _newBounds = newBounds;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Resize {_element.GetType().Name}";
+        public string Description => $"Resize {_element.DisplayName}";
 
         public void Undo()
         {

@@ -13,6 +13,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
     {
         // Properties
         /// <summary>
+        /// Gets the user-friendly display name for this element type.
+        /// </summary>
+        public abstract string DisplayName { get; }
+
+        /// <summary>
         /// Unique identifier for the element.
         /// </summary>
         public string Id { get; set; } = Guid.NewGuid().ToString();
