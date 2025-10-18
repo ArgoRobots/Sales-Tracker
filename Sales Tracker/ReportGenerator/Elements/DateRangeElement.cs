@@ -260,7 +260,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Horizontal Alignment
             AddPropertyLabel(container, "H-Align:", yPosition);
             string[] hAlignmentOptions = ["Near", "Center", "Far"];
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
+            Guna2ComboBox hAlignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
                 value =>
                 {
                     StringAlignment newAlignment = Enum.Parse<StringAlignment>(value);
@@ -276,7 +276,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
-            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = Alignment.ToString());
+            hAlignCombo.Left += 10;  // Adjust for label width
+            CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
@@ -298,6 +299,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
             yPosition += ControlRowHeight;
 

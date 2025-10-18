@@ -434,6 +434,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         {
                             SelectElement(clickedElement);
                         }
+
                         _isDragging = true;
                         _dragStartPoint = pageLocation;
 
