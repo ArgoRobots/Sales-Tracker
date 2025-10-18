@@ -317,7 +317,7 @@
             Help_Button.ForeColor = Color.White;
             Help_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
             Help_Button.Image = Properties.Resources.HelpGray;
-            Help_Button.ImageSize = new Size(32, 32);
+            Help_Button.ImageSize = new Size(30, 30);
             Help_Button.Location = new Point(2359, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
@@ -340,7 +340,7 @@
             Save_Button.ForeColor = Color.White;
             Save_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
             Save_Button.Image = Properties.Resources.SaveGray;
-            Save_Button.ImageSize = new Size(27, 27);
+            Save_Button.ImageSize = new Size(25, 25);
             Save_Button.Location = new Point(63, 0);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;

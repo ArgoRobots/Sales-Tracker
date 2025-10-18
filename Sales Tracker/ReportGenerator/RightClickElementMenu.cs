@@ -19,7 +19,7 @@ namespace Sales_Tracker.ReportGenerator
         private static Guna2Button SendToBack_Button;
 
         // Constructor
-        public static void ConstructRightClickElementMenu()
+        public static void Construct()
         {
             float scale = DpiHelper.GetRelativeDpiScale();
             int scaledButtonHeight = (int)(CustomControls.PanelButtonHeight * scale);
@@ -93,7 +93,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (Panel == null)
             {
-                ConstructRightClickElementMenu();
+                Construct();
             }
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)Panel.Controls[0];

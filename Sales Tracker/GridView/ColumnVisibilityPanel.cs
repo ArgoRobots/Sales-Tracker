@@ -24,7 +24,7 @@ namespace Sales_Tracker.GridView
         public static Guna2Panel Panel { get; private set; }
 
         // Init.
-        public static void ConstructPanel()
+        public static void Construct()
         {
             Panel = new Guna2Panel()
             {

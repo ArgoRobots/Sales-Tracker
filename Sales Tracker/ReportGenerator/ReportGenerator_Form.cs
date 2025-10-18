@@ -51,7 +51,7 @@ namespace Sales_Tracker.ReportGenerator
             SetAccessibleDescriptions();
             AnimateButtons();
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel, UndoRedoHistoryDropdown.Panel);
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -94,6 +94,11 @@ namespace Sales_Tracker.ReportGenerator
 
             if (ThemeManager.IsDarkTheme())
             {
+                form.Undo_Button.Image = Resources.UndoWhite;
+                form.UndoDropdown_Button.Image = Resources.DropDownWhite;
+                form.Redo_Button.Image = Resources.RedoWhite;
+                form.RedoDropdown_Button.Image = Resources.DropDownWhite;
+
                 form.AlignLeft_Button.Image = Resources.ALignLeftWhite;
                 form.AlignCenter_Button.Image = Resources.AlignCenterWhite;
                 form.AlignRight_Button.Image = Resources.AlignRightWhite;
@@ -111,6 +116,11 @@ namespace Sales_Tracker.ReportGenerator
             }
             else
             {
+                form.Undo_Button.Image = Resources.UndoBlack;
+                form.UndoDropdown_Button.Image = Resources.DropDownBlack;
+                form.Redo_Button.Image = Resources.RedoBlack;
+                form.RedoDropdown_Button.Image = Resources.DropDownBlack;
+
                 form.AlignLeft_Button.Image = Resources.ALignLeftBlack;
                 form.AlignCenter_Button.Image = Resources.AlignCenterBlack;
                 form.AlignRight_Button.Image = Resources.AlignRightBlack;
@@ -306,6 +316,7 @@ namespace Sales_Tracker.ReportGenerator
         private static void ClosePanels()
         {
             RightClickElementMenu.Hide();
+            UndoRedoHistoryDropdown.Remove();
         }
     }
 }

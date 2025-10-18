@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.ReportGenerator.Menus;
+using System.Text;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ReportGenerator
@@ -15,6 +16,16 @@ namespace Sales_Tracker.ReportGenerator
         private bool _isExecutingUndoRedo = false;
 
         public event EventHandler StateChanged;
+
+        /// <summary>
+        /// Gets the count of actions in the undo stack.
+        /// </summary>
+        public int UndoCount => _undoStack.Count;
+
+        /// <summary>
+        /// Gets the count of actions in the redo stack.
+        /// </summary>
+        public int RedoCount => _redoStack.Count;
 
         /// <summary>
         /// Gets whether an undo operation can be performed.
@@ -70,6 +81,9 @@ namespace Sales_Tracker.ReportGenerator
             _isExecutingUndoRedo = true;
             try
             {
+                // Clear selections before undoing
+                ReportLayoutDesigner_Form.Instance.ClearAllSelections();
+
                 IUndoableAction action = _undoStack.Pop();
                 action.Undo();
                 _redoStack.Push(action);
@@ -91,6 +105,9 @@ namespace Sales_Tracker.ReportGenerator
             _isExecutingUndoRedo = true;
             try
             {
+                // Clear selections before redoing
+                ReportLayoutDesigner_Form.Instance.ClearAllSelections();
+
                 IUndoableAction action = _redoStack.Pop();
                 action.Redo();
                 _undoStack.Push(action);
@@ -110,6 +127,22 @@ namespace Sales_Tracker.ReportGenerator
             _undoStack.Clear();
             _redoStack.Clear();
             OnStateChanged();
+        }
+
+        /// <summary>
+        /// Gets descriptions of all actions in the undo stack (most recent first).
+        /// </summary>
+        public string[] GetUndoDescriptions()
+        {
+            return _undoStack.Select(action => action.Description).ToArray();
+        }
+
+        /// <summary>
+        /// Gets descriptions of all actions in the redo stack (next to redo first).
+        /// </summary>
+        public string[] GetRedoDescriptions()
+        {
+            return _redoStack.Select(action => action.Description).ToArray();
         }
 
         protected virtual void OnStateChanged()
@@ -137,7 +170,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly ReportConfiguration _reportConfig = reportConfig;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Add {_element.GetType().Name}";
+        public string Description => $"Add {_element.DisplayName}";
 
         public void Undo()
         {
@@ -161,7 +194,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly int _originalIndex = reportConfig.Elements.IndexOf(element);
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Remove {_element.GetType().Name}";
+        public string Description => $"Remove {_element.DisplayName}";
 
         public void Undo()
         {
@@ -241,7 +274,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly Rectangle _newBounds = newBounds;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Resize {_element.GetType().Name}";
+        public string Description => $"Resize {_element.DisplayName}";
 
         public void Undo()
         {
@@ -266,7 +299,29 @@ namespace Sales_Tracker.ReportGenerator
         private readonly object _newValue = newValue;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Change {_propertyName}";
+        public string Description => $"Change {FormatPropertyName(_propertyName)}";
+
+        private static string FormatPropertyName(string propertyName)
+        {
+            // Convert PascalCase to lowercase with spaces
+            // Example: "FontSize" -> "font size", "ShowLegend" -> "show legend"
+            StringBuilder result = new();
+
+            for (int i = 0; i < propertyName.Length; i++)
+            {
+                char c = propertyName[i];
+
+                // Add space before capital letters (except first character)
+                if (i > 0 && char.IsUpper(c))
+                {
+                    result.Append(' ');
+                }
+
+                result.Append(char.ToLower(c));
+            }
+
+            return result.ToString();
+        }
 
         public void Undo()
         {
@@ -326,11 +381,11 @@ namespace Sales_Tracker.ReportGenerator
             {
                 UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
                 undoRedoManager?.RecordAction(new PropertyChangeAction(
-                        _element,
-                        _propertyName,
-                        _pendingOldValue,
-                        _pendingNewValue,
-                        _onPropertyChanged));
+                    _element,
+                    _propertyName,
+                    _pendingOldValue,
+                    _pendingNewValue,
+                    _onPropertyChanged));
 
                 _pendingOldValue = null;
                 _pendingNewValue = null;

@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -38,6 +37,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// </summary>
         private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
+        // Undo and redo properties
+        public UndoRedoManager UndoHistoryDropdown { get; private set; }
+        public UndoRedoManager RedoHistoryDropdown { get; private set; }
+
         // Resize handle enumeration
         private enum ResizeHandle
         {
@@ -59,14 +62,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             SetupCanvas();
             StoreInitialSizes();
+            InitializeUndoRedoButtons();
             SetToolTips();
             UpdateLayoutButtonStates();
             OnPageSettingsChanged();
             InitializeResizeDebounceTimer();
             ScaleControls();
-
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
-            Application.AddMessageFilter(panelCloseFilter);
         }
         private void SetupCanvas()
         {
@@ -97,8 +98,28 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _initialLeftPanelWidth = LeftTools_Panel.Width;
             _initialRightPanelWidth = RightCanvas_Panel.Width;
         }
+        private void InitializeUndoRedoButtons()
+        {
+            // Create the dropdown panels
+            UndoHistoryDropdown = new UndoRedoManager();
+            RedoHistoryDropdown = new UndoRedoManager();
+
+            // Subscribe to state changes to update button states
+            _undoRedoManager.StateChanged += (s, e) =>
+            {
+                UpdateUndoRedoButtonStates();
+            };
+
+            // Set initial button states
+            UpdateUndoRedoButtonStates();
+        }
         private void SetToolTips()
         {
+            CustomTooltip.SetToolTip(Undo_Button, "", "Undo (Ctrl+Z)");
+            CustomTooltip.SetToolTip(UndoDropdown_Button, "", "Undo history");
+            CustomTooltip.SetToolTip(Redo_Button, "", "Redo (Ctrl+Y)");
+            CustomTooltip.SetToolTip(RedoDropdown_Button, "", "Redo history");
+
             CustomTooltip.SetToolTip(AlignLeft_Button, "", "Align left");
             CustomTooltip.SetToolTip(AlignCenter_Button, "", "Align center");
             CustomTooltip.SetToolTip(AlignRight_Button, "", "Align right");
@@ -868,6 +889,105 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Canvas_Panel.Location = new Point(centerX, centerY);
         }
 
+        // Undo and redo button event handlers
+        private void Undo_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.CanUndo)
+            {
+                _undoRedoManager.Undo();
+                Canvas_Panel.Invalidate();
+                UpdatePropertyValues();
+            }
+        }
+        private void Redo_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.CanRedo)
+            {
+                _undoRedoManager.Redo();
+                Canvas_Panel.Invalidate();
+                UpdatePropertyValues();
+            }
+        }
+        private void UndoDropdown_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.UndoCount > 0)
+            {
+                // Toggle undo dropdown
+                if (Controls.Contains(UndoRedoHistoryDropdown.Panel))
+                {
+                    UndoRedoHistoryDropdown.Remove();
+                }
+                else
+                {
+                    // Calculate dropdown position (below the button, aligned with main undo button)
+                    Point dropdownLocation = new(
+                        RightCanvas_Panel.Left + Undo_Button.Left,
+                        Undo_Button.Bottom + 2
+                    );
+
+                    UndoRedoHistoryDropdown.Show(this, dropdownLocation, _undoRedoManager, true, OnHistoryActionPerformed);
+                }
+            }
+        }
+        private void RedoDropdown_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.RedoCount > 0)
+            {
+                // Toggle redo dropdown
+                if (Controls.Contains(UndoRedoHistoryDropdown.Panel))
+                {
+                    UndoRedoHistoryDropdown.Remove();
+                }
+                else
+                {
+                    // Calculate dropdown position (below the button, aligned with main redo button)
+                    Point dropdownLocation = new(
+                        RightCanvas_Panel.Left + Redo_Button.Left,
+                        Redo_Button.Bottom + 2
+                    );
+
+                    UndoRedoHistoryDropdown.Show(this, dropdownLocation, _undoRedoManager, false, OnHistoryActionPerformed);
+                }
+            }
+        }
+
+        // Update undo and redo button states
+        private void UpdateUndoRedoButtonStates()
+        {
+            // Update Undo buttons
+            bool canUndo = _undoRedoManager.CanUndo;
+            Undo_Button.Enabled = canUndo;
+            UndoDropdown_Button.Enabled = canUndo;
+
+            if (canUndo)
+            {
+                CustomTooltip.SetToolTip(Undo_Button, "", $"Undo: {_undoRedoManager.UndoDescription} (Ctrl+Z)");
+            }
+            else
+            {
+                CustomTooltip.SetToolTip(Undo_Button, "", "Undo (Ctrl+Z)");
+            }
+
+            // Update Redo buttons
+            bool canRedo = _undoRedoManager.CanRedo;
+            Redo_Button.Enabled = canRedo;
+            RedoDropdown_Button.Enabled = canRedo;
+
+            if (canRedo)
+            {
+                CustomTooltip.SetToolTip(Redo_Button, "", $"Redo: {_undoRedoManager.RedoDescription} (Ctrl+Y)");
+            }
+            else
+            {
+                CustomTooltip.SetToolTip(Redo_Button, "", "Redo (Ctrl+Y)");
+            }
+        }
+        private void OnHistoryActionPerformed()
+        {
+            Canvas_Panel.Invalidate();
+            UpdatePropertyValues();
+        }
+
         // Move element method
         /// <summary>
         /// Moves all selected elements by the specified delta.
@@ -923,8 +1043,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdatePropertyValues();
             NotifyParentValidationChanged();
         }
-
-        // Move with undo support
         private void MoveSelectedElementsWithUndo(int deltaX, int deltaY)
         {
             if (_selectedElements.Count > 0)
@@ -983,7 +1101,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Left",
+                "left",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1010,7 +1128,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Center",
+                "center",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1033,7 +1151,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Right",
+                "right",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1056,7 +1174,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Top",
+                "top",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1083,7 +1201,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Middle",
+                "middle",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1106,7 +1224,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Bottom",
+                "bottom",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1143,7 +1261,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Horizontally",
+                "horizontally",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1180,7 +1298,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Vertically",
+                "vertically",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1202,7 +1320,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Width", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "width", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -1222,7 +1340,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Height", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "height", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -1242,7 +1360,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Size", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "size", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -1448,7 +1566,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 g.DrawRectangle(pen, element.Bounds);
             }
         }
-        private void ClearAllSelections()
+        public void ClearAllSelections()
         {
             foreach (BaseElement element in _selectedElements)
             {
@@ -1930,7 +2048,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (ReportConfig == null) { return; }
 
             List<BaseElement> duplicates = [];
-            CompositeAction composite = new("Duplicate elements");
+
+            string description = _selectedElements.Count > 1
+                ? $"duplicate {_selectedElements.Count} elements"
+                : "duplicate element";
+            CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
             {
@@ -2003,7 +2125,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Create undo actions
-            CompositeAction composite = new($"Delete {elementsToDelete.Count} elements");
+            string description = elementsToDelete.Count == 1
+                ? "Delete element"
+                : $"Delete {elementsToDelete.Count} elements";
+            CompositeAction composite = new(description);
 
             // Delete all selected elements
             foreach (BaseElement element in elementsToDelete)
@@ -2053,12 +2178,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static void NotifyParentValidationChanged()
         {
             ReportGenerator_Form.Instance.OnChildFormValidationChanged();
-        }
-
-        // Other methods
-        private static void ClosePanels()
-        {
-            RightClickElementMenu.Hide();
         }
     }
 }
