@@ -22,26 +22,96 @@ namespace Sales_Tracker.ReportGenerator.Elements
     {
         private static readonly Dictionary<MainMenu_Form.ChartDataType, (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)> _lastLoadedConfig = [];
 
-        // Private properties
+        // Private backing fields
         private Control _chartControl;
         private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalSales;
+        private bool _showLegend = true;
+        private bool _showTitle = true;
+        private Color _borderColor = Color.Gray;
+        private int _borderThickness = 1;
+        private string _fontFamily = "Segoe UI";
+        private float _titleFontSize = 12f;
+        private float _legendFontSize = 11f;
 
-        // Public properties
+        // Bitmap cache fields
+        private Bitmap _cachedBitmap;
+        private Size _cachedSize;
+        private (DateTime? StartDate, DateTime? EndDate, bool IncludeReturns, bool IncludeLosses)? _cachedConfig;
+        private float _cachedRenderScale;
+
+        // Public properties with cache invalidation
         public MainMenu_Form.ChartDataType ChartType
         {
             get => _chartType;
             set
             {
-                _chartType = value;
+                if (_chartType != value)
+                {
+                    _chartType = value;
+                    InvalidateCache();
+                }
             }
         }
-        public bool ShowLegend { get; set; } = true;
-        public bool ShowTitle { get; set; } = true;
-        public Color BorderColor { get; set; } = Color.Gray;
-        public int BorderThickness { get; set; } = 1;
-        public string FontFamily { get; set; } = "Segoe UI";
-        public float TitleFontSize { get; set; } = 12f;
-        public float LegendFontSize { get; set; } = 11f;
+        public bool ShowLegend
+        {
+            get => _showLegend;
+            set
+            {
+                if (_showLegend != value)
+                {
+                    _showLegend = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public bool ShowTitle
+        {
+            get => _showTitle;
+            set
+            {
+                if (_showTitle != value)
+                {
+                    _showTitle = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public string FontFamily
+        {
+            get => _fontFamily;
+            set
+            {
+                if (_fontFamily != value)
+                {
+                    _fontFamily = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public float TitleFontSize
+        {
+            get => _titleFontSize;
+            set
+            {
+                if (Math.Abs(_titleFontSize - value) > 0.01f)
+                {
+                    _titleFontSize = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public float LegendFontSize
+        {
+            get => _legendFontSize;
+            set
+            {
+                if (Math.Abs(_legendFontSize - value) > 0.01f)
+                {
+                    _legendFontSize = value;
+                    InvalidateCache();
+                }
+            }
+        }
 
         // Overrides
         public override string DisplayName => "chart";
@@ -58,8 +128,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
                 ShowTitle = ShowTitle,
-                BorderColor = BorderColor,
-                BorderThickness = BorderThickness,
+                _borderColor = _borderColor,
+                _borderThickness = _borderThickness,
                 FontFamily = FontFamily,
                 TitleFontSize = TitleFontSize
             };
@@ -68,126 +138,96 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             try
             {
-                // Check if configuration has changed and reload if necessary
-                bool needsReload = ShouldReloadChart(ChartType, config);
-
-                if (_chartControl == null || needsReload)
-                {
-                    // Dispose of old control if reloading
-                    if (_chartControl != null && needsReload)
-                    {
-                        _chartControl.Dispose();
-                        _chartControl = null;
-                    }
-
-                    LoadChartData(ChartType, config);
-                }
-
-                // Generate server-side image with quality scaling
-                // Get the current graphics transform to calculate render scale
+                // Get the current graphics transform
                 float scaleX = graphics.Transform.Elements[0];
                 float scaleY = graphics.Transform.Elements[3];
 
-                if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
+                // Check if we need to regenerate the cached bitmap
+                bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
+
+                if (needsRegeneration)
                 {
-                    using Bitmap chartImage = GenerateCartesianChartImage(cartesianChart, renderScale);
-                    if (chartImage != null)
+                    // Check if configuration has changed and reload chart data if necessary
+                    bool needsReload = ShouldReloadChart(ChartType, config);
+
+                    if (_chartControl == null || needsReload)
                     {
-                        // Save graphics state to preserve transformation
-                        GraphicsState state = graphics.Save();
-                        try
+                        // Dispose of old control if reloading
+                        if (_chartControl != null && needsReload)
                         {
-                            // Reset transform for drawing
-                            graphics.ResetTransform();
-
-                            // Calculate the actual screen position accounting for the original transform
-                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                            tempTransform.TransformPoints(points);
-
-                            // Calculate target rectangle in screen coordinates
-                            Rectangle targetRect = new(
-                                (int)points[0].X,
-                                (int)points[0].Y,
-                                (int)(Bounds.Width * scaleX),
-                                (int)(Bounds.Height * scaleY)
-                            );
-
-                            // Draw with high quality interpolation
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.CompositingQuality = CompositingQuality.HighQuality;
-                            graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                            graphics.DrawImage(chartImage, targetRect);
+                            _chartControl.Dispose();
+                            _chartControl = null;
                         }
-                        finally
+
+                        LoadChartData(ChartType, config);
+                    }
+
+                    // Clear old cached bitmap
+                    if (_cachedBitmap != null)
+                    {
+                        _cachedBitmap.Dispose();
+                        _cachedBitmap = null;
+                    }
+
+                    // Generate and cache the new bitmap
+                    if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
+                    {
+                        _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is PieChart pieChart)
+                    {
+                        _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is GeoMap geoMap)
+                    {
+                        _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
+                    }
+
+                    // Update cache metadata
+                    if (_cachedBitmap != null)
+                    {
+                        _cachedSize = Bounds.Size;
+                        _cachedRenderScale = renderScale;
+
+                        if (config?.Filters != null)
                         {
-                            graphics.Restore(state);
+                            _cachedConfig = (
+                                config.Filters.StartDate,
+                                config.Filters.EndDate,
+                                config.Filters.IncludeReturns,
+                                config.Filters.IncludeLosses
+                            );
                         }
                     }
                 }
-                else if (_chartControl != null && _chartControl is PieChart pieChart)
+
+                // Render the cached bitmap
+                if (_cachedBitmap != null)
                 {
-                    using Bitmap chartImage = GeneratePieChartImage(pieChart, renderScale);
-                    if (chartImage != null)
+                    GraphicsState state = graphics.Save();
+                    try
                     {
-                        GraphicsState state = graphics.Save();
-                        try
-                        {
-                            graphics.ResetTransform();
-                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                            tempTransform.TransformPoints(points);
+                        graphics.ResetTransform();
+                        PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                        Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                        tempTransform.TransformPoints(points);
 
-                            Rectangle targetRect = new(
-                                (int)points[0].X,
-                                (int)points[0].Y,
-                                (int)(Bounds.Width * scaleX),
-                                (int)(Bounds.Height * scaleY)
-                            );
+                        Rectangle targetRect = new(
+                            (int)points[0].X,
+                            (int)points[0].Y,
+                            (int)(Bounds.Width * scaleX),
+                            (int)(Bounds.Height * scaleY)
+                        );
 
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.CompositingQuality = CompositingQuality.HighQuality;
-                            graphics.SmoothingMode = SmoothingMode.HighQuality;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-                            graphics.DrawImage(chartImage, targetRect);
-                        }
-                        finally
-                        {
-                            graphics.Restore(state);
-                        }
+                        graphics.DrawImage(_cachedBitmap, targetRect);
                     }
-                }
-                else if (_chartControl != null && _chartControl is GeoMap geoMap)
-                {
-                    using Bitmap chartImage = GenerateGeoMapImage(geoMap, renderScale);
-                    if (chartImage != null)
+                    finally
                     {
-                        GraphicsState state = graphics.Save();
-                        try
-                        {
-                            graphics.ResetTransform();
-                            PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                            Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                            tempTransform.TransformPoints(points);
-
-                            Rectangle targetRect = new(
-                                (int)points[0].X,
-                                (int)points[0].Y,
-                                (int)(Bounds.Width * scaleX),
-                                (int)(Bounds.Height * scaleY)
-                            );
-
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.CompositingQuality = CompositingQuality.HighQuality;
-                            graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                            graphics.DrawImage(chartImage, targetRect);
-                        }
-                        finally
-                        {
-                            graphics.Restore(state);
-                        }
+                        graphics.Restore(state);
                     }
                 }
                 else
@@ -196,17 +236,69 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     RenderPlaceholder(graphics, $"Chart: {ChartType}");
                 }
 
-                // Draw border if needed
-                if (BorderColor != Color.Transparent && BorderThickness > 0)
+                // Draw border if needed (drawn after bitmap)
+                if (_borderColor != Color.Transparent && _borderThickness > 0)
                 {
-                    using Pen borderPen = new(BorderColor, BorderThickness);
-                    graphics.DrawRectangle(borderPen, Bounds);
+                    using Pen borderPen = new(_borderColor, _borderThickness);
+
+                    // Adjust rectangle to account for border thickness to prevent clipping
+                    Rectangle borderRect = Bounds;
+                    if (_borderThickness > 1)
+                    {
+                        int offset = _borderThickness / 2;
+                        borderRect = new Rectangle(
+                            Bounds.X + offset,
+                            Bounds.Y + offset,
+                            Bounds.Width - _borderThickness,
+                            Bounds.Height - _borderThickness
+                        );
+                    }
+
+                    graphics.DrawRectangle(borderPen, borderRect);
                 }
             }
             catch (Exception ex)
             {
                 RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
             }
+        }
+        private bool ShouldRegenerateBitmap(ReportConfiguration config, float renderScale)
+        {
+            // No cached bitmap yet
+            if (_cachedBitmap == null)
+            {
+                return true;
+            }
+
+            // Size changed
+            if (_cachedSize != Bounds.Size)
+            {
+                return true;
+            }
+
+            // Render scale changed
+            if (Math.Abs(_cachedRenderScale - renderScale) > 0.001f)
+            {
+                return true;
+            }
+
+            // Configuration changed
+            if (config?.Filters != null)
+            {
+                var currentConfig = (
+                    config.Filters.StartDate,
+                    config.Filters.EndDate,
+                    config.Filters.IncludeReturns,
+                    config.Filters.IncludeLosses
+                );
+
+                if (_cachedConfig == null || _cachedConfig.Value != currentConfig)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
         private static bool ShouldReloadChart(MainMenu_Form.ChartDataType chartType, ReportConfiguration config)
         {
@@ -939,46 +1031,46 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Border thickness
             AddPropertyLabel(container, "Border thickness:", yPosition);
-            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
+            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, _borderThickness, yPosition,
                 value =>
                 {
                     int newThickness = (int)value;
-                    if (BorderThickness != newThickness)
+                    if (_borderThickness != newThickness)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
-                            nameof(BorderThickness),
-                            BorderThickness,
+                            nameof(_borderThickness),
+                            _borderThickness,
                             newThickness,
                             onPropertyChanged));
-                        BorderThickness = newThickness;
+                        _borderThickness = newThickness;
                         onPropertyChanged();
                     }
                 }, 0, 20);
             thicknessNumeric.Left = 170;
-            CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
+            CacheControl("_borderThickness", thicknessNumeric, () => thicknessNumeric.Value = _borderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             AddPropertyLabel(container, "Border:", yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+            Panel _borderColorPanel = AddColorPicker(container, yPosition, 85, _borderColor,
                 color =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (_borderColor.ToArgb() != color.ToArgb())
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
-                            nameof(BorderColor),
-                            BorderColor,
+                            nameof(_borderColor),
+                            _borderColor,
                             color,
                             onPropertyChanged));
-                        BorderColor = color;
+                        _borderColor = color;
                         onPropertyChanged();
                     }
                 }, showLabel: false);
 
             // Add label next to color picker
-            Label borderColorLabel = new()
+            Label _borderColorLabel = new()
             {
                 Text = "Click to change",
                 Font = new Font("Segoe UI", 8),
@@ -986,9 +1078,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Location = new Point(140, yPosition + 11),
                 AutoSize = true
             };
-            container.Controls.Add(borderColorLabel);
+            container.Controls.Add(_borderColorLabel);
 
-            CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
+            CacheControl("_borderColor", _borderColorPanel, () => _borderColorPanel.BackColor = _borderColor);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
@@ -1071,11 +1163,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
         }
+        public void InvalidateCache()
+        {
+            if (_cachedBitmap != null)
+            {
+                _cachedBitmap.Dispose();
+                _cachedBitmap = null;
+            }
+        }
 
         // Dispose
         public void Dispose()
         {
-            Dispose(true);
+            if (_chartControl != null)
+            {
+                _chartControl.Dispose();
+                _chartControl = null;
+            }
+
+            if (_cachedBitmap != null)
+            {
+                _cachedBitmap.Dispose();
+                _cachedBitmap = null;
+            }
+
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
