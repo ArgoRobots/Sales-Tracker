@@ -18,7 +18,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
-        public override string DisplayName => "Date Range";
+        public override string DisplayName => "date range";
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()
         {

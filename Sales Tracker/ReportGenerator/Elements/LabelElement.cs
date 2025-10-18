@@ -18,7 +18,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
-        public override string DisplayName => "Label";
+        public override string DisplayName => "label";
         public override ReportElementType GetElementType() => ReportElementType.Label;
         public override BaseElement Clone()
         {
@@ -317,6 +317,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Alignment = newAlignment;
                     onPropertyChanged();
                 });
+            hAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
             yPosition += ControlRowHeight;
 
@@ -339,6 +340,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     VerticalAlignment = newVAlignment;
                     onPropertyChanged();
                 });
+            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
             yPosition += ControlRowHeight;
 

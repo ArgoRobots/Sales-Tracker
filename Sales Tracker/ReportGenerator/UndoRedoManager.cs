@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.ReportGenerator.Menus;
+using System.Text;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ReportGenerator
@@ -298,7 +299,29 @@ namespace Sales_Tracker.ReportGenerator
         private readonly object _newValue = newValue;
         private readonly Action _refreshCanvas = refreshCanvas;
 
-        public string Description => $"Change {_propertyName}";
+        public string Description => $"Change {FormatPropertyName(_propertyName)}";
+
+        private static string FormatPropertyName(string propertyName)
+        {
+            // Convert PascalCase to lowercase with spaces
+            // Example: "FontSize" -> "font size", "ShowLegend" -> "show legend"
+            StringBuilder result = new();
+
+            for (int i = 0; i < propertyName.Length; i++)
+            {
+                char c = propertyName[i];
+
+                // Add space before capital letters (except first character)
+                if (i > 0 && char.IsUpper(c))
+                {
+                    result.Append(' ');
+                }
+
+                result.Append(char.ToLower(c));
+            }
+
+            return result.ToString();
+        }
 
         public void Undo()
         {

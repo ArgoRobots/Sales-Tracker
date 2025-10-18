@@ -1101,7 +1101,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Left",
+                "left",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1128,7 +1128,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Center",
+                "center",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1151,7 +1151,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Right",
+                "right",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1174,7 +1174,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Top",
+                "top",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1201,7 +1201,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Middle",
+                "middle",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1224,7 +1224,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Bottom",
+                "bottom",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1261,7 +1261,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Horizontally",
+                "horizontally",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1298,7 +1298,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Vertically",
+                "vertically",
                 RefreshCanvas));
 
             Canvas_Panel.Invalidate();
@@ -1320,7 +1320,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Width", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "width", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -1340,7 +1340,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Height", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "height", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -1360,7 +1360,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Size", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "size", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
@@ -2048,7 +2048,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (ReportConfig == null) { return; }
 
             List<BaseElement> duplicates = [];
-            CompositeAction composite = new("Duplicate elements");
+
+            string description = _selectedElements.Count > 1
+                ? $"duplicate {_selectedElements.Count} elements"
+                : "duplicate element";
+            CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
             {
@@ -2121,7 +2125,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Create undo actions
-            CompositeAction composite = new($"Delete {elementsToDelete.Count} elements");
+            string description = elementsToDelete.Count == 1
+                ? "Delete element"
+                : $"Delete {elementsToDelete.Count} elements";
+            CompositeAction composite = new(description);
 
             // Delete all selected elements
             foreach (BaseElement element in elementsToDelete)

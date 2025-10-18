@@ -90,8 +90,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Shows the undo/redo history dropdown at the specified location.
         /// </summary>
-        public static void Show(Control parent, Point location, UndoRedoManager undoRedoManager,
-            bool isUndoHistory, Action onActionPerformed)
+        public static void Show(Control parent, Point location, UndoRedoManager undoRedoManager, bool isUndoHistory, Action onActionPerformed)
         {
             // Remove any existing dropdown
             Remove();

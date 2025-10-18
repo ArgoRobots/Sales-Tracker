@@ -36,7 +36,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
-        public override string DisplayName => "Summary";
+        public override string DisplayName => "summary";
         public override ReportElementType GetElementType() => ReportElementType.Summary;
         public override BaseElement Clone()
         {

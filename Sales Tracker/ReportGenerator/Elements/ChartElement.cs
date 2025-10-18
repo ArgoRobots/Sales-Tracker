@@ -43,7 +43,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public float LegendFontSize { get; set; } = 11f;
 
         // Overrides
-        public override string DisplayName => "Chart";
+        public override string DisplayName => "chart";
         public override ReportElementType GetElementType() => ReportElementType.Chart;
         public override BaseElement Clone()
         {

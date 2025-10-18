@@ -51,7 +51,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
-        public override string DisplayName => "Image";
+        public override string DisplayName => "image";
         public override ReportElementType GetElementType() => ReportElementType.Image;
         public override BaseElement Clone()
         {
