@@ -429,7 +429,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     }
                     else
                     {
-                        SelectElement(clickedElement);
+                        // Single selection or start drag
+                        if (!_selectedElements.Contains(clickedElement))
+                        {
+                            SelectElement(clickedElement);
+                        }
 
                         _isDragging = true;
                         _dragStartPoint = pageLocation;
