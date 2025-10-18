@@ -38,6 +38,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowLegend { get; set; } = true;
         public bool ShowTitle { get; set; } = true;
         public Color BorderColor { get; set; } = Color.Gray;
+        public int BorderThickness { get; set; } = 1;
         public string FontFamily { get; set; } = "Segoe UI";
         public float TitleFontSize { get; set; } = 12f;
         public float LegendFontSize { get; set; } = 11f;
@@ -58,6 +59,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowLegend = ShowLegend,
                 ShowTitle = ShowTitle,
                 BorderColor = BorderColor,
+                BorderThickness = BorderThickness,
                 FontFamily = FontFamily,
                 TitleFontSize = TitleFontSize
             };
@@ -195,9 +197,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Draw border if needed
-                if (BorderColor != Color.Transparent)
+                if (BorderColor != Color.Transparent && BorderThickness > 0)
                 {
-                    using Pen borderPen = new(BorderColor, 1);
+                    using Pen borderPen = new(BorderColor, BorderThickness);
                     graphics.DrawRectangle(borderPen, Bounds);
                 }
             }
@@ -933,6 +935,28 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }, 8, 20);
             legendNumericUpDown.Left = 130;
             CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
+            yPosition += ControlRowHeight;
+
+            // Border thickness
+            AddPropertyLabel(container, "Border thickness:", yPosition);
+            Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
+                value =>
+                {
+                    int newThickness = (int)value;
+                    if (BorderThickness != newThickness)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderThickness),
+                            BorderThickness,
+                            newThickness,
+                            onPropertyChanged));
+                        BorderThickness = newThickness;
+                        onPropertyChanged();
+                    }
+                }, 0, 20);
+            thicknessNumeric.Left = 170;
+            CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
