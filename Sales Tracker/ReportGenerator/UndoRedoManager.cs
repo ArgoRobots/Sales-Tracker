@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.ReportGenerator.Menus;
+using System.Reflection;
 using System.Text;
 using Timer = System.Windows.Forms.Timer;
 
@@ -325,7 +326,7 @@ namespace Sales_Tracker.ReportGenerator
 
         public void Undo()
         {
-            System.Reflection.PropertyInfo? property = _element.GetType().GetProperty(_propertyName);
+            PropertyInfo? property = _element.GetType().GetProperty(_propertyName);
             property?.SetValue(_element, _oldValue);
 
             // Update the property panel to reflect the change
@@ -335,7 +336,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         public void Redo()
         {
-            System.Reflection.PropertyInfo? property = _element.GetType().GetProperty(_propertyName);
+            PropertyInfo? property = _element.GetType().GetProperty(_propertyName);
             property?.SetValue(_element, _newValue);
 
             // Update the property panel to reflect the change

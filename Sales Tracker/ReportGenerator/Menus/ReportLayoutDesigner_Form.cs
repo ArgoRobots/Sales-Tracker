@@ -338,6 +338,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
         private float _canvasScaleFactor = 1.0f;
+        private BaseElement _clickedElement;
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
             if (ReportConfig == null) { return; }
@@ -434,6 +435,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         {
                             SelectElement(clickedElement);
                         }
+
+                        _clickedElement = clickedElement;  // Store for potential selection change on MouseUp
                         _isDragging = true;
                         _dragStartPoint = pageLocation;
 
@@ -680,6 +683,27 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
             bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
+            bool actuallyDragged = false;
+
+            if (_isDragging && _dragStartBounds != null)
+            {
+                if (_selectedElements.Count > 0)
+                {
+                    List<Rectangle> newBounds = _selectedElements.Select(el => el.Bounds).ToList();
+                    for (int i = 0; i < _dragStartBounds.Count && i < newBounds.Count; i++)
+                    {
+                        if (_dragStartBounds[i] != newBounds[i])
+                        {
+                            actuallyDragged = true;
+                            break;
+                        }
+                    }
+                }
+                else if (_selectedElement != null && _dragStartBounds.Count > 0)
+                {
+                    actuallyDragged = _dragStartBounds[0] != _selectedElement.Bounds;
+                }
+            }
 
             // Record undo actions for drag
             if (_isDragging && _dragStartBounds != null)
@@ -733,7 +757,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // If mouse up on empty area without dragging (small movement), clear selections
+            // If we clicked (not dragged) on an already-selected element with multiple selections, change to single selection
+            if (!actuallyDragged && _clickedElement != null && _selectedElements.Count > 1
+                && _selectedElements.Contains(_clickedElement))
+            {
+                SelectElement(_clickedElement);
+            }
+            _clickedElement = null;
+
+            // If mouse up on empty area without dragging, clear selections
             if (e.Button == MouseButtons.Left && _selectionStartPoint != Point.Empty && !_isMultiSelecting)
             {
                 bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;

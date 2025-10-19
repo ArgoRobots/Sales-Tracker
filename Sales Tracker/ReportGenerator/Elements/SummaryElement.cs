@@ -18,6 +18,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowAverageValue { get; set; } = true;
         public bool ShowGrowthRate { get; set; } = true;
         public Color BackgroundColor { get; set; } = Color.WhiteSmoke;
+        public int BorderThickness { get; set; } = 1;
         public Color BorderColor { get; set; } = Color.LightGray;
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 10f;
@@ -55,6 +56,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowAverageValue = ShowAverageValue,
                 ShowGrowthRate = ShowGrowthRate,
                 BackgroundColor = BackgroundColor,
+                BorderThickness = BorderThickness,
                 BorderColor = BorderColor,
                 FontFamily = FontFamily,
                 FontSize = FontSize,
@@ -70,8 +72,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
             graphics.FillRectangle(bgBrush, Bounds);
 
             // Draw border
-            using Pen borderPen = new(BorderColor, 1);
-            graphics.DrawRectangle(borderPen, Bounds);
+            if (BorderColor != Color.Transparent && BorderThickness > 0)
+            {
+                using Pen borderPen = new(BorderColor, BorderThickness);
+
+                // Adjust rectangle to account for border thickness to prevent clipping
+                Rectangle borderRect = Bounds;
+                if (BorderThickness > 1)
+                {
+                    int offset = BorderThickness / 2;
+                    borderRect = new Rectangle(
+                        Bounds.X + offset,
+                        Bounds.Y + offset,
+                        Bounds.Width - BorderThickness,
+                        Bounds.Height - BorderThickness
+                    );
+                }
+
+                graphics.DrawRectangle(borderPen, borderRect);
+            }
 
             // Add clipping region to prevent overflow
             Region originalClip = graphics.Clip;
@@ -536,7 +555,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
+            bgColorPanel.Left += 10;  // Adjust for label width
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
+            yPosition += ControlRowHeight;
+
+            // Border Thickness
+            AddPropertyLabel(container, "Border thickness:", yPosition);
+            Guna2NumericUpDown borderThicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
+                value =>
+                {
+                    int newThickness = (int)value;
+                    if (BorderThickness != newThickness)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderThickness),
+                            BorderThickness,
+                            newThickness,
+                            onPropertyChanged));
+                        BorderThickness = newThickness;
+                        onPropertyChanged();
+                    }
+                }, 0, 20);
+            borderThicknessNumeric.Left = 170;
+            CacheControl("BorderThickness", borderThicknessNumeric, () => borderThicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border Color
@@ -556,6 +598,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
+            borderColorPanel.Left += 10;  // Adjust for label width
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
@@ -578,6 +621,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+            alignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
@@ -600,6 +644,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
