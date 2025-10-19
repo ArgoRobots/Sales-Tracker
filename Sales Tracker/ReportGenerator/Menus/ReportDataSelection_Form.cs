@@ -814,6 +814,29 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
         }
 
+        /// <summary>
+        /// Synchronizes the chart selection CheckedListBox with the current SelectedChartTypes in ReportConfig.
+        /// This is called when charts are deleted from the layout designer.
+        /// </summary>
+        public void SyncChartSelectionFromConfig()
+        {
+            if (ReportConfig == null) { return; }
+
+            PerformUpdate(() =>
+            {
+                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
+                {
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                    bool shouldBeChecked = ReportConfig.Filters.SelectedChartTypes.Contains(chartType);
+
+                    if (ChartSelection_CheckedListBox.GetItemChecked(i) != shouldBeChecked)
+                    {
+                        ChartSelection_CheckedListBox.SetItemChecked(i, shouldBeChecked);
+                    }
+                }
+            });
+        }
+
         // Form implementation methods
         private bool HasValidDateRange()
         {

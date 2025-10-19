@@ -2179,10 +2179,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             _undoRedoManager.RecordAction(composite);
 
-            // If we deleted a chart element, switch to custom template
+            // If we deleted a chart element, switch to custom template and sync the selection
             if (elementsToDelete.Any(e => e is ChartElement))
             {
                 ReportDataSelection_Form.Instance?.SwitchToCustomTemplate();
+                ReportDataSelection_Form.Instance?.SyncChartSelectionFromConfig();
             }
 
             // Clear selection
