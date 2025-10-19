@@ -683,8 +683,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
             bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
-
             bool actuallyDragged = false;
+
             if (_isDragging && _dragStartBounds != null)
             {
                 if (_selectedElements.Count > 0)
@@ -757,14 +757,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // If we clicked (not dragged) on an already-selected element with multiple selections,
-            // change to single selection
+            // If we clicked (not dragged) on an already-selected element with multiple selections, change to single selection
             if (!actuallyDragged && _clickedElement != null && _selectedElements.Count > 1
                 && _selectedElements.Contains(_clickedElement))
             {
                 SelectElement(_clickedElement);
             }
-            _clickedElement = null;  // Clear the clicked element
+            _clickedElement = null;
 
             // If mouse up on empty area without dragging, clear selections
             if (e.Button == MouseButtons.Left && _selectionStartPoint != Point.Empty && !_isMultiSelecting)
