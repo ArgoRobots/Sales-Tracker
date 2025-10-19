@@ -21,6 +21,10 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public class ReportConfiguration
     {
+        /// <summary>
+        /// Indicates whether the user has manually moved or resized any charts.
+        /// When true, automatic chart arrangement is disabled to preserve the user's custom layout.
+        /// </summary>
         public bool HasManualChartLayout { get; set; } = false;
 
         /// <summary>
