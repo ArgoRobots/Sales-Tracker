@@ -1756,7 +1756,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return;
             }
 
-            ElementProperties_Label.Text = $"Selected: {_selectedElement.GetElementType()}";
+            // Capitalize first letter of element name for display
+            string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
+            ElementProperties_Label.Text = $"Selected: {elementName}";
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
