@@ -151,6 +151,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     return;
                 }
 
+                ResizeCanvasToPageSize();
                 NotifyParentValidationChanged();
             }
         }
