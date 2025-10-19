@@ -730,6 +730,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             _dragStartBounds,
                             newBounds,
                             RefreshCanvas));
+
+                        MarkChartLayoutAsManualIfNeeded();
                     }
                 }
                 else if (_selectedElement != null && _dragStartBounds.Count > 0)
@@ -741,6 +743,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             _dragStartBounds,
                             [_selectedElement.Bounds],
                             RefreshCanvas));
+
+                        MarkChartLayoutAsManualIfNeeded();
                     }
                 }
             }
@@ -755,6 +759,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         _originalBounds,
                         _selectedElement.Bounds,
                         RefreshCanvas));
+
+                    MarkChartLayoutAsManualIfNeeded();
                 }
             }
 
@@ -1089,6 +1095,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     oldBounds,
                     newBounds,
                     RefreshCanvas));
+
+                MarkChartLayoutAsManualIfNeeded();
             }
             else if (_selectedElement != null)
             {
@@ -1100,6 +1108,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     [oldBounds],
                     [_selectedElement.Bounds],
                     RefreshCanvas));
+
+                MarkChartLayoutAsManualIfNeeded();
             }
         }
 
@@ -1137,6 +1147,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "left",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1164,6 +1175,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "center",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1187,6 +1199,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "right",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1210,6 +1223,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "top",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1237,6 +1251,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "middle",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1260,6 +1275,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "bottom",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1297,6 +1313,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "horizontally",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1334,6 +1351,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 "vertically",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1356,6 +1374,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SameSizeAction action = new(_selectedElements.ToList(), "width", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1376,6 +1395,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SameSizeAction action = new(_selectedElements.ToList(), "height", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1396,6 +1416,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SameSizeAction action = new(_selectedElements.ToList(), "size", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1867,6 +1888,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Canvas_Panel.Invalidate();
             UpdatePropertiesForSelection();
             NotifyParentValidationChanged();
+        }
+        private static void OnChartMovedOrResized()
+        {
+            if (ReportConfig != null)
+            {
+                ReportConfig.HasManualChartLayout = true;
+            }
+        }
+        private void MarkChartLayoutAsManualIfNeeded()
+        {
+            if (_selectedElements.Any(e => e is ChartElement) || _selectedElement is ChartElement)
+            {
+                OnChartMovedOrResized();
+            }
         }
 
         // Resize element methods

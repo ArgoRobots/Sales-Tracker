@@ -21,6 +21,8 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public class ReportConfiguration
     {
+        public bool HasManualChartLayout { get; set; } = false;
+
         /// <summary>
         /// Page size and orientation settings.
         /// </summary>

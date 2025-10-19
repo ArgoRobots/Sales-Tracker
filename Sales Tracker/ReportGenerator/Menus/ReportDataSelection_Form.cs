@@ -576,6 +576,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Apply the template configuration to the parent's report config
                 if (ReportConfig != null)
                 {
+                    ReportConfig.HasManualChartLayout = false;
+
                     // Clear existing elements
                     ReportConfig.Elements.Clear();
 
@@ -699,85 +701,90 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 ChartElement newChartElement = new()
                 {
-                    ChartType = chartType
+                    ChartType = chartType,
+                    Bounds = new Rectangle(50, 50, 350, 250)
                 };
                 ReportConfig.AddElement(newChartElement);
             }
 
-            // Now reposition and resize charts
-            List<ChartElement> allCharts = ReportConfig.GetElementsOfType<ChartElement>();
-
-            if (allCharts.Count > 0)
+            // Only auto-arrange if user hasn't manually positioned/resized any charts
+            if (!ReportConfig.HasManualChartLayout)
             {
-                // Get page dimensions
-                Size pageSize = PageDimensions.GetDimensions(
-                    ReportConfig.PageSize,
-                    ReportConfig.PageOrientation
-                );
+                // Now reposition and resize charts
+                List<ChartElement> allCharts = ReportConfig.GetElementsOfType<ChartElement>();
 
-                // Calculate available space
-                int margin = ReportConfig.PageMargins?.Left ?? 40;
-                int headerHeight = ReportConfig.ShowHeader ? 80 : 0;
-                int footerHeight = ReportConfig.ShowFooter ? 50 : 0;
-
-                int availableWidth = pageSize.Width - (margin * 2);
-                int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
-
-                const int spacing = 20;
-                int startX = margin;
-                int startY = headerHeight + margin;
-
-                int totalCharts = allCharts.Count;
-
-                // Dynamically calculate columns based on chart count
-                int columns;
-                if (totalCharts == 1)
+                if (allCharts.Count > 0)
                 {
-                    columns = 1;
-                }
-                else if (totalCharts <= 4)
-                {
-                    columns = 2;
-                }
-                else if (totalCharts <= 9)
-                {
-                    columns = 3;
-                }
-                else if (totalCharts <= 16)
-                {
-                    columns = 4;
-                }
-                else
-                {
-                    columns = 5;
-                }
+                    // Get page dimensions
+                    Size pageSize = PageDimensions.GetDimensions(
+                        ReportConfig.PageSize,
+                        ReportConfig.PageOrientation
+                    );
 
-                // Calculate rows needed
-                int rows = (int)Math.Ceiling((double)totalCharts / columns);
+                    // Calculate available space
+                    int margin = ReportConfig.PageMargins?.Left ?? 40;
+                    int headerHeight = ReportConfig.ShowHeader ? 80 : 0;
+                    int footerHeight = ReportConfig.ShowFooter ? 50 : 0;
 
-                // Calculate chart dimensions to fit within available space
-                int chartWidth = (availableWidth - (spacing * (columns - 1))) / columns;
-                int chartHeight = (availableHeight - (spacing * (rows - 1))) / rows;
+                    int availableWidth = pageSize.Width - (margin * 2);
+                    int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
 
-                // Enforce aspect ratio of 2:1
-                int maxHeightForAspectRatio = chartWidth / 2;
-                if (chartHeight > maxHeightForAspectRatio)
-                {
-                    chartHeight = maxHeightForAspectRatio;
-                }
+                    const int spacing = 20;
+                    int startX = margin;
+                    int startY = headerHeight + margin;
 
-                // Position all charts
-                int index = 0;
-                foreach (ChartElement chart in allCharts)
-                {
-                    int row = index / columns;
-                    int col = index % columns;
+                    int totalCharts = allCharts.Count;
 
-                    int x = startX + (col * (chartWidth + spacing));
-                    int y = startY + (row * (chartHeight + spacing));
+                    // Dynamically calculate columns based on chart count
+                    int columns;
+                    if (totalCharts == 1)
+                    {
+                        columns = 1;
+                    }
+                    else if (totalCharts <= 4)
+                    {
+                        columns = 2;
+                    }
+                    else if (totalCharts <= 9)
+                    {
+                        columns = 3;
+                    }
+                    else if (totalCharts <= 16)
+                    {
+                        columns = 4;
+                    }
+                    else
+                    {
+                        columns = 5;
+                    }
 
-                    chart.Bounds = new Rectangle(x, y, chartWidth, chartHeight);
-                    index++;
+                    // Calculate rows needed
+                    int rows = (int)Math.Ceiling((double)totalCharts / columns);
+
+                    // Calculate chart dimensions to fit within available space
+                    int chartWidth = (availableWidth - (spacing * (columns - 1))) / columns;
+                    int chartHeight = (availableHeight - (spacing * (rows - 1))) / rows;
+
+                    // Enforce aspect ratio of 2:1
+                    int maxHeightForAspectRatio = chartWidth / 2;
+                    if (chartHeight > maxHeightForAspectRatio)
+                    {
+                        chartHeight = maxHeightForAspectRatio;
+                    }
+
+                    // Position all charts
+                    int index = 0;
+                    foreach (ChartElement chart in allCharts)
+                    {
+                        int row = index / columns;
+                        int col = index % columns;
+
+                        int x = startX + (col * (chartWidth + spacing));
+                        int y = startY + (row * (chartHeight + spacing));
+
+                        chart.Bounds = new Rectangle(x, y, chartWidth, chartHeight);
+                        index++;
+                    }
                 }
             }
         }
