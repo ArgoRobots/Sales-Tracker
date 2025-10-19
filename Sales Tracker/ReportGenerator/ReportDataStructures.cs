@@ -180,6 +180,12 @@ namespace Sales_Tracker.ReportGenerator
         /// Whether to include lost items.
         /// </summary>
         public bool IncludeLosses { get; set; } = true;
+
+        /// <summary>
+        /// The name of the date preset to use (e.g., "This month", "Last quarter").
+        /// If null or empty, uses StartDate and EndDate.
+        /// </summary>
+        public string DatePresetName { get; set; }
     }
 
     /// <summary>

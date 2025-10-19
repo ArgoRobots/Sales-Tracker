@@ -439,6 +439,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!_isUpdating)
             {
                 ValidateDateRange();
+
+                // When user manually changes dates, set to Custom preset
+                if (ReportConfig != null)
+                {
+                    ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                    ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
+                    ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
+                }
+
                 SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             }
@@ -453,7 +462,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void DatePreset_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (_isUpdating) { return; }
-
             if (sender is not Guna2CustomRadioButton radioButton || !radioButton.Checked) { return; }
 
             PerformUpdate(() =>
@@ -461,24 +469,35 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (radioButton == Custom_RadioButton)
                 {
                     SetCustomDateRangeControlsVisibility(true);
+                    if (ReportConfig != null)
+                    {
+                        ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                    }
                 }
                 else
                 {
                     SetCustomDateRangeControlsVisibility(false);
 
-                    // Find and apply the preset
-                    DatePreset? preset = _datePresets.FirstOrDefault(p => p.RadioButton == radioButton);
-                    if (preset != null)
+                    DatePreset? selectedPreset = _datePresets.FirstOrDefault(p => p.RadioButton == radioButton);
+                    if (selectedPreset != null)
                     {
-                        (DateTime start, DateTime end) = preset.GetDateRange();
+                        (DateTime start, DateTime end) = selectedPreset.GetDateRange();
                         StartDate_DateTimePicker.Value = start;
                         EndDate_DateTimePicker.Value = end;
+
+                        // Store the preset name in the config
+                        if (ReportConfig != null)
+                        {
+                            ReportConfig.Filters.DatePresetName = selectedPreset.Name;
+                            ReportConfig.Filters.StartDate = start;
+                            ReportConfig.Filters.EndDate = end;
+                        }
                     }
                 }
-            });
 
-            SwitchToCustomTemplate();
-            NotifyParentValidationChanged();
+                SwitchToCustomTemplate();
+                NotifyParentValidationChanged();
+            });
         }
 
         // Label click event handlers to toggle radio buttons
@@ -624,21 +643,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     ReportTitle_TextBox.Text = template.Title;
 
                     // Update date range
-                    DateTime startDate = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
-                    DateTime endDate = template.Filters.EndDate ?? DateTime.Now;
-
-                    StartDate_DateTimePicker.Value = startDate;
-                    EndDate_DateTimePicker.Value = endDate;
-
-                    // Find matching preset or use Custom
-                    DatePreset? matchingPreset = _datePresets.FirstOrDefault(p => p.Matches(startDate, endDate));
-                    if (matchingPreset != null)
+                    if (!string.IsNullOrEmpty(template.Filters.DatePresetName))
                     {
-                        matchingPreset.RadioButton.Checked = true;
-                        SetCustomDateRangeControlsVisibility(false);
+                        ApplyDatePresetByName(template.Filters.DatePresetName);
                     }
                     else
                     {
+                        // Fallback to custom dates if no preset specified
+                        DateTime startDate = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
+                        DateTime endDate = template.Filters.EndDate ?? DateTime.Now;
+
+                        StartDate_DateTimePicker.Value = startDate;
+                        EndDate_DateTimePicker.Value = endDate;
                         Custom_RadioButton.Checked = true;
                         SetCustomDateRangeControlsVisibility(true);
                     }
@@ -649,6 +665,33 @@ namespace Sales_Tracker.ReportGenerator.Menus
             finally
             {
                 _isUpdating = false;
+            }
+        }
+        private void ApplyDatePresetByName(string presetName)
+        {
+            DatePreset? preset = _datePresets.FirstOrDefault(p =>
+                p.Name.Equals(presetName, StringComparison.OrdinalIgnoreCase));
+
+            if (preset != null)
+            {
+                preset.RadioButton.Checked = true;
+                (DateTime start, DateTime end) = preset.GetDateRange();
+                StartDate_DateTimePicker.Value = start;
+                EndDate_DateTimePicker.Value = end;
+                SetCustomDateRangeControlsVisibility(false);
+            }
+            else
+            {
+                // If preset not found, default to "This month"
+                DatePreset? defaultPreset = _datePresets.FirstOrDefault(p => p.Name == "This month");
+                if (defaultPreset != null)
+                {
+                    defaultPreset.RadioButton.Checked = true;
+                    (DateTime start, DateTime end) = defaultPreset.GetDateRange();
+                    StartDate_DateTimePicker.Value = start;
+                    EndDate_DateTimePicker.Value = end;
+                    SetCustomDateRangeControlsVisibility(false);
+                }
             }
         }
         private void SetCustomDateRangeControlsVisibility(bool visible)

@@ -23,8 +23,7 @@ namespace Sales_Tracker.ReportGenerator
 
             // Configure filters for sales data
             config.Filters.TransactionType = TransactionType.Sales;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-1).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.ThisMonth;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.TotalSales,
@@ -52,8 +51,7 @@ namespace Sales_Tracker.ReportGenerator
 
             // Configure filters for financial data
             config.Filters.TransactionType = TransactionType.Both;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-3).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.ThisQuarter;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.TotalSales,
@@ -81,8 +79,7 @@ namespace Sales_Tracker.ReportGenerator
 
             // Configure filters for performance data
             config.Filters.TransactionType = TransactionType.Both;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-6).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.GrowthRates,
@@ -112,8 +109,7 @@ namespace Sales_Tracker.ReportGenerator
             config.Filters.TransactionType = TransactionType.Both;
             config.Filters.IncludeReturns = true;
             config.Filters.IncludeLosses = false;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-12).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.YearToDate;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.ReturnsOverTime,
@@ -144,8 +140,7 @@ namespace Sales_Tracker.ReportGenerator
             config.Filters.TransactionType = TransactionType.Both;
             config.Filters.IncludeReturns = false;
             config.Filters.IncludeLosses = true;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-12).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.YearToDate;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.LossesOverTime,
@@ -174,8 +169,7 @@ namespace Sales_Tracker.ReportGenerator
 
             // Configure filters for geographic data
             config.Filters.TransactionType = TransactionType.Both;
-            config.Filters.StartDate = DateTime.Now.AddMonths(-6).Date;
-            config.Filters.EndDate = DateTime.Now.Date;
+            config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
                 MainMenu_Form.ChartDataType.WorldMap,
@@ -493,6 +487,21 @@ namespace Sales_Tracker.ReportGenerator
             public const string ReturnsAnalysis = "Returns Analysis";
             public const string LossesAnalysis = "Losses Analysis";
             public const string GeographicAnalysis = "Geographic Analysis";
+        }
+        public static class DatePresetNames
+        {
+            public const string Today = "Today";
+            public const string Yesterday = "Yesterday";
+            public const string Last7Days = "Last 7 days";
+            public const string Last30Days = "Last 30 days";
+            public const string ThisMonth = "This month";
+            public const string LastMonth = "Last month";
+            public const string ThisQuarter = "This quarter";
+            public const string LastQuarter = "Last quarter";
+            public const string YearToDate = "Year to date";
+            public const string LastYear = "Last year";
+            public const string AllTime = "All time";
+            public const string Custom = "Custom";
         }
         public static List<string> GetAvailableTemplates()
         {
