@@ -742,7 +742,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
         /// <summary>
         /// Updates the ReportConfig.Elements collection based on current chart selections.
-        /// Only adds/removes charts as needed, preserving position and size of existing charts.
+        /// Adds/removes charts and repositions all charts.
         /// </summary>
         private void UpdateElementsFromChartSelection()
         {
@@ -767,7 +767,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportLayoutDesigner_Form.Instance.ClearSelectionForRemovedElements();
             }
 
-            // Find which chart types need to be added (selected but not in existing elements)
+            // Find which chart types need to be added
             List<MainMenu_Form.ChartDataType> existingChartTypes = existingCharts
                 .Where(chart => selectedCharts.Contains(chart.ChartType))
                 .Select(chart => chart.ChartType)
@@ -777,39 +777,90 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 .Where(chartType => !existingChartTypes.Contains(chartType))
                 .ToList();
 
-            // Add new charts with default positioning
-            if (chartsToAdd.Count > 0)
+            // Add new chart elements
+            foreach (MainMenu_Form.ChartDataType chartType in chartsToAdd)
             {
-                const int chartWidth = 350;
-                const int chartHeight = 250;
-                const int spacing = 20;
-                const int startX = 50;
-                const int startY = 50;
-                const int columns = 2;
-
-                // Calculate starting position based on existing charts
-                int existingCount = ReportConfig.GetElementsOfType<ChartElement>().Count;
-                int row = existingCount / columns;
-                int col = existingCount % columns;
-
-                foreach (MainMenu_Form.ChartDataType chartType in chartsToAdd)
+                ChartElement newChartElement = new()
                 {
+                    ChartType = chartType
+                };
+                ReportConfig.AddElement(newChartElement);
+            }
+
+            // Now reposition and resize charts
+            List<ChartElement> allCharts = ReportConfig.GetElementsOfType<ChartElement>();
+
+            if (allCharts.Count > 0)
+            {
+                // Get page dimensions
+                Size pageSize = PageDimensions.GetDimensions(
+                    ReportConfig.PageSize,
+                    ReportConfig.PageOrientation
+                );
+
+                // Calculate available space
+                int margin = ReportConfig.PageMargins?.Left ?? 40;
+                int headerHeight = ReportConfig.ShowHeader ? 80 : 0;
+                int footerHeight = ReportConfig.ShowFooter ? 50 : 0;
+
+                int availableWidth = pageSize.Width - (margin * 2);
+                int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
+
+                const int spacing = 20;
+                int startX = margin;
+                int startY = headerHeight + margin;
+
+                int totalCharts = allCharts.Count;
+
+                // Dynamically calculate columns based on chart count
+                int columns;
+                if (totalCharts == 1)
+                {
+                    columns = 1;
+                }
+                else if (totalCharts <= 4)
+                {
+                    columns = 2;
+                }
+                else if (totalCharts <= 9)
+                {
+                    columns = 3;
+                }
+                else if (totalCharts <= 16)
+                {
+                    columns = 4;
+                }
+                else
+                {
+                    columns = 5;
+                }
+
+                // Calculate rows needed
+                int rows = (int)Math.Ceiling((double)totalCharts / columns);
+
+                // Calculate chart dimensions to fit within available space
+                int chartWidth = (availableWidth - (spacing * (columns - 1))) / columns;
+                int chartHeight = (availableHeight - (spacing * (rows - 1))) / rows;
+
+                // Enforce aspect ratio of 2:1
+                int maxHeightForAspectRatio = chartWidth / 2;
+                if (chartHeight > maxHeightForAspectRatio)
+                {
+                    chartHeight = maxHeightForAspectRatio;
+                }
+
+                // Position all charts
+                int index = 0;
+                foreach (ChartElement chart in allCharts)
+                {
+                    int row = index / columns;
+                    int col = index % columns;
+
                     int x = startX + (col * (chartWidth + spacing));
                     int y = startY + (row * (chartHeight + spacing));
 
-                    ChartElement newChartElement = new()
-                    {
-                        ChartType = chartType,
-                        Bounds = new Rectangle(x, y, chartWidth, chartHeight)
-                    };
-                    ReportConfig.AddElement(newChartElement);
-
-                    col++;
-                    if (col >= columns)
-                    {
-                        col = 0;
-                        row++;
-                    }
+                    chart.Bounds = new Rectangle(x, y, chartWidth, chartHeight);
+                    index++;
                 }
             }
         }

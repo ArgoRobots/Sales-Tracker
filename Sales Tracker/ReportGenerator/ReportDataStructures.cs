@@ -29,7 +29,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Page orientation
         /// </summary>
-        public PageOrientation PageOrientation { get; set; } = PageOrientation.Portrait;
+        public PageOrientation PageOrientation { get; set; } = PageOrientation.Landscape;
 
         /// <summary>
         /// List of all elements in the report.
