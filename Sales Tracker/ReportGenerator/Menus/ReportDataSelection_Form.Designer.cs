@@ -668,7 +668,7 @@
             ReportTitle_TextBox.BorderRadius = 2;
             ReportTitle_TextBox.Cursor = Cursors.IBeam;
             ReportTitle_TextBox.CustomizableEdges = customizableEdges19;
-            ReportTitle_TextBox.DefaultText = "Sales Report";
+            ReportTitle_TextBox.DefaultText = "";
             ReportTitle_TextBox.Font = new Font("Segoe UI", 9F);
             ReportTitle_TextBox.ForeColor = Color.Black;
             ReportTitle_TextBox.Location = new Point(148, 70);
@@ -840,7 +840,6 @@
         private Guna.UI2.WinForms.Guna2GroupBox DateRange_GroupBox;
         private Guna.UI2.WinForms.Guna2GroupBox ReportSettings_GroupBox;
         private Label ReportTitle_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;
         private Guna.UI2.WinForms.Guna2Panel Left_Panel;
         private Guna.UI2.WinForms.Guna2GroupBox ChartSelection_GroupBox;
         private Guna.UI2.WinForms.Guna2Button SelectAll_Button;
@@ -876,5 +875,6 @@
         private Guna.UI2.WinForms.Guna2DateTimePicker StartDate_DateTimePicker;
         private Label EndDate_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker EndDate_DateTimePicker;
+        public Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using System.Data;
 
@@ -64,7 +65,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         // Column visibility (Columns tab)
         public bool ShowDateColumn { get; set; } = true;
         public bool ShowTransactionIdColumn { get; set; } = true;
-        public bool ShowCustomerSupplierColumn { get; set; } = true;
+        public bool ShowCompanyColumn { get; set; } = true;
         public bool ShowProductColumn { get; set; } = true;
         public bool ShowQuantityColumn { get; set; } = true;
         public bool ShowUnitPriceColumn { get; set; } = false;
@@ -92,7 +93,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
-        public override string DisplayName => "transaction table";
+        public override string DisplayName => LanguageManager.TranslateString("transaction table");
         public override ReportElementType GetElementType() => ReportElementType.TransactionTable;
         public override BaseElement Clone()
         {
@@ -127,7 +128,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 AlternateRowColor = AlternateRowColor,
                 ShowDateColumn = ShowDateColumn,
                 ShowTransactionIdColumn = ShowTransactionIdColumn,
-                ShowCustomerSupplierColumn = ShowCustomerSupplierColumn,
+                ShowCompanyColumn = ShowCompanyColumn,
                 ShowProductColumn = ShowProductColumn,
                 ShowQuantityColumn = ShowQuantityColumn,
                 ShowUnitPriceColumn = ShowUnitPriceColumn,
@@ -381,7 +382,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Date.ToShortDateString(), cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -390,16 +391,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.TransactionId, cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
 
-                if (ShowCustomerSupplierColumn && columns[colIndex].Show)
+                if (ShowCompanyColumn && columns[colIndex].Show)
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.CustomerSupplier, cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -408,7 +409,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Product, cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -417,7 +418,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Quantity.ToString("N0"), cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -426,7 +427,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.UnitPrice:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -435,7 +436,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.Total:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -444,7 +445,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Status, cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -453,7 +454,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, transaction.Accountant, cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
                 colIndex++;
@@ -462,7 +463,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     RectangleF cellRect = new(currentX, currentY, columns[colIndex].Width, DataRowHeight);
                     DrawCellText(graphics, $"${transaction.Shipping:N2}", cellRect, dataFont, dataBrush, columns[colIndex].Align);
-                    if (ShowGridLines) graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (ShowGridLines) { graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height); }
                     currentX += columns[colIndex].Width;
                 }
 
@@ -471,7 +472,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 // Stop if we've exceeded the bounds
                 if (currentY > Bounds.Bottom - DataRowHeight)
+                {
                     break;
+                }
             }
 
             // Draw totals row if enabled
@@ -518,7 +521,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     }
 
                     if (ShowGridLines)
+                    {
                         graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    }
 
                     currentX += Width;
                 }
@@ -536,7 +541,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Define columns with minimum widths
             columns.Add(("Date", ShowDateColumn ? CalculateColumnWidth(graphics, "Date", "2024-12-31", headerFont, dataFont) : 0, ShowDateColumn, StringAlignment.Near));
             columns.Add(("ID", ShowTransactionIdColumn ? CalculateColumnWidth(graphics, "ID", "INV-12345", headerFont, dataFont) : 0, ShowTransactionIdColumn, StringAlignment.Near));
-            columns.Add(("Customer/Supplier", ShowCustomerSupplierColumn ? CalculateColumnWidth(graphics, "Customer/Supplier", GetLongestText(transactions, t => t.CustomerSupplier), headerFont, dataFont) : 0, ShowCustomerSupplierColumn, StringAlignment.Near));
+            columns.Add(("Customer/Supplier", ShowCompanyColumn ? CalculateColumnWidth(graphics, "Customer/Supplier", GetLongestText(transactions, t => t.CustomerSupplier), headerFont, dataFont) : 0, ShowCompanyColumn, StringAlignment.Near));
             columns.Add(("Product", ShowProductColumn ? CalculateColumnWidth(graphics, "Product", GetLongestText(transactions, t => t.Product), headerFont, dataFont) : 0, ShowProductColumn, StringAlignment.Near));
             columns.Add(("Qty", ShowQuantityColumn ? CalculateColumnWidth(graphics, "Qty", "9,999", headerFont, dataFont) : 0, ShowQuantityColumn, StringAlignment.Far));
             columns.Add(("Unit Price", ShowUnitPriceColumn ? CalculateColumnWidth(graphics, "Unit Price", "$9,999.99", headerFont, dataFont) : 0, ShowUnitPriceColumn, StringAlignment.Far));
@@ -590,7 +595,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 LineAlignment = StringAlignment.Center
             };
 
-            graphics.DrawString("No transactions to display", font, brush, Bounds, format);
+            string text = LanguageManager.TranslateString("No transactions to display");
+            graphics.DrawString(text, font, brush, Bounds, format);
         }
         private void RenderErrorMessage(Graphics graphics, string message)
         {
@@ -642,7 +648,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
 
             // Create tab buttons
-            string[] tabNames = ["General", "Style", "Columns"];
+            string[] tabNames = [
+                LanguageManager.TranslateString("General"),
+                LanguageManager.TranslateString("Style"),
+                LanguageManager.TranslateString("Columns")
+            ];
             Panel tabPanel = CreateTabButtons(container, tabNames, TabChangedHandler);
 
             return yPosition + 45;
@@ -661,6 +671,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Add common controls first (X, Y, Width, Height)
             CreateCommonPropertyControls(panel, this, yPosition, onPropertyChanged,
@@ -675,7 +686,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight * 4;
 
             // Data selection combo box
-            AddPropertyLabel(panel, "Data:", yPosition);
+            text = LanguageManager.TranslateString("Data") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox dataCombo = AddPropertyComboBox(panel, DataSelection.ToString(), yPosition,
                 Enum.GetNames<TableDataSelection>(),
                 value =>
@@ -697,7 +709,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Transaction type
-            AddPropertyLabel(panel, "Type:", yPosition);
+            text = LanguageManager.TranslateString("Type") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
                 ["Sales", "Purchases", "Both"],
                 value =>
@@ -719,7 +732,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
-            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(panel, "Include Returns", IncludeReturns, yPosition,
+            text = LanguageManager.TranslateString("Include Returns");
+            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(panel, text, IncludeReturns, yPosition,
                 value =>
                 {
                     if (IncludeReturns != value)
@@ -738,7 +752,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox
-            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(panel, "Include Losses", IncludeLosses, yPosition,
+            text = LanguageManager.TranslateString("Include Losses");
+            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(panel, text, IncludeLosses, yPosition,
                 value =>
                 {
                     if (IncludeLosses != value)
@@ -757,7 +772,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Sort order combo box
-            AddPropertyLabel(panel, "Sort:", yPosition);
+            text = LanguageManager.TranslateString("Sort") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox sortCombo = AddPropertyComboBox(panel, FormatSortOrder(SortOrder), yPosition,
                 ["Date ↓", "Date ↑", "Amount ↓", "Amount ↑"],
                 value =>
@@ -779,7 +795,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Max rows
-            AddPropertyLabel(panel, "Max Rows:", yPosition);
+            text = LanguageManager.TranslateString("Max Rows") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, MaxRows, yPosition,
                 value =>
                 {
@@ -801,7 +818,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Totals row
-            Guna2CustomCheckBox totalsCheck = AddPropertyCheckBoxWithLabel(panel, "Show Totals Row", ShowTotalsRow, yPosition,
+            text = LanguageManager.TranslateString("Show Totals Row");
+            Guna2CustomCheckBox totalsCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowTotalsRow, yPosition,
                 value =>
                 {
                     if (ShowTotalsRow != value)
@@ -823,6 +841,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Font family
             AddPropertyLabel(panel, "Font:", yPosition);
@@ -847,7 +866,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font size
-            AddPropertyLabel(panel, "Font Size:", yPosition);
+            text = LanguageManager.TranslateString("Font Size") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -869,7 +889,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Row Height
-            AddPropertyLabel(panel, "Row Height:", yPosition);
+            text = LanguageManager.TranslateString("Row Height") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2NumericUpDown rowHeightNumeric = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition,
                 value =>
                 {
@@ -891,7 +912,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Header Row Height
-            AddPropertyLabel(panel, "Header Height:", yPosition);
+            text = LanguageManager.TranslateString("Header Height") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2NumericUpDown headerHeightNumeric = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition,
                 value =>
                 {
@@ -913,7 +935,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Cell Padding
-            AddPropertyLabel(panel, "Cell Padding:", yPosition);
+            text = LanguageManager.TranslateString("Cell Padding") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Guna2NumericUpDown cellPaddingNumeric = AddPropertyNumericUpDown(panel, CellPadding, yPosition,
                 value =>
                 {
@@ -935,8 +958,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Header Background Color
-            AddPropertyLabel(panel, "Header BG:", yPosition);
-            Panel headerBgPicker = AddColorPicker(panel, yPosition, 150, HeaderBackgroundColor,
+            text = LanguageManager.TranslateString("Header Background") + ":";
+            AddPropertyLabel(panel, text, yPosition);
+            Panel headerBgPicker = AddColorPicker(panel, yPosition, 190, HeaderBackgroundColor,
                 color =>
                 {
                     if (HeaderBackgroundColor.ToArgb() != color.ToArgb())
@@ -955,7 +979,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Header Text Color
-            AddPropertyLabel(panel, "Header Text:", yPosition);
+            text = LanguageManager.TranslateString("Header Text") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Panel headerTextPicker = AddColorPicker(panel, yPosition, 150, HeaderTextColor,
                 color =>
                 {
@@ -975,7 +1000,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Data Row Text Color
-            AddPropertyLabel(panel, "Row Text:", yPosition);
+            text = LanguageManager.TranslateString("Row Text") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Panel rowTextPicker = AddColorPicker(panel, yPosition, 150, DataRowTextColor,
                 color =>
                 {
@@ -995,7 +1021,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Grid Line Color
-            AddPropertyLabel(panel, "Grid Lines:", yPosition);
+            text = LanguageManager.TranslateString("Grid Lines") + ":";
+            AddPropertyLabel(panel, text, yPosition);
             Panel gridLinePicker = AddColorPicker(panel, yPosition, 150, GridLineColor,
                 color =>
                 {
@@ -1015,7 +1042,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Display option checkboxes
-            Guna2CustomCheckBox headersCheck = AddPropertyCheckBoxWithLabel(panel, "Show Headers", ShowHeaders, yPosition,
+            text = LanguageManager.TranslateString("Show Headers");
+            Guna2CustomCheckBox headersCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowHeaders, yPosition,
                 value =>
                 {
                     if (ShowHeaders != value)
@@ -1033,7 +1061,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowHeaders", headersCheck, () => headersCheck.Checked = ShowHeaders);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox alternateCheck = AddPropertyCheckBoxWithLabel(panel, "Alternate Row Colors", AlternateRowColors, yPosition,
+            text = LanguageManager.TranslateString("Alternate Row Colors");
+            Guna2CustomCheckBox alternateCheck = AddPropertyCheckBoxWithLabel(panel, text, AlternateRowColors, yPosition,
                 value =>
                 {
                     if (AlternateRowColors != value)
@@ -1051,7 +1080,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("AlternateRowColors", alternateCheck, () => alternateCheck.Checked = AlternateRowColors);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox gridCheck = AddPropertyCheckBoxWithLabel(panel, "Show Grid Lines", ShowGridLines, yPosition,
+            text = LanguageManager.TranslateString("Show Grid Lines");
+            Guna2CustomCheckBox gridCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowGridLines, yPosition,
                 value =>
                 {
                     if (ShowGridLines != value)
@@ -1073,9 +1103,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Add column visibility checkboxes
-            Guna2CustomCheckBox dateCheck = AddPropertyCheckBoxWithLabel(panel, "Date", ShowDateColumn, yPosition,
+            text = LanguageManager.TranslateString("Date");
+            Guna2CustomCheckBox dateCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowDateColumn, yPosition,
                 value =>
                 {
                     if (ShowDateColumn != value)
@@ -1093,7 +1125,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowDateColumn", dateCheck, () => dateCheck.Checked = ShowDateColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox idCheck = AddPropertyCheckBoxWithLabel(panel, "Transaction ID", ShowTransactionIdColumn, yPosition,
+            text = LanguageManager.TranslateString("Transaction ID");
+            Guna2CustomCheckBox idCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowTransactionIdColumn, yPosition,
                 value =>
                 {
                     if (ShowTransactionIdColumn != value)
@@ -1111,25 +1144,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowTransactionIdColumn", idCheck, () => idCheck.Checked = ShowTransactionIdColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox customerCheck = AddPropertyCheckBoxWithLabel(panel, "Customer/Supplier", ShowCustomerSupplierColumn, yPosition,
+            text = LanguageManager.TranslateString("Company");
+            Guna2CustomCheckBox customerCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowCompanyColumn, yPosition,
                 value =>
                 {
-                    if (ShowCustomerSupplierColumn != value)
+                    if (ShowCompanyColumn != value)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
-                            nameof(ShowCustomerSupplierColumn),
-                            ShowCustomerSupplierColumn,
+                            nameof(ShowCompanyColumn),
+                            ShowCompanyColumn,
                             value,
                             onPropertyChanged));
-                        ShowCustomerSupplierColumn = value;
+                        ShowCompanyColumn = value;
                         onPropertyChanged();
                     }
                 });
-            CacheControl("ShowCustomerSupplierColumn", customerCheck, () => customerCheck.Checked = ShowCustomerSupplierColumn);
+            CacheControl("ShowCompanyColumn", customerCheck, () => customerCheck.Checked = ShowCompanyColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox productCheck = AddPropertyCheckBoxWithLabel(panel, "Product", ShowProductColumn, yPosition,
+            text = LanguageManager.TranslateString("Product");
+            Guna2CustomCheckBox productCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowProductColumn, yPosition,
                 value =>
                 {
                     if (ShowProductColumn != value)
@@ -1147,7 +1182,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowProductColumn", productCheck, () => productCheck.Checked = ShowProductColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox quantityCheck = AddPropertyCheckBoxWithLabel(panel, "Quantity", ShowQuantityColumn, yPosition,
+            text = LanguageManager.TranslateString("Quantity");
+            Guna2CustomCheckBox quantityCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowQuantityColumn, yPosition,
                 value =>
                 {
                     if (ShowQuantityColumn != value)
@@ -1165,7 +1201,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowQuantityColumn", quantityCheck, () => quantityCheck.Checked = ShowQuantityColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox unitPriceCheck = AddPropertyCheckBoxWithLabel(panel, "Unit Price", ShowUnitPriceColumn, yPosition,
+            text = LanguageManager.TranslateString("Unit Price");
+            Guna2CustomCheckBox unitPriceCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowUnitPriceColumn, yPosition,
                 value =>
                 {
                     if (ShowUnitPriceColumn != value)
@@ -1183,7 +1220,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowUnitPriceColumn", unitPriceCheck, () => unitPriceCheck.Checked = ShowUnitPriceColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox totalCheck = AddPropertyCheckBoxWithLabel(panel, "Total", ShowTotalColumn, yPosition,
+            text = LanguageManager.TranslateString("Total");
+            Guna2CustomCheckBox totalCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowTotalColumn, yPosition,
                 value =>
                 {
                     if (ShowTotalColumn != value)
@@ -1201,7 +1239,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowTotalColumn", totalCheck, () => totalCheck.Checked = ShowTotalColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox statusCheck = AddPropertyCheckBoxWithLabel(panel, "Status", ShowStatusColumn, yPosition,
+            text = LanguageManager.TranslateString("Status");
+            Guna2CustomCheckBox statusCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowStatusColumn, yPosition,
                 value =>
                 {
                     if (ShowStatusColumn != value)
@@ -1219,7 +1258,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowStatusColumn", statusCheck, () => statusCheck.Checked = ShowStatusColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox accountantCheck = AddPropertyCheckBoxWithLabel(panel, "Accountant", ShowAccountantColumn, yPosition,
+            text = LanguageManager.TranslateString("Accountant");
+            Guna2CustomCheckBox accountantCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowAccountantColumn, yPosition,
                 value =>
                 {
                     if (ShowAccountantColumn != value)
@@ -1237,7 +1277,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("ShowAccountantColumn", accountantCheck, () => accountantCheck.Checked = ShowAccountantColumn);
             yPosition += CheckBoxRowHeight;
 
-            Guna2CustomCheckBox shippingCheck = AddPropertyCheckBoxWithLabel(panel, "Shipping", ShowShippingColumn, yPosition,
+            text = LanguageManager.TranslateString("Shipping");
+            Guna2CustomCheckBox shippingCheck = AddPropertyCheckBoxWithLabel(panel, text, ShowShippingColumn, yPosition,
                 value =>
                 {
                     if (ShowShippingColumn != value)

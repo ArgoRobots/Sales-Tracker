@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.GridView;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 using System.Text.RegularExpressions;
@@ -272,6 +274,12 @@ namespace Sales_Tracker.Language
             await Task.WhenAll(updateTasks);
 
             // Final UI updates
+            if (Tools.IsFormOpen<ReportDataSelection_Form>())
+            {
+                ReportDataSelection_Form.Instance.BeginInvoke(new Action(ReportDataSelection_Form.Instance.UpdateLanguageForChartSelectionControl));
+                ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
+            }
+
             if (Tools.IsFormOpen<Log_Form>())
             {
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));
@@ -360,6 +368,11 @@ namespace Sales_Tracker.Language
                 case RichTextBox textBox:
                     string textBoxKey = GetControlKey(textBox);
                     textBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, textBoxKey, textBox.Text);
+                    break;
+
+                case Guna2GroupBox guna2GroupBox:
+                    string guna2GroupBoxKey = GetControlKey(guna2GroupBox);
+                    guna2GroupBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, guna2GroupBoxKey, guna2GroupBox.Text);
                     break;
 
                 case Guna2TextBox guna2TextBox:

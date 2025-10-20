@@ -66,9 +66,10 @@
             // 
             // Title_Label
             // 
+            Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            Title_Label.Location = new Point(181, 20);
+            Title_Label.Location = new Point(180, 20);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(189, 38);
             Title_Label.TabIndex = 0;
@@ -76,6 +77,7 @@
             // 
             // PageConfig_Label
             // 
+            PageConfig_Label.Anchor = AnchorStyles.Top;
             PageConfig_Label.AutoSize = true;
             PageConfig_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             PageConfig_Label.ForeColor = Color.Gray;
@@ -87,6 +89,7 @@
             // 
             // PageSize_Label
             // 
+            PageSize_Label.Anchor = AnchorStyles.Top;
             PageSize_Label.AutoSize = true;
             PageSize_Label.Font = new Font("Segoe UI", 9.5F);
             PageSize_Label.Location = new Point(70, 125);
@@ -97,6 +100,7 @@
             // 
             // PageSize_ComboBox
             // 
+            PageSize_ComboBox.Anchor = AnchorStyles.Top;
             PageSize_ComboBox.BackColor = Color.Transparent;
             PageSize_ComboBox.BorderRadius = 4;
             PageSize_ComboBox.CustomizableEdges = customizableEdges1;
@@ -115,6 +119,7 @@
             // 
             // Orientation_Label
             // 
+            Orientation_Label.Anchor = AnchorStyles.Top;
             Orientation_Label.AutoSize = true;
             Orientation_Label.Font = new Font("Segoe UI", 9.5F);
             Orientation_Label.Location = new Point(70, 210);
@@ -125,6 +130,7 @@
             // 
             // PageOrientation_ComboBox
             // 
+            PageOrientation_ComboBox.Anchor = AnchorStyles.Top;
             PageOrientation_ComboBox.BackColor = Color.Transparent;
             PageOrientation_ComboBox.BorderRadius = 4;
             PageOrientation_ComboBox.CustomizableEdges = customizableEdges3;
@@ -143,6 +149,7 @@
             // 
             // PageConfigSeparator
             // 
+            PageConfigSeparator.Anchor = AnchorStyles.Top;
             PageConfigSeparator.Location = new Point(50, 295);
             PageConfigSeparator.Name = "PageConfigSeparator";
             PageConfigSeparator.Size = new Size(450, 10);
@@ -150,6 +157,7 @@
             // 
             // HeaderFooter_Label
             // 
+            HeaderFooter_Label.Anchor = AnchorStyles.Top;
             HeaderFooter_Label.AutoSize = true;
             HeaderFooter_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             HeaderFooter_Label.ForeColor = Color.Gray;
@@ -161,6 +169,7 @@
             // 
             // IncludeHeader_CheckBox
             // 
+            IncludeHeader_CheckBox.Anchor = AnchorStyles.Top;
             IncludeHeader_CheckBox.Animated = true;
             IncludeHeader_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             IncludeHeader_CheckBox.CheckedState.BorderRadius = 2;
@@ -180,6 +189,7 @@
             // 
             // IncludeHeader_Label
             // 
+            IncludeHeader_Label.Anchor = AnchorStyles.Top;
             IncludeHeader_Label.AutoSize = true;
             IncludeHeader_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeHeader_Label.Location = new Point(95, 352);
@@ -191,6 +201,7 @@
             // 
             // IncludeFooter_CheckBox
             // 
+            IncludeFooter_CheckBox.Anchor = AnchorStyles.Top;
             IncludeFooter_CheckBox.Animated = true;
             IncludeFooter_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             IncludeFooter_CheckBox.CheckedState.BorderRadius = 2;
@@ -210,6 +221,7 @@
             // 
             // IncludeFooter_Label
             // 
+            IncludeFooter_Label.Anchor = AnchorStyles.Top;
             IncludeFooter_Label.AutoSize = true;
             IncludeFooter_Label.Font = new Font("Segoe UI", 9.5F);
             IncludeFooter_Label.Location = new Point(95, 387);
@@ -221,6 +233,7 @@
             // 
             // HeaderFooterSeparator
             // 
+            HeaderFooterSeparator.Anchor = AnchorStyles.Top;
             HeaderFooterSeparator.Location = new Point(50, 430);
             HeaderFooterSeparator.Name = "HeaderFooterSeparator";
             HeaderFooterSeparator.Size = new Size(450, 10);
@@ -228,6 +241,7 @@
             // 
             // PageNumbers_Label
             // 
+            PageNumbers_Label.Anchor = AnchorStyles.Top;
             PageNumbers_Label.AutoSize = true;
             PageNumbers_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             PageNumbers_Label.ForeColor = Color.Gray;
@@ -239,6 +253,7 @@
             // 
             // ShowPageNumbers_CheckBox
             // 
+            ShowPageNumbers_CheckBox.Anchor = AnchorStyles.Top;
             ShowPageNumbers_CheckBox.Animated = true;
             ShowPageNumbers_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             ShowPageNumbers_CheckBox.CheckedState.BorderRadius = 2;
@@ -258,6 +273,7 @@
             // 
             // ShowPageNumbers_Label
             // 
+            ShowPageNumbers_Label.Anchor = AnchorStyles.Top;
             ShowPageNumbers_Label.AutoSize = true;
             ShowPageNumbers_Label.Font = new Font("Segoe UI", 9.5F);
             ShowPageNumbers_Label.Location = new Point(95, 487);
@@ -269,6 +285,7 @@
             // 
             // StartingNumber_Label
             // 
+            StartingNumber_Label.Anchor = AnchorStyles.Top;
             StartingNumber_Label.AutoSize = true;
             StartingNumber_Label.Font = new Font("Segoe UI", 9.5F);
             StartingNumber_Label.Location = new Point(70, 538);
@@ -279,6 +296,7 @@
             // 
             // PageNumber_NumericUpDown
             // 
+            PageNumber_NumericUpDown.Anchor = AnchorStyles.Top;
             PageNumber_NumericUpDown.BackColor = Color.Transparent;
             PageNumber_NumericUpDown.BorderRadius = 4;
             PageNumber_NumericUpDown.CustomizableEdges = customizableEdges11;

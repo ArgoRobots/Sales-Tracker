@@ -50,12 +50,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Report title.
         /// </summary>
-        public string Title { get; set; } = "Sales Report";
-
-        /// <summary>
-        /// Report description/subtitle.
-        /// </summary>
-        public string Description { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// Page margins in pixels.

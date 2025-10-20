@@ -6,6 +6,8 @@ using Sales_Tracker.Encryption;
 using Sales_Tracker.GridView;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Passwords;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
@@ -313,15 +315,69 @@ namespace Sales_Tracker.Language
             List<Form> openForms = Application.OpenForms.Cast<Form>().ToList();
             List<Control> controlsToTranslate = [];
 
+            // Special handling for ReportGenerator forms - they must be instantiated together
+            bool needsReportGeneratorForms = formTypes.Any(t =>
+                t == typeof(ReportGenerator_Form) ||
+                t == typeof(PageSettings_Form) ||
+                t == typeof(ReportDataSelection_Form) ||
+                t == typeof(ReportLayoutDesigner_Form) ||
+                t == typeof(ReportPreviewExport_Form));
+
+            ReportGenerator_Form reportGeneratorInstance = null;
+
+            if (needsReportGeneratorForms)
+            {
+                // Check if ReportGenerator_Form is already open
+                reportGeneratorInstance = openForms.FirstOrDefault(f => f is ReportGenerator_Form) as ReportGenerator_Form;
+
+                // Create ReportGenerator_Form which will instantiate all its child forms
+                reportGeneratorInstance ??= new ReportGenerator_Form();
+            }
+
             // Process each form type
             foreach (Type formType in formTypes)
             {
-                if (cancellationToken.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) { break; }
 
-                Form formInstance = openForms.FirstOrDefault(f => f.GetType() == formType)
-                    ?? (Form)Activator.CreateInstance(formType);
+                Form formInstance = null;
 
-                controlsToTranslate.Add(formInstance);
+                // Special handling for ReportGenerator forms
+                if (formType == typeof(ReportGenerator_Form))
+                {
+                    formInstance = reportGeneratorInstance;
+                }
+                else if (formType == typeof(ReportDataSelection_Form))
+                {
+                    formInstance = ReportDataSelection_Form.Instance;
+                }
+                else if (formType == typeof(ReportLayoutDesigner_Form))
+                {
+                    formInstance = ReportLayoutDesigner_Form.Instance;
+                }
+                else if (formType == typeof(ReportPreviewExport_Form))
+                {
+                    formInstance = ReportPreviewExport_Form.Instance;
+                }
+                else if (formType == typeof(PageSettings_Form))
+                {
+                    // PageSettings_Form can be created separately but needs ReportGenerator_Form.Instance
+                    formInstance = openForms.FirstOrDefault(f => f.GetType() == formType);
+                    if (formInstance == null && reportGeneratorInstance != null)
+                    {
+                        formInstance = new PageSettings_Form();
+                    }
+                }
+                else
+                {
+                    // Standard handling for other forms
+                    formInstance = openForms.FirstOrDefault(f => f.GetType() == formType)
+                        ?? (Form)Activator.CreateInstance(formType);
+                }
+
+                if (formInstance != null)
+                {
+                    controlsToTranslate.Add(formInstance);
+                }
             }
 
             // Add other controls
@@ -369,6 +425,13 @@ namespace Sales_Tracker.Language
                 typeof(AddPassword_Form),
                 typeof(EnterPassword_Form),
                 typeof(PasswordManager_Form),
+
+                // ReportGenerator
+                typeof(PageSettings_Form),
+                typeof(ReportDataSelection_Form),
+                typeof(ReportLayoutDesigner_Form),
+                typeof(ReportPreviewExport_Form),
+                typeof(ReportGenerator_Form),
 
                 // ReturnProduct
                 typeof(ReturnProduct_Form),
@@ -709,6 +772,10 @@ namespace Sales_Tracker.Language
 
                 case RichTextBox textBox:
                     AddTextToTranslate(textsToTranslate, controlKey, textBox.Text);
+                    break;
+
+                case Guna2GroupBox guna2GroupBox:
+                    AddTextToTranslate(textsToTranslate, controlKey, guna2GroupBox.Text);
                     break;
 
                 case Guna2TextBox guna2TextBox:

@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.DataClasses;
 using System.Collections;
 using System.ComponentModel;
 
@@ -128,7 +129,8 @@ namespace Sales_Tracker.UI
                 Dock = DockStyle.Fill,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleLeft,
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
             };
 
             sectionPanel.Controls.Add(sectionLabel);
@@ -282,7 +284,8 @@ namespace Sales_Tracker.UI
                 Font = new Font("Segoe UI", 9F),
                 ForeColor = Color.Black,
                 Cursor = Cursors.Hand,
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
             };
 
             // Add controls to item panel
