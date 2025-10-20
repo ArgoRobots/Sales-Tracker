@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -18,7 +19,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
-        public override string DisplayName => "date range";
+        public override string DisplayName => LanguageManager.TranslateString("date range");
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()
         {
@@ -45,14 +46,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
             DateTime? startDate = config.Filters.StartDate;
             DateTime? endDate = config.Filters.EndDate;
 
-            string dateText = "Period: ";
+            string dateText = LanguageManager.TranslateString("Period") + ": ";
             if (startDate.HasValue && endDate.HasValue)
             {
                 dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
             }
             else
             {
-                dateText += "Not specified";
+                dateText += LanguageManager.TranslateString("Not specified");
             }
 
             using Font font = new(FontFamily, FontSize, FontStyle);
@@ -72,9 +73,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager for recording property changes
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Date format
-            AddPropertyLabel(container, "Format:", yPosition);
+            text = LanguageManager.TranslateString("Format") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] dateFormats = ["yyyy-MM-dd", "MM/dd/yyyy", "dd/MM/yyyy", "MMM dd, yyyy", "MMMM dd, yyyy",
                             "dd-MMM-yyyy", "yyyy/MM/dd", "dd.MM.yyyy"];
             Guna2ComboBox formatCombo = AddPropertyComboBox(container, DateFormat, yPosition, dateFormats,
@@ -96,7 +99,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Family
-            AddPropertyLabel(container, "Font:", yPosition);
+            text = LanguageManager.TranslateString("Font") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
                              "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
                              "Times New Roman", "Trebuchet MS", "Verdana"];
@@ -119,7 +123,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Size
-            AddPropertyLabel(container, "Size:", yPosition);
+            text = LanguageManager.TranslateString("Size") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -140,7 +145,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Style (Bold, Italic, Underline)
-            AddPropertyLabel(container, "Style:", yPosition);
+            text = LanguageManager.TranslateString("Style") + ":";
+            AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
             int xPosition = 85;
@@ -258,7 +264,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Horizontal Alignment
-            AddPropertyLabel(container, "H-Align:", yPosition);
+            text = LanguageManager.TranslateString("H-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] hAlignmentOptions = ["Near", "Center", "Far"];
             Guna2ComboBox hAlignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
                 value =>
@@ -281,7 +288,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
-            AddPropertyLabel(container, "V-Align:", yPosition);
+            text = LanguageManager.TranslateString("V-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] vAlignmentOptions = ["Near", "Center", "Far"];
             Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignment.ToString(), yPosition, vAlignmentOptions,
                 value =>
@@ -304,7 +312,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Text Color
-            AddPropertyLabel(container, "Color:", yPosition);
+            text = LanguageManager.TranslateString("Color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
                 color =>
                 {
@@ -324,7 +333,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Add label next to color picker
             Label colorLabel = new()
             {
-                Text = "Click to change",
+                Text = LanguageManager.TranslateString("Click to change"),
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
                 Location = new Point(140, yPosition + 11),

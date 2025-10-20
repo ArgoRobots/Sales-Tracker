@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Language;
+﻿using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.UI;
 using System.Diagnostics;
 
@@ -34,6 +35,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             StoreInitialSizes();
             SetEventHandlers();
             ScaleControls();
+            SetAccessibleDescriptions();
         }
         private void InitializeExportSettings()
         {
@@ -83,6 +85,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DpiHelper.ScaleComboBox(ExportFormat_ComboBox);
             DpiHelper.ScaleGroupBox(Preview_GroupBox);
             DpiHelper.ScaleGroupBox(ExportSettings_GroupBox);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            ZoomStatus_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            QualityValue_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers
@@ -364,7 +371,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Helper methods
         private void UpdateQualityLabel()
         {
-            Quality_ValueLabel.Text = $"{Quality_TrackBar.Value}%";
+            QualityValue_Label.Text = $"{Quality_TrackBar.Value}%";
         }
 
         // Form implementation methods

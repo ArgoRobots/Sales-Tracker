@@ -47,14 +47,20 @@ namespace Sales_Tracker.ReportGenerator
             UpdateProgressIndicator();
 
             UpdateTheme();
-            LanguageManager.UpdateLanguageForControl(this);
             SetAccessibleDescriptions();
+            LanguageManager.UpdateLanguageForControl(this);
+            AlignControlsAfterLanguageChange();
             AnimateButtons();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel, UndoRedoHistoryDropdown.Panel);
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        public static void AlignControlsAfterLanguageChange()
+        {
+            ReportDataSelection_Form.Instance.AlignControlsAfterLanguageChange();
+            PageSettings_Form.Instance?.AlignControlsAfterLanguageChange();
         }
         private void InitializeChildForms()
         {
@@ -139,7 +145,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetAccessibleDescriptions()
         {
-            StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ProgressValue_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         public void AnimateButtons()

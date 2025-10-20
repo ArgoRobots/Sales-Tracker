@@ -9,6 +9,7 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.GridView;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
 using System.Drawing.Drawing2D;
@@ -114,7 +115,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
-        public override string DisplayName => "chart";
+        public override string DisplayName => LanguageManager.TranslateString("chart");
         public override ReportElementType GetElementType() => ReportElementType.Chart;
         public override BaseElement Clone()
         {
@@ -136,130 +137,123 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            try
+            // Get the current graphics transform
+            float scaleX = graphics.Transform.Elements[0];
+            float scaleY = graphics.Transform.Elements[3];
+
+            // Check if we need to regenerate the cached bitmap
+            bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
+
+            if (needsRegeneration)
             {
-                // Get the current graphics transform
-                float scaleX = graphics.Transform.Elements[0];
-                float scaleY = graphics.Transform.Elements[3];
+                // Check if configuration has changed and reload chart data if necessary
+                bool needsReload = ShouldReloadChart(ChartType, config);
 
-                // Check if we need to regenerate the cached bitmap
-                bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
-
-                if (needsRegeneration)
+                if (_chartControl == null || needsReload)
                 {
-                    // Check if configuration has changed and reload chart data if necessary
-                    bool needsReload = ShouldReloadChart(ChartType, config);
-
-                    if (_chartControl == null || needsReload)
+                    // Dispose of old control if reloading
+                    if (_chartControl != null && needsReload)
                     {
-                        // Dispose of old control if reloading
-                        if (_chartControl != null && needsReload)
-                        {
-                            _chartControl.Dispose();
-                            _chartControl = null;
-                        }
-
-                        LoadChartData(ChartType, config);
+                        _chartControl.Dispose();
+                        _chartControl = null;
                     }
 
-                    // Clear old cached bitmap
-                    if (_cachedBitmap != null)
-                    {
-                        _cachedBitmap.Dispose();
-                        _cachedBitmap = null;
-                    }
-
-                    // Generate and cache the new bitmap
-                    if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
-                    {
-                        _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
-                    }
-                    else if (_chartControl != null && _chartControl is PieChart pieChart)
-                    {
-                        _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
-                    }
-                    else if (_chartControl != null && _chartControl is GeoMap geoMap)
-                    {
-                        _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
-                    }
-
-                    // Update cache metadata
-                    if (_cachedBitmap != null)
-                    {
-                        _cachedSize = Bounds.Size;
-                        _cachedRenderScale = renderScale;
-
-                        if (config?.Filters != null)
-                        {
-                            _cachedConfig = (
-                                config.Filters.StartDate,
-                                config.Filters.EndDate,
-                                config.Filters.IncludeReturns,
-                                config.Filters.IncludeLosses
-                            );
-                        }
-                    }
+                    LoadChartData(ChartType, config);
                 }
 
-                // Render the cached bitmap
+                // Clear old cached bitmap
                 if (_cachedBitmap != null)
                 {
-                    GraphicsState state = graphics.Save();
-                    try
-                    {
-                        graphics.ResetTransform();
-                        PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                        Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                        tempTransform.TransformPoints(points);
-
-                        Rectangle targetRect = new(
-                            (int)points[0].X,
-                            (int)points[0].Y,
-                            (int)(Bounds.Width * scaleX),
-                            (int)(Bounds.Height * scaleY)
-                        );
-
-                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        graphics.CompositingQuality = CompositingQuality.HighQuality;
-                        graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                        graphics.DrawImage(_cachedBitmap, targetRect);
-                    }
-                    finally
-                    {
-                        graphics.Restore(state);
-                    }
-                }
-                else
-                {
-                    // Fallback to placeholder if chart control is not available
-                    RenderPlaceholder(graphics, $"Chart: {ChartType}");
+                    _cachedBitmap.Dispose();
+                    _cachedBitmap = null;
                 }
 
-                // Draw border if needed (drawn after bitmap)
-                if (_borderColor != Color.Transparent && _borderThickness > 0)
+                // Generate and cache the new bitmap
+                if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
                 {
-                    using Pen borderPen = new(_borderColor, _borderThickness);
+                    _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
+                }
+                else if (_chartControl != null && _chartControl is PieChart pieChart)
+                {
+                    _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
+                }
+                else if (_chartControl != null && _chartControl is GeoMap geoMap)
+                {
+                    _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
+                }
 
-                    // Adjust rectangle to account for border thickness to prevent clipping
-                    Rectangle borderRect = Bounds;
-                    if (_borderThickness > 1)
+                // Update cache metadata
+                if (_cachedBitmap != null)
+                {
+                    _cachedSize = Bounds.Size;
+                    _cachedRenderScale = renderScale;
+
+                    if (config?.Filters != null)
                     {
-                        int offset = _borderThickness / 2;
-                        borderRect = new Rectangle(
-                            Bounds.X + offset,
-                            Bounds.Y + offset,
-                            Bounds.Width - _borderThickness,
-                            Bounds.Height - _borderThickness
+                        _cachedConfig = (
+                            config.Filters.StartDate,
+                            config.Filters.EndDate,
+                            config.Filters.IncludeReturns,
+                            config.Filters.IncludeLosses
                         );
                     }
-
-                    graphics.DrawRectangle(borderPen, borderRect);
                 }
             }
-            catch (Exception ex)
+
+            // Render the cached bitmap
+            if (_cachedBitmap != null)
             {
-                RenderErrorPlaceholder(graphics, $"Chart Error: {ex.Message}");
+                GraphicsState state = graphics.Save();
+                try
+                {
+                    graphics.ResetTransform();
+                    PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                    Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                    tempTransform.TransformPoints(points);
+
+                    Rectangle targetRect = new(
+                        (int)points[0].X,
+                        (int)points[0].Y,
+                        (int)(Bounds.Width * scaleX),
+                        (int)(Bounds.Height * scaleY)
+                    );
+
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.CompositingQuality = CompositingQuality.HighQuality;
+                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                    graphics.DrawImage(_cachedBitmap, targetRect);
+                }
+                finally
+                {
+                    graphics.Restore(state);
+                }
+            }
+            else
+            {
+                // Fallback to placeholder if chart control is not available
+                RenderPlaceholder(graphics, $"Chart: {ChartType}");
+            }
+
+            // Draw border if needed (drawn after bitmap)
+            if (_borderColor != Color.Transparent && _borderThickness > 0)
+            {
+                using Pen borderPen = new(_borderColor, _borderThickness);
+
+                // Adjust rectangle to account for border thickness to prevent clipping
+                Rectangle borderRect = Bounds;
+                if (_borderThickness > 1)
+                {
+                    int offset = _borderThickness / 2;
+                    borderRect = new Rectangle(
+                        Bounds.X + offset,
+                        Bounds.Y + offset,
+                        Bounds.Width - _borderThickness,
+                        Bounds.Height - _borderThickness
+                    );
+                }
+
+                graphics.DrawRectangle(borderPen, borderRect);
             }
         }
         private bool ShouldRegenerateBitmap(ReportConfiguration config, float renderScale)
@@ -932,9 +926,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager for recording property changes
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Chart type selector
-            AddPropertyLabel(container, "Chart:", yPosition);
+            text = LanguageManager.TranslateString("Chart") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
                 GetAvailableChartTypes(),
                 value =>
@@ -964,7 +960,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font family
-            AddPropertyLabel(container, "Font:", yPosition);
+            text = LanguageManager.TranslateString("Font") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
                              "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
             Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
@@ -986,7 +983,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Title font size
-            AddPropertyLabel(container, "Title Size:", yPosition);
+            text = LanguageManager.TranslateString("Title Size") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
                 value =>
                 {
@@ -1008,7 +1006,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Legend font size
-            AddPropertyLabel(container, "Legend Size:", yPosition);
+            text = LanguageManager.TranslateString("Title Size") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
                 value =>
                 {
@@ -1030,7 +1029,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Border thickness
-            AddPropertyLabel(container, "Border thickness:", yPosition);
+            text = LanguageManager.TranslateString("Border thickness") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, _borderThickness, yPosition,
                 value =>
                 {
@@ -1052,8 +1052,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Border color
-            AddPropertyLabel(container, "Border:", yPosition);
-            Panel _borderColorPanel = AddColorPicker(container, yPosition, 85, _borderColor,
+            text = LanguageManager.TranslateString("Border color") + ":";
+            AddPropertyLabel(container, text, yPosition);
+            Panel _borderColorPanel = AddColorPicker(container, yPosition, 170, _borderColor,
                 color =>
                 {
                     if (_borderColor.ToArgb() != color.ToArgb())
@@ -1069,22 +1070,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     }
                 }, showLabel: false);
 
-            // Add label next to color picker
-            Label _borderColorLabel = new()
-            {
-                Text = "Click to change",
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 11),
-                AutoSize = true
-            };
-            container.Controls.Add(_borderColorLabel);
-
             CacheControl("_borderColor", _borderColorPanel, () => _borderColorPanel.BackColor = _borderColor);
             yPosition += ControlRowHeight;
 
             // Show legend checkbox
-            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, "Show Legend", ShowLegend, yPosition,
+            text = LanguageManager.TranslateString("Show Legend");
+            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, text, ShowLegend, yPosition,
                 value =>
                 {
                     if (ShowLegend != value)
@@ -1103,7 +1094,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Show title checkbox
-            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, "Show Title", ShowTitle, yPosition,
+            text = LanguageManager.TranslateString("Show Title");
+            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTitle, yPosition,
                 value =>
                 {
                     if (ShowTitle != value)
@@ -1144,24 +1136,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             graphics.DrawString(text, font, textBrush, Bounds, format);
-        }
-        private void RenderErrorPlaceholder(Graphics graphics, string errorMessage)
-        {
-            using SolidBrush brush = new(Color.LightPink);
-            using Pen pen = new(Color.Red, 2);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.DarkRed);
-
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
         }
         public void InvalidateCache()
         {

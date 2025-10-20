@@ -10,13 +10,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
     public partial class PageSettings_Form : Form
     {
         // Properties
+        private static PageSettings_Form _instance;
         private bool _isUpdating;
         private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
+
+        // Getters
+        public static PageSettings_Form Instance => _instance;
 
         // Init.
         public PageSettings_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             SetupPageSettings();
             ScaleControls();
@@ -64,7 +69,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 // Setup page numbers checkbox and input
                 ShowPageNumbers_CheckBox.Checked = ReportConfig?.ShowPageNumbers ?? true;
-                PageNumber_NumericUpDown.Value = ReportConfig.CurrentPageNumber;
+                PageNumber_NumericUpDown.Value = ReportConfig?.CurrentPageNumber ?? 0;
 
                 // Set initial enabled states based on footer and show page numbers
                 ShowPageNumbers_CheckBox.Enabled = IncludeFooter_CheckBox.Checked;
@@ -79,6 +84,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             DpiHelper.ScaleComboBox(PageSize_ComboBox);
             DpiHelper.ScaleComboBox(PageOrientation_ComboBox);
+        }
+        public void AlignControlsAfterLanguageChange()
+        {
+            Title_Label.Left = (ClientSize.Width - Title_Label.Width) / 2;
         }
 
         // Form event handlers

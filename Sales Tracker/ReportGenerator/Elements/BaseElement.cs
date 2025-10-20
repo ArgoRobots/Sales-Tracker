@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Guna.UI2.WinForms.Enums;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
 
@@ -180,6 +181,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Dictionary<string, Control> controls = [];
             updateActions = [];
+            string text;
 
             // Get the UndoRedoManager instance
             UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
@@ -256,7 +258,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Width
-            AddPropertyLabel(container, "Width:", yPosition);
+            text = LanguageManager.TranslateString("Width");
+            AddPropertyLabel(container, text + ":", yPosition);
             int oldWidth = element?.Bounds.Width ?? 100;
             Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, oldWidth, yPosition,
                 value =>
@@ -291,7 +294,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Height
-            AddPropertyLabel(container, "Height:", yPosition);
+            text = LanguageManager.TranslateString("Height");
+            AddPropertyLabel(container, text + ":", yPosition);
             int oldHeight = element?.Bounds.Height ?? 100;
             Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, oldHeight, yPosition,
                 value =>
@@ -511,7 +515,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Label colorLabel = new()
                 {
-                    Text = "Click to change",
+                    Text = LanguageManager.TranslateString("Click to change"),
                     Font = new Font("Segoe UI", 8),
                     ForeColor = Color.Gray,
                     Location = new Point(xPosition + 55, yPosition + 11),

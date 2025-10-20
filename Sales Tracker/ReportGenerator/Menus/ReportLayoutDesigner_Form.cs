@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -1858,7 +1859,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void HidePropertiesPanel()
         {
-            ElementProperties_Label.Text = "No element selected";
+            ElementProperties_Label.Text = LanguageManager.TranslateString("No element selected");
             PropertiesContainer_Panel.Controls.Clear();
             _currentPropertyElement = null;
         }
@@ -2090,8 +2091,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 },
                 ReportElementType.Label => new LabelElement
                 {
-                    Bounds = new Rectangle(location, new Size(200, 30)),
-                    Text = "Sample Text"
+                    Bounds = new Rectangle(location, new Size(200, 30))
                 },
                 ReportElementType.DateRange => new DateRangeElement
                 {
@@ -2099,7 +2099,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 },
                 ReportElementType.Summary => new SummaryElement
                 {
-                    Bounds = new Rectangle(location, new Size(300, 120))
+                    Bounds = new Rectangle(location, new Size(300, 170))
                 },
                 ReportElementType.TransactionTable => new TableElement
                 {

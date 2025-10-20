@@ -442,7 +442,6 @@
             // 
             // Undo_Button
             // 
-            Undo_Button.Anchor = AnchorStyles.Top;
             Undo_Button.BorderColor = Color.LightGray;
             Undo_Button.BorderRadius = 4;
             Undo_Button.BorderThickness = 1;
@@ -468,7 +467,6 @@
             // 
             // UndoDropdown_Button
             // 
-            UndoDropdown_Button.Anchor = AnchorStyles.Top;
             UndoDropdown_Button.BorderColor = Color.LightGray;
             UndoDropdown_Button.BorderRadius = 4;
             UndoDropdown_Button.BorderThickness = 1;
@@ -494,7 +492,6 @@
             // 
             // Redo_Button
             // 
-            Redo_Button.Anchor = AnchorStyles.Top;
             Redo_Button.BorderColor = Color.LightGray;
             Redo_Button.BorderRadius = 4;
             Redo_Button.BorderThickness = 1;
@@ -520,7 +517,6 @@
             // 
             // RedoDropdown_Button
             // 
-            RedoDropdown_Button.Anchor = AnchorStyles.Top;
             RedoDropdown_Button.BorderColor = Color.LightGray;
             RedoDropdown_Button.BorderRadius = 4;
             RedoDropdown_Button.BorderThickness = 1;

@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -60,13 +61,17 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox);
             ChartSelection_CheckedListBox.ItemCheck += new ItemCheckEventHandler(ChartSelection_CheckedListBox_ItemCheck);
+            ChartSelection_CheckedListBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
 
             ChartSelection_GroupBox.Controls.Add(ChartSelection_CheckedListBox);
         }
         private void SetupChartSelection()
         {
+            string title;
+
             // Overview Section
-            ChartSelection_CheckedListBox.AddSection("Overview");
+            title = LanguageManager.TranslateString("Overview");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.TotalExpensesVsSales, TranslatedChartTitles.SalesVsExpenses);
             AddChartItem(MainMenu_Form.ChartDataType.Profits, TranslatedChartTitles.TotalProfits);
             AddChartItem(MainMenu_Form.ChartDataType.TotalTransactions, TranslatedChartTitles.TotalTransactions);
@@ -74,7 +79,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Financial Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Financial");
+            title = LanguageManager.TranslateString("Financial");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.TotalSales, TranslatedChartTitles.TotalRevenue);
             AddChartItem(MainMenu_Form.ChartDataType.TotalPurchases, TranslatedChartTitles.TotalExpenses);
             AddChartItem(MainMenu_Form.ChartDataType.DistributionOfSales, TranslatedChartTitles.RevenueDistribution);
@@ -82,7 +88,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Geographic Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Geographic Analysis");
+            title = LanguageManager.TranslateString("Geographic Analysis");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.WorldMap, TranslatedChartTitles.WorldMap);
             AddChartItem(MainMenu_Form.ChartDataType.CountriesOfOrigin, TranslatedChartTitles.CountriesOfOrigin);
             AddChartItem(MainMenu_Form.ChartDataType.CountriesOfDestination, TranslatedChartTitles.CountriesOfDestination);
@@ -90,18 +97,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Performance Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Performance");
+            title = LanguageManager.TranslateString("Performance");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.GrowthRates, TranslatedChartTitles.GrowthRates);
 
             // Operational Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Operational");
+            title = LanguageManager.TranslateString("Operational");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.Accountants, TranslatedChartTitles.AccountantsTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageShippingCosts, TranslatedChartTitles.AverageShippingCosts);
 
             // Returns Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Returns Analysis");
+            title = LanguageManager.TranslateString("Returns Analysis");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnsOverTime, TranslatedChartTitles.ReturnsOverTime);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnReasons, TranslatedChartTitles.ReturnReasons);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnFinancialImpact, TranslatedChartTitles.ReturnFinancialImpact);
@@ -111,7 +121,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Lost Products Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Lost Products");
+            title = LanguageManager.TranslateString("Lost Products");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.LossesOverTime, TranslatedChartTitles.LossesOverTime);
             AddChartItem(MainMenu_Form.ChartDataType.LossReasons, TranslatedChartTitles.LossReasons);
             AddChartItem(MainMenu_Form.ChartDataType.LossFinancialImpact, TranslatedChartTitles.LossFinancialImpact);
@@ -170,6 +181,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DpiHelper.ScaleGroupBox(ReportSettings_GroupBox);
             DpiHelper.ScaleGroupBox(DateRange_GroupBox);
         }
+        public void AlignControlsAfterLanguageChange()
+        {
+            ReportTitle_TextBox.Left = ReportTitle_Label.Right + 10;
+
+            if (ReportTitle_TextBox.Right > ReportSettings_GroupBox.ClientSize.Width - ReportSettings_GroupBox.Padding.Right - 10)
+            {
+                ReportTitle_TextBox.Width = ReportSettings_GroupBox.ClientSize.Width - ReportSettings_GroupBox.Padding.Right - 10 - ReportTitle_TextBox.Left;
+            }
+
+            // Determine which label is wider
+            int maxRight = Math.Max(StartDate_Label.Right, EndDate_Label.Right);
+
+            // Align both DateTimePickers to the widest label
+            StartDate_DateTimePicker.Left = maxRight + 10;
+            EndDate_DateTimePicker.Left = maxRight + 10;
+
+        }
 
         /// <summary>
         /// Manages date presets and their associated radio buttons.
@@ -179,12 +207,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             public Guna2CustomRadioButton RadioButton { get; set; }
             public string Name { get; set; }
             public Func<(DateTime start, DateTime end)> GetDateRange { get; set; }
-
-            public bool Matches(DateTime startDate, DateTime endDate)
-            {
-                (DateTime start, DateTime end) = GetDateRange();
-                return start.Date == startDate.Date && end.Date == endDate.Date;
-            }
         }
 
         private List<DatePreset> _datePresets;
@@ -318,6 +340,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 });
             }
         }
+        public void UpdateLanguageForChartSelectionControl()
+        {
+            if (_isUpdating) { return; }
+
+            PerformUpdate(() =>
+            {
+                for (int i = 0; i < ChartSelection_CheckedListBox.Count; i++)
+                {
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                    string displayName = TranslatedChartTitles.GetChartDisplayName(chartType);
+                    ChartSelection_CheckedListBox.Items[i] = displayName;
+                }
+            });
+        }
 
         // Form event handlers
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)
@@ -418,9 +454,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             if (!_isUpdating)
             {
-                string templateName = Template_ComboBox.SelectedItem?.ToString();
+                int templateIndex = Template_ComboBox.SelectedIndex;
 
-                if (Template_ComboBox.SelectedIndex == 0)
+                if (templateIndex == 0)
                 {
                     // Custom Report selected - don't apply any template
                     if (ReportConfig != null)
@@ -430,7 +466,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    ApplyTemplate(templateName);
+                    ApplyTemplateByIndex(templateIndex);
                 }
             }
         }
@@ -583,14 +619,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             StartDate_DateTimePicker.BorderColor = color;
             EndDate_DateTimePicker.BorderColor = color;
         }
-        private void ApplyTemplate(string templateName)
+        private void ApplyTemplateByIndex(int index)
         {
-            if (string.IsNullOrEmpty(templateName)) { return; }
+            if (index < 0) { return; }
 
             _isUpdating = true;
             try
             {
-                ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
+                ReportConfiguration template = ReportTemplates.CreateFromTemplateIndex(index);
 
                 // Apply the template configuration to the parent's report config
                 if (ReportConfig != null)
@@ -625,7 +661,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                     // Copy template metadata
                     ReportConfig.Title = template.Title;
-                    ReportConfig.Description = template.Description;
                 }
 
                 // Apply the template settings to the form controls

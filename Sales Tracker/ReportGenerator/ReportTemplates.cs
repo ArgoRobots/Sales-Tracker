@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.ReportGenerator.Elements;
+﻿using Sales_Tracker.Language;
+using Sales_Tracker.ReportGenerator.Elements;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -12,8 +13,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Monthly Sales Report",
-                Description = "Comprehensive monthly sales performance analysis",
+                Title = LanguageManager.TranslateString("Monthly Sales Report"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -40,8 +40,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Financial Overview",
-                Description = "Complete financial performance summary",
+                Title = LanguageManager.TranslateString("Financial Overview"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -68,8 +67,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Performance Analysis",
-                Description = "Detailed business performance metrics and trends",
+                Title = LanguageManager.TranslateString("Performance Analysis"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -96,8 +94,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Returns Analysis",
-                Description = "Analysis of product returns",
+                Title = LanguageManager.TranslateString("Returns Analysis"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -127,8 +124,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Losses Analysis",
-                Description = "Analysis of inventory losses",
+                Title = LanguageManager.TranslateString("Losses Analysis"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Portrait,
                 ShowHeader = true,
@@ -158,8 +154,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             ReportConfiguration config = new()
             {
-                Title = "Geographic Analysis",
-                Description = "Geographic distribution of sales and purchases",
+                Title = LanguageManager.TranslateString("Geographic Analysis"),
                 PageSize = PageSize.A4,
                 PageOrientation = PageOrientation.Landscape,
                 ShowHeader = true,
@@ -516,17 +511,18 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.GeographicAnalysis
             ];
         }
-        public static ReportConfiguration CreateFromTemplate(string templateName)
+        public static ReportConfiguration CreateFromTemplateIndex(int index)
         {
-            return templateName switch
+            return index switch
             {
-                TemplateNames.MonthlySales => CreateMonthlySalesTemplate(),
-                TemplateNames.FinancialOverview => CreateFinancialOverviewTemplate(),
-                TemplateNames.PerformanceAnalysis => CreatePerformanceAnalysisTemplate(),
-                TemplateNames.ReturnsAnalysis => CreateReturnsAnalysisTemplate(),
-                TemplateNames.LossesAnalysis => CreateLossesAnalysisTemplate(),
-                TemplateNames.GeographicAnalysis => CreateGeographicAnalysisTemplate(),
-                _ => new ReportConfiguration()  // Custom report
+                0 => new ReportConfiguration(),  // Custom report
+                1 => CreateMonthlySalesTemplate(),
+                2 => CreateFinancialOverviewTemplate(),
+                3 => CreatePerformanceAnalysisTemplate(),
+                4 => CreateReturnsAnalysisTemplate(),
+                5 => CreateLossesAnalysisTemplate(),
+                6 => CreateGeographicAnalysisTemplate(),
+                _ => new ReportConfiguration()
             };
         }
     }

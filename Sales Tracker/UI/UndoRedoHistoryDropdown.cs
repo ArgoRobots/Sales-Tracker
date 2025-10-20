@@ -19,7 +19,7 @@ namespace Sales_Tracker.UI
         // Static fields for tracking current dropdown
         public static Guna2Panel? Panel { get; private set; }
         private static Panel? _itemsPanel;
-        private static Label? _actionLabel;
+        public static Label? ActionLabel { get; private set; }
         private static readonly List<HistoryItem> _historyItems = [];
         private static bool _isUndoHistory;
 
@@ -71,7 +71,7 @@ namespace Sales_Tracker.UI
             };
 
             // Action count label at bottom
-            _actionLabel = new Label
+            ActionLabel = new Label
             {
                 Width = PANEL_WIDTH,
                 Height = LABEL_HEIGHT,
@@ -84,7 +84,7 @@ namespace Sales_Tracker.UI
             };
 
             Panel.Controls.Add(_itemsPanel);
-            Panel.Controls.Add(_actionLabel);
+            Panel.Controls.Add(ActionLabel);
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace Sales_Tracker.UI
         {
             Panel.Parent?.Controls.Remove(Panel);
             _historyItems.Clear();
-            if (_actionLabel != null)
+            if (ActionLabel != null)
             {
-                _actionLabel.Visible = false;
+                ActionLabel.Visible = false;
             }
         }
 
@@ -125,7 +125,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void PopulateHistory(UndoRedoManager undoRedoManager, bool isUndoHistory, Action onActionPerformed)
         {
-            if (_itemsPanel == null || Panel == null || _actionLabel == null) { return; }
+            if (_itemsPanel == null || Panel == null || ActionLabel == null) { return; }
 
             _historyItems.Clear();
             _itemsPanel.Controls.Clear();
@@ -168,8 +168,8 @@ namespace Sales_Tracker.UI
                 _itemsPanel.Height = itemsPanelHeight;
 
                 // Position and size the label
-                _actionLabel.Location = new Point(PANEL_PADDING, itemsPanelHeight + PANEL_PADDING);
-                _actionLabel.Width = PANEL_WIDTH;
+                ActionLabel.Location = new Point(PANEL_PADDING, itemsPanelHeight + PANEL_PADDING);
+                ActionLabel.Width = PANEL_WIDTH;
 
                 // Set total panel height including label
                 Panel.Height = itemsPanelHeight + LABEL_HEIGHT + PANEL_PADDING * 2;
@@ -228,13 +228,13 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void UpdateActionLabel(int count)
         {
-            if (_actionLabel == null) { return; }
+            if (ActionLabel == null) { return; }
 
             string actionType = _isUndoHistory ? "Undo" : "Redo";
             string pluralSuffix = count == 1 ? "" : "s";
 
-            _actionLabel.Text = $"{actionType} {count} Action{pluralSuffix}";
-            _actionLabel.Visible = true;
+            ActionLabel.Text = $"{actionType} {count} Action{pluralSuffix}";
+            ActionLabel.Visible = true;
         }
 
         /// <summary>
