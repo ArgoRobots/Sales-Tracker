@@ -224,7 +224,7 @@ namespace Sales_Tracker.ReportGenerator
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Report Generator";
-            FormClosing += ReportGenerator_Form_FormClosing;
+            FormClosed += ReportGenerator_Form_FormClosed;
             Shown += ReportGenerator_Form_Shown;
             BottomNavigation_Panel.ResumeLayout(false);
             Top_Panel.ResumeLayout(false);
