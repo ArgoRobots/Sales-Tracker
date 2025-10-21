@@ -320,6 +320,9 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
+
+            // Update all custom tooltips with the new language
+            CustomTooltip.UpdateAllToolTipTranslations();
         }
 
         /// <summary>
