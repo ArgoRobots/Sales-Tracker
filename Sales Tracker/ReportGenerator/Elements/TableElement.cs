@@ -2,6 +2,8 @@
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
+using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 using System.Data;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -586,6 +588,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderNoDataMessage(Graphics graphics)
         {
+            // Draw background
+            using (SolidBrush baseBgBrush = new(BaseRowColor))
+            {
+                graphics.FillRectangle(baseBgBrush, Bounds);
+            }
+
             using Font font = new("Segoe UI", 10);
             using SolidBrush brush = new(Color.Gray);
 
@@ -597,6 +605,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             string text = LanguageManager.TranslateString("No transactions to display");
             graphics.DrawString(text, font, brush, Bounds, format);
+
+            // Draw border
+            using Pen borderPen = new(Color.Black, 1);
+            graphics.DrawRectangle(borderPen, Bounds);
         }
         private void RenderErrorMessage(Graphics graphics, string message)
         {
@@ -620,31 +632,53 @@ namespace Sales_Tracker.ReportGenerator.Elements
         // Override the property to indicate this element handles its own common controls
         public override bool HandlesOwnCommonControls => true;
 
-        public static Panel General_Panel { get; private set; }
-        public static Panel Style_Panel { get; private set; }
-        public static Panel Columns_Panel { get; private set; }
+        public Panel General_Panel { get; private set; }
+        public Panel Style_Panel { get; private set; }
+        public Panel Columns_Panel { get; private set; }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
-            // Create panels for each tab (only once)
-            General_Panel = CreateTabPanel(container, true);
-            Style_Panel = CreateTabPanel(container, false);
-            Columns_Panel = CreateTabPanel(container, false);
-
-            container.Controls.Add(General_Panel);
-            container.Controls.Add(Style_Panel);
-            container.Controls.Add(Columns_Panel);
+            // Create panels for each tab
+            General_Panel = CreateTabPanel();
+            Style_Panel = CreateTabPanel();
+            Columns_Panel = CreateTabPanel();
 
             // Create controls for each tab panel
-            CreateGeneralTabControls(General_Panel, 0, onPropertyChanged);
-            CreateStyleTabControls(Style_Panel, 0, onPropertyChanged);
-            CreateColumnsTabControls(Columns_Panel, 0, onPropertyChanged);
+            CreateGeneralTabControls(General_Panel, onPropertyChanged);
+            CreateStyleTabControls(Style_Panel, onPropertyChanged);
+            CreateColumnsTabControls(Columns_Panel, onPropertyChanged);
+
+            // Capture instance for the handler
+            Panel generalPanel = General_Panel;
+            Panel stylePanel = Style_Panel;
+            Panel columnsPanel = Columns_Panel;
 
             // Tab changed handler
-            static void TabChangedHandler(int tabIndex)
+            void TabChangedHandler(int tabIndex)
             {
-                General_Panel.Visible = tabIndex == 0;
-                Style_Panel.Visible = tabIndex == 1;
-                Columns_Panel.Visible = tabIndex == 2;
+                // This prevents flickering
+                LoadingPanel.ShowBlankLoadingPanel(CachedPropertyPanel, CustomColors.ControlBack);
+
+                generalPanel.Visible = false;
+                stylePanel.Visible = false;
+                columnsPanel.Visible = false;
+
+                if (tabIndex == 0)
+                {
+                    generalPanel.Visible = true;
+                    ThemeManager.CustomizeScrollBar(generalPanel);
+                }
+                else if (tabIndex == 1)
+                {
+                    stylePanel.Visible = true;
+                    ThemeManager.CustomizeScrollBar(stylePanel);
+                }
+                else if (tabIndex == 2)
+                {
+                    columnsPanel.Visible = true;
+                    ThemeManager.CustomizeScrollBar(columnsPanel);
+                }
+
+                LoadingPanel.HideBlankLoadingPanel(CachedPropertyPanel);
             }
 
             // Create tab buttons
@@ -653,22 +687,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 LanguageManager.TranslateString("Style"),
                 LanguageManager.TranslateString("Columns")
             ];
-            Panel tabPanel = CreateTabButtons(container, tabNames, TabChangedHandler);
+            Panel tabPanel = CreateTabButtons(tabNames, TabChangedHandler);
 
             return yPosition + 45;
         }
-
-        private static Panel CreateTabPanel(Panel container, bool visible) => new()
+        private Panel CreateTabPanel()
         {
-            Location = new Point(0, 45),
-            Size = new Size(container.Width, container.Height - 45),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
-            AutoScroll = true,
-            Visible = visible
-        };
+            Panel panel = new()
+            {
+                Location = new Point(0, 45),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
+                AutoScroll = true,
+                Size = new Size(CachedPropertyPanel.Width, CachedPropertyPanel.Height - 45)
+            };
 
-        private void CreateGeneralTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+            CachedPropertyPanel.Controls.Add(panel);
+            return panel;
+        }
+        private void CreateGeneralTabControls(Panel panel, Action onPropertyChanged)
         {
+            int yPosition = 0;
+
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
@@ -836,9 +875,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("ShowTotalsRow", totalsCheck, () => totalsCheck.Checked = ShowTotalsRow);
         }
-
-        private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+        private void CreateStyleTabControls(Panel panel, Action onPropertyChanged)
         {
+            int yPosition = 0;
+
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
@@ -1098,9 +1138,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("ShowGridLines", gridCheck, () => gridCheck.Checked = ShowGridLines);
         }
-
-        private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
+        private void CreateColumnsTabControls(Panel panel, Action onPropertyChanged)
         {
+            int yPosition = 0;
+
             // Get undo manager
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
