@@ -461,7 +461,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     // Custom Report selected - don't apply any template
                     if (ReportConfig != null)
                     {
-                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                        PerformUpdate(() =>
+                        {
+                            ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                        });
                     }
                 }
                 else
