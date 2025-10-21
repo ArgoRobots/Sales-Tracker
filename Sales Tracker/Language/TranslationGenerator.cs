@@ -401,8 +401,13 @@ namespace Sales_Tracker.Language
                 "Scanning for Log.Write calls...");
             Dictionary<string, string> logWriteStrings = CollectAllLogWriteCalls();
 
+            // Get CustomTooltip.SetToolTip calls
+            progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count + messageBoxStrings.Count + logWriteStrings.Count,
+                "Scanning for CustomTooltip.SetToolTip calls...");
+            Dictionary<string, string> tooltipStrings = CollectAllCustomTooltipCalls();
+
             // Merge all collections
-            MergeStringCollections(sourceTexts, translateStringCalls, messageBoxStrings, logWriteStrings);
+            MergeStringCollections(sourceTexts, translateStringCalls, messageBoxStrings, logWriteStrings, tooltipStrings);
 
             // Filter and optimize
             sourceTexts = FilterAndOptimizeTexts(sourceTexts);
@@ -1247,6 +1252,112 @@ namespace Sales_Tracker.Language
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = variable.Value;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Automatically scans source files for CustomTooltip.SetToolTip calls and extracts title/message strings.
+        /// </summary>
+        private static Dictionary<string, string> CollectAllCustomTooltipCalls()
+        {
+            Dictionary<string, string> tooltipStrings = [];
+
+            try
+            {
+                string projectDirectory = FindProjectDirectory();
+
+                if (projectDirectory == null)
+                {
+                    Log.Write(1, "Could not find source directory for CustomTooltip collection");
+                    return tooltipStrings;
+                }
+
+                // Search all .cs files for CustomTooltip.SetToolTip calls
+                string[] csFiles = Directory.GetFiles(projectDirectory, "*.cs", SearchOption.AllDirectories);
+
+                foreach (string file in csFiles)
+                {
+                    if (ShouldSkipFile(file)) { continue; }
+
+                    string content = File.ReadAllText(file);
+                    ExtractCustomTooltipCalls(content, tooltipStrings);
+                }
+
+                Log.WriteWithFormat(1, "Auto-collected {0} CustomTooltip.SetToolTip calls from source code", tooltipStrings.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error collecting CustomTooltip.SetToolTip calls: {0}", ex.Message);
+            }
+
+            return tooltipStrings;
+        }
+
+        /// <summary>
+        /// Extracts CustomTooltip.SetToolTip call strings from source code content.
+        /// </summary>
+        private static void ExtractCustomTooltipCalls(string content, Dictionary<string, string> tooltipStrings)
+        {
+            // Pattern 1: Basic CustomTooltip.SetToolTip calls with regular strings
+            // CustomTooltip.SetToolTip(control, "title", "message")
+            string pattern = @"CustomTooltip\.SetToolTip\s*\([^,]+,\s*""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""";
+            ExtractTooltipMatches(content, pattern, tooltipStrings, false);
+
+            // Pattern 2: Verbatim strings
+            // CustomTooltip.SetToolTip(control, @"title", @"message")
+            string verbatimPattern = @"CustomTooltip\.SetToolTip\s*\([^,]+,\s*@""((?:[^""]|"""")*?)""\s*,\s*@""((?:[^""]|"""")*?)""";
+            ExtractTooltipMatches(content, verbatimPattern, tooltipStrings, true);
+
+            // Pattern 3: Mixed - regular title, verbatim message
+            string mixedPattern1 = @"CustomTooltip\.SetToolTip\s*\([^,]+,\s*""((?:[^""\\]|\\.)*?)""\s*,\s*@""((?:[^""]|"""")*?)""";
+            ExtractTooltipMatches(content, mixedPattern1, tooltipStrings, true, false);
+
+            // Pattern 4: Mixed - verbatim title, regular message
+            string mixedPattern2 = @"CustomTooltip\.SetToolTip\s*\([^,]+,\s*@""((?:[^""]|"""")*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""";
+            ExtractTooltipMatches(content, mixedPattern2, tooltipStrings, false, true);
+        }
+
+        /// <summary>
+        /// Extracts CustomTooltip matches and adds both title and message to collection with proper string handling.
+        /// </summary>
+        private static void ExtractTooltipMatches(string content, string pattern, Dictionary<string, string> tooltipStrings, bool isVerbatim, bool? titleIsVerbatim = null)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string title = match.Groups[1].Value.Trim();
+                    string message = match.Groups[2].Value.Trim();
+
+                    // Process strings based on type
+                    bool processTitleAsVerbatim = titleIsVerbatim ?? isVerbatim;
+                    bool processMessageAsVerbatim = titleIsVerbatim.HasValue ? isVerbatim : isVerbatim;
+
+                    title = processTitleAsVerbatim ? ProcessVerbatimString(title) : ProcessEscapedCharacters(title);
+                    message = processMessageAsVerbatim ? ProcessVerbatimString(message) : ProcessEscapedCharacters(message);
+
+                    // Process title
+                    if (!string.IsNullOrWhiteSpace(title))
+                    {
+                        string titleKey = LanguageManager.GetStringKey(title);
+                        if (!tooltipStrings.ContainsKey(titleKey))
+                        {
+                            tooltipStrings[titleKey] = title;
+                        }
+                    }
+
+                    // Process message
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        string messageKey = LanguageManager.GetStringKey(message);
+                        if (!tooltipStrings.ContainsKey(messageKey))
+                        {
+                            tooltipStrings[messageKey] = message;
+                        }
                     }
                 }
             }
