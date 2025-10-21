@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
 using Svg.Skia;
@@ -51,6 +52,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override string DisplayName => LanguageManager.TranslateString("image");
         public override ReportElementType GetElementType() => ReportElementType.Image;
         public override BaseElement Clone()
         {
@@ -72,62 +74,55 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            try
+            int actualRadius = GetActualCornerRadius();
+
+            // Draw background if not transparent
+            if (BackgroundColor != Color.Transparent)
             {
-                int actualRadius = GetActualCornerRadius();
-
-                // Draw background if not transparent
-                if (BackgroundColor != Color.Transparent)
+                using SolidBrush bgBrush = new(BackgroundColor);
+                if (actualRadius > 0)
                 {
-                    using SolidBrush bgBrush = new(BackgroundColor);
-                    if (actualRadius > 0)
-                    {
-                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                        graphics.FillPath(bgBrush, path);
-                    }
-                    else
-                    {
-                        graphics.FillRectangle(bgBrush, Bounds);
-                    }
-                }
-
-                // Load and render image
-                if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
-                {
-                    string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
-
-                    if (extension == ".svg")
-                    {
-                        RenderSvgImage(graphics);
-                    }
-                    else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
-                    {
-                        RenderBitmapImage(graphics);
-                    }
+                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                    graphics.FillPath(bgBrush, path);
                 }
                 else
                 {
-                    RenderPlaceholder(graphics);
-                }
-
-                // Draw border if specified
-                if (BorderColor != Color.Transparent && BorderThickness > 0)
-                {
-                    using Pen borderPen = new(BorderColor, BorderThickness);
-                    if (actualRadius > 0)
-                    {
-                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                        graphics.DrawPath(borderPen, path);
-                    }
-                    else
-                    {
-                        graphics.DrawRectangle(borderPen, Bounds);
-                    }
+                    graphics.FillRectangle(bgBrush, Bounds);
                 }
             }
-            catch (Exception ex)
+
+            // Load and render image
+            if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
             {
-                RenderErrorPlaceholder(graphics, $"Error: {ex.Message}");
+                string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
+
+                if (extension == ".svg")
+                {
+                    RenderSvgImage(graphics);
+                }
+                else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                {
+                    RenderBitmapImage(graphics);
+                }
+            }
+            else
+            {
+                RenderPlaceholder(graphics);
+            }
+
+            // Draw border if specified
+            if (BorderColor != Color.Transparent && BorderThickness > 0)
+            {
+                using Pen borderPen = new(BorderColor, BorderThickness);
+                if (actualRadius > 0)
+                {
+                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                    graphics.DrawPath(borderPen, path);
+                }
+                else
+                {
+                    graphics.DrawRectangle(borderPen, Bounds);
+                }
             }
         }
 
@@ -388,40 +383,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             string message = string.IsNullOrEmpty(ImagePath)
-                ? "No image selected"
-                : "Image not found";
+                ? LanguageManager.TranslateString("No image selected")
+                : LanguageManager.TranslateString("Image not found");
 
             graphics.DrawString(message, font, textBrush, Bounds, format);
-        }
-        private void RenderErrorPlaceholder(Graphics graphics, string errorMessage)
-        {
-            using SolidBrush brush = new(Color.LightPink);
-            using Pen pen = new(Color.Red, 2);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.DarkRed);
-
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
-
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(errorMessage, font, textBrush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
             // Get undo manager for recording property changes
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Image path with browse button
-            AddPropertyLabel(container, "Image:", yPosition);
+            text = LanguageManager.TranslateString("Image");
+            AddPropertyLabel(container, text, yPosition);
 
             Guna2Button browseButton = new()
             {
-                Text = "Select Image",
+                Text = LanguageManager.TranslateString("Select Image"),
                 Size = new Size(container.Width - 95, ControlHeight),
                 Location = new Point(85, yPosition),
                 BorderRadius = 2,
@@ -435,7 +414,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Display the selected file name below the button
             Label pathLabel = new()
             {
-                Text = !string.IsNullOrEmpty(ImagePath) ? Path.GetFileName(ImagePath) : "No image selected",
+                Text = !string.IsNullOrEmpty(ImagePath)
+                    ? Path.GetFileName(ImagePath)
+                    : LanguageManager.TranslateString("No image selected"),
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
                 Location = new Point(85, yPosition + ControlHeight + 2),
@@ -443,7 +424,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
             container.Controls.Add(pathLabel);
             CacheControl("PathLabel", pathLabel, () =>
-                pathLabel.Text = !string.IsNullOrEmpty(ImagePath) ? Path.GetFileName(ImagePath) : "No image selected");
+                pathLabel.Text = !string.IsNullOrEmpty(ImagePath)
+                    ? Path.GetFileName(ImagePath)
+                    : LanguageManager.TranslateString("No image selected"));
 
             // Update browse button click handler to update the label
             browseButton.Click += (s, e) =>
@@ -494,7 +477,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlHeight + 35;  // Account for button height plus label
 
             // Scale mode
-            AddPropertyLabel(container, "Scale:", yPosition);
+            text = LanguageManager.TranslateString("Scale") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2ComboBox scaleCombo = AddPropertyComboBox(container, ScaleMode.ToString(), yPosition,
                 Enum.GetNames<ImageScaleMode>(),
                 value =>
@@ -516,7 +500,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Opacity
-            AddPropertyLabel(container, "Opacity:", yPosition);
+            text = LanguageManager.TranslateString("Opacity") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition,
                 value =>
                 {
@@ -538,7 +523,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Corner radius
-            AddPropertyLabel(container, "Border radius %:", yPosition);
+            text = LanguageManager.TranslateString("Border radius");
+            AddPropertyLabel(container, text + " %:", yPosition);
             Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition,
                 value =>
                 {
@@ -560,7 +546,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Border thickness
-            AddPropertyLabel(container, "Border thickness:", yPosition);
+            text = LanguageManager.TranslateString("Border thickness") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
                 value =>
                 {
@@ -582,7 +569,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Border color
-            AddPropertyLabel(container, "Border Color:", yPosition);
+            text = LanguageManager.TranslateString("Border Color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor,
                 color =>
                 {
@@ -602,7 +590,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Background color
-            AddPropertyLabel(container, "Background color:", yPosition);
+            text = LanguageManager.TranslateString("Background Color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor,
                 color =>
                 {

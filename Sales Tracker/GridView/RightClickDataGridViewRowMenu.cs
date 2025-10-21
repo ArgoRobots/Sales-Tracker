@@ -26,7 +26,7 @@ namespace Sales_Tracker.GridView
         public static Guna2Button Delete_Button { get; private set; }
 
         // Methods
-        public static void ConstructRightClickRowMenu()
+        public static void Construct()
         {
             Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, 10 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),

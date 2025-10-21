@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -8,7 +9,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class LabelElement : BaseElement
     {
-        public string Text { get; set; } = "Sample Text";
+        // Properties
+        public string Text { get; set; } = LanguageManager.TranslateString("Sample Text");
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 12f;
         public FontStyle FontStyle { get; set; } = FontStyle.Regular;
@@ -16,6 +18,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment Alignment { get; set; } = StringAlignment.Center;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
 
+        // Overrides
+        public override string DisplayName => LanguageManager.TranslateString("label");
         public override ReportElementType GetElementType() => ReportElementType.Label;
         public override BaseElement Clone()
         {
@@ -73,9 +77,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager for recording property changes
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Text content
-            AddPropertyLabel(container, "Text:", yPosition);
+            text = LanguageManager.TranslateString("Text") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2TextBox textBox = AddPropertyTextBox(container, Text, yPosition,
                 newText =>
                 {
@@ -95,7 +101,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Family
-            AddPropertyLabel(container, "Font:", yPosition);
+            text = LanguageManager.TranslateString("Font") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
                              "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
                              "Times New Roman", "Trebuchet MS", "Verdana"];
@@ -118,7 +125,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Size
-            AddPropertyLabel(container, "Size:", yPosition);
+            text = LanguageManager.TranslateString("Size") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -139,7 +147,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Style (Bold, Italic, Underline)
-            AddPropertyLabel(container, "Style:", yPosition);
+            text = LanguageManager.TranslateString("Style") + ":";
+            AddPropertyLabel(container, text, yPosition);
 
             // Store references to the font style buttons for the update action
             Guna2Button boldButton = null;
@@ -263,7 +272,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Text Color
-            AddPropertyLabel(container, "Color:", yPosition);
+            text = LanguageManager.TranslateString("Color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
                 newColor =>
                 {
@@ -281,22 +291,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     onPropertyChanged();
                 }, false);
 
-            // Add label next to color picker
-            Label colorLabel = new()
-            {
-                Text = "Click to change",
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 11),
-                AutoSize = true
-            };
-            container.Controls.Add(colorLabel);
-
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             // Horizontal Alignment
-            AddPropertyLabel(container, "H-Align:", yPosition);
+            text = LanguageManager.TranslateString("H-Align");
             string[] hAlignmentOptions = ["Near", "Center", "Far"];
             Guna2ComboBox hAlignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
                 value =>
@@ -314,11 +313,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Alignment = newAlignment;
                     onPropertyChanged();
                 });
+            hAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
-            AddPropertyLabel(container, "V-Align:", yPosition);
+            text = LanguageManager.TranslateString("V-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] vAlignmentOptions = ["Near", "Center", "Far"];
             Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignment.ToString(), yPosition, vAlignmentOptions,
                 value =>
@@ -336,6 +337,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     VerticalAlignment = newVAlignment;
                     onPropertyChanged();
                 });
+            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
             yPosition += ControlRowHeight;
 

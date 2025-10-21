@@ -47,14 +47,20 @@ namespace Sales_Tracker.ReportGenerator
             UpdateProgressIndicator();
 
             UpdateTheme();
-            LanguageManager.UpdateLanguageForControl(this);
             SetAccessibleDescriptions();
+            LanguageManager.UpdateLanguageForControl(this);
+            AlignControlsAfterLanguageChange();
             AnimateButtons();
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel, UndoRedoHistoryDropdown.Panel);
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        public static void AlignControlsAfterLanguageChange()
+        {
+            ReportDataSelection_Form.Instance.AlignControlsAfterLanguageChange();
+            PageSettings_Form.Instance?.AlignControlsAfterLanguageChange();
         }
         private void InitializeChildForms()
         {
@@ -94,6 +100,11 @@ namespace Sales_Tracker.ReportGenerator
 
             if (ThemeManager.IsDarkTheme())
             {
+                form.Undo_Button.Image = Resources.UndoWhite;
+                form.UndoDropdown_Button.Image = Resources.DropDownWhite;
+                form.Redo_Button.Image = Resources.RedoWhite;
+                form.RedoDropdown_Button.Image = Resources.DropDownWhite;
+
                 form.AlignLeft_Button.Image = Resources.ALignLeftWhite;
                 form.AlignCenter_Button.Image = Resources.AlignCenterWhite;
                 form.AlignRight_Button.Image = Resources.AlignRightWhite;
@@ -111,6 +122,11 @@ namespace Sales_Tracker.ReportGenerator
             }
             else
             {
+                form.Undo_Button.Image = Resources.UndoBlack;
+                form.UndoDropdown_Button.Image = Resources.DropDownBlack;
+                form.Redo_Button.Image = Resources.RedoBlack;
+                form.RedoDropdown_Button.Image = Resources.DropDownBlack;
+
                 form.AlignLeft_Button.Image = Resources.ALignLeftBlack;
                 form.AlignCenter_Button.Image = Resources.AlignCenterBlack;
                 form.AlignRight_Button.Image = Resources.AlignRightBlack;
@@ -129,7 +145,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void SetAccessibleDescriptions()
         {
-            StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            StepTitle_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             ProgressValue_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         public void AnimateButtons()
@@ -216,7 +232,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ReportGenerator_Form_FormClosing(object sender, FormClosingEventArgs e)
+        private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clean up child forms
             _dataSelectionForm?.Dispose();
@@ -306,6 +322,7 @@ namespace Sales_Tracker.ReportGenerator
         private static void ClosePanels()
         {
             RightClickElementMenu.Hide();
+            UndoRedoHistoryDropdown.Remove();
         }
     }
 }

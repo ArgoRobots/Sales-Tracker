@@ -103,6 +103,8 @@ namespace Sales_Tracker.Theme
                         // Don't change the theme if the button is blue
                         if (IsButtonBlue(guna2Button))
                         {
+                            // Except for the disabled state
+                            guna2Button.DisabledState.FillColor = CustomColors.ControlDisabledBack;
                             continue;
                         }
 
@@ -318,7 +320,7 @@ namespace Sales_Tracker.Theme
                 FillColor = CustomColors.MainBackground,
                 ThumbColor = CustomColors.PanelBtnHover,
                 BorderColor = CustomColors.ControlPanelBorder,
-                ThumbSize = 40,
+                ThumbSize = 35,
                 HoverState = { ThumbColor = Color.Gray }
             };
             control.Controls.Add(vScrollBar);
@@ -381,6 +383,10 @@ namespace Sales_Tracker.Theme
 
             CustomTooltip.UpdateAllToolTipThemes();
             RightClickDataGridViewRowMenu.Delete_Button.ForeColor = CustomColors.AccentRed;
+
+            // Update the ActionLabel in UndoRedoHistoryDropdown
+            UndoRedoHistoryDropdown.ActionLabel.ForeColor = CustomColors.Text;
+            UndoRedoHistoryDropdown.ActionLabel.BackColor = CustomColors.MainBackground;
 
             // Update the Rename_TextBox
             CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;

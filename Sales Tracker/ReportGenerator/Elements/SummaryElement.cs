@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 
 namespace Sales_Tracker.ReportGenerator.Elements
@@ -9,6 +10,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     /// </summary>
     public class SummaryElement : BaseElement
     {
+        // Properties
         public TransactionType TransactionType { get; set; } = TransactionType.Both;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
@@ -17,6 +19,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public bool ShowAverageValue { get; set; } = true;
         public bool ShowGrowthRate { get; set; } = true;
         public Color BackgroundColor { get; set; } = Color.WhiteSmoke;
+        public int BorderThickness { get; set; } = 1;
         public Color BorderColor { get; set; } = Color.LightGray;
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 10f;
@@ -34,6 +37,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             public decimal GrowthRate { get; set; }
         }
 
+        // Overrides
+        public override string DisplayName => LanguageManager.TranslateString("summary");
         public override ReportElementType GetElementType() => ReportElementType.Summary;
         public override BaseElement Clone()
         {
@@ -52,6 +57,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ShowAverageValue = ShowAverageValue,
                 ShowGrowthRate = ShowGrowthRate,
                 BackgroundColor = BackgroundColor,
+                BorderThickness = BorderThickness,
                 BorderColor = BorderColor,
                 FontFamily = FontFamily,
                 FontSize = FontSize,
@@ -67,8 +73,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
             graphics.FillRectangle(bgBrush, Bounds);
 
             // Draw border
-            using Pen borderPen = new(BorderColor, 1);
-            graphics.DrawRectangle(borderPen, Bounds);
+            if (BorderColor != Color.Transparent && BorderThickness > 0)
+            {
+                using Pen borderPen = new(BorderColor, BorderThickness);
+
+                // Adjust rectangle to account for border thickness to prevent clipping
+                Rectangle borderRect = Bounds;
+                if (BorderThickness > 1)
+                {
+                    int offset = BorderThickness / 2;
+                    borderRect = new Rectangle(
+                        Bounds.X + offset,
+                        Bounds.Y + offset,
+                        Bounds.Width - BorderThickness,
+                        Bounds.Height - BorderThickness
+                    );
+                }
+
+                graphics.DrawRectangle(borderPen, borderRect);
+            }
 
             // Add clipping region to prevent overflow
             Region originalClip = graphics.Clip;
@@ -112,7 +135,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (startY + titleHeight <= Bounds.Bottom - padding)
                 {
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), titleHeight);
-                    graphics.DrawString("Summary Statistics", titleFont, textBrush, textBounds, format);
+                    string text = LanguageManager.TranslateString("Summary Statistics");
+                    graphics.DrawString(text, titleFont, textBrush, textBounds, format);
                     startY += titleHeight;
                 }
                 else
@@ -124,9 +148,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     string totalText = TransactionType switch
                     {
-                        TransactionType.Sales => $"Total Sales: {FormatCurrency(stats.TotalSales)}",
-                        TransactionType.Purchases => $"Total Purchases: {FormatCurrency(stats.TotalPurchases)}",
-                        _ => $"Total: {FormatCurrency(stats.CombinedTotal)}"
+                        TransactionType.Purchases => LanguageManager.TranslateString("Total Purchases") + $": {FormatCurrency(stats.TotalPurchases)}",
+                        TransactionType.Sales => LanguageManager.TranslateString("Total Sales") + $": {FormatCurrency(stats.TotalSales)}",
+                        _ => LanguageManager.TranslateString("Total") + $": {FormatCurrency(stats.CombinedTotal)}"
                     };
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
                     graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
@@ -136,14 +160,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (ShowTotalTransactions && startY + lineHeight <= Bounds.Bottom - padding)
                 {
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
-                    graphics.DrawString($"Transactions: {stats.TransactionCount:N0}", valueFont, textBrush, textBounds, format);
+                    string text = LanguageManager.TranslateString("Transactions");
+                    graphics.DrawString($"{text}: {stats.TransactionCount:N0}", valueFont, textBrush, textBounds, format);
                     startY += lineHeight;
                 }
 
                 if (ShowAverageValue && startY + lineHeight <= Bounds.Bottom - padding)
                 {
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
-                    graphics.DrawString($"Average Value: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, textBounds, format);
+                    string text = LanguageManager.TranslateString("Average Value");
+                    graphics.DrawString($"{text}: {FormatCurrency(stats.AverageValue)}", valueFont, textBrush, textBounds, format);
                     startY += lineHeight;
                 }
 
@@ -152,7 +178,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
                     string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
-                    graphics.DrawString($"Growth Rate: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
+                    string text = LanguageManager.TranslateString("Growth Rate");
+                    graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
                 }
             }
             finally
@@ -330,9 +357,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             // Get undo manager for recording property changes
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            string text;
 
             // Section header for included metrics
-            AddPropertyLabel(container, "Include:", yPosition, true);
+            text = LanguageManager.TranslateString("Include") + ":";
+            AddPropertyLabel(container, text, yPosition, true);
             yPosition += 35;
 
             // Transaction type
@@ -358,7 +387,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Family
-            AddPropertyLabel(container, "Font:", yPosition);
+            text = LanguageManager.TranslateString("Font") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
                              "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
                              "Times New Roman", "Trebuchet MS", "Verdana"];
@@ -381,7 +411,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Size
-            AddPropertyLabel(container, "Size:", yPosition);
+            text = LanguageManager.TranslateString("Size") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -402,7 +433,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Font Style (Bold, Italic, Underline)
-            AddPropertyLabel(container, "Style:", yPosition);
+            text = LanguageManager.TranslateString("Style") + ":";
+            AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
             int xPosition = 85;
@@ -517,7 +549,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Background Color
-            AddPropertyLabel(container, "BG Color:", yPosition);
+            text = LanguageManager.TranslateString("Background color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel bgColorPanel = AddColorPicker(container, yPosition, 85, BackgroundColor,
                 color =>
                 {
@@ -533,11 +566,36 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
+            bgColorPanel.Left = 170;  // Adjust for label width
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
+            // Border Thickness
+            text = LanguageManager.TranslateString("Border thickness") + ":";
+            AddPropertyLabel(container, text, yPosition);
+            Guna2NumericUpDown borderThicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
+                value =>
+                {
+                    int newThickness = (int)value;
+                    if (BorderThickness != newThickness)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(BorderThickness),
+                            BorderThickness,
+                            newThickness,
+                            onPropertyChanged));
+                        BorderThickness = newThickness;
+                        onPropertyChanged();
+                    }
+                }, 0, 20);
+            borderThicknessNumeric.Left = 170;
+            CacheControl("BorderThickness", borderThicknessNumeric, () => borderThicknessNumeric.Value = BorderThickness);
+            yPosition += ControlRowHeight;
+
             // Border Color
-            AddPropertyLabel(container, "Border:", yPosition);
+            text = LanguageManager.TranslateString("Border color") + ":";
+            AddPropertyLabel(container, text, yPosition);
             Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
                 color =>
                 {
@@ -553,11 +611,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
+
+            borderColorPanel.Left = 170;
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Horizontal Alignment
-            AddPropertyLabel(container, "H-Align:", yPosition);
+            text = LanguageManager.TranslateString("H-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] hAlignmentOptions = ["Left", "Center", "Right"];
             Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition, hAlignmentOptions,
                 value =>
@@ -575,11 +636,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+            alignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
-            AddPropertyLabel(container, "V-Align:", yPosition);
+            text = LanguageManager.TranslateString("V-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
             string[] vAlignmentOptions = ["Top", "Middle", "Bottom"];
             Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition, vAlignmentOptions,
                 value =>
@@ -597,11 +660,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
-            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(container, "Include Returns", IncludeReturns, yPosition,
+            text = LanguageManager.TranslateString("Include Returns");
+            Guna2CustomCheckBox returnsCheck = AddPropertyCheckBoxWithLabel(container, text, IncludeReturns, yPosition,
                 value =>
                 {
                     if (IncludeReturns != value)
@@ -620,7 +685,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Include losses checkbox
-            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(container, "Include Losses", IncludeLosses, yPosition,
+            text = LanguageManager.TranslateString("Include Losses");
+            Guna2CustomCheckBox lossesCheck = AddPropertyCheckBoxWithLabel(container, text, IncludeLosses, yPosition,
                 value =>
                 {
                     if (IncludeLosses != value)
@@ -639,7 +705,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Total Sales checkbox
-            Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, "Show Total Sales", ShowTotalSales, yPosition,
+            text = LanguageManager.TranslateString("Show Total Sales");
+            Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTotalSales, yPosition,
                 value =>
                 {
                     if (ShowTotalSales != value)
@@ -658,7 +725,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
-            Guna2CustomCheckBox transactionsCheck = AddPropertyCheckBoxWithLabel(container, "Show Transactions", ShowTotalTransactions, yPosition,
+            text = LanguageManager.TranslateString("Show Transactions");
+            Guna2CustomCheckBox transactionsCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTotalTransactions, yPosition,
                 value =>
                 {
                     if (ShowTotalTransactions != value)
@@ -677,7 +745,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Average Value checkbox
-            Guna2CustomCheckBox avgCheck = AddPropertyCheckBoxWithLabel(container, "Show Average Value", ShowAverageValue, yPosition,
+            text = LanguageManager.TranslateString("Show Average Value");
+            Guna2CustomCheckBox avgCheck = AddPropertyCheckBoxWithLabel(container, text, ShowAverageValue, yPosition,
                 value =>
                 {
                     if (ShowAverageValue != value)
@@ -696,7 +765,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Growth Rate checkbox
-            Guna2CustomCheckBox growthCheck = AddPropertyCheckBoxWithLabel(container, "Show Growth Rate", ShowGrowthRate, yPosition,
+            text = LanguageManager.TranslateString("Show Growth Rate");
+            Guna2CustomCheckBox growthCheck = AddPropertyCheckBoxWithLabel(container, text, ShowGrowthRate, yPosition,
                 value =>
                 {
                     if (ShowGrowthRate != value)

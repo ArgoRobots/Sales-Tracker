@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.GridView;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 using System.Text.RegularExpressions;
@@ -272,6 +274,17 @@ namespace Sales_Tracker.Language
             await Task.WhenAll(updateTasks);
 
             // Final UI updates
+            if (Tools.IsFormOpen<ReportDataSelection_Form>())
+            {
+                ReportDataSelection_Form.Instance.BeginInvoke(new Action(ReportDataSelection_Form.Instance.UpdateLanguageForChartSelectionControl));
+                ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
+            }
+
+            if (Tools.IsFormOpen<ReportLayoutDesigner_Form>())
+            {
+                ReportLayoutDesigner_Form.Instance.BeginInvoke(new Action(ReportLayoutDesigner_Form.Instance.RefreshPropertyPanelTranslations));
+            }
+
             if (Tools.IsFormOpen<Log_Form>())
             {
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));
@@ -312,6 +325,9 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
+
+            // Update all custom tooltips with the new language
+            CustomTooltip.UpdateAllToolTipTranslations(targetLanguageAbbreviation);
         }
 
         /// <summary>
@@ -360,6 +376,11 @@ namespace Sales_Tracker.Language
                 case RichTextBox textBox:
                     string textBoxKey = GetControlKey(textBox);
                     textBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, textBoxKey, textBox.Text);
+                    break;
+
+                case Guna2GroupBox guna2GroupBox:
+                    string guna2GroupBoxKey = GetControlKey(guna2GroupBox);
+                    guna2GroupBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, guna2GroupBoxKey, guna2GroupBox.Text);
                     break;
 
                 case Guna2TextBox guna2TextBox:
@@ -517,14 +538,14 @@ namespace Sales_Tracker.Language
         /// Translates a string using cached translations with text-based keys.
         /// The string also needs to be added to TranslationGenerator.CollectStringsToTranslate().
         /// </summary>
-        public static string TranslateString(string text)
+        public static string TranslateString(string text, string targetLanguageAbbreviation = null)
         {
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
 
-            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
             if (targetLanguageAbbreviation == "en")
             {
                 return text;

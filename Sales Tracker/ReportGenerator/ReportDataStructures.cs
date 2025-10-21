@@ -22,6 +22,12 @@ namespace Sales_Tracker.ReportGenerator
     public class ReportConfiguration
     {
         /// <summary>
+        /// Indicates whether the user has manually moved or resized any charts.
+        /// When true, automatic chart arrangement is disabled to preserve the user's custom layout.
+        /// </summary>
+        public bool HasManualChartLayout { get; set; } = false;
+
+        /// <summary>
         /// Page size and orientation settings.
         /// </summary>
         public PageSize PageSize { get; set; } = PageSize.A4;
@@ -29,7 +35,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Page orientation
         /// </summary>
-        public PageOrientation PageOrientation { get; set; } = PageOrientation.Portrait;
+        public PageOrientation PageOrientation { get; set; } = PageOrientation.Landscape;
 
         /// <summary>
         /// List of all elements in the report.
@@ -44,12 +50,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Report title.
         /// </summary>
-        public string Title { get; set; } = "Sales Report";
-
-        /// <summary>
-        /// Report description/subtitle.
-        /// </summary>
-        public string Description { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// Page margins in pixels.
@@ -174,6 +175,12 @@ namespace Sales_Tracker.ReportGenerator
         /// Whether to include lost items.
         /// </summary>
         public bool IncludeLosses { get; set; } = true;
+
+        /// <summary>
+        /// The name of the date preset to use (e.g., "This month", "Last quarter").
+        /// If null or empty, uses StartDate and EndDate.
+        /// </summary>
+        public string DatePresetName { get; set; }
     }
 
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -38,6 +38,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// </summary>
         private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
+        // Undo and redo properties
+        public UndoRedoManager UndoHistoryDropdown { get; private set; }
+        public UndoRedoManager RedoHistoryDropdown { get; private set; }
+
         // Resize handle enumeration
         private enum ResizeHandle
         {
@@ -59,14 +63,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             SetupCanvas();
             StoreInitialSizes();
+            InitializeUndoRedoButtons();
             SetToolTips();
             UpdateLayoutButtonStates();
             OnPageSettingsChanged();
             InitializeResizeDebounceTimer();
             ScaleControls();
-
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel);
-            Application.AddMessageFilter(panelCloseFilter);
         }
         private void SetupCanvas()
         {
@@ -97,8 +99,28 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _initialLeftPanelWidth = LeftTools_Panel.Width;
             _initialRightPanelWidth = RightCanvas_Panel.Width;
         }
+        private void InitializeUndoRedoButtons()
+        {
+            // Create the dropdown panels
+            UndoHistoryDropdown = new UndoRedoManager();
+            RedoHistoryDropdown = new UndoRedoManager();
+
+            // Subscribe to state changes to update button states
+            _undoRedoManager.StateChanged += (s, e) =>
+            {
+                UpdateUndoRedoButtonStates();
+            };
+
+            // Set initial button states
+            UpdateUndoRedoButtonStates();
+        }
         private void SetToolTips()
         {
+            CustomTooltip.SetToolTip(Undo_Button, "", "Undo (Ctrl+Z)");
+            CustomTooltip.SetToolTip(UndoDropdown_Button, "", "Undo history");
+            CustomTooltip.SetToolTip(Redo_Button, "", "Redo (Ctrl+Y)");
+            CustomTooltip.SetToolTip(RedoDropdown_Button, "", "Redo history");
+
             CustomTooltip.SetToolTip(AlignLeft_Button, "", "Align left");
             CustomTooltip.SetToolTip(AlignCenter_Button, "", "Align center");
             CustomTooltip.SetToolTip(AlignRight_Button, "", "Align right");
@@ -130,6 +152,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     return;
                 }
 
+                ResizeCanvasToPageSize();
                 NotifyParentValidationChanged();
             }
         }
@@ -317,6 +340,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Canvas event handlers
         private const int DRAG_THRESHOLD = 5;
         private float _canvasScaleFactor = 1.0f;
+        private BaseElement _clickedElement;
         private void Canvas_Panel_Paint(object sender, PaintEventArgs e)
         {
             if (ReportConfig == null) { return; }
@@ -413,6 +437,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         {
                             SelectElement(clickedElement);
                         }
+
+                        _clickedElement = clickedElement;  // Store for potential selection change on MouseUp
                         _isDragging = true;
                         _dragStartPoint = pageLocation;
 
@@ -659,6 +685,27 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void Canvas_Panel_MouseUp(object sender, MouseEventArgs e)
         {
             bool wasInteracting = _isDragging || _isResizing || _isMultiSelecting;
+            bool actuallyDragged = false;
+
+            if (_isDragging && _dragStartBounds != null)
+            {
+                if (_selectedElements.Count > 0)
+                {
+                    List<Rectangle> newBounds = _selectedElements.Select(el => el.Bounds).ToList();
+                    for (int i = 0; i < _dragStartBounds.Count && i < newBounds.Count; i++)
+                    {
+                        if (_dragStartBounds[i] != newBounds[i])
+                        {
+                            actuallyDragged = true;
+                            break;
+                        }
+                    }
+                }
+                else if (_selectedElement != null && _dragStartBounds.Count > 0)
+                {
+                    actuallyDragged = _dragStartBounds[0] != _selectedElement.Bounds;
+                }
+            }
 
             // Record undo actions for drag
             if (_isDragging && _dragStartBounds != null)
@@ -684,6 +731,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             _dragStartBounds,
                             newBounds,
                             RefreshCanvas));
+
+                        MarkChartLayoutAsManualIfNeeded();
                     }
                 }
                 else if (_selectedElement != null && _dragStartBounds.Count > 0)
@@ -695,6 +744,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             _dragStartBounds,
                             [_selectedElement.Bounds],
                             RefreshCanvas));
+
+                        MarkChartLayoutAsManualIfNeeded();
                     }
                 }
             }
@@ -709,10 +760,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         _originalBounds,
                         _selectedElement.Bounds,
                         RefreshCanvas));
+
+                    MarkChartLayoutAsManualIfNeeded();
                 }
             }
 
-            // If mouse up on empty area without dragging (small movement), clear selections
+            // If we clicked (not dragged) on an already-selected element with multiple selections, change to single selection
+            if (!actuallyDragged && _clickedElement != null && _selectedElements.Count > 1
+                && _selectedElements.Contains(_clickedElement))
+            {
+                SelectElement(_clickedElement);
+            }
+            _clickedElement = null;
+
+            // If mouse up on empty area without dragging, clear selections
             if (e.Button == MouseButtons.Left && _selectionStartPoint != Point.Empty && !_isMultiSelecting)
             {
                 bool ctrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
@@ -744,14 +805,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (wasInteracting)
             {
                 Canvas_Panel.Invalidate();
-            }
-
-            // Update properties panel once at the end
-            if (wasInteracting)
-            {
-                _propertyUpdateTimer.Stop();
-                UpdatePropertiesForSelection();
-                NotifyParentValidationChanged();
             }
 
             if (e.Button == MouseButtons.Right)
@@ -868,6 +921,105 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Canvas_Panel.Location = new Point(centerX, centerY);
         }
 
+        // Undo and redo button event handlers
+        private void Undo_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.CanUndo)
+            {
+                _undoRedoManager.Undo();
+                Canvas_Panel.Invalidate();
+                UpdatePropertyValues();
+            }
+        }
+        private void Redo_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.CanRedo)
+            {
+                _undoRedoManager.Redo();
+                Canvas_Panel.Invalidate();
+                UpdatePropertyValues();
+            }
+        }
+        private void UndoDropdown_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.UndoCount > 0)
+            {
+                // Toggle undo dropdown
+                if (Controls.Contains(UndoRedoHistoryDropdown.Panel))
+                {
+                    UndoRedoHistoryDropdown.Remove();
+                }
+                else
+                {
+                    // Calculate dropdown position (below the button, aligned with main undo button)
+                    Point dropdownLocation = new(
+                        RightCanvas_Panel.Left + Undo_Button.Left,
+                        Undo_Button.Bottom + 2
+                    );
+
+                    UndoRedoHistoryDropdown.Show(this, dropdownLocation, _undoRedoManager, true, OnHistoryActionPerformed);
+                }
+            }
+        }
+        private void RedoDropdown_Button_Click(object sender, EventArgs e)
+        {
+            if (_undoRedoManager.RedoCount > 0)
+            {
+                // Toggle redo dropdown
+                if (Controls.Contains(UndoRedoHistoryDropdown.Panel))
+                {
+                    UndoRedoHistoryDropdown.Remove();
+                }
+                else
+                {
+                    // Calculate dropdown position (below the button, aligned with main redo button)
+                    Point dropdownLocation = new(
+                        RightCanvas_Panel.Left + Redo_Button.Left,
+                        Redo_Button.Bottom + 2
+                    );
+
+                    UndoRedoHistoryDropdown.Show(this, dropdownLocation, _undoRedoManager, false, OnHistoryActionPerformed);
+                }
+            }
+        }
+
+        // Update undo and redo button states
+        private void UpdateUndoRedoButtonStates()
+        {
+            // Update Undo buttons
+            bool canUndo = _undoRedoManager.CanUndo;
+            Undo_Button.Enabled = canUndo;
+            UndoDropdown_Button.Enabled = canUndo;
+
+            if (canUndo)
+            {
+                CustomTooltip.SetToolTip(Undo_Button, "", $"Undo: {_undoRedoManager.UndoDescription} (Ctrl+Z)");
+            }
+            else
+            {
+                CustomTooltip.SetToolTip(Undo_Button, "", "Undo (Ctrl+Z)");
+            }
+
+            // Update Redo buttons
+            bool canRedo = _undoRedoManager.CanRedo;
+            Redo_Button.Enabled = canRedo;
+            RedoDropdown_Button.Enabled = canRedo;
+
+            if (canRedo)
+            {
+                CustomTooltip.SetToolTip(Redo_Button, "", $"Redo: {_undoRedoManager.RedoDescription} (Ctrl+Y)");
+            }
+            else
+            {
+                CustomTooltip.SetToolTip(Redo_Button, "", "Redo (Ctrl+Y)");
+            }
+        }
+        private void OnHistoryActionPerformed()
+        {
+            Canvas_Panel.Invalidate();
+            UpdatePropertyValues();
+        }
+
         // Move element method
         /// <summary>
         /// Moves all selected elements by the specified delta.
@@ -923,8 +1075,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdatePropertyValues();
             NotifyParentValidationChanged();
         }
-
-        // Move with undo support
         private void MoveSelectedElementsWithUndo(int deltaX, int deltaY)
         {
             if (_selectedElements.Count > 0)
@@ -938,6 +1088,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     oldBounds,
                     newBounds,
                     RefreshCanvas));
+
+                MarkChartLayoutAsManualIfNeeded();
             }
             else if (_selectedElement != null)
             {
@@ -949,6 +1101,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     [oldBounds],
                     [_selectedElement.Bounds],
                     RefreshCanvas));
+
+                MarkChartLayoutAsManualIfNeeded();
             }
         }
 
@@ -983,9 +1137,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Left",
+                "left",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1010,9 +1165,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Center",
+                "center",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1033,9 +1189,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Right",
+                "right",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1056,9 +1213,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Top",
+                "top",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1083,9 +1241,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Middle",
+                "middle",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1106,9 +1265,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new AlignmentAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Bottom",
+                "bottom",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1143,9 +1303,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Horizontally",
+                "horizontally",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1180,9 +1341,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _undoRedoManager.RecordAction(new DistributeAction(
                 _selectedElements.ToList(),
                 oldBounds,
-                "Vertically",
+                "vertically",
                 RefreshCanvas));
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1202,9 +1364,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Width", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "width", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1222,9 +1385,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Height", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "height", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1242,9 +1406,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 element.Bounds = bounds;
             }
 
-            SameSizeAction action = new(_selectedElements.ToList(), "Size", RefreshCanvas);
+            SameSizeAction action = new(_selectedElements.ToList(), "size", RefreshCanvas);
             _undoRedoManager.RecordAction(action);
 
+            MarkChartLayoutAsManualIfNeeded();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
         }
@@ -1448,7 +1613,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 g.DrawRectangle(pen, element.Bounds);
             }
         }
-        private void ClearAllSelections()
+        public void ClearAllSelections()
         {
             foreach (BaseElement element in _selectedElements)
             {
@@ -1584,11 +1749,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return;
             }
 
-            ElementProperties_Label.Text = $"Selected: {_selectedElement.GetElementType()}";
+            // Capitalize first letter of element name for display
+            string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
+            ElementProperties_Label.Text = $"Selected: {elementName}";
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
             {
+                // This prevents flickering
+                LoadingPanel.ShowBlankLoadingPanel(PropertiesContainer_Panel, CustomColors.ControlBack);
+
                 _currentPropertyElement = _selectedElement;
 
                 // Element handles its own caching internally
@@ -1597,7 +1767,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     10,
                     OnPropertyChanged);
 
+                ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
+
+                LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
             else
             {
@@ -1611,7 +1784,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void UpdatePropertyContainerTheme()
         {
             // Get the cached panel if it exists
-            Panel cachedPanel = PropertiesContainer_Panel.Controls.OfType<Panel>().FirstOrDefault();
+            Panel cachedPanel = PropertiesContainer_Panel.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => p != LoadingPanel.BlankLoadingPanelInstance);
 
             if (cachedPanel != null)
             {
@@ -1628,23 +1803,24 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Set BackColor for TableElement's tab panels if this is a TableElement
-            if (_selectedElement is TableElement)
+            if (_selectedElement is TableElement tableElement)
             {
-                if (TableElement.General_Panel != null)
+                if (tableElement.General_Panel != null)
                 {
-                    TableElement.General_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.General_Panel.BackColor = CustomColors.ControlBack;
+                    ThemeManager.CustomizeScrollBar(tableElement.General_Panel);
                 }
-                if (TableElement.Style_Panel != null)
+                if (tableElement.Style_Panel != null)
                 {
-                    TableElement.Style_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Style_Panel.BackColor = CustomColors.ControlBack;
                 }
-                if (TableElement.Columns_Panel != null)
+                if (tableElement.Columns_Panel != null)
                 {
-                    TableElement.Columns_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Columns_Panel.BackColor = CustomColors.ControlBack;
                 }
-                if (BaseElement.Tab_Panel != null)
+                if (tableElement.Tab_Panel != null)
                 {
-                    BaseElement.Tab_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Tab_Panel.BackColor = CustomColors.ControlBack;
                 }
             }
 
@@ -1658,9 +1834,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Also find the CheckBoxes inside TableElement's tab panels if this is a TableElement
-            if (_selectedElement is TableElement)
+            if (_selectedElement is TableElement tableElement1)
             {
-                Panel[] tabPanels = [TableElement.General_Panel, TableElement.Style_Panel, TableElement.Columns_Panel];
+                Panel[] tabPanels = [tableElement1.General_Panel, tableElement1.Style_Panel, tableElement1.Columns_Panel];
 
                 foreach (Panel panel in tabPanels)
                 {
@@ -1684,7 +1860,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void HidePropertiesPanel()
         {
-            ElementProperties_Label.Text = "No element selected";
+            ElementProperties_Label.Text = LanguageManager.TranslateString("No element selected");
             PropertiesContainer_Panel.Controls.Clear();
             _currentPropertyElement = null;
         }
@@ -1692,6 +1868,30 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             Canvas_Panel.Invalidate();
             NotifyParentValidationChanged();
+        }
+
+        /// <summary>
+        /// Refreshes property panels after language change by clearing cache and recreating controls.
+        /// </summary>
+        public void RefreshPropertyPanelTranslations()
+        {
+            // Clear property cache for all elements
+            if (ReportConfig?.Elements != null)
+            {
+                foreach (BaseElement element in ReportConfig.Elements)
+                {
+                    element.ClearPropertyControlCache();
+                }
+            }
+
+            // Clear the current property element reference
+            _currentPropertyElement = null;
+
+            // Recreate the property panel for the currently selected element with new translations
+            if (_selectedElement != null)
+            {
+                CreateOrShowPropertiesPanel();
+            }
         }
 
         // Canvas methods
@@ -1716,6 +1916,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Canvas_Panel.Invalidate();
             UpdatePropertiesForSelection();
             NotifyParentValidationChanged();
+        }
+        private static void OnChartMovedOrResized()
+        {
+            if (ReportConfig != null)
+            {
+                ReportConfig.HasManualChartLayout = true;
+            }
+        }
+        private void MarkChartLayoutAsManualIfNeeded()
+        {
+            if (_selectedElements.Any(e => e is ChartElement) || _selectedElement is ChartElement)
+            {
+                OnChartMovedOrResized();
+            }
         }
 
         // Resize element methods
@@ -1902,8 +2116,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 },
                 ReportElementType.Label => new LabelElement
                 {
-                    Bounds = new Rectangle(location, new Size(200, 30)),
-                    Text = "Sample Text"
+                    Bounds = new Rectangle(location, new Size(200, 30))
                 },
                 ReportElementType.DateRange => new DateRangeElement
                 {
@@ -1911,7 +2124,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 },
                 ReportElementType.Summary => new SummaryElement
                 {
-                    Bounds = new Rectangle(location, new Size(300, 120))
+                    Bounds = new Rectangle(location, new Size(300, 170))
                 },
                 ReportElementType.TransactionTable => new TableElement
                 {
@@ -1930,7 +2143,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (ReportConfig == null) { return; }
 
             List<BaseElement> duplicates = [];
-            CompositeAction composite = new("Duplicate elements");
+
+            string description = _selectedElements.Count > 1
+                ? $"duplicate {_selectedElements.Count} elements"
+                : "duplicate element";
+            CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
             {
@@ -2003,7 +2220,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Create undo actions
-            CompositeAction composite = new($"Delete {elementsToDelete.Count} elements");
+            string description = elementsToDelete.Count == 1
+                ? "Delete element"
+                : $"Delete {elementsToDelete.Count} elements";
+            CompositeAction composite = new(description);
 
             // Delete all selected elements
             foreach (BaseElement element in elementsToDelete)
@@ -2021,10 +2241,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             _undoRedoManager.RecordAction(composite);
 
-            // If we deleted a chart element, switch to custom template
+            // If we deleted a chart element, switch to custom template and sync the selection
             if (elementsToDelete.Any(e => e is ChartElement))
             {
                 ReportDataSelection_Form.Instance?.SwitchToCustomTemplate();
+                ReportDataSelection_Form.Instance?.SyncChartSelectionFromConfig();
             }
 
             // Clear selection
@@ -2053,12 +2274,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static void NotifyParentValidationChanged()
         {
             ReportGenerator_Form.Instance.OnChildFormValidationChanged();
-        }
-
-        // Other methods
-        private static void ClosePanels()
-        {
-            RightClickElementMenu.Hide();
         }
     }
 }

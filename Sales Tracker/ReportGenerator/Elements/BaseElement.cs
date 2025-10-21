@@ -1,8 +1,10 @@
 ﻿using Guna.UI2.WinForms;
 using Guna.UI2.WinForms.Enums;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -12,6 +14,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public abstract class BaseElement
     {
         // Properties
+        /// <summary>
+        /// Gets the user-friendly display name for this element type.
+        /// </summary>
+        public abstract string DisplayName { get; }
+
         /// <summary>
         /// Unique identifier for the element.
         /// </summary>
@@ -61,7 +68,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale);
 
-        private Panel _cachedPropertyPanel;
+        public Panel CachedPropertyPanel { get; private set; }
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];
         public Dictionary<string, Action> UpdateActionCache { get; } = [];
@@ -74,7 +81,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Create controls only once
             if (!_controlsCreated)
             {
-                _cachedPropertyPanel = new Panel
+                CachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
                     AutoSize = false,
@@ -82,13 +89,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
 
-                SetCachedPropertiesPanelSize(container);
-
                 // Create common controls if element doesn't handle its own
                 if (!HandlesOwnCommonControls)
                 {
                     Dictionary<string, Control> commonControls = CreateCommonPropertyControls(
-                        _cachedPropertyPanel,
+                        CachedPropertyPanel,
                         this,
                         yPosition,
                         onPropertyChanged,
@@ -107,26 +112,31 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Let derived classes create their specific controls
-                yPosition = CreateElementSpecificControls(_cachedPropertyPanel, yPosition, onPropertyChanged);
+                yPosition = CreateElementSpecificControls(CachedPropertyPanel, yPosition, onPropertyChanged);
 
                 _controlsCreated = true;
             }
 
-            // Only clear and add if the cached panel isn't already in the container
-            if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
+            // Only add CachedPropertyPanel if it's not already in the container
+            if (CachedPropertyPanel != null && CachedPropertyPanel.Parent != container)
             {
-                container.Controls.Clear();
-                SetCachedPropertiesPanelSize(container);
-                container.Controls.Add(_cachedPropertyPanel);
+                List<Control> controlsToRemove = container.Controls
+                   .Cast<Control>()
+                   .Where(c => c != LoadingPanel.BlankLoadingPanelInstance)
+                   .ToList();
+
+                foreach (Control ctrl in controlsToRemove)
+                {
+                    container.Controls.Remove(ctrl);
+                }
+
+                CachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
+                container.Controls.Add(CachedPropertyPanel);
             }
 
             UpdateAllControlValues();
 
             return yPosition;
-        }
-        private void SetCachedPropertiesPanelSize(Panel container)
-        {
-            _cachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
         }
 
         /// <summary>
@@ -162,6 +172,19 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
+        /// Clears the cached property panel, forcing recreation on next CreatePropertyControls call.
+        /// Used when language changes to recreate controls with new translations.
+        /// </summary>
+        public void ClearPropertyControlCache()
+        {
+            _controlsCreated = false;
+            CachedPropertyPanel?.Dispose();
+            CachedPropertyPanel = null;
+            _controlCache.Clear();
+            UpdateActionCache.Clear();
+        }
+
+        /// <summary>
         /// Indicates if element handles its own common controls.
         /// </summary>
         public virtual bool HandlesOwnCommonControls => false;
@@ -175,6 +198,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             Dictionary<string, Control> controls = [];
             updateActions = [];
+            string text;
 
             // Get the UndoRedoManager instance
             UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
@@ -251,7 +275,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Width
-            AddPropertyLabel(container, "Width:", yPosition);
+            text = LanguageManager.TranslateString("Width");
+            AddPropertyLabel(container, text + ":", yPosition);
             int oldWidth = element?.Bounds.Width ?? 100;
             Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, oldWidth, yPosition,
                 value =>
@@ -286,7 +311,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Height
-            AddPropertyLabel(container, "Height:", yPosition);
+            text = LanguageManager.TranslateString("Height");
+            AddPropertyLabel(container, text + ":", yPosition);
             int oldHeight = element?.Bounds.Height ?? 100;
             Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, oldHeight, yPosition,
                 value =>
@@ -461,7 +487,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             return checkBox;
         }
 
-        public static Panel Tab_Panel { get; private set; }
+        public Panel Tab_Panel { get; private set; }
         public static readonly string ColorPickerTag = "ColorPicker";
 
         /// <summary>
@@ -506,7 +532,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             {
                 Label colorLabel = new()
                 {
-                    Text = "Click to change",
+                    Text = LanguageManager.TranslateString("Click to change"),
                     Font = new Font("Segoe UI", 8),
                     ForeColor = Color.Gray,
                     Location = new Point(xPosition + 55, yPosition + 11),
@@ -521,16 +547,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Creates tab buttons for organizing properties.
         /// </summary>
-        protected static Panel CreateTabButtons(Panel container, string[] tabNames, Action<int> onTabChanged)
+        protected Panel CreateTabButtons(string[] tabNames, Action<int> onTabChanged)
         {
+            int parentWidth = ReportLayoutDesigner_Form.Instance.PropertiesContainer_Panel.Width;
+
             Tab_Panel = new()
             {
                 Location = new Point(0, 0),
-                Size = new Size(container.Width, 35),
+                Size = new Size(parentWidth, 35),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            int buttonWidth = (container.Width - 10) / tabNames.Length;
+            int buttonWidth = (parentWidth - 10) / tabNames.Length;
             for (int i = 0; i < tabNames.Length; i++)
             {
                 int tabIndex = i;
@@ -566,70 +594,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Tab_Panel.Controls.Add(tabButton);
             }
 
-            container.Controls.Add(Tab_Panel);
+            CachedPropertyPanel.Controls.Add(Tab_Panel);
             return Tab_Panel;
-        }
-
-        /// <summary>
-        /// Adds font style toggle buttons (Bold, Italic, Underline) to the container.
-        /// </summary>
-        /// <summary>
-        /// Adds font style toggle buttons (Bold, Italic, Underline) to the container.
-        /// </summary>
-        protected static void AddFontStyleToggleButtons(
-            Panel container,
-            int yPosition,
-            FontStyle currentStyle,
-            Action<FontStyle> onStyleChanged)
-        {
-            int xPosition = 85;
-            const int buttonWidth = 35;
-            const int buttonHeight = 30;
-            const int spacing = 5;
-            int buttonY = yPosition + 2;
-
-            // Create a list to store all buttons for updating their states
-            List<(Guna2Button button, FontStyle style)> styleButtons = [];
-
-            // Bold button
-            Guna2Button boldButton = CreateFontStyleButton(
-                "B", FontStyle.Bold, xPosition, buttonY, buttonWidth, buttonHeight);
-            boldButton.Checked = currentStyle.HasFlag(FontStyle.Bold);
-            styleButtons.Add((boldButton, FontStyle.Bold));
-            container.Controls.Add(boldButton);
-            xPosition += buttonWidth + spacing;
-
-            // Italic button
-            Guna2Button italicButton = CreateFontStyleButton(
-                "I", FontStyle.Italic, xPosition, buttonY, buttonWidth, buttonHeight);
-            italicButton.Checked = currentStyle.HasFlag(FontStyle.Italic);
-            styleButtons.Add((italicButton, FontStyle.Italic));
-            container.Controls.Add(italicButton);
-            xPosition += buttonWidth + spacing;
-
-            // Underline button
-            Guna2Button underlineButton = CreateFontStyleButton(
-                "U", FontStyle.Underline, xPosition, buttonY, buttonWidth, buttonHeight);
-            underlineButton.Checked = currentStyle.HasFlag(FontStyle.Underline);
-            styleButtons.Add((underlineButton, FontStyle.Underline));
-            container.Controls.Add(underlineButton);
-
-            // Attach event handlers that use the shared current style
-            foreach ((Guna2Button button, FontStyle style) in styleButtons)
-            {
-                button.CheckedChanged += (s, e) =>
-                {
-                    if (button.Checked)
-                    {
-                        currentStyle |= style;
-                    }
-                    else
-                    {
-                        currentStyle &= ~style;
-                    }
-                    onStyleChanged(currentStyle);
-                };
-            }
         }
         public static Guna2Button CreateFontStyleButton(
             string text,

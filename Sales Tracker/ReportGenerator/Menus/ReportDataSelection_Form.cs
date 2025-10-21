@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -60,13 +61,17 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox);
             ChartSelection_CheckedListBox.ItemCheck += new ItemCheckEventHandler(ChartSelection_CheckedListBox_ItemCheck);
+            ChartSelection_CheckedListBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
 
             ChartSelection_GroupBox.Controls.Add(ChartSelection_CheckedListBox);
         }
         private void SetupChartSelection()
         {
+            string title;
+
             // Overview Section
-            ChartSelection_CheckedListBox.AddSection("Overview");
+            title = LanguageManager.TranslateString("Overview");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.TotalExpensesVsSales, TranslatedChartTitles.SalesVsExpenses);
             AddChartItem(MainMenu_Form.ChartDataType.Profits, TranslatedChartTitles.TotalProfits);
             AddChartItem(MainMenu_Form.ChartDataType.TotalTransactions, TranslatedChartTitles.TotalTransactions);
@@ -74,7 +79,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Financial Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Financial");
+            title = LanguageManager.TranslateString("Financial");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.TotalSales, TranslatedChartTitles.TotalRevenue);
             AddChartItem(MainMenu_Form.ChartDataType.TotalPurchases, TranslatedChartTitles.TotalExpenses);
             AddChartItem(MainMenu_Form.ChartDataType.DistributionOfSales, TranslatedChartTitles.RevenueDistribution);
@@ -82,7 +88,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Geographic Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Geographic Analysis");
+            title = LanguageManager.TranslateString("Geographic Analysis");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.WorldMap, TranslatedChartTitles.WorldMap);
             AddChartItem(MainMenu_Form.ChartDataType.CountriesOfOrigin, TranslatedChartTitles.CountriesOfOrigin);
             AddChartItem(MainMenu_Form.ChartDataType.CountriesOfDestination, TranslatedChartTitles.CountriesOfDestination);
@@ -90,18 +97,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Performance Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Performance");
+            title = LanguageManager.TranslateString("Performance");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.GrowthRates, TranslatedChartTitles.GrowthRates);
 
             // Operational Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Operational");
+            title = LanguageManager.TranslateString("Operational");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.Accountants, TranslatedChartTitles.AccountantsTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageShippingCosts, TranslatedChartTitles.AverageShippingCosts);
 
             // Returns Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Returns Analysis");
+            title = LanguageManager.TranslateString("Returns Analysis");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnsOverTime, TranslatedChartTitles.ReturnsOverTime);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnReasons, TranslatedChartTitles.ReturnReasons);
             AddChartItem(MainMenu_Form.ChartDataType.ReturnFinancialImpact, TranslatedChartTitles.ReturnFinancialImpact);
@@ -111,7 +121,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Lost Products Section
             ChartSelection_CheckedListBox.AddSpacer(10);
-            ChartSelection_CheckedListBox.AddSection("Lost Products");
+            title = LanguageManager.TranslateString("Lost Products");
+            ChartSelection_CheckedListBox.AddSection(title);
             AddChartItem(MainMenu_Form.ChartDataType.LossesOverTime, TranslatedChartTitles.LossesOverTime);
             AddChartItem(MainMenu_Form.ChartDataType.LossReasons, TranslatedChartTitles.LossReasons);
             AddChartItem(MainMenu_Form.ChartDataType.LossFinancialImpact, TranslatedChartTitles.LossFinancialImpact);
@@ -170,6 +181,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DpiHelper.ScaleGroupBox(ReportSettings_GroupBox);
             DpiHelper.ScaleGroupBox(DateRange_GroupBox);
         }
+        public void AlignControlsAfterLanguageChange()
+        {
+            ReportTitle_TextBox.Left = ReportTitle_Label.Right + 10;
+
+            if (ReportTitle_TextBox.Right > ReportSettings_GroupBox.ClientSize.Width - ReportSettings_GroupBox.Padding.Right - 10)
+            {
+                ReportTitle_TextBox.Width = ReportSettings_GroupBox.ClientSize.Width - ReportSettings_GroupBox.Padding.Right - 10 - ReportTitle_TextBox.Left;
+            }
+
+            // Determine which label is wider
+            int maxRight = Math.Max(StartDate_Label.Right, EndDate_Label.Right);
+
+            // Align both DateTimePickers to the widest label
+            StartDate_DateTimePicker.Left = maxRight + 10;
+            EndDate_DateTimePicker.Left = maxRight + 10;
+
+        }
 
         /// <summary>
         /// Manages date presets and their associated radio buttons.
@@ -179,12 +207,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             public Guna2CustomRadioButton RadioButton { get; set; }
             public string Name { get; set; }
             public Func<(DateTime start, DateTime end)> GetDateRange { get; set; }
-
-            public bool Matches(DateTime startDate, DateTime endDate)
-            {
-                (DateTime start, DateTime end) = GetDateRange();
-                return start.Date == startDate.Date && end.Date == endDate.Date;
-            }
         }
 
         private List<DatePreset> _datePresets;
@@ -318,6 +340,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 });
             }
         }
+        public void UpdateLanguageForChartSelectionControl()
+        {
+            if (_isUpdating) { return; }
+
+            PerformUpdate(() =>
+            {
+                for (int i = 0; i < ChartSelection_CheckedListBox.Count; i++)
+                {
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                    string displayName = TranslatedChartTitles.GetChartDisplayName(chartType);
+                    ChartSelection_CheckedListBox.Items[i] = displayName;
+                }
+            });
+        }
 
         // Form event handlers
         private void ReportDataSelection_Form_VisibleChanged(object sender, EventArgs e)
@@ -418,9 +454,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             if (!_isUpdating)
             {
-                string templateName = Template_ComboBox.SelectedItem?.ToString();
+                int templateIndex = Template_ComboBox.SelectedIndex;
 
-                if (Template_ComboBox.SelectedIndex == 0)
+                if (templateIndex == 0)
                 {
                     // Custom Report selected - don't apply any template
                     if (ReportConfig != null)
@@ -430,7 +466,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    ApplyTemplate(templateName);
+                    ApplyTemplateByIndex(templateIndex);
                 }
             }
         }
@@ -439,6 +475,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!_isUpdating)
             {
                 ValidateDateRange();
+
+                // When user manually changes dates, set to Custom preset
+                if (ReportConfig != null)
+                {
+                    ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                    ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
+                    ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
+                }
+
                 SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             }
@@ -453,7 +498,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void DatePreset_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (_isUpdating) { return; }
-
             if (sender is not Guna2CustomRadioButton radioButton || !radioButton.Checked) { return; }
 
             PerformUpdate(() =>
@@ -461,24 +505,35 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (radioButton == Custom_RadioButton)
                 {
                     SetCustomDateRangeControlsVisibility(true);
+                    if (ReportConfig != null)
+                    {
+                        ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                    }
                 }
                 else
                 {
                     SetCustomDateRangeControlsVisibility(false);
 
-                    // Find and apply the preset
-                    DatePreset? preset = _datePresets.FirstOrDefault(p => p.RadioButton == radioButton);
-                    if (preset != null)
+                    DatePreset? selectedPreset = _datePresets.FirstOrDefault(p => p.RadioButton == radioButton);
+                    if (selectedPreset != null)
                     {
-                        (DateTime start, DateTime end) = preset.GetDateRange();
+                        (DateTime start, DateTime end) = selectedPreset.GetDateRange();
                         StartDate_DateTimePicker.Value = start;
                         EndDate_DateTimePicker.Value = end;
+
+                        // Store the preset name in the config
+                        if (ReportConfig != null)
+                        {
+                            ReportConfig.Filters.DatePresetName = selectedPreset.Name;
+                            ReportConfig.Filters.StartDate = start;
+                            ReportConfig.Filters.EndDate = end;
+                        }
                     }
                 }
-            });
 
-            SwitchToCustomTemplate();
-            NotifyParentValidationChanged();
+                SwitchToCustomTemplate();
+                NotifyParentValidationChanged();
+            });
         }
 
         // Label click event handlers to toggle radio buttons
@@ -496,89 +551,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void Custom_Label_Click(object sender, EventArgs e) => Custom_RadioButton.Checked = !Custom_RadioButton.Checked;
 
         // Event handler helper methods
-        private void ApplyDatePreset(string presetName)
-        {
-            DateTime today = DateTime.Today;
-            DateTime startDate = today;
-            DateTime endDate = today;
-
-            switch (presetName)
-            {
-                case "Today":
-                    startDate = today;
-                    endDate = today;
-                    break;
-
-                case "Yesterday":
-                    startDate = today.AddDays(-1);
-                    endDate = today.AddDays(-1);
-                    break;
-
-                case "Last 7 days":
-                    startDate = today.AddDays(-7);
-                    endDate = today;
-                    break;
-
-                case "Last 30 days":
-                    startDate = today.AddDays(-30);
-                    endDate = today;
-                    break;
-
-                case "This month":
-                    startDate = new DateTime(today.Year, today.Month, 1);
-                    endDate = today;
-                    break;
-
-                case "Last month":
-                    DateTime firstDayLastMonth = today.AddMonths(-1);
-                    startDate = new DateTime(firstDayLastMonth.Year, firstDayLastMonth.Month, 1);
-                    endDate = startDate.AddMonths(1).AddDays(-1);
-                    break;
-
-                case "This quarter":
-                    int currentQuarter = (today.Month - 1) / 3;
-                    startDate = new DateTime(today.Year, currentQuarter * 3 + 1, 1);
-                    endDate = today;
-                    break;
-
-                case "Last quarter":
-                    int lastQuarter = ((today.Month - 1) / 3) - 1;
-                    int year = today.Year;
-                    if (lastQuarter < 0)
-                    {
-                        lastQuarter = 3;
-                        year--;
-                    }
-                    startDate = new DateTime(year, lastQuarter * 3 + 1, 1);
-                    endDate = startDate.AddMonths(3).AddDays(-1);
-                    break;
-
-                case "Year to date":
-                    startDate = new DateTime(today.Year, 1, 1);
-                    endDate = today;
-                    break;
-
-                case "Last year":
-                    startDate = new DateTime(today.Year - 1, 1, 1);
-                    endDate = new DateTime(today.Year - 1, 12, 31);
-                    break;
-
-                case "All time":
-                    startDate = GetEarliestTransactionDate();
-                    endDate = today;
-                    break;
-
-                case "Custom":
-                    // Don't change dates for custom
-                    return;
-            }
-
-            PerformUpdate(() =>
-            {
-                StartDate_DateTimePicker.Value = startDate;
-                EndDate_DateTimePicker.Value = endDate;
-            });
-        }
         private static DateTime GetEarliestTransactionDate()
         {
             DateTime earliestDate = DateTime.Today;
@@ -647,18 +619,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
             StartDate_DateTimePicker.BorderColor = color;
             EndDate_DateTimePicker.BorderColor = color;
         }
-        private void ApplyTemplate(string templateName)
+        private void ApplyTemplateByIndex(int index)
         {
-            if (string.IsNullOrEmpty(templateName)) { return; }
+            if (index < 0) { return; }
 
             _isUpdating = true;
             try
             {
-                ReportConfiguration template = ReportTemplates.CreateFromTemplate(templateName);
+                ReportConfiguration template = ReportTemplates.CreateFromTemplateIndex(index);
 
                 // Apply the template configuration to the parent's report config
                 if (ReportConfig != null)
                 {
+                    ReportConfig.HasManualChartLayout = false;
+
                     // Clear existing elements
                     ReportConfig.Elements.Clear();
 
@@ -687,7 +661,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                     // Copy template metadata
                     ReportConfig.Title = template.Title;
-                    ReportConfig.Description = template.Description;
                 }
 
                 // Apply the template settings to the form controls
@@ -705,21 +678,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     ReportTitle_TextBox.Text = template.Title;
 
                     // Update date range
-                    DateTime startDate = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
-                    DateTime endDate = template.Filters.EndDate ?? DateTime.Now;
-
-                    StartDate_DateTimePicker.Value = startDate;
-                    EndDate_DateTimePicker.Value = endDate;
-
-                    // Find matching preset or use Custom
-                    DatePreset? matchingPreset = _datePresets.FirstOrDefault(p => p.Matches(startDate, endDate));
-                    if (matchingPreset != null)
+                    if (!string.IsNullOrEmpty(template.Filters.DatePresetName))
                     {
-                        matchingPreset.RadioButton.Checked = true;
-                        SetCustomDateRangeControlsVisibility(false);
+                        ApplyDatePresetByName(template.Filters.DatePresetName);
                     }
                     else
                     {
+                        // Fallback to custom dates if no preset specified
+                        DateTime startDate = template.Filters.StartDate ?? DateTime.Now.AddMonths(-1);
+                        DateTime endDate = template.Filters.EndDate ?? DateTime.Now;
+
+                        StartDate_DateTimePicker.Value = startDate;
+                        EndDate_DateTimePicker.Value = endDate;
                         Custom_RadioButton.Checked = true;
                         SetCustomDateRangeControlsVisibility(true);
                     }
@@ -732,6 +702,33 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _isUpdating = false;
             }
         }
+        private void ApplyDatePresetByName(string presetName)
+        {
+            DatePreset? preset = _datePresets.FirstOrDefault(p =>
+                p.Name.Equals(presetName, StringComparison.OrdinalIgnoreCase));
+
+            if (preset != null)
+            {
+                preset.RadioButton.Checked = true;
+                (DateTime start, DateTime end) = preset.GetDateRange();
+                StartDate_DateTimePicker.Value = start;
+                EndDate_DateTimePicker.Value = end;
+                SetCustomDateRangeControlsVisibility(false);
+            }
+            else
+            {
+                // If preset not found, default to "This month"
+                DatePreset? defaultPreset = _datePresets.FirstOrDefault(p => p.Name == "This month");
+                if (defaultPreset != null)
+                {
+                    defaultPreset.RadioButton.Checked = true;
+                    (DateTime start, DateTime end) = defaultPreset.GetDateRange();
+                    StartDate_DateTimePicker.Value = start;
+                    EndDate_DateTimePicker.Value = end;
+                    SetCustomDateRangeControlsVisibility(false);
+                }
+            }
+        }
         private void SetCustomDateRangeControlsVisibility(bool visible)
         {
             StartDate_Label.Visible = visible;
@@ -742,7 +739,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
         /// <summary>
         /// Updates the ReportConfig.Elements collection based on current chart selections.
-        /// Only adds/removes charts as needed, preserving position and size of existing charts.
+        /// Adds/removes charts and repositions all charts.
         /// </summary>
         private void UpdateElementsFromChartSelection()
         {
@@ -767,7 +764,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportLayoutDesigner_Form.Instance.ClearSelectionForRemovedElements();
             }
 
-            // Find which chart types need to be added (selected but not in existing elements)
+            // Find which chart types need to be added
             List<MainMenu_Form.ChartDataType> existingChartTypes = existingCharts
                 .Where(chart => selectedCharts.Contains(chart.ChartType))
                 .Select(chart => chart.ChartType)
@@ -777,41 +774,120 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 .Where(chartType => !existingChartTypes.Contains(chartType))
                 .ToList();
 
-            // Add new charts with default positioning
-            if (chartsToAdd.Count > 0)
+            // Add new chart elements
+            foreach (MainMenu_Form.ChartDataType chartType in chartsToAdd)
             {
-                const int chartWidth = 350;
-                const int chartHeight = 250;
-                const int spacing = 20;
-                const int startX = 50;
-                const int startY = 50;
-                const int columns = 2;
-
-                // Calculate starting position based on existing charts
-                int existingCount = ReportConfig.GetElementsOfType<ChartElement>().Count;
-                int row = existingCount / columns;
-                int col = existingCount % columns;
-
-                foreach (MainMenu_Form.ChartDataType chartType in chartsToAdd)
+                ChartElement newChartElement = new()
                 {
-                    int x = startX + (col * (chartWidth + spacing));
-                    int y = startY + (row * (chartHeight + spacing));
+                    ChartType = chartType,
+                    Bounds = new Rectangle(50, 50, 350, 250)
+                };
+                ReportConfig.AddElement(newChartElement);
+            }
 
-                    ChartElement newChartElement = new()
-                    {
-                        ChartType = chartType,
-                        Bounds = new Rectangle(x, y, chartWidth, chartHeight)
-                    };
-                    ReportConfig.AddElement(newChartElement);
+            // Only auto-arrange if user hasn't manually positioned/resized any charts
+            if (!ReportConfig.HasManualChartLayout)
+            {
+                // Now reposition and resize charts
+                List<ChartElement> allCharts = ReportConfig.GetElementsOfType<ChartElement>();
 
-                    col++;
-                    if (col >= columns)
+                if (allCharts.Count > 0)
+                {
+                    // Get page dimensions
+                    Size pageSize = PageDimensions.GetDimensions(
+                        ReportConfig.PageSize,
+                        ReportConfig.PageOrientation
+                    );
+
+                    // Calculate available space
+                    int margin = ReportConfig.PageMargins?.Left ?? 40;
+                    int headerHeight = ReportConfig.ShowHeader ? 80 : 0;
+                    int footerHeight = ReportConfig.ShowFooter ? 50 : 0;
+
+                    int availableWidth = pageSize.Width - (margin * 2);
+                    int availableHeight = pageSize.Height - headerHeight - footerHeight - (margin * 2);
+
+                    const int spacing = 20;
+                    int startX = margin;
+                    int startY = headerHeight + margin;
+
+                    int totalCharts = allCharts.Count;
+
+                    // Dynamically calculate columns based on chart count
+                    int columns;
+                    if (totalCharts == 1)
                     {
-                        col = 0;
-                        row++;
+                        columns = 1;
+                    }
+                    else if (totalCharts <= 4)
+                    {
+                        columns = 2;
+                    }
+                    else if (totalCharts <= 9)
+                    {
+                        columns = 3;
+                    }
+                    else if (totalCharts <= 16)
+                    {
+                        columns = 4;
+                    }
+                    else
+                    {
+                        columns = 5;
+                    }
+
+                    // Calculate rows needed
+                    int rows = (int)Math.Ceiling((double)totalCharts / columns);
+
+                    // Calculate chart dimensions to fit within available space
+                    int chartWidth = (availableWidth - (spacing * (columns - 1))) / columns;
+                    int chartHeight = (availableHeight - (spacing * (rows - 1))) / rows;
+
+                    // Enforce aspect ratio of 2:1
+                    int maxHeightForAspectRatio = chartWidth / 2;
+                    if (chartHeight > maxHeightForAspectRatio)
+                    {
+                        chartHeight = maxHeightForAspectRatio;
+                    }
+
+                    // Position all charts
+                    int index = 0;
+                    foreach (ChartElement chart in allCharts)
+                    {
+                        int row = index / columns;
+                        int col = index % columns;
+
+                        int x = startX + (col * (chartWidth + spacing));
+                        int y = startY + (row * (chartHeight + spacing));
+
+                        chart.Bounds = new Rectangle(x, y, chartWidth, chartHeight);
+                        index++;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Synchronizes the chart selection CheckedListBox with the current SelectedChartTypes in ReportConfig.
+        /// This is called when charts are deleted from the layout designer.
+        /// </summary>
+        public void SyncChartSelectionFromConfig()
+        {
+            if (ReportConfig == null) { return; }
+
+            PerformUpdate(() =>
+            {
+                for (int i = 0; i < ChartSelection_CheckedListBox.Items.Count; i++)
+                {
+                    MainMenu_Form.ChartDataType chartType = GetChartTypeFromIndex(i);
+                    bool shouldBeChecked = ReportConfig.Filters.SelectedChartTypes.Contains(chartType);
+
+                    if (ChartSelection_CheckedListBox.GetItemChecked(i) != shouldBeChecked)
+                    {
+                        ChartSelection_CheckedListBox.SetItemChecked(i, shouldBeChecked);
+                    }
+                }
+            });
         }
 
         // Form implementation methods

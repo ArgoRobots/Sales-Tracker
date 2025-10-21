@@ -325,4 +325,22 @@
   <data name="DistributeVerticallyWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DistributeVerticallyWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="RedoBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RedoBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UndoBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UndoBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RedoWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RedoWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UndoWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UndoWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DropDownBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DropDownBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DropDownWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DropDownWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

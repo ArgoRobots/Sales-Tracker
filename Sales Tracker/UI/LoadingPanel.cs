@@ -33,14 +33,16 @@ namespace Sales_Tracker.UI
         {
             BlankLoadingPanelInstance = new Panel
             {
-                BackColor = CustomColors.MainBackground
+                BackColor = CustomColors.MainBackground,
+                Dock = DockStyle.Fill
             };
         }
         public static void InitLoadingPanel()
         {
             LoadingPanelInstance = new Panel
             {
-                BackColor = CustomColors.MainBackground
+                BackColor = CustomColors.MainBackground,
+                Dock = DockStyle.Fill
             };
 
             // Create a separate panel for the animation to run on its own thread
@@ -123,9 +125,8 @@ namespace Sales_Tracker.UI
             _cancellationTokenSource = cancellationTokenSource;
             _currentControl = control;
 
-            LoadingPanelInstance.Size = control.Size;
             control.Controls.Add(LoadingPanelInstance);
-            LoadingPanelInstance.Dock = DockStyle.Fill;
+            LoadingPanelInstance.BringToFront();
 
             // Position the animation panel
             _animationPanel.Location = new Point(
@@ -154,17 +155,15 @@ namespace Sales_Tracker.UI
                 );
             }
 
-            LoadingPanelInstance.BringToFront();
-
             // Start the progress indicator animation
             _progressIndicator.Start();
             _animationTimer.Start();
         }
-        public static void ShowBlankLoadingPanel(Control control)
+        public static void ShowBlankLoadingPanel(Control control, Color? color = null)
         {
             BlankLoadingPanelInstance.InvokeIfRequired(() =>
             {
-                BlankLoadingPanelInstance.Size = control.Size;
+                BlankLoadingPanelInstance.BackColor = color ?? CustomColors.MainBackground;
                 control.Controls.Add(BlankLoadingPanelInstance);
                 BlankLoadingPanelInstance.BringToFront();
             });

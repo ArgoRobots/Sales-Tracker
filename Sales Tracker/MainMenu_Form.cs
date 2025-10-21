@@ -12,6 +12,7 @@ using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
 using Sales_Tracker.LostProduct;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ReportGenerator;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
@@ -3112,7 +3113,9 @@ namespace Sales_Tracker
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 RightClickDataGridViewRowMenu.Panel,
                 RightClickChartMenu.Panel,
-                TextBoxManager.RightClickTextBox_Panel
+                TextBoxManager.RightClickTextBox_Panel,
+                RightClickElementMenu.Panel,
+                UndoRedoHistoryDropdown.Panel
             }.Where(panel => panel != null).ToList();
         }
         public void UpdateMainMenuFormText()
