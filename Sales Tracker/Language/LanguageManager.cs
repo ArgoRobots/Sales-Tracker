@@ -322,7 +322,7 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
 
             // Update all custom tooltips with the new language
-            CustomTooltip.UpdateAllToolTipTranslations();
+            CustomTooltip.UpdateAllToolTipTranslations(targetLanguageAbbreviation);
         }
 
         /// <summary>
@@ -533,14 +533,14 @@ namespace Sales_Tracker.Language
         /// Translates a string using cached translations with text-based keys.
         /// The string also needs to be added to TranslationGenerator.CollectStringsToTranslate().
         /// </summary>
-        public static string TranslateString(string text)
+        public static string TranslateString(string text, string targetLanguageAbbreviation = null)
         {
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
 
-            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
             if (targetLanguageAbbreviation == "en")
             {
                 return text;

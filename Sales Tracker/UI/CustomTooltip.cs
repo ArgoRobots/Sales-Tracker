@@ -90,7 +90,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Updates all existing tooltips with translations for the current language.
         /// </summary>
-        public static void UpdateAllToolTipTranslations()
+        public static void UpdateAllToolTipTranslations(string targetLanguageAbbreviation)
         {
             foreach (KeyValuePair<Control, (string title, string message)> entry in _tooltipData)
             {
@@ -103,8 +103,8 @@ namespace Sales_Tracker.UI
                 if (parentForm == null || !_tooltips.ContainsKey(parentForm)) { continue; }
 
                 // Translate and update the tooltip
-                string translatedTitle = LanguageManager.TranslateString(originalTitle);
-                string translatedMessage = LanguageManager.TranslateString(originalMessage);
+                string translatedTitle = LanguageManager.TranslateString(originalTitle, targetLanguageAbbreviation);
+                string translatedMessage = LanguageManager.TranslateString(originalMessage, targetLanguageAbbreviation);
 
                 Guna2HtmlToolTip tooltip = _tooltips[parentForm];
                 tooltip.ToolTipTitle = translatedTitle;
