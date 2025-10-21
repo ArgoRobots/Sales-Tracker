@@ -280,6 +280,11 @@ namespace Sales_Tracker.Language
                 ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
             }
 
+            if (Tools.IsFormOpen<ReportLayoutDesigner_Form>())
+            {
+                ReportLayoutDesigner_Form.Instance.BeginInvoke(new Action(ReportLayoutDesigner_Form.Instance.RefreshPropertyPanelTranslations));
+            }
+
             if (Tools.IsFormOpen<Log_Form>())
             {
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));

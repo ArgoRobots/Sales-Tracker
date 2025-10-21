@@ -1869,6 +1869,30 @@ namespace Sales_Tracker.ReportGenerator.Menus
             NotifyParentValidationChanged();
         }
 
+        /// <summary>
+        /// Refreshes property panels after language change by clearing cache and recreating controls.
+        /// </summary>
+        public void RefreshPropertyPanelTranslations()
+        {
+            // Clear property cache for all elements
+            if (ReportConfig?.Elements != null)
+            {
+                foreach (BaseElement element in ReportConfig.Elements)
+                {
+                    element.ClearPropertyControlCache();
+                }
+            }
+
+            // Clear the current property element reference
+            _currentPropertyElement = null;
+
+            // Recreate the property panel for the currently selected element with new translations
+            if (_selectedElement != null)
+            {
+                CreateOrShowPropertiesPanel();
+            }
+        }
+
         // Canvas methods
         private void InvalidateElementRegion(Rectangle bounds)
         {

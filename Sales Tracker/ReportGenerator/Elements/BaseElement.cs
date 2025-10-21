@@ -168,6 +168,19 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
+        /// Clears the cached property panel, forcing recreation on next CreatePropertyControls call.
+        /// Used when language changes to recreate controls with new translations.
+        /// </summary>
+        public void ClearPropertyControlCache()
+        {
+            _controlsCreated = false;
+            _cachedPropertyPanel?.Dispose();
+            _cachedPropertyPanel = null;
+            _controlCache.Clear();
+            UpdateActionCache.Clear();
+        }
+
+        /// <summary>
         /// Indicates if element handles its own common controls.
         /// </summary>
         public virtual bool HandlesOwnCommonControls => false;
