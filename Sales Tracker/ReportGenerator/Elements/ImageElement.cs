@@ -368,13 +368,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderPlaceholder(Graphics graphics)
         {
-            using SolidBrush brush = new(Color.FromArgb(240, 240, 240));
-            using Pen pen = new(Color.Gray, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Gray);
+            // Draw background
+            using SolidBrush baseBgBrush = new(Color.FromArgb(240, 240, 240));
+            graphics.FillRectangle(baseBgBrush, Bounds);
 
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
+            using Font font = new("Segoe UI", 10);
+            using SolidBrush textBrush = new(Color.Gray);
 
             StringFormat format = new()
             {
@@ -387,6 +386,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 : LanguageManager.TranslateString("Image not found");
 
             graphics.DrawString(message, font, textBrush, Bounds, format);
+
+            // Draw border
+            using Pen borderPen = new(Color.Black, 1);
+            graphics.DrawRectangle(borderPen, Bounds);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -501,7 +504,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Opacity
             text = LanguageManager.TranslateString("Opacity") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition,
                 value =>
                 {
@@ -518,13 +521,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 255);
-            opacityNumeric.Left = 170;
             CacheControl("Opacity", opacityNumeric, () => opacityNumeric.Value = Opacity);
             yPosition += ControlRowHeight;
 
             // Corner radius
             text = LanguageManager.TranslateString("Border radius");
-            AddPropertyLabel(container, text + " %:", yPosition);
+            AddPropertyLabel(container, text + " %:", yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition,
                 value =>
                 {
@@ -541,13 +543,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 100);
-            radiusNumeric.Left = 170;
             CacheControl("CornerRadius_Percent", radiusNumeric, () => radiusNumeric.Value = CornerRadius_Percent);
             yPosition += ControlRowHeight;
 
             // Border thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
                 value =>
                 {
@@ -564,38 +565,37 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            thicknessNumeric.Left = 170;
             CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             text = LanguageManager.TranslateString("Border Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor,
-                color =>
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
+                newColor =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (BorderColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(BorderColor),
                             BorderColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        BorderColor = color;
+                        BorderColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Background color
             text = LanguageManager.TranslateString("Background Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor,
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
                 color =>
                 {
-                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    if (BackgroundColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -606,7 +606,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         BackgroundColor = color;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 

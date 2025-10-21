@@ -15,8 +15,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public float FontSize { get; set; } = 12f;
         public FontStyle FontStyle { get; set; } = FontStyle.Regular;
         public Color TextColor { get; set; } = Color.Black;
-        public StringAlignment Alignment { get; set; } = StringAlignment.Center;
-        public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
+        public StringAlignment HAlignment { get; set; } = StringAlignment.Center;
+        public StringAlignment VAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
         public override string DisplayName => LanguageManager.TranslateString("label");
@@ -35,8 +35,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontSize = FontSize,
                 FontStyle = FontStyle,
                 TextColor = TextColor,
-                Alignment = Alignment,
-                VerticalAlignment = VerticalAlignment
+                HAlignment = HAlignment,
+                VAlignment = VAlignment
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
@@ -48,8 +48,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 using StringFormat format = new()
                 {
-                    Alignment = Alignment,
-                    LineAlignment = VerticalAlignment,
+                    Alignment = HAlignment,
+                    LineAlignment = VAlignment,
                     FormatFlags = StringFormatFlags.NoWrap,
                     Trimming = StringTrimming.EllipsisCharacter
                 };
@@ -64,8 +64,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 StringFormat fallbackFormat = new()
                 {
-                    Alignment = Alignment,
-                    LineAlignment = VerticalAlignment,
+                    Alignment = HAlignment,
+                    LineAlignment = VAlignment,
                     FormatFlags = StringFormatFlags.NoWrap,
                     Trimming = StringTrimming.EllipsisCharacter
                 };
@@ -85,7 +85,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2TextBox textBox = AddPropertyTextBox(container, Text, yPosition,
                 newText =>
                 {
-                    if (Text != newText && undoRedoManager != null)
+                    if (Text != newText)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
@@ -109,7 +109,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
                 value =>
                 {
-                    if (FontFamily != value && undoRedoManager != null)
+                    if (FontFamily != value)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
@@ -126,12 +126,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Font Size
             text = LanguageManager.TranslateString("Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
                     float newFontSize = (float)value;
-                    if (Math.Abs(FontSize - newFontSize) > 0.01f && undoRedoManager != null)
+                    if (Math.Abs(FontSize - newFontSize) > 0.01f)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
@@ -156,11 +156,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2Button underlineButton = null;
 
             // Create the font style buttons container
-            int styleButtonsY = yPosition;
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - RightMargin - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -273,12 +273,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Text Color
             text = LanguageManager.TranslateString("Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
                 newColor =>
                 {
-                    // Colors need special comparison
-                    if (TextColor.ToArgb() != newColor.ToArgb() && undoRedoManager != null)
+                    if (TextColor != newColor)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
@@ -289,56 +288,63 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     }
                     TextColor = newColor;
                     onPropertyChanged();
-                }, false);
+                });
 
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             // Horizontal Alignment
             text = LanguageManager.TranslateString("H-Align");
-            string[] hAlignmentOptions = ["Near", "Center", "Far"];
-            Guna2ComboBox hAlignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
+            AddPropertyLabel(container, text, yPosition);
+            Guna2ComboBox hAlignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(HAlignment),
+                yPosition,
+                AlignmentHelper.HorizontalOptions,
                 value =>
                 {
-                    StringAlignment newAlignment = Enum.Parse<StringAlignment>(value);
-                    if (Alignment != newAlignment && undoRedoManager != null)
+                    StringAlignment newAlignment = AlignmentHelper.FromDisplayText(value);
+                    if (HAlignment != newAlignment)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
-                            nameof(Alignment),
-                            Alignment,
+                            nameof(HAlignment),
+                            HAlignment,
                             newAlignment,
                             onPropertyChanged));
+                        HAlignment = newAlignment;
+                        onPropertyChanged();
                     }
-                    Alignment = newAlignment;
-                    onPropertyChanged();
                 });
-            hAlignCombo.Left += 10;  // Adjust for label width
-            CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
+            CacheControl("HAlignment", hAlignCombo,
+                () => hAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(HAlignment));
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
             text = LanguageManager.TranslateString("V-Align") + ":";
             AddPropertyLabel(container, text, yPosition);
-            string[] vAlignmentOptions = ["Near", "Center", "Far"];
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignment.ToString(), yPosition, vAlignmentOptions,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(VAlignment, isVertical: true),
+                yPosition,
+                AlignmentHelper.VerticalOptions,
                 value =>
                 {
-                    StringAlignment newVAlignment = Enum.Parse<StringAlignment>(value);
-                    if (VerticalAlignment != newVAlignment && undoRedoManager != null)
+                    StringAlignment newVAlignment = AlignmentHelper.FromDisplayText(value);
+                    if (VAlignment != newVAlignment)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
-                            nameof(VerticalAlignment),
-                            VerticalAlignment,
+                            nameof(VAlignment),
+                            VAlignment,
                             newVAlignment,
                             onPropertyChanged));
+                        VAlignment = newVAlignment;
+                        onPropertyChanged();
                     }
-                    VerticalAlignment = newVAlignment;
-                    onPropertyChanged();
                 });
-            vAlignCombo.Left += 10;  // Adjust for label width
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
+            CacheControl("VAlignment", vAlignCombo,
+                () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VAlignment, isVertical: true));
             yPosition += ControlRowHeight;
 
             return yPosition;

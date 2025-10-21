@@ -984,7 +984,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Title font size
             text = LanguageManager.TranslateString("Title Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
                 value =>
                 {
@@ -1001,13 +1001,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 8, 20);
-            titleNumericUpDown.Left = 130;
             CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
             yPosition += ControlRowHeight;
 
             // Legend font size
-            text = LanguageManager.TranslateString("Title Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            text = LanguageManager.TranslateString("Legend Size") + ":";
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
                 value =>
                 {
@@ -1024,13 +1023,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 8, 20);
-            legendNumericUpDown.Left = 130;
             CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
             yPosition += ControlRowHeight;
 
             // Border thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, _borderThickness, yPosition,
                 value =>
                 {
@@ -1047,28 +1045,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            thicknessNumeric.Left = 170;
             CacheControl("_borderThickness", thicknessNumeric, () => thicknessNumeric.Value = _borderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             text = LanguageManager.TranslateString("Border color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel _borderColorPanel = AddColorPicker(container, yPosition, 170, _borderColor,
-                color =>
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel _borderColorPanel = AddColorPicker(container, yPosition, _borderColor,
+                newColor =>
                 {
-                    if (_borderColor.ToArgb() != color.ToArgb())
+                    if (_borderColor.ToArgb() != newColor.ToArgb())
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(_borderColor),
                             _borderColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        _borderColor = color;
+                        _borderColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
 
             CacheControl("_borderColor", _borderColorPanel, () => _borderColorPanel.BackColor = _borderColor);
             yPosition += ControlRowHeight;

@@ -412,7 +412,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Font Size
             text = LanguageManager.TranslateString("Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -437,10 +437,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - RightMargin - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -550,29 +551,28 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Background Color
             text = LanguageManager.TranslateString("Background color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 85, BackgroundColor,
-                color =>
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
+                newColor =>
                 {
-                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    if (BackgroundColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(BackgroundColor),
                             BackgroundColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        BackgroundColor = color;
+                        BackgroundColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
-            bgColorPanel.Left = 170;  // Adjust for label width
+                });
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
             // Border Thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown borderThicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
                 value =>
                 {
@@ -589,17 +589,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            borderThicknessNumeric.Left = 170;
             CacheControl("BorderThickness", borderThicknessNumeric, () => borderThicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border Color
             text = LanguageManager.TranslateString("Border color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
                 color =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (BorderColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -610,20 +609,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         BorderColor = color;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
-
-            borderColorPanel.Left = 170;
+                });
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Horizontal Alignment
             text = LanguageManager.TranslateString("H-Align") + ":";
             AddPropertyLabel(container, text, yPosition);
-            string[] hAlignmentOptions = ["Left", "Center", "Right"];
-            Guna2ComboBox alignCombo = AddPropertyComboBox(container, AlignmentToDisplayText(Alignment), yPosition, hAlignmentOptions,
+            Guna2ComboBox alignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(Alignment),
+                yPosition,
+                AlignmentHelper.HorizontalOptions,
                 value =>
                 {
-                    StringAlignment newAlignment = DisplayTextToAlignment(value);
+                    StringAlignment newAlignment = AlignmentHelper.FromDisplayText(value);
                     if (Alignment != newAlignment)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -636,18 +636,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
-            alignCombo.Left += 10;  // Adjust for label width
-            CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
+            CacheControl("Alignment", alignCombo,
+                () => alignCombo.SelectedItem = AlignmentHelper.ToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
             // Vertical Alignment
             text = LanguageManager.TranslateString("V-Align") + ":";
             AddPropertyLabel(container, text, yPosition);
-            string[] vAlignmentOptions = ["Top", "Middle", "Bottom"];
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignmentToDisplayText(VerticalAlignment), yPosition, vAlignmentOptions,
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(VerticalAlignment, isVertical: true),
+                yPosition,
+                AlignmentHelper.VerticalOptions,
                 value =>
                 {
-                    StringAlignment newVAlignment = DisplayTextToVerticalAlignment(value);
+                    StringAlignment newVAlignment = AlignmentHelper.FromDisplayText(value);
                     if (VerticalAlignment != newVAlignment)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -660,8 +663,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
-            vAlignCombo.Left += 10;  // Adjust for label width
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
+            CacheControl("VerticalAlignment", vAlignCombo,
+                () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VerticalAlignment, isVertical: true));
             yPosition += ControlRowHeight;
 
             // Include returns checkbox
@@ -785,48 +788,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight + 10;
 
             return yPosition;
-        }
-
-        // Helper methods
-        private static string AlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Left",
-                StringAlignment.Center => "Center",
-                StringAlignment.Far => "Right",
-                _ => "Left"
-            };
-        }
-        private static StringAlignment DisplayTextToAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Left" => StringAlignment.Near,
-                "Center" => StringAlignment.Center,
-                "Right" => StringAlignment.Far,
-                _ => StringAlignment.Near
-            };
-        }
-        private static string VerticalAlignmentToDisplayText(StringAlignment alignment)
-        {
-            return alignment switch
-            {
-                StringAlignment.Near => "Top",
-                StringAlignment.Center => "Middle",
-                StringAlignment.Far => "Bottom",
-                _ => "Top"
-            };
-        }
-        private static StringAlignment DisplayTextToVerticalAlignment(string displayText)
-        {
-            return displayText switch
-            {
-                "Top" => StringAlignment.Near,
-                "Middle" => StringAlignment.Center,
-                "Bottom" => StringAlignment.Far,
-                _ => StringAlignment.Near
-            };
         }
     }
 }

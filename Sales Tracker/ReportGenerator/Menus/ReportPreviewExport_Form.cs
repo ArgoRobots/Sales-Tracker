@@ -143,7 +143,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Set default filename
-            string defaultName = ReportConfig?.Title ?? "Report";
+            string defaultName = ReportConfig.Title;
             defaultName = string.Join("_", defaultName.Split(Path.GetInvalidFileNameChars()));
             defaultName += $"_{DateTime.Now:yyyyMMdd_HHmmss}";
             saveDialog.FileName = defaultName;
@@ -431,7 +431,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Set default export path if not set
                 if (string.IsNullOrEmpty(ExportPath_TextBox.Text))
                 {
-                    string fileName = ReportConfig.Title ?? "Report";
+                    string fileName = ReportConfig.Title;
                     fileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
                     fileName += $"_{DateTime.Now:yyyyMMdd_HHmmss}.png";
                     string defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
