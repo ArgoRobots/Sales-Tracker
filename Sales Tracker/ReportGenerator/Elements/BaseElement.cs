@@ -597,68 +597,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CachedPropertyPanel.Controls.Add(Tab_Panel);
             return Tab_Panel;
         }
-
-        /// <summary>
-        /// Adds font style toggle buttons (Bold, Italic, Underline) to the container.
-        /// </summary>
-        /// <summary>
-        /// Adds font style toggle buttons (Bold, Italic, Underline) to the container.
-        /// </summary>
-        protected static void AddFontStyleToggleButtons(
-            Panel container,
-            int yPosition,
-            FontStyle currentStyle,
-            Action<FontStyle> onStyleChanged)
-        {
-            int xPosition = 85;
-            const int buttonWidth = 35;
-            const int buttonHeight = 30;
-            const int spacing = 5;
-            int buttonY = yPosition + 2;
-
-            // Create a list to store all buttons for updating their states
-            List<(Guna2Button button, FontStyle style)> styleButtons = [];
-
-            // Bold button
-            Guna2Button boldButton = CreateFontStyleButton(
-                "B", FontStyle.Bold, xPosition, buttonY, buttonWidth, buttonHeight);
-            boldButton.Checked = currentStyle.HasFlag(FontStyle.Bold);
-            styleButtons.Add((boldButton, FontStyle.Bold));
-            container.Controls.Add(boldButton);
-            xPosition += buttonWidth + spacing;
-
-            // Italic button
-            Guna2Button italicButton = CreateFontStyleButton(
-                "I", FontStyle.Italic, xPosition, buttonY, buttonWidth, buttonHeight);
-            italicButton.Checked = currentStyle.HasFlag(FontStyle.Italic);
-            styleButtons.Add((italicButton, FontStyle.Italic));
-            container.Controls.Add(italicButton);
-            xPosition += buttonWidth + spacing;
-
-            // Underline button
-            Guna2Button underlineButton = CreateFontStyleButton(
-                "U", FontStyle.Underline, xPosition, buttonY, buttonWidth, buttonHeight);
-            underlineButton.Checked = currentStyle.HasFlag(FontStyle.Underline);
-            styleButtons.Add((underlineButton, FontStyle.Underline));
-            container.Controls.Add(underlineButton);
-
-            // Attach event handlers that use the shared current style
-            foreach ((Guna2Button button, FontStyle style) in styleButtons)
-            {
-                button.CheckedChanged += (s, e) =>
-                {
-                    if (button.Checked)
-                    {
-                        currentStyle |= style;
-                    }
-                    else
-                    {
-                        currentStyle &= ~style;
-                    }
-                    onStyleChanged(currentStyle);
-                };
-            }
-        }
         public static Guna2Button CreateFontStyleButton(
             string text,
             FontStyle fontStyle,
