@@ -349,17 +349,43 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a property label to the container.
+        /// Adds a property label to the container with overflow handling.
         /// </summary>
         public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false)
         {
+            const int leftMargin = 10;
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20; // Account for potential scrollbar
+            const int controlMinWidth = 120; // Minimum space for the control on the right
+
+            // Calculate maximum width for label (leaving space for control on right)
+            int maxLabelWidth = container.Width - leftMargin - rightMargin - scrollBarWidth - controlMinWidth;
+            if (maxLabelWidth < 50) maxLabelWidth = 50; // Ensure minimum label width
+
+            Font labelFont = new("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular);
+
+            // Measure text with current font
+            using (Graphics g = container.CreateGraphics())
+            {
+                SizeF textSize = g.MeasureString(text, labelFont);
+
+                // If text is too wide, try smaller font first
+                if (textSize.Width > maxLabelWidth)
+                {
+                    labelFont = new Font("Segoe UI", 8, bold ? FontStyle.Bold : FontStyle.Regular);
+                }
+            }
+
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular),
+                Font = labelFont,
                 ForeColor = CustomColors.Text,
-                Location = new Point(10, yPosition + 8),
-                AutoSize = true
+                Location = new Point(leftMargin, yPosition + 8),
+                AutoSize = false,
+                Size = new Size(maxLabelWidth, 20),
+                AutoEllipsis = true,
+                TextAlign = ContentAlignment.MiddleLeft
             };
 
             container.Controls.Add(label);
@@ -367,18 +393,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a text box property control.
+        /// Adds a text box property control aligned to the right.
         /// </summary>
         public static Guna2TextBox AddPropertyTextBox(Panel container, string value, int yPosition, Action<string> onChange)
         {
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20;
+            const int controlWidth = 170; // Width of the textbox
+
+            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+
             Guna2TextBox textBox = new()
             {
                 Text = value,
-                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
-                Location = new Point(85, yPosition),
+                Size = new Size(controlWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             textBox.TextChanged += (s, e) => onChange(textBox.Text);
@@ -387,19 +419,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a numeric up/down property control.
+        /// Adds a numeric up/down property control aligned to the right.
         /// </summary>
         public static Guna2NumericUpDown AddPropertyNumericUpDown(Panel container, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
         {
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20;
+            const int controlWidth = 100;
+
+            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+
             Guna2NumericUpDown numericUpDown = new()
             {
-                Size = new Size(100, ControlHeight),
-                Location = new Point(85, yPosition),
+                Size = new Size(controlWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
                 Minimum = min,
                 Maximum = max,
-                Value = value
+                Value = value,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             numericUpDown.KeyDown += (s, e) =>
             {
@@ -418,18 +457,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a combo box property control.
+        /// Adds a combo box property control aligned to the right.
         /// </summary>
         protected static Guna2ComboBox AddPropertyComboBox(Panel container, string value, int yPosition, string[] items, Action<string> onChange)
         {
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20;
+            const int controlWidth = 170; // Width of the combobox
+
+            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+
             Guna2ComboBox comboBox = new()
             {
-                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
+                Size = new Size(controlWidth, ControlHeight),
                 ItemHeight = 39,  // Needed to make the height equal to ControlHeight
-                Location = new Point(85, yPosition),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             comboBox.Items.AddRange(items);
             comboBox.SelectedItem = value;
@@ -491,24 +536,32 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static readonly string ColorPickerTag = "ColorPicker";
 
         /// <summary>
-        /// Adds a color picker control with an optional label.
+        /// Adds a color picker control with an optional label, aligned to the right.
         /// </summary>
         protected static Panel AddColorPicker(
             Panel container,
             int yPosition,
-            int xPosition,
             Color currentColor,
             Action<Color> onColorChanged,
             bool showLabel = true)
         {
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20;
+            const int colorPickerWidth = 50;
+            const int labelWidth = 100; // Approximate width for "Click to change" label
+
+            int totalWidth = showLabel ? colorPickerWidth + 5 + labelWidth : colorPickerWidth;
+            int xPosition = container.Width - totalWidth - rightMargin - scrollBarWidth;
+
             Panel colorPreview = new()
             {
                 BackColor = currentColor,
                 BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(50, 30),
+                Size = new Size(colorPickerWidth, 30),
                 Location = new Point(xPosition, yPosition + 8),
                 Cursor = Cursors.Hand,
-                Tag = ColorPickerTag
+                Tag = ColorPickerTag,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             colorPreview.Click += (s, e) =>
@@ -536,7 +589,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Font = new Font("Segoe UI", 8),
                     ForeColor = Color.Gray,
                     Location = new Point(xPosition + 55, yPosition + 11),
-                    AutoSize = true
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
                 };
                 container.Controls.Add(colorLabel);
             }

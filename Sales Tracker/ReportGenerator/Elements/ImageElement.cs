@@ -518,7 +518,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 255);
-            opacityNumeric.Left = 170;
             CacheControl("Opacity", opacityNumeric, () => opacityNumeric.Value = Opacity);
             yPosition += ControlRowHeight;
 
@@ -541,7 +540,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 100);
-            radiusNumeric.Left = 170;
             CacheControl("CornerRadius_Percent", radiusNumeric, () => radiusNumeric.Value = CornerRadius_Percent);
             yPosition += ControlRowHeight;
 
@@ -564,14 +562,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            thicknessNumeric.Left = 170;
             CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             text = LanguageManager.TranslateString("Border Color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor,
+            Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
                 color =>
                 {
                     if (BorderColor.ToArgb() != color.ToArgb())
@@ -592,7 +589,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Background color
             text = LanguageManager.TranslateString("Background Color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor,
+            Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
                 color =>
                 {
                     if (BackgroundColor.ToArgb() != color.ToArgb())

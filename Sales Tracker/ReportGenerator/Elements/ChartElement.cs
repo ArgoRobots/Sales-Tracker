@@ -1001,7 +1001,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 8, 20);
-            titleNumericUpDown.Left = 130;
             CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
             yPosition += ControlRowHeight;
 
@@ -1024,7 +1023,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 8, 20);
-            legendNumericUpDown.Left = 130;
             CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
             yPosition += ControlRowHeight;
 
@@ -1047,14 +1045,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            thicknessNumeric.Left = 170;
             CacheControl("_borderThickness", thicknessNumeric, () => thicknessNumeric.Value = _borderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             text = LanguageManager.TranslateString("Border color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel _borderColorPanel = AddColorPicker(container, yPosition, 170, _borderColor,
+            Panel _borderColorPanel = AddColorPicker(container, yPosition, _borderColor,
                 color =>
                 {
                     if (_borderColor.ToArgb() != color.ToArgb())

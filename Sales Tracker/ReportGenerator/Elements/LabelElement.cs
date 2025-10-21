@@ -274,7 +274,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Text Color
             text = LanguageManager.TranslateString("Color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
                 newColor =>
                 {
                     // Colors need special comparison
@@ -313,7 +313,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     Alignment = newAlignment;
                     onPropertyChanged();
                 });
-            hAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
             yPosition += ControlRowHeight;
 
@@ -337,7 +336,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     VerticalAlignment = newVAlignment;
                     onPropertyChanged();
                 });
-            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
             yPosition += ControlRowHeight;
 

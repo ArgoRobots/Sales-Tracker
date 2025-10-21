@@ -551,7 +551,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Background Color
             text = LanguageManager.TranslateString("Background color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 85, BackgroundColor,
+            Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
                 color =>
                 {
                     if (BackgroundColor.ToArgb() != color.ToArgb())
@@ -566,7 +566,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
-            bgColorPanel.Left = 170;  // Adjust for label width
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
@@ -589,14 +588,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            borderThicknessNumeric.Left = 170;
             CacheControl("BorderThickness", borderThicknessNumeric, () => borderThicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border Color
             text = LanguageManager.TranslateString("Border color") + ":";
             AddPropertyLabel(container, text, yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 85, BorderColor,
+            Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
                 color =>
                 {
                     if (BorderColor.ToArgb() != color.ToArgb())
@@ -611,8 +609,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, showLabel: false);
-
-            borderColorPanel.Left = 170;
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
@@ -636,7 +632,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
-            alignCombo.Left += 10;  // Adjust for label width
             CacheControl("Alignment", alignCombo, () => alignCombo.SelectedItem = AlignmentToDisplayText(Alignment));
             yPosition += ControlRowHeight;
 
@@ -660,7 +655,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
-            vAlignCombo.Left += 10;  // Adjust for label width
             CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignmentToDisplayText(VerticalAlignment));
             yPosition += ControlRowHeight;
 
