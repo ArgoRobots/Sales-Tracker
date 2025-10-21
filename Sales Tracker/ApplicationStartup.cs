@@ -265,6 +265,10 @@ namespace Sales_Tracker
                     return false;
                 }
 
+                // Delete the language files cache to force re-download
+                Directories.DeleteFile(Directories.English_file);
+                Directories.DeleteFile(Directories.Translations_file);
+
                 // Get the most recent company
                 List<string> recentCompanies = ArgoCompany.GetValidRecentCompanyPaths(excludeCurrentCompany: false);
                 if (recentCompanies.Count == 0)

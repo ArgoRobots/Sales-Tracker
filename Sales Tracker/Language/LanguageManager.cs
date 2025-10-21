@@ -274,7 +274,7 @@ namespace Sales_Tracker.Language
             await Task.WhenAll(updateTasks);
 
             // Final UI updates
-            if (Tools.IsFormOpen<ReportDataSelection_Form>())
+            if (Tools.IsFormOpen<ReportGenerator_Form>())
             {
                 ReportDataSelection_Form.Instance.BeginInvoke(new Action(ReportDataSelection_Form.Instance.UpdateLanguageForChartSelectionControl));
                 ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
