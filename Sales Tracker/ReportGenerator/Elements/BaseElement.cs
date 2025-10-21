@@ -4,6 +4,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ReportGenerator.Elements
 {
@@ -67,7 +68,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale);
 
-        private Panel _cachedPropertyPanel;
+        public Panel CachedPropertyPanel { get; private set; }
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];
         public Dictionary<string, Action> UpdateActionCache { get; } = [];
@@ -80,7 +81,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Create controls only once
             if (!_controlsCreated)
             {
-                _cachedPropertyPanel = new Panel
+                CachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
                     AutoSize = false,
@@ -92,7 +93,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (!HandlesOwnCommonControls)
                 {
                     Dictionary<string, Control> commonControls = CreateCommonPropertyControls(
-                        _cachedPropertyPanel,
+                        CachedPropertyPanel,
                         this,
                         yPosition,
                         onPropertyChanged,
@@ -111,17 +112,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Let derived classes create their specific controls
-                yPosition = CreateElementSpecificControls(_cachedPropertyPanel, yPosition, onPropertyChanged);
+                yPosition = CreateElementSpecificControls(CachedPropertyPanel, yPosition, onPropertyChanged);
 
                 _controlsCreated = true;
             }
 
-            // Only clear and add if the cached panel isn't already in the container
-            if (_cachedPropertyPanel != null && _cachedPropertyPanel.Parent != container)
+            // Only add CachedPropertyPanel if it's not already in the container
+            if (CachedPropertyPanel != null && CachedPropertyPanel.Parent != container)
             {
-                container.Controls.Clear();
-                _cachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
-                container.Controls.Add(_cachedPropertyPanel);
+                List<Control> controlsToRemove = container.Controls
+                   .Cast<Control>()
+                   .Where(c => c != LoadingPanel.BlankLoadingPanelInstance)
+                   .ToList();
+
+                foreach (Control ctrl in controlsToRemove)
+                {
+                    container.Controls.Remove(ctrl);
+                }
+
+                CachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
+                container.Controls.Add(CachedPropertyPanel);
             }
 
             UpdateAllControlValues();
@@ -168,8 +178,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public void ClearPropertyControlCache()
         {
             _controlsCreated = false;
-            _cachedPropertyPanel?.Dispose();
-            _cachedPropertyPanel = null;
+            CachedPropertyPanel?.Dispose();
+            CachedPropertyPanel = null;
             _controlCache.Clear();
             UpdateActionCache.Clear();
         }
@@ -477,7 +487,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             return checkBox;
         }
 
-        public static Panel Tab_Panel { get; private set; }
+        public Panel Tab_Panel { get; private set; }
         public static readonly string ColorPickerTag = "ColorPicker";
 
         /// <summary>
@@ -537,16 +547,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Creates tab buttons for organizing properties.
         /// </summary>
-        protected static Panel CreateTabButtons(Panel container, string[] tabNames, Action<int> onTabChanged)
+        protected Panel CreateTabButtons(string[] tabNames, Action<int> onTabChanged)
         {
+            int parentWidth = ReportLayoutDesigner_Form.Instance.PropertiesContainer_Panel.Width;
+
             Tab_Panel = new()
             {
                 Location = new Point(0, 0),
-                Size = new Size(container.Width, 35),
+                Size = new Size(parentWidth, 35),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            int buttonWidth = (container.Width - 10) / tabNames.Length;
+            int buttonWidth = (parentWidth - 10) / tabNames.Length;
             for (int i = 0; i < tabNames.Length; i++)
             {
                 int tabIndex = i;
@@ -582,7 +594,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Tab_Panel.Controls.Add(tabButton);
             }
 
-            container.Controls.Add(Tab_Panel);
+            CachedPropertyPanel.Controls.Add(Tab_Panel);
             return Tab_Panel;
         }
 

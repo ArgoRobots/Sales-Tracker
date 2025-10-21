@@ -807,14 +807,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 Canvas_Panel.Invalidate();
             }
 
-            // Update properties panel once at the end
-            if (wasInteracting)
-            {
-                _propertyUpdateTimer.Stop();
-                UpdatePropertiesForSelection();
-                NotifyParentValidationChanged();
-            }
-
             if (e.Button == MouseButtons.Right)
             {
                 // Check if there's an element at the click location
@@ -1764,6 +1756,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
             {
+                // This prevents flickering
+                LoadingPanel.ShowBlankLoadingPanel(PropertiesContainer_Panel, CustomColors.ControlBack);
+
                 _currentPropertyElement = _selectedElement;
 
                 // Element handles its own caching internally
@@ -1772,7 +1767,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     10,
                     OnPropertyChanged);
 
+                ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
+
+                LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
             else
             {
@@ -1786,7 +1784,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void UpdatePropertyContainerTheme()
         {
             // Get the cached panel if it exists
-            Panel cachedPanel = PropertiesContainer_Panel.Controls.OfType<Panel>().FirstOrDefault();
+            Panel cachedPanel = PropertiesContainer_Panel.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => p != LoadingPanel.BlankLoadingPanelInstance);
 
             if (cachedPanel != null)
             {
@@ -1803,23 +1803,24 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Set BackColor for TableElement's tab panels if this is a TableElement
-            if (_selectedElement is TableElement)
+            if (_selectedElement is TableElement tableElement)
             {
-                if (TableElement.General_Panel != null)
+                if (tableElement.General_Panel != null)
                 {
-                    TableElement.General_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.General_Panel.BackColor = CustomColors.ControlBack;
+                    ThemeManager.CustomizeScrollBar(tableElement.General_Panel);
                 }
-                if (TableElement.Style_Panel != null)
+                if (tableElement.Style_Panel != null)
                 {
-                    TableElement.Style_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Style_Panel.BackColor = CustomColors.ControlBack;
                 }
-                if (TableElement.Columns_Panel != null)
+                if (tableElement.Columns_Panel != null)
                 {
-                    TableElement.Columns_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Columns_Panel.BackColor = CustomColors.ControlBack;
                 }
-                if (BaseElement.Tab_Panel != null)
+                if (tableElement.Tab_Panel != null)
                 {
-                    BaseElement.Tab_Panel.BackColor = CustomColors.ControlBack;
+                    tableElement.Tab_Panel.BackColor = CustomColors.ControlBack;
                 }
             }
 
@@ -1833,9 +1834,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Also find the CheckBoxes inside TableElement's tab panels if this is a TableElement
-            if (_selectedElement is TableElement)
+            if (_selectedElement is TableElement tableElement1)
             {
-                Panel[] tabPanels = [TableElement.General_Panel, TableElement.Style_Panel, TableElement.Columns_Panel];
+                Panel[] tabPanels = [tableElement1.General_Panel, tableElement1.Style_Panel, tableElement1.Columns_Panel];
 
                 foreach (Panel panel in tabPanels)
                 {
