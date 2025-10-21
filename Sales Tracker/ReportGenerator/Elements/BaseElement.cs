@@ -81,9 +81,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Create controls only once
             if (!_controlsCreated)
             {
+                // Set size first so child controls can calculate their positions correctly
+                int panelWidth = container.Width > 0 ? container.Width - 5 : 340; // Default to 340 if container width not set
+
                 CachedPropertyPanel = new Panel
                 {
                     Location = new Point(0, 0),
+                    Size = new Size(panelWidth, container.Height),
                     AutoSize = false,
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
@@ -130,7 +134,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     container.Controls.Remove(ctrl);
                 }
 
-                CachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
+                // Update panel size in case container size changed
+                int panelWidth = container.Width > 0 ? container.Width - 5 : 340;
+                CachedPropertyPanel.Size = new Size(panelWidth, container.Height);
                 container.Controls.Add(CachedPropertyPanel);
             }
 
@@ -354,13 +360,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false)
         {
             const int leftMargin = 10;
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20; // Account for potential scrollbar
-            const int controlMinWidth = 120; // Minimum space for the control on the right
+            const int labelRightEdge = 135; // Labels can extend to this x position
 
-            // Calculate maximum width for label (leaving space for control on right)
-            int maxLabelWidth = container.Width - leftMargin - rightMargin - scrollBarWidth - controlMinWidth;
-            if (maxLabelWidth < 50) maxLabelWidth = 50; // Ensure minimum label width
+            // Calculate maximum width for label
+            // This leaves space for the right-aligned controls which start around x=140-210
+            int maxLabelWidth = labelRightEdge - leftMargin;
 
             Font labelFont = new("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular);
 
@@ -397,11 +401,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static Guna2TextBox AddPropertyTextBox(Panel container, string value, int yPosition, Action<string> onChange)
         {
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20;
             const int controlWidth = 170; // Width of the textbox
+            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
 
-            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+            int xPosition = rightEdge - controlWidth;
 
             Guna2TextBox textBox = new()
             {
@@ -423,11 +426,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static Guna2NumericUpDown AddPropertyNumericUpDown(Panel container, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
         {
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20;
             const int controlWidth = 100;
+            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
 
-            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+            int xPosition = rightEdge - controlWidth;
 
             Guna2NumericUpDown numericUpDown = new()
             {
@@ -461,11 +463,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         protected static Guna2ComboBox AddPropertyComboBox(Panel container, string value, int yPosition, string[] items, Action<string> onChange)
         {
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20;
             const int controlWidth = 170; // Width of the combobox
+            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
 
-            int xPosition = container.Width - controlWidth - rightMargin - scrollBarWidth;
+            int xPosition = rightEdge - controlWidth;
 
             Guna2ComboBox comboBox = new()
             {
@@ -545,13 +546,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Action<Color> onColorChanged,
             bool showLabel = true)
         {
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20;
+            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
             const int colorPickerWidth = 50;
             const int labelWidth = 100; // Approximate width for "Click to change" label
 
             int totalWidth = showLabel ? colorPickerWidth + 5 + labelWidth : colorPickerWidth;
-            int xPosition = container.Width - totalWidth - rightMargin - scrollBarWidth;
+            int xPosition = rightEdge - totalWidth;
 
             Panel colorPreview = new()
             {
