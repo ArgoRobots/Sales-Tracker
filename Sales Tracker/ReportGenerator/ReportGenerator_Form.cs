@@ -232,7 +232,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ReportGenerator_Form_FormClosing(object sender, FormClosingEventArgs e)
+        private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clean up child forms
             _dataSelectionForm?.Dispose();

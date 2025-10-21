@@ -61,16 +61,16 @@ namespace Sales_Tracker.UI
             Form parentForm = control.FindForm();
             if (parentForm == null) { return; }
 
-            title = LanguageManager.TranslateString(title);
-            message = LanguageManager.TranslateString(message);
-
-            Guna2HtmlToolTip tooltip = GetTooltipForForm(parentForm);
-
-            // Store the tooltip data for this control
+            // Store the ORIGINAL (untranslated) tooltip data for this control
             _tooltipData[control] = (title, message);
 
-            tooltip.ToolTipTitle = title;
-            tooltip.SetToolTip(control, message);
+            // Translate and set the tooltip
+            string translatedTitle = LanguageManager.TranslateString(title);
+            string translatedMessage = LanguageManager.TranslateString(message);
+
+            Guna2HtmlToolTip tooltip = GetTooltipForForm(parentForm);
+            tooltip.ToolTipTitle = translatedTitle;
+            tooltip.SetToolTip(control, translatedMessage);
         }
 
         /// <summary>
@@ -84,6 +84,31 @@ namespace Sales_Tracker.UI
                 tooltip.BackColor = CustomColors.ControlBack;
                 tooltip.ForeColor = CustomColors.Text;
                 tooltip.BorderColor = CustomColors.ControlPanelBorder;
+            }
+        }
+
+        /// <summary>
+        /// Updates all existing tooltips with translations for the current language.
+        /// </summary>
+        public static void UpdateAllToolTipTranslations(string targetLanguageAbbreviation)
+        {
+            foreach (KeyValuePair<Control, (string title, string message)> entry in _tooltipData)
+            {
+                Control control = entry.Key;
+                string originalTitle = entry.Value.title;
+                string originalMessage = entry.Value.message;
+
+                // Find the parent form
+                Form parentForm = control.FindForm();
+                if (parentForm == null || !_tooltips.ContainsKey(parentForm)) { continue; }
+
+                // Translate and update the tooltip
+                string translatedTitle = LanguageManager.TranslateString(originalTitle, targetLanguageAbbreviation);
+                string translatedMessage = LanguageManager.TranslateString(originalMessage, targetLanguageAbbreviation);
+
+                Guna2HtmlToolTip tooltip = _tooltips[parentForm];
+                tooltip.ToolTipTitle = translatedTitle;
+                tooltip.SetToolTip(control, translatedMessage);
             }
         }
     }

@@ -280,6 +280,11 @@ namespace Sales_Tracker.Language
                 ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
             }
 
+            if (Tools.IsFormOpen<ReportLayoutDesigner_Form>())
+            {
+                ReportLayoutDesigner_Form.Instance.BeginInvoke(new Action(ReportLayoutDesigner_Form.Instance.RefreshPropertyPanelTranslations));
+            }
+
             if (Tools.IsFormOpen<Log_Form>())
             {
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));
@@ -320,6 +325,9 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
+
+            // Update all custom tooltips with the new language
+            CustomTooltip.UpdateAllToolTipTranslations(targetLanguageAbbreviation);
         }
 
         /// <summary>
@@ -530,14 +538,14 @@ namespace Sales_Tracker.Language
         /// Translates a string using cached translations with text-based keys.
         /// The string also needs to be added to TranslationGenerator.CollectStringsToTranslate().
         /// </summary>
-        public static string TranslateString(string text)
+        public static string TranslateString(string text, string targetLanguageAbbreviation = null)
         {
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
 
-            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
             if (targetLanguageAbbreviation == "en")
             {
                 return text;
