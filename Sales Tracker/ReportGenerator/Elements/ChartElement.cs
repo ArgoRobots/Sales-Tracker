@@ -984,7 +984,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Title font size
             text = LanguageManager.TranslateString("Title Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
                 value =>
                 {
@@ -1006,7 +1006,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Legend font size
             text = LanguageManager.TranslateString("Legend Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
                 value =>
                 {
@@ -1028,7 +1028,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Border thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, _borderThickness, yPosition,
                 value =>
                 {
@@ -1050,7 +1050,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Border color
             text = LanguageManager.TranslateString("Border color") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
             Panel _borderColorPanel = AddColorPicker(container, yPosition, _borderColor,
                 newColor =>
                 {

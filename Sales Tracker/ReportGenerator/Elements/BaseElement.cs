@@ -14,6 +14,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public abstract class BaseElement
     {
         // Properties
+        private const byte leftMargin = 10;
+        public static byte RightMargin { get; } = 40;
+        public static byte NumericUpDownWidth { get; } = 100;
+        public static byte ColorPickerWidth { get; } = 50;
+
         /// <summary>
         /// Gets the user-friendly display name for this element type.
         /// </summary>
@@ -207,10 +212,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
             string text;
 
             // Get the UndoRedoManager instance
-            UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance.GetUndoRedoManager();
 
             // X position
-            AddPropertyLabel(container, "X:", yPosition);
+            AddPropertyLabel(container, "X:", yPosition, false, NumericUpDownWidth);
             int oldX = element?.Bounds.X ?? 0;
             Guna2NumericUpDown xNumeric = AddPropertyNumericUpDown(container, oldX, yPosition,
                 value =>
@@ -222,7 +227,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         newBounds.X = (int)value;
 
                         // Record undo action if value actually changed
-                        if (oldBounds.X != newBounds.X && undoRedoManager != null)
+                        if (oldBounds.X != newBounds.X)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -246,7 +251,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Y position
-            AddPropertyLabel(container, "Y:", yPosition);
+            AddPropertyLabel(container, "Y:", yPosition, false, NumericUpDownWidth);
             int oldY = element?.Bounds.Y ?? 0;
             Guna2NumericUpDown yNumeric = AddPropertyNumericUpDown(container, oldY, yPosition,
                 value =>
@@ -257,7 +262,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Y = (int)value;
 
-                        if (oldBounds.Y != newBounds.Y && undoRedoManager != null)
+                        if (oldBounds.Y != newBounds.Y)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -282,7 +287,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Width
             text = LanguageManager.TranslateString("Width");
-            AddPropertyLabel(container, text + ":", yPosition);
+            AddPropertyLabel(container, text + ":", yPosition, false, NumericUpDownWidth);
             int oldWidth = element?.Bounds.Width ?? 100;
             Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, oldWidth, yPosition,
                 value =>
@@ -293,7 +298,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Width = (int)value;
 
-                        if (oldBounds.Width != newBounds.Width && undoRedoManager != null)
+                        if (oldBounds.Width != newBounds.Width)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -318,7 +323,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Height
             text = LanguageManager.TranslateString("Height");
-            AddPropertyLabel(container, text + ":", yPosition);
+            AddPropertyLabel(container, text + ":", yPosition, false, NumericUpDownWidth);
             int oldHeight = element?.Bounds.Height ?? 100;
             Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, oldHeight, yPosition,
                 value =>
@@ -329,7 +334,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Height = (int)value;
 
-                        if (oldBounds.Height != newBounds.Height && undoRedoManager != null)
+                        if (oldBounds.Height != newBounds.Height)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -357,15 +362,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Adds a property label to the container with overflow handling.
         /// </summary>
-        public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false)
+        public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false, int controlWidth = 170)
         {
-            const int leftMargin = 10;
-            const int rightMargin = 10;
-            const int scrollBarWidth = 20;
-            const int controlMinWidth = 120;
-
-            int labelRightEdge = container.Width - leftMargin - rightMargin - scrollBarWidth - controlMinWidth;
-            int maxLabelWidth = labelRightEdge - leftMargin;
+            int maxLabelWidth = container.ClientSize.Width - RightMargin - controlWidth;
 
             Font labelFont = new("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular);
 
@@ -375,9 +374,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Size textSize = TextRenderer.MeasureText(text, labelFont);
 
                 // If text is too wide, try smaller font first
-                if (textSize.Width > maxLabelWidth)
+                if (textSize.Width + 10 > maxLabelWidth)
                 {
                     labelFont = new Font("Segoe UI", 8, bold ? FontStyle.Bold : FontStyle.Regular);
+                    textSize = TextRenderer.MeasureText(text, labelFont);
+                    maxLabelWidth = textSize.Width;
                 }
                 else
                 {
@@ -407,7 +408,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static Guna2TextBox AddPropertyTextBox(Panel container, string value, int yPosition, Action<string> onChange)
         {
             const int controlWidth = 170;
-            int xPosition = container.ClientSize.Width - 10 - controlWidth;
+            int xPosition = container.ClientSize.Width - leftMargin - controlWidth;
 
             Guna2TextBox textBox = new()
             {
@@ -429,12 +430,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static Guna2NumericUpDown AddPropertyNumericUpDown(Panel container, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
         {
-            const int controlWidth = 100;
-            int xPosition = container.ClientSize.Width - 10 - controlWidth;
+            int xPosition = container.ClientSize.Width - leftMargin - NumericUpDownWidth;
 
             Guna2NumericUpDown numericUpDown = new()
             {
-                Size = new Size(controlWidth, ControlHeight),
+                Size = new Size(NumericUpDownWidth, ControlHeight),
                 Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
@@ -465,7 +465,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         protected static Guna2ComboBox AddPropertyComboBox(Panel container, string value, int yPosition, string[] items, Action<string> onChange)
         {
             const int controlWidth = 170;
-            int xPosition = container.ClientSize.Width - 10 - controlWidth;
+            int xPosition = container.ClientSize.Width - leftMargin - controlWidth;
 
             Guna2ComboBox comboBox = new()
             {
@@ -505,7 +505,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Add the checkbox
             Guna2CustomCheckBox checkBox = new()
             {
-                Location = new Point(10, yPosition + 6),
+                Location = new Point(leftMargin, yPosition + 6),
                 Size = new Size(22, 22),
                 Animated = true,
                 Checked = isChecked  // This must be set after 'Animated' because Guna is bugged
@@ -544,14 +544,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Color currentColor,
             Action<Color> onColorChanged)
         {
-            const int controlWidth = 50;
-            int xPosition = container.ClientSize.Width - 10 - controlWidth;
+            int xPosition = container.ClientSize.Width - leftMargin - ColorPickerWidth;
 
             Panel colorPreview = new()
             {
                 BackColor = currentColor,
                 BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(controlWidth, 30),
+                Size = new Size(ColorPickerWidth, 30),
                 Location = new Point(xPosition, yPosition + 8),
                 Cursor = Cursors.Hand,
                 Tag = ColorPickerTag,
@@ -592,7 +591,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            int buttonWidth = (parentWidth - 10) / tabNames.Length;
+            int buttonWidth = (parentWidth - leftMargin) / tabNames.Length;
             for (int i = 0; i < tabNames.Length; i++)
             {
                 int tabIndex = i;
