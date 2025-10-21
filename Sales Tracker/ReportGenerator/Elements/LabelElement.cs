@@ -156,11 +156,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Guna2Button underlineButton = null;
 
             // Create the font style buttons container
-            int styleButtonsY = yPosition;
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - 10 - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -277,8 +277,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
                 newColor =>
                 {
-                    // Colors need special comparison
-                    if (TextColor.ToArgb() != newColor.ToArgb() && undoRedoManager != null)
+                    if (TextColor != newColor && undoRedoManager != null)
                     {
                         undoRedoManager.RecordAction(new PropertyChangeAction(
                             this,
@@ -289,7 +288,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     }
                     TextColor = newColor;
                     onPropertyChanged();
-                }, false);
+                });
 
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;

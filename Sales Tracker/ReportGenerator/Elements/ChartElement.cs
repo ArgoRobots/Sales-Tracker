@@ -1005,7 +1005,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Legend font size
-            text = LanguageManager.TranslateString("Title Size") + ":";
+            text = LanguageManager.TranslateString("Legend Size") + ":";
             AddPropertyLabel(container, text, yPosition);
             Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
                 value =>
@@ -1052,20 +1052,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Border color") + ":";
             AddPropertyLabel(container, text, yPosition);
             Panel _borderColorPanel = AddColorPicker(container, yPosition, _borderColor,
-                color =>
+                newColor =>
                 {
-                    if (_borderColor.ToArgb() != color.ToArgb())
+                    if (_borderColor.ToArgb() != newColor.ToArgb())
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(_borderColor),
                             _borderColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        _borderColor = color;
+                        _borderColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
 
             CacheControl("_borderColor", _borderColorPanel, () => _borderColorPanel.BackColor = _borderColor);
             yPosition += ControlRowHeight;

@@ -569,20 +569,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Border Color") + ":";
             AddPropertyLabel(container, text, yPosition);
             Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
-                color =>
+                newColor =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (BorderColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(BorderColor),
                             BorderColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        BorderColor = color;
+                        BorderColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
@@ -592,7 +592,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
                 color =>
                 {
-                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    if (BackgroundColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -603,7 +603,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         BackgroundColor = color;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 

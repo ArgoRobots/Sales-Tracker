@@ -437,10 +437,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - 10 - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -552,20 +553,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Background color") + ":";
             AddPropertyLabel(container, text, yPosition);
             Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
-                color =>
+                newColor =>
                 {
-                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    if (BackgroundColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(BackgroundColor),
                             BackgroundColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        BackgroundColor = color;
+                        BackgroundColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
@@ -597,7 +598,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
                 color =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (BorderColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -608,7 +609,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         BorderColor = color;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 

@@ -360,10 +360,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false)
         {
             const int leftMargin = 10;
-            const int labelRightEdge = 135; // Labels can extend to this x position
+            const int rightMargin = 10;
+            const int scrollBarWidth = 20;
+            const int controlMinWidth = 120;
 
-            // Calculate maximum width for label
-            // This leaves space for the right-aligned controls which start around x=140-210
+            int labelRightEdge = container.Width - leftMargin - rightMargin - scrollBarWidth - controlMinWidth;
             int maxLabelWidth = labelRightEdge - leftMargin;
 
             Font labelFont = new("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular);
@@ -371,12 +372,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Measure text with current font
             using (Graphics g = container.CreateGraphics())
             {
-                SizeF textSize = g.MeasureString(text, labelFont);
+                Size textSize = TextRenderer.MeasureText(text, labelFont);
 
                 // If text is too wide, try smaller font first
                 if (textSize.Width > maxLabelWidth)
                 {
                     labelFont = new Font("Segoe UI", 8, bold ? FontStyle.Bold : FontStyle.Regular);
+                }
+                else
+                {
+                    // Set the label width to the text size if it fits
+                    maxLabelWidth = textSize.Width;
                 }
             }
 
@@ -386,8 +392,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Font = labelFont,
                 ForeColor = CustomColors.Text,
                 Location = new Point(leftMargin, yPosition + 8),
-                AutoSize = false,
-                Size = new Size(maxLabelWidth, 20),
+                Size = new Size(maxLabelWidth, 24),
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleLeft
             };
@@ -401,10 +406,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static Guna2TextBox AddPropertyTextBox(Panel container, string value, int yPosition, Action<string> onChange)
         {
-            const int controlWidth = 170; // Width of the textbox
-            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
-
-            int xPosition = rightEdge - controlWidth;
+            const int controlWidth = 170;
+            int xPosition = container.ClientSize.Width - 10 - controlWidth;
 
             Guna2TextBox textBox = new()
             {
@@ -427,9 +430,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static Guna2NumericUpDown AddPropertyNumericUpDown(Panel container, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
         {
             const int controlWidth = 100;
-            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
-
-            int xPosition = rightEdge - controlWidth;
+            int xPosition = container.ClientSize.Width - 10 - controlWidth;
 
             Guna2NumericUpDown numericUpDown = new()
             {
@@ -463,10 +464,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         protected static Guna2ComboBox AddPropertyComboBox(Panel container, string value, int yPosition, string[] items, Action<string> onChange)
         {
-            const int controlWidth = 170; // Width of the combobox
-            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
-
-            int xPosition = rightEdge - controlWidth;
+            const int controlWidth = 170;
+            int xPosition = container.ClientSize.Width - 10 - controlWidth;
 
             Guna2ComboBox comboBox = new()
             {
@@ -543,21 +542,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel container,
             int yPosition,
             Color currentColor,
-            Action<Color> onColorChanged,
-            bool showLabel = true)
+            Action<Color> onColorChanged)
         {
-            const int rightEdge = 325; // Right edge for all controls (accounting for scrollbar)
-            const int colorPickerWidth = 50;
-            const int labelWidth = 100; // Approximate width for "Click to change" label
-
-            int totalWidth = showLabel ? colorPickerWidth + 5 + labelWidth : colorPickerWidth;
-            int xPosition = rightEdge - totalWidth;
+            const int controlWidth = 50;
+            int xPosition = container.ClientSize.Width - 10 - controlWidth;
 
             Panel colorPreview = new()
             {
                 BackColor = currentColor,
                 BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(colorPickerWidth, 30),
+                Size = new Size(controlWidth, 30),
                 Location = new Point(xPosition, yPosition + 8),
                 Cursor = Cursors.Hand,
                 Tag = ColorPickerTag,
@@ -580,20 +574,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             container.Controls.Add(colorPreview);
-
-            if (showLabel)
-            {
-                Label colorLabel = new()
-                {
-                    Text = LanguageManager.TranslateString("Click to change"),
-                    Font = new Font("Segoe UI", 8),
-                    ForeColor = Color.Gray,
-                    Location = new Point(xPosition + 55, yPosition + 11),
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Top | AnchorStyles.Right
-                };
-                container.Controls.Add(colorLabel);
-            }
 
             return colorPreview;
         }

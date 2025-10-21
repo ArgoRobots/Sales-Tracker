@@ -149,10 +149,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - 10 - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -313,32 +314,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Color") + ":";
             AddPropertyLabel(container, text, yPosition);
             Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
-                color =>
+                newColor =>
                 {
-                    if (TextColor.ToArgb() != color.ToArgb())
+                    if (TextColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(TextColor),
                             TextColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        TextColor = color;
+                        TextColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
-
-            // Add label next to color picker
-            Label colorLabel = new()
-            {
-                Text = LanguageManager.TranslateString("Click to change"),
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 11),
-                AutoSize = true
-            };
-            container.Controls.Add(colorLabel);
-
+                });
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 

@@ -996,20 +996,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Header Background") + ":";
             AddPropertyLabel(panel, text, yPosition);
             Panel headerBgPicker = AddColorPicker(panel, yPosition, HeaderBackgroundColor,
-                color =>
+                newColor =>
                 {
-                    if (HeaderBackgroundColor.ToArgb() != color.ToArgb())
+                    if (HeaderBackgroundColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(HeaderBackgroundColor),
                             HeaderBackgroundColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        HeaderBackgroundColor = color;
+                        HeaderBackgroundColor = newColor;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("HeaderBackgroundColor", headerBgPicker, () => headerBgPicker.BackColor = HeaderBackgroundColor);
             yPosition += ControlRowHeight;
 
@@ -1019,7 +1019,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel headerTextPicker = AddColorPicker(panel, yPosition, HeaderTextColor,
                 color =>
                 {
-                    if (HeaderTextColor.ToArgb() != color.ToArgb())
+                    if (HeaderTextColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1030,7 +1030,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         HeaderTextColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("HeaderTextColor", headerTextPicker, () => headerTextPicker.BackColor = HeaderTextColor);
             yPosition += ControlRowHeight;
 
@@ -1040,7 +1040,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel rowTextPicker = AddColorPicker(panel, yPosition, DataRowTextColor,
                 color =>
                 {
-                    if (DataRowTextColor.ToArgb() != color.ToArgb())
+                    if (DataRowTextColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1051,7 +1051,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         DataRowTextColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("DataRowTextColor", rowTextPicker, () => rowTextPicker.BackColor = DataRowTextColor);
             yPosition += ControlRowHeight;
 
@@ -1061,7 +1061,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             Panel gridLinePicker = AddColorPicker(panel, yPosition, GridLineColor,
                 color =>
                 {
-                    if (GridLineColor.ToArgb() != color.ToArgb())
+                    if (GridLineColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1072,7 +1072,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         GridLineColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("GridLineColor", gridLinePicker, () => gridLinePicker.BackColor = GridLineColor);
             yPosition += ControlRowHeight;
 
