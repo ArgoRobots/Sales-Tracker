@@ -586,6 +586,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderNoDataMessage(Graphics graphics)
         {
+            // Draw background
+            using (SolidBrush baseBgBrush = new(BaseRowColor))
+            {
+                graphics.FillRectangle(baseBgBrush, Bounds);
+            }
+
             using Font font = new("Segoe UI", 10);
             using SolidBrush brush = new(Color.Gray);
 
@@ -597,6 +603,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             string text = LanguageManager.TranslateString("No transactions to display");
             graphics.DrawString(text, font, brush, Bounds, format);
+
+            // Draw border
+            using Pen borderPen = new(Color.Black, 1);
+            graphics.DrawRectangle(borderPen, Bounds);
         }
         private void RenderErrorMessage(Graphics graphics, string message)
         {
@@ -657,7 +667,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition + 45;
         }
-
         private static Panel CreateTabPanel(Panel container, bool visible) => new()
         {
             Location = new Point(0, 45),
@@ -666,7 +675,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AutoScroll = true,
             Visible = visible
         };
-
         private void CreateGeneralTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Get undo manager
@@ -836,7 +844,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("ShowTotalsRow", totalsCheck, () => totalsCheck.Checked = ShowTotalsRow);
         }
-
         private void CreateStyleTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Get undo manager
@@ -1098,7 +1105,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("ShowGridLines", gridCheck, () => gridCheck.Checked = ShowGridLines);
         }
-
         private void CreateColumnsTabControls(Panel panel, int yPosition, Action onPropertyChanged)
         {
             // Get undo manager
