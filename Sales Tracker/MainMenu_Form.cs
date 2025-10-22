@@ -539,7 +539,7 @@ namespace Sales_Tracker
         }
 
         // Add rows from file
-        private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
+        public static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
             if (!ValidateFile(filePath))
