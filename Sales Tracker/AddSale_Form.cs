@@ -359,6 +359,10 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, saleData);
             }
+            else
+            {
+                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = saleData;
+            }
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 

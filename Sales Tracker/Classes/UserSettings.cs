@@ -329,6 +329,26 @@ namespace Sales_Tracker.Classes
                         UpdateMultiItemRowWithConvertedValues(row, tagData1, itemList, USDToDefault);
                     }
                 }
+                else if (row.Tag is TagData tagData2)
+                {
+                    // Only get exchange rate when needed
+                    string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
+                    decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
+                    if (USDToDefault == -1) { return; }
+
+                    UpdateRowWithConvertedValues(row, tagData2, USDToDefault);
+                }
+                else
+                {
+                    string id = row.Cells[ReadOnlyVariables.ID_column].Value.ToString();
+                    Log.WriteWithFormat(1, "Error updating currency for row #{0}", id);
+
+                    CustomMessageBox.Show(
+                        "Currency Conversion Error",
+                        "An error occurred while updating currency for row ID #{id}. The row data is invalid.",
+                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.OkCancel
+                    );
+                }
             }
             catch (Exception ex)
             {
