@@ -92,14 +92,6 @@ namespace Sales_Tracker.UI
 
         // Public methods
         /// <summary>
-        /// Adds an item to the control.
-        /// </summary>
-        public object Add(object? item)
-        {
-            return AddItem(item?.ToString(), false);
-        }
-
-        /// <summary>
         /// Adds an item to the control with the specified checked state.
         /// </summary>
         public void Add(object? item, bool isChecked)
@@ -195,51 +187,6 @@ namespace Sales_Tracker.UI
                     _isUpdating = false;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the item text at the specified index.
-        /// </summary>
-        public string GetItemText(int index)
-        {
-            if (index >= 0 && index < _items.Count)
-            {
-                return _items[index].Text;
-            }
-
-            return "";
-        }
-
-        /// <summary>
-        /// Gets the index of the item with the specified text.
-        /// </summary>
-        public int FindString(string text)
-        {
-            for (int i = 0; i < _items.Count; i++)
-            {
-                if (string.Equals(_items[i].Text, text, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        /// <summary>
-        /// Gets the index of the item with the specified text, starting at the specified index.
-        /// </summary>
-        public int FindString(string text, int startIndex)
-        {
-            for (int i = startIndex; i < _items.Count; i++)
-            {
-                if (string.Equals(_items[i].Text, text, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
         }
 
         // Private methods
