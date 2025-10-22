@@ -112,13 +112,11 @@ namespace Sales_Tracker.UI
             Invalidate();
             base.OnMouseEnter(e);
         }
-
-        // Make the button circular for hit testing
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            // Create circular region with 1px margin
+            // Make the button circular
             using GraphicsPath path = new();
             path.AddEllipse(1, 1, Width - 3, Height - 3);
             Region = new Region(path);
