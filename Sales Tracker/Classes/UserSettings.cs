@@ -170,6 +170,9 @@ namespace Sales_Tracker.Classes
                 List<DataGridViewRow> purchaseRows = [];
                 List<DataGridViewRow> saleRows = [];
 
+                // Backup original cell values
+                Dictionary<DataGridViewRow, Dictionary<string, string>> originalValues = [];
+
                 // Collect all rows in single UI thread calls
                 TaskCompletionSource<bool> collectRowsTcs = new();
 
@@ -195,6 +198,13 @@ namespace Sales_Tracker.Classes
 
                 await collectRowsTcs.Task;
 
+                // Store original row tags for rollback
+                Dictionary<DataGridViewRow, object> originalRowTags = [];
+                foreach (DataGridViewRow row in purchaseRows.Concat(saleRows))
+                {
+                    originalRowTags[row] = row.Tag;
+                }
+
                 // Check for cancellation after collecting rows
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -203,22 +213,54 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Process all currency updates on background thread
-                await Task.Run(() =>
+                bool allSuccessful = await Task.Run(() =>
                 {
                     // Process purchase rows
                     foreach (DataGridViewRow row in purchaseRows)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        UpdateCurrencyValueInRowData(row, newCurrency);
+                        if (!UpdateCurrencyValueInRowData(row, newCurrency))
+                        {
+                            return false;  // Stop on failure
+                        }
                     }
 
                     // Process sale rows  
                     foreach (DataGridViewRow row in saleRows)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        UpdateCurrencyValueInRowData(row, newCurrency);
+                        if (!UpdateCurrencyValueInRowData(row, newCurrency))
+                        {
+                            return false;  // Stop on failure
+                        }
                     }
+
+                    return true;
                 }, cancellationToken);
+
+                if (!allSuccessful)
+                {
+                    // Revert currency
+                    DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, oldCurrency);
+                    MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
+
+                    // Reload data from files to restore original values
+                    MainMenu_Form.Instance.BeginInvoke(new Action(() =>
+                    {
+                        foreach (KeyValuePair<DataGridViewRow, object> kvp in originalRowTags)
+                        {
+                            kvp.Key.Tag = kvp.Value;
+                        }
+
+                        // Refresh display with original values
+                        purchaseDataGridView.Refresh();
+                        salesDataGridView.Refresh();
+                        MainMenu_Form.Instance.UpdateTotalLabels();
+                    }));
+
+                    Log.Write(1, "Currency conversion cancelled - changes reverted");
+                    return false;
+                }
 
                 // Check for cancellation after processing
                 if (cancellationToken.IsCancellationRequested)
@@ -291,7 +333,7 @@ namespace Sales_Tracker.Classes
                 LoadingPanel.HideLoadingScreen(Settings_Form.Instance);
             }
         }
-        private static void UpdateCurrencyValueInRowData(DataGridViewRow row, string defaultCurrency)
+        private static bool UpdateCurrencyValueInRowData(DataGridViewRow row, string defaultCurrency)
         {
             try
             {
@@ -307,7 +349,7 @@ namespace Sales_Tracker.Classes
                         // Only get exchange rate when needed
                         string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
                         decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
-                        if (USDToDefault == -1) { return; }
+                        if (USDToDefault == -1) { return false; }
 
                         UpdateRowWithConvertedValues(row, tagData, USDToDefault);
                     }
@@ -324,7 +366,7 @@ namespace Sales_Tracker.Classes
                         // Only get exchange rate when needed
                         string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
                         decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
-                        if (USDToDefault == -1) { return; }
+                        if (USDToDefault == -1) { return false; }
 
                         UpdateMultiItemRowWithConvertedValues(row, tagData1, itemList, USDToDefault);
                     }
@@ -334,7 +376,7 @@ namespace Sales_Tracker.Classes
                     // Only get exchange rate when needed
                     string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
                     decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
-                    if (USDToDefault == -1) { return; }
+                    if (USDToDefault == -1) { return false; }
 
                     UpdateRowWithConvertedValues(row, tagData2, USDToDefault);
                 }
@@ -343,17 +385,23 @@ namespace Sales_Tracker.Classes
                     string id = row.Cells[ReadOnlyVariables.ID_column].Value.ToString();
                     Log.WriteWithFormat(1, "Error updating currency for row #{0}", id);
 
-                    CustomMessageBox.Show(
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                         "Currency Conversion Error",
-                        "An error occurred while updating currency for row ID #{id}. The row data is invalid.",
-                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.OkCancel
+                        "An error occurred while updating currency for row #{0} because the row data is invalid. ",
+                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                        id
                     );
+
+                    return false;
                 }
+
+                return true;  // Success
             }
             catch (Exception ex)
             {
                 // Log but don't crash the entire operation
-                Log.WriteWithFormat(1, "Warning: Error updating currency for row: {0}", ex.Message);
+                Log.WriteWithFormat(1, "Error updating currency for row: {0}", ex.Message);
+                return false;
             }
         }
         private static void UpdateRowWithOriginalValues(DataGridViewRow row, TagData tagData)
