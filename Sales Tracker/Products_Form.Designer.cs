@@ -602,5 +602,7 @@ namespace Sales_Tracker
         public Label Total_Label;
         public Guna.UI2.WinForms.Guna2ComboBox Type_ComboBox;
         private Label Type_Label;
+        private Guna.UI2.WinForms.Guna2CustomCheckBox Rentable_CheckBox;
+        private Label Rentable_Label;
     }
 }

@@ -66,6 +66,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Companies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -76,6 +78,7 @@
             Rentals_Button = new Guna.UI2.WinForms.Guna2Button();
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
             Products_Button = new Guna.UI2.WinForms.Guna2Button();
+            Customers_Button = new Guna.UI2.WinForms.Guna2Button();
             CompanyName_Label = new Label();
             Top_Panel = new Panel();
             Saved_Label = new Label();
@@ -115,6 +118,7 @@
             MainTop_Panel.Controls.Add(AddPurchase_Button);
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(Products_Button);
+            MainTop_Panel.Controls.Add(Customers_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
             MainTop_Panel.CustomizableEdges = customizableEdges15;
             MainTop_Panel.Location = new Point(0, 45);
@@ -141,6 +145,26 @@
             Companies_Button.TabIndex = 16;
             Companies_Button.Text = "Companies";
             Companies_Button.Click += ManageCompanies_Button_Click;
+            //
+            // Customers_Button
+            // 
+            Customers_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Customers_Button.BackColor = Color.Transparent;
+            Customers_Button.BorderColor = Color.LightGray;
+            Customers_Button.BorderRadius = 2;
+            Customers_Button.BorderThickness = 1;
+            Customers_Button.CustomizableEdges = customizableEdges39;
+            Customers_Button.FillColor = Color.White;
+            Customers_Button.Font = new Font("Segoe UI", 10F);
+            Customers_Button.ForeColor = Color.Black;
+            Customers_Button.Location = new Point(1773, 20);
+            Customers_Button.Name = "Customers_Button";
+            Customers_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            Customers_Button.Size = new Size(200, 50);
+            Customers_Button.TabIndex = 17;
+            Customers_Button.Text = "Customers";
+            Customers_Button.Click += Customers_Button_Click;
+
             // 
             // Accountants_Button
             // 
@@ -172,7 +196,7 @@
             Categories_Button.FillColor = Color.White;
             Categories_Button.Font = new Font("Segoe UI", 10F);
             Categories_Button.ForeColor = Color.Black;
-            Categories_Button.Location = new Point(1773, 20);
+            Categories_Button.Location = new Point(1567, 20);
             Categories_Button.Name = "Categories_Button";
             Categories_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Categories_Button.Size = new Size(200, 50);
@@ -195,7 +219,7 @@
             AddSale_Button.FillColor = Color.White;
             AddSale_Button.Font = new Font("Segoe UI", 9F);
             AddSale_Button.ForeColor = Color.Black;
-            AddSale_Button.Location = new Point(1361, 20);
+            AddSale_Button.Location = new Point(1155, 20);
             AddSale_Button.Name = "AddSale_Button";
             AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             AddSale_Button.Size = new Size(200, 50);
@@ -218,7 +242,7 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(1155, 20);
+            AddPurchase_Button.Location = new Point(949, 20);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             AddPurchase_Button.Size = new Size(200, 50);
@@ -259,7 +283,7 @@
             Products_Button.FillColor = Color.White;
             Products_Button.Font = new Font("Segoe UI", 10F);
             Products_Button.ForeColor = Color.Black;
-            Products_Button.Location = new Point(1567, 20);
+            Products_Button.Location = new Point(1361, 20);
             Products_Button.Name = "Products_Button";
             Products_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Products_Button.Size = new Size(200, 50);
@@ -525,25 +549,25 @@
             // 
             // Rentals_Button
             // 
-            //Rentals_Button.BackColor = Color.Transparent;
-            //Rentals_Button.BorderColor = Color.LightGray;
-            //Rentals_Button.BorderRadius = 2;
-            //Rentals_Button.BorderThickness = 1;
-            //Rentals_Button.CustomizableEdges = customizableEdges37;
-            //Rentals_Button.DisabledState.BorderColor = Color.DarkGray;
-            //Rentals_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            //Rentals_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            //Rentals_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            //Rentals_Button.FillColor = Color.White;
-            //Rentals_Button.Font = new Font("Segoe UI", 9F);
-            //Rentals_Button.ForeColor = Color.Black;
-            //Rentals_Button.Location = new Point(390, 144);  
-            //Rentals_Button.Name = "Rentals_Button";
-            //Rentals_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
-            //Rentals_Button.Size = new Size(180, 50);
-            //Rentals_Button.TabIndex = 19;
-            //Rentals_Button.Text = "Rentals";
-            //Rentals_Button.Click += Rentals_Button_Click;
+            Rentals_Button.BackColor = Color.Transparent;
+            Rentals_Button.BorderColor = Color.LightGray;
+            Rentals_Button.BorderRadius = 2;
+            Rentals_Button.BorderThickness = 1;
+            Rentals_Button.CustomizableEdges = customizableEdges37;
+            Rentals_Button.DisabledState.BorderColor = Color.DarkGray;
+            Rentals_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Rentals_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Rentals_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Rentals_Button.FillColor = Color.White;
+            Rentals_Button.Font = new Font("Segoe UI", 9F);
+            Rentals_Button.ForeColor = Color.Black;
+            Rentals_Button.Location = new Point(390, 144);  
+            Rentals_Button.Name = "Rentals_Button";
+            Rentals_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Rentals_Button.Size = new Size(180, 50);
+            Rentals_Button.TabIndex = 19;
+            Rentals_Button.Text = "Rentals";
+            Rentals_Button.Click += Rentals_Button_Click;
             // 
             // LineChart_Label
             // 
@@ -597,7 +621,7 @@
             Analytics_Button.FillColor = Color.White;
             Analytics_Button.Font = new Font("Segoe UI", 9F);
             Analytics_Button.ForeColor = Color.Black;
-            Analytics_Button.Location = new Point(390, 144);
+            Analytics_Button.Location = new Point(576, 144);
             Analytics_Button.Name = "Analytics_Button";
             Analytics_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Analytics_Button.Size = new Size(180, 50);
@@ -685,7 +709,7 @@
             Controls.Add(Total_Panel);
             Controls.Add(Purchases_Button);
             Controls.Add(Sales_Button);
-      //      Controls.Add(Rentals_Button);
+            Controls.Add(Rentals_Button);
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
@@ -741,5 +765,6 @@
         public Label Discount_Label;
         public Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         public Label CompanyName_Label;
+        public Guna.UI2.WinForms.Guna2Button Customers_Button;
     }
 }

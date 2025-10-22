@@ -99,6 +99,10 @@ namespace Sales_Tracker.GridView
                     HandleSalesDeletion(e);
                     break;
 
+                case MainMenu_Form.SelectedOption.Rentals:
+                    HandleRentalsDeletion(e);
+                    break;
+
                 case MainMenu_Form.SelectedOption.ProductPurchases:
                     HandleProductPurchasesDeletion(e);
                     break;
@@ -136,7 +140,11 @@ namespace Sales_Tracker.GridView
             DataGridViewRowChanged((Guna2DataGridView)sender, MainMenu_Form.Instance.Selected);
 
             // Remove receipt from file
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && _removedRow?.Tag != null)
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases 
+                or MainMenu_Form.SelectedOption.Sales
+                or MainMenu_Form.SelectedOption.Rentals 
+                && _removedRow?.Tag != null)
+
             {
                 string tagValue = "";
 
@@ -159,7 +167,10 @@ namespace Sales_Tracker.GridView
         }
         public static void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
         {
-            if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
+            if (selected is MainMenu_Form.SelectedOption.Purchases 
+                or MainMenu_Form.SelectedOption.Sales
+                or MainMenu_Form.SelectedOption.Rentals)
+
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
@@ -339,6 +350,16 @@ namespace Sales_Tracker.GridView
             string columnName = ReadOnlyVariables.ID_column;
             string name = e.Row.Cells[columnName].Value?.ToString();
 
+            string message = $"Deleted {type} '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
+        }
+
+        private static void HandleRentalsDeletion(DataGridViewRowCancelEventArgs e)
+        {
+            string type = "rental";
+            string columnName = ReadOnlyVariables.ID_column;
+            string name = e.Row.Cells[columnName].Value?.ToString();
+            
             string message = $"Deleted {type} '{name}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
@@ -955,7 +976,7 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.SelectedOption.Purchases => Directories.Purchases_file,
                 MainMenu_Form.SelectedOption.Sales => Directories.Sales_file,
-                //MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
+                MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
                 MainMenu_Form.SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
                 MainMenu_Form.SelectedOption.CategorySales => Directories.CategorySales_file,
                 MainMenu_Form.SelectedOption.ProductPurchases => Directories.CategoryPurchases_file,

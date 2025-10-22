@@ -154,6 +154,8 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
+
+            CustomerList.Clear();
         }
         private void InitDataGridViews()
         {
@@ -163,7 +165,7 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
             Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-            //DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
             Rental_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
         }
         public void LoadData()
@@ -174,9 +176,20 @@ namespace Sales_Tracker
             AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
+            LoadCustomersFromFile();
+
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
-            //AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals); Commented out until rentals are implemented
+
+            try
+            {
+                AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(1, $"Could not load rentals data: {ex.Message}");
+            }
+
         }
         private void LoadCustomColumnHeaders()
         {
@@ -201,6 +214,31 @@ namespace Sales_Tracker
             {
                 categoryList.AddRange(loadedCategories);
             }
+        }
+
+        private void LoadCustomersFromFile()
+        {
+            // Create the file if it doesn't exist
+            if (!File.Exists(Directories.Customers_file))
+            {
+                Directories.CreateFile(Directories.Customers_file);
+                return;
+            }
+
+            string json = Directories.ReadAllTextInFile(Directories.Customers_file);
+            if (string.IsNullOrWhiteSpace(json)) { return; }
+
+            List<Customer>? loadedCustomers = JsonConvert.DeserializeObject<List<Customer>>(json);
+            if (loadedCustomers != null)
+            {
+                CustomerList.AddRange(loadedCustomers);
+            }
+        }
+
+        public void SaveCustomersToFile()
+        {
+            string json = JsonConvert.SerializeObject(CustomerList, Formatting.Indented);
+            Directories.WriteTextToFile(Directories.Customers_file, json);
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
@@ -298,7 +336,7 @@ namespace Sales_Tracker
 
             MainTop_Panel.FillColor = CustomColors.ContentPanelBackground;
             Edit_Button.FillColor = CustomColors.ContentPanelBackground;
-            Top_Panel.BackColor = CustomColors.ToolbarBackground;
+            Top_Panel.BackColor = CustomColors.ToolbarBackground;          
             File_Button.FillColor = CustomColors.ToolbarBackground;
             Save_Button.FillColor = CustomColors.ToolbarBackground;
             if (_upgrade_Button != null)
@@ -319,10 +357,10 @@ namespace Sales_Tracker
             {
                 Sales_Button.BorderColor = CustomColors.AccentBlue;
             }
-            //else if (Rentals_Button.BorderThickness == 2)
-            //{
-            //    Rentals_Button.BorderColor = CustomColors.AccentBlue;
-            //}
+            else if (Rentals_Button.BorderThickness == 2)
+            {
+                Rentals_Button.BorderColor = CustomColors.AccentBlue;
+            }
             else if (Analytics_Button.BorderThickness == 2)
             {
                 Analytics_Button.BorderColor = CustomColors.AccentBlue;
@@ -447,13 +485,14 @@ namespace Sales_Tracker
             [
                Purchases_Button,
                Sales_Button,
-               //Rentals_Button,
+               Rentals_Button,
                Analytics_Button,
                AddPurchase_Button,
                AddSale_Button,
                Products_Button,
                Categories_Button,
                Companies_Button,
+               Customers_Button,
                Accountants_Button,
                TimeRange_Button,
             ];
@@ -526,8 +565,16 @@ namespace Sales_Tracker
         {
             if (!File.Exists(filePath))
             {
-                Log.Error_WriteToFile(Directories.CompanyName);
-                return false;
+                try
+                {
+                    Directories.CreateFile(filePath);
+                    Log.Write(2, $"Created new data file: {filePath}");
+                }
+                catch
+                {
+                    Log.Write(1, $"Failed to create data file: {filePath}");
+                    return false;
+                }
             }
             return true;
         }
@@ -1114,7 +1161,7 @@ namespace Sales_Tracker
         {
             return [
                 Accountants_Button, Categories_Button, Companies_Button,
-                Products_Button, AddSale_Button, AddPurchase_Button];
+                Products_Button, AddSale_Button, AddPurchase_Button, Customers_Button];
         }
 
         // Event handlers - top bar
@@ -1227,33 +1274,33 @@ namespace Sales_Tracker
             UpdateTotalLabels();
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
-        //private void Rentals_Button_Click(object sender, EventArgs e)
-        //{
-        //    if (Selected == SelectedOption.Rentals) { return; }
+        private void Rentals_Button_Click(object sender, EventArgs e)
+        {
+            if (Selected == SelectedOption.Rentals) { return; }
 
-        //    Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-        //    ShowMainControls();
-        //    SelectedDataGridView = Rental_DataGridView;
-        //    Rental_DataGridView.Visible = true;
-        //    Purchase_DataGridView.Visible = false;
-        //    Sale_DataGridView.Visible = false;
+            ShowMainControls();
+            SelectedDataGridView = Rental_DataGridView;
+            Rental_DataGridView.Visible = true;
+            Purchase_DataGridView.Visible = false;
+            Sale_DataGridView.Visible = false;
 
-        //    // TODO: Create Rentals Charts
-        //    SaleTotals_Chart.Visible = false;
-        //    SaleDistribution_Chart.Visible = false;
-        //    PurchaseTotals_Chart.Visible = false;
-        //    PurchaseDistribution_Chart.Visible = false;
+            // Hide all other charts for now (you can create rental-specific charts later)
+            TotalSales_Chart.Visible = false;
+            DistributionOfSales_Chart.Visible = false;
+            TotalPurchases_Chart.Visible = false;
+            DistributionOfPurchases_Chart.Visible = false;
 
-        //    SelectButton(Rentals_Button);
-        //    CenterAndResizeControls();
-        //    RefreshDataGridViewAndCharts();
+            SelectButton(Rentals_Button);
+            CenterAndResizeControls();
+            RefreshDataGridViewAndCharts();
 
-        //    Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-        //    AlignTotalLabels();
-        //    UpdateTotalLabels();
-        //    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
-        //}
+            Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
+        }
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Analytics) { return; }
@@ -1286,6 +1333,11 @@ namespace Sales_Tracker
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
             Tools.OpenForm(new Categories_Form(true));
+        }
+
+        private void Customers_Button_Click(object sender, EventArgs e)
+        {
+            Tools.OpenForm(new Customers_Form());
         }
         private void LineChart_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -1422,11 +1474,11 @@ namespace Sales_Tracker
         {
             Purchases_Button.BorderThickness = 1;
             Sales_Button.BorderThickness = 1;
-            //Rentals_Button.BorderThickness = 1;
+            Rentals_Button.BorderThickness = 1;
             Analytics_Button.BorderThickness = 1;
             Purchases_Button.BorderColor = CustomColors.ControlBorder;
             Sales_Button.BorderColor = CustomColors.ControlBorder;
-            //Rentals_Button.BorderColor = CustomColors.ControlBorder;
+            Rentals_Button.BorderColor = CustomColors.ControlBorder;
             Analytics_Button.BorderColor = CustomColors.ControlBorder;
         }
 
@@ -1702,6 +1754,7 @@ namespace Sales_Tracker
         public List<Category> CategoryPurchaseList { get; } = [];
         public List<string> AccountantList { get; private set; } = [];
         public List<string> CompanyList { get; private set; } = [];
+        public List<Customer> CustomerList { get; private set; } = [];
 
         // List methods
         public List<string> GetCategorySaleNames()
@@ -1873,6 +1926,7 @@ namespace Sales_Tracker
                 Products_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
                 Receipts_Form => SelectedOption.Receipts,
                 ItemsInTransaction_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ItemsInPurchase : SelectedOption.ItemsInSale,
+                Customers_Form => SelectedOption.Customers,
                 _ => GetButtonBasedOption()
             };
         }
@@ -1895,7 +1949,7 @@ namespace Sales_Tracker
         {
             Purchases,
             Sales,
-            //Rentals,
+            Rentals,
             ProductPurchases,
             ProductSales,
             CategoryPurchases,
@@ -1905,7 +1959,8 @@ namespace Sales_Tracker
             Companies,
             Analytics,
             ItemsInPurchase,
-            ItemsInSale
+            ItemsInSale,
+            Customers
         }
         public enum Column
         {
@@ -2008,7 +2063,8 @@ namespace Sales_Tracker
             Company,
             Product,
             Accountant,
-            ItemsInPurchase
+            ItemsInPurchase,
+            Customer
         }
 
         // DataGridView methods
@@ -2052,7 +2108,7 @@ namespace Sales_Tracker
         }
         public void UpdateTotalLabels()
         {
-            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales /*&& Selected != SelectedOption.Rentals*/)
+            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales && Selected != SelectedOption.Rentals)
             {
                 return;
             }
@@ -2346,7 +2402,7 @@ namespace Sales_Tracker
                 DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
-           //     Rental_DataGridView,
+                Rental_DataGridView,
                 Profits_Chart,
                 Total_Panel
             ];

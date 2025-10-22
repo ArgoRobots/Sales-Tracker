@@ -43,8 +43,12 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
             PopulateTypeComboBox();
+            ConstructRentableControls();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchase_DataGridView, _sale_DataGridView);
             AddEventHandlersToTextBoxes();
+
+            // Add resize event to reposition Rentable controls
+            Resize += Products_Form_Resize;
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
                 TextBoxManager.RightClickTextBox_Panel,
@@ -109,7 +113,7 @@ namespace Sales_Tracker
                 foreach (Product product in category.ProductList)
                 {
                     Product.TypeOption type = product.ItemType ?? Product.TypeOption.Product;
-                    _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type);
+                    _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type, product.IsRentable);
                 }
             }
             DataGridViewManager.ScrollToTopOfDataGridView(_purchase_DataGridView);
@@ -119,7 +123,7 @@ namespace Sales_Tracker
                 foreach (Product product in category.ProductList)
                 {
                     Product.TypeOption type = product.ItemType ?? Product.TypeOption.Product;
-                    _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type);
+                    _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin, type, product.IsRentable);
                 }
             }
             DataGridViewManager.ScrollToTopOfDataGridView(_sale_DataGridView);
@@ -193,20 +197,29 @@ namespace Sales_Tracker
 
             string name = ProductName_TextBox.Text.Trim();
             Product.TypeOption type = Type_ComboBox.SelectedIndex == 0 ? Product.TypeOption.Product : Product.TypeOption.Service;
-            Product product = new(productID, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text, type);
+            Product product = new(productID, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text, type)
+            {
+                IsRentable = Rentable_CheckBox.Checked
+            };
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategorySaleList, category, product);
-                int newRowIndex = _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType);
+                int newRowIndex = _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType, product.IsRentable);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                
+                // Save the categories to file
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategoryPurchaseList, category, product);
-                int newRowIndex = _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType);
+                int newRowIndex = _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType, product.IsRentable);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                
+                // Save the categories to file
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
             }
 
             string message = $"Added product '{name}'";
@@ -214,6 +227,7 @@ namespace Sales_Tracker
 
             ProductName_TextBox.Clear();
             ProductID_TextBox.Clear();
+            Rentable_CheckBox.Checked = false;  // Reset checkbox
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -431,7 +445,8 @@ namespace Sales_Tracker
             ProductCategory,
             CountryOfOrigin,
             CompanyOfOrigin,
-            Type
+            Type,
+            Rentable
         }
         public static readonly Dictionary<Column, string> ColumnHeaders = new()
         {
@@ -440,7 +455,8 @@ namespace Sales_Tracker
             { Column.ProductCategory, "Product category" },
             { Column.CountryOfOrigin, "Country of origin" },
             { Column.CompanyOfOrigin, "Company of origin" },
-            { Column.Type, "Type" }
+            { Column.Type, "Type" },
+            { Column.Rentable, "Rentable" }
         };
         private Guna2DataGridView _purchase_DataGridView, _sale_DataGridView, _selectedDataGridView;
         public Guna2DataGridView Purchase_DataGridView => _purchase_DataGridView;
@@ -457,6 +473,11 @@ namespace Sales_Tracker
             _purchase_DataGridView.Location = new Point((ClientSize.Width - _purchase_DataGridView.Width) / 2, _topForDataGridView);
             _purchase_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+            _purchase_DataGridView.CellFormatting += DataGridView_CellFormatting;
+            
+            // Center the Rentable column header and content
+            _purchase_DataGridView.Columns[Column.Rentable.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            _purchase_DataGridView.Columns[Column.Rentable.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             _sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", ColumnHeaders, null, this);
@@ -466,12 +487,44 @@ namespace Sales_Tracker
             _sale_DataGridView.Location = new Point((ClientSize.Width - _sale_DataGridView.Width) / 2, _topForDataGridView);
             _sale_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+            _sale_DataGridView.CellFormatting += DataGridView_CellFormatting;
+            
+            // Center the Rentable column header and content
+            _sale_DataGridView.Columns[Column.Rentable.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            _sale_DataGridView.Columns[Column.Rentable.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            
             ThemeManager.CustomizeScrollBar(_sale_DataGridView);
         }
         private void DataGridView_RowsChanged(object sender, EventArgs e)
         {
             if (_isProgramLoading) { return; }
             SetProductsRemainingLabel();
+        }
+
+        private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView grid = (DataGridView)sender;
+            
+            if (grid.Columns[e.ColumnIndex].Name == Column.Rentable.ToString())
+            {
+                if (e.Value is bool isRentable)
+                {
+                    if (isRentable)
+                    {
+                        e.Value = "✓";
+                        e.CellStyle.ForeColor = CustomColors.AccentGreen;
+                    }
+                    else
+                    {
+                        e.Value = "✗";
+                        e.CellStyle.ForeColor = CustomColors.AccentRed;
+                    }
+                    
+                    e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    e.CellStyle.Padding = new Padding(0, 0, 5, 0);
+                    e.FormattingApplied = true;
+                }
+            }
         }
 
         // Methods
@@ -501,11 +554,65 @@ namespace Sales_Tracker
             // Restore selection
             Type_ComboBox.SelectedIndex = index != -1 ? index : 0;
         }
+        private void ConstructRentableControls()
+        {
+            // Create checkbox
+            Rentable_CheckBox = new Guna2CustomCheckBox
+            {
+                Size = new Size(20, 20),
+                Animated = true,
+                Name = "Rentable_CheckBox"
+            };
+            Controls.Add(Rentable_CheckBox);
+
+            // Create label
+            Rentable_Label = new Label
+            {
+                Text = "Rentable?",
+                Name = "Rentable_Label",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 11),
+                AccessibleDescription = AccessibleDescriptionManager.AlignLeft
+            };
+            Rentable_Label.Click += Rentable_Label_Click;
+            Controls.Add(Rentable_Label);
+
+            ThemeManager.SetThemeForControls([Rentable_CheckBox]);
+            
+            // Position the controls
+            PositionRentableControls();
+        }
+
+        private void PositionRentableControls()
+        {
+            int leftMargin = ProductID_TextBox.Left;
+            int topMargin = ProductID_TextBox.Bottom + 15;
+            
+            Rentable_CheckBox.Location = new Point(leftMargin, topMargin);
+            Rentable_Label.Location = new Point(Rentable_CheckBox.Right + 5, topMargin);
+            
+            // Adjust vertical alignment so checkbox and label are centered together
+            int labelY = Rentable_CheckBox.Top + (Rentable_CheckBox.Height / 2) - (Rentable_Label.Height / 2);
+            Rentable_Label.Top = labelY;
+        }
+
+        private void Rentable_Label_Click(object sender, EventArgs e)
+        {
+            Rentable_CheckBox.Checked = !Rentable_CheckBox.Checked;
+        }
         private void ClosePanels()
         {
             SearchBox.Close();
             TextBoxManager.HideRightClickPanel();
             RightClickDataGridViewRowMenu.Hide();
+        }
+
+        private void Products_Form_Resize(object sender, EventArgs e)
+        {
+            if (Rentable_CheckBox != null && Rentable_Label != null)
+            {
+                PositionRentableControls();
+            }
         }
     }
 }
