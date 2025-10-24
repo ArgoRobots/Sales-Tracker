@@ -660,6 +660,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 stylePanel.Visible = false;
                 columnsPanel.Visible = false;
 
+                ThemeManager.RemoveCustomScrollBar(generalPanel);
+                ThemeManager.RemoveCustomScrollBar(stylePanel);
+                ThemeManager.RemoveCustomScrollBar(columnsPanel);
+
                 if (tabIndex == 0)
                 {
                     generalPanel.Visible = true;
