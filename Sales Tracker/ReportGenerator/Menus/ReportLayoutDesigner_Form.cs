@@ -1743,12 +1743,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Property panel methods
         private void CreateOrShowPropertiesPanel()
         {
-            if (_selectedElement == null)
-            {
-                HidePropertiesPanel();
-                return;
-            }
-
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
             ElementProperties_Label.Text = $"Selected: {elementName}";
