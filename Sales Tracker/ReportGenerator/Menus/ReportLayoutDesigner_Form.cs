@@ -1852,6 +1852,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void UpdatePropertyValues()
         {
+            // Don't show single element properties if multiple elements are selected
+            if (_selectedElements.Count > 1)
+            {
+                return;
+            }
+
             // Element handles its own value updates internally
             _selectedElement?.CreatePropertyControls(
                 PropertiesContainer_Panel,
