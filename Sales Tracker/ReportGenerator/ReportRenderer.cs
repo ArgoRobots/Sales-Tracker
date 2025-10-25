@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
+using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -14,6 +15,9 @@ namespace Sales_Tracker.ReportGenerator
         // Properties
         private readonly ReportConfiguration _config = config ?? throw new ArgumentNullException(nameof(config));
         private readonly ExportSettings _exportSettings = exportSettings ?? throw new ArgumentNullException(nameof(exportSettings));
+        private static readonly byte _headerHeight = 50;
+        private static readonly byte _footerHeight = 30;
+        private static readonly byte _separatorHeight = 5;
 
         public static float RenderScale { get; } = 3;
 
@@ -163,21 +167,24 @@ namespace Sales_Tracker.ReportGenerator
             graphics.CompositingQuality = CompositingQuality.HighQuality;
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
-        public static void RenderReport(Graphics graphics, Size pageSize, ReportConfiguration config)
+        public static void RenderReport(Graphics graphics, Size pageSize, ReportConfiguration config, bool showGrid = false)
         {
             SetupGraphics(graphics);
             graphics.Clear(config.BackgroundColor);
 
-            // Render header if enabled
             if (config.ShowHeader)
             {
                 RenderHeader(graphics, pageSize, config);
             }
 
-            // Render footer if enabled
             if (config.ShowFooter)
             {
                 RenderFooter(graphics, pageSize, config);
+            }
+
+            if (showGrid)
+            {
+                DrawGrid(graphics, config, ReportLayoutDesigner_Form.GridSize);
             }
 
             // Render all report elements using their own render methods
@@ -193,7 +200,7 @@ namespace Sales_Tracker.ReportGenerator
                 config.PageMargins.Left,
                 config.PageMargins.Top,
                 pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
-                50
+                _headerHeight
             );
 
             using (Font titleFont = new("Segoe UI", 18, FontStyle.Bold))
@@ -211,16 +218,16 @@ namespace Sales_Tracker.ReportGenerator
             // Draw separator line
             using Pen pen = new(Color.LightGray, 1);
             graphics.DrawLine(pen,
-                headerRect.Left, headerRect.Bottom + 5,
-                headerRect.Right, headerRect.Bottom + 5);
+                headerRect.Left, headerRect.Bottom + _separatorHeight,
+                headerRect.Right, headerRect.Bottom + _separatorHeight);
         }
-        public static void RenderFooter(Graphics graphics, Size pageSize, ReportConfiguration config)
+        private static void RenderFooter(Graphics graphics, Size pageSize, ReportConfiguration config)
         {
             Rectangle footerRect = new(
                 config.PageMargins.Left,
-                pageSize.Height - config.PageMargins.Bottom - 30,
+                pageSize.Height - config.PageMargins.Bottom - _footerHeight,
                 pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
-                30
+                _footerHeight
             );
 
             using Font footerFont = new("Segoe UI", 9);
@@ -236,6 +243,39 @@ namespace Sales_Tracker.ReportGenerator
             {
                 StringFormat rightFormat = new() { Alignment = StringAlignment.Far };
                 graphics.DrawString($"Page {config.CurrentPageNumber}", footerFont, footerBrush, footerRect, rightFormat);
+            }
+        }
+        public static void DrawGrid(Graphics g, ReportConfiguration config, int gridSize)
+        {
+            Size pageSize = PageDimensions.GetDimensions(config.PageSize, config.PageOrientation);
+
+            // Calculate content area (excluding header and footer)
+            int topY = 0;
+            int bottomY = pageSize.Height;
+
+            if (config.ShowHeader)
+            {
+                topY = config.PageMargins.Top + _headerHeight + _separatorHeight;
+            }
+
+            if (config.ShowFooter)
+            {
+                bottomY = pageSize.Height - config.PageMargins.Bottom - _footerHeight;
+            }
+
+            using Pen pen = new(Color.LightGray);
+            pen.DashStyle = DashStyle.Solid;
+
+            // Draw vertical lines in content area
+            for (int x = 0; x < pageSize.Width; x += gridSize)
+            {
+                g.DrawLine(pen, x, topY, x, bottomY);
+            }
+
+            // Draw horizontal lines in content area
+            for (int y = topY; y < bottomY; y += gridSize)
+            {
+                g.DrawLine(pen, 0, y, pageSize.Width, y);
             }
         }
         private void SaveBitmap(Bitmap bitmap)
