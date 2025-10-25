@@ -29,6 +29,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             IncludeHeader_Label.Click += (s, e) => IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
             IncludeFooter_Label.Click += (s, e) => IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
             ShowPageNumbers_Label.Click += (s, e) => ShowPageNumbers_CheckBox.Checked = !ShowPageNumbers_CheckBox.Checked;
+            ShowGrid_Label.Click += (s, e) => ShowGrid_CheckBox.Checked = !ShowGrid_CheckBox.Checked;
 
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
@@ -82,6 +83,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 bool enableStartingNumber = IncludeFooter_CheckBox.Checked && ShowPageNumbers_CheckBox.Checked;
                 PageNumber_NumericUpDown.Enabled = enableStartingNumber;
                 StartingNumber_Label.Enabled = enableStartingNumber;
+
+                ShowGrid_CheckBox.Checked = ReportLayoutDesigner_Form.Instance.ShowGrid;
+                GridSize_NumericUpDown.Value = ReportLayoutDesigner_Form.GridSize;
             });
         }
         private void ScaleControls()
@@ -172,7 +176,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
-        private void PageNumber_NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        private void ShowGrid_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isUpdating) { return; }
+
+            ReportLayoutDesigner_Form.Instance.ShowGrid = ShowGrid_CheckBox.Checked;
+            ReportLayoutDesigner_Form.Instance.OnGridSettingsChanged();
+        }
+        private void GridSize_NumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isUpdating) { return; }
+
+            ReportLayoutDesigner_Form.GridSize = (int)GridSize_NumericUpDown.Value;
+            ReportLayoutDesigner_Form.Instance.OnGridSettingsChanged();
+        }
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
         {
             // Remove Windows "ding" noise when user presses enter
             e.SuppressKeyPress = e.KeyCode == Keys.Enter;
