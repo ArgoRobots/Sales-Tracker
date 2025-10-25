@@ -1764,6 +1764,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
 
+                if (_selectedElement is TableElement)
+                {
+                    _selectedElement.UpdateAllControlValues();
+                }
+
                 LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
             else
@@ -1846,7 +1851,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void UpdatePropertyValues()
         {
-            // Don't show single element properties if multiple elements are selected
+            // Don't show element properties if multiple elements are selected
             if (_selectedElements.Count > 1)
             {
                 return;
@@ -1884,7 +1889,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // Clear the current property element reference
             _currentPropertyElement = null;
 
             // Recreate the property panel for the currently selected element with new translations
@@ -2000,8 +2004,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Enforce canvas bounds
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-            if (newBounds.X < 0) newBounds.X = 0;
-            if (newBounds.Y < 0) newBounds.Y = 0;
+            if (newBounds.X < 0) { newBounds.X = 0; }
+            if (newBounds.Y < 0) { newBounds.Y = 0; }
             if (newBounds.Right > pageSize.Width)
             {
                 newBounds.Width = pageSize.Width - newBounds.X;
