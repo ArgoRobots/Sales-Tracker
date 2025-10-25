@@ -412,10 +412,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     if (ctrlPressed)
                     {
                         // Toggle selection
-                        if (_selectedElements.Contains(clickedElement))
+                        if (_selectedElements.Remove(clickedElement))
                         {
-                            clickedElement.IsSelected = false;
-                            _selectedElements.Remove(clickedElement);
+                            // Remove succeeded, so it was in the list
                             if (_selectedElement == clickedElement)
                             {
                                 _selectedElement = _selectedElements.FirstOrDefault();
@@ -427,6 +426,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         }
                         else
                         {
+                            // Remove failed, so it wasn't in the list - add it
                             SelectElement(clickedElement, true);
                         }
                     }
@@ -1543,16 +1543,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!addToSelection && !_isMultiSelecting)
             {
                 // Clear existing selection
-                foreach (BaseElement el in _selectedElements)
-                {
-                    el.IsSelected = false;
-                }
                 _selectedElements.Clear();
             }
 
             if (!_selectedElements.Contains(element))
             {
-                element.IsSelected = true;
                 _selectedElements.Add(element);
                 _selectedElement = element;
             }
@@ -1615,11 +1610,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void ClearAllSelections()
         {
-            foreach (BaseElement element in _selectedElements)
-            {
-                element.IsSelected = false;
-            }
-
             _selectedElements.Clear();
             _selectedElement = null;
             Canvas_Panel.Invalidate();
@@ -1664,7 +1654,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 if (!_selectedElements.Contains(element))
                 {
-                    element.IsSelected = true;
                     _selectedElements.Add(element);
                     InvalidateElementRegion(element.Bounds);
                 }
@@ -1677,7 +1666,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in toRemove)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 InvalidateElementRegion(element.Bounds);
             }
@@ -1708,7 +1696,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if the primary selected element was removed
             if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
             {
-                _selectedElement.IsSelected = false;
                 _selectedElement = null;
                 selectionChanged = true;
             }
@@ -1720,7 +1707,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in removedElements)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 selectionChanged = true;
             }

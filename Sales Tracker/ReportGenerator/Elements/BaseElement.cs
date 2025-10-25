@@ -40,11 +40,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public int ZOrder { get; set; }
 
         /// <summary>
-        /// Whether the element is currently selected in the designer.
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        /// <summary>
         /// Whether the element is visible in the report.
         /// </summary>
         public bool IsVisible { get; set; } = true;
