@@ -261,7 +261,14 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            if (ConfirmCancellation())
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Cancel Report Generation",
+                "Are you sure you want to cancel? Any unsaved changes will be lost.",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.YesNo
+            );
+
+            if (result == CustomMessageBoxResult.Yes)
             {
                 DialogResult = DialogResult.Cancel;
                 Close();
@@ -296,17 +303,6 @@ namespace Sales_Tracker.ReportGenerator
                     CustomMessageBoxButtons.Ok
                 );
             }
-        }
-        private static bool ConfirmCancellation()
-        {
-            CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Cancel Report Generation",
-                "Are you sure you want to cancel? Any unsaved changes will be lost.",
-                CustomMessageBoxIcon.Question,
-                CustomMessageBoxButtons.YesNo
-            );
-
-            return result == CustomMessageBoxResult.Yes;
         }
 
         // Public methods for child Forms

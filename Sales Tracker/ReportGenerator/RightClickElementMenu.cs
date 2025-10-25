@@ -116,30 +116,10 @@ namespace Sales_Tracker.ReportGenerator
             CustomControls.SetRightClickMenuHeight(Panel);
 
             // Adjust position to keep menu within form boundaries
-            Point adjustedLocation = location;
-
-            // Check right boundary
-            if (adjustedLocation.X + Panel.Width > parentForm.ClientSize.Width)
-            {
-                adjustedLocation.X = parentForm.ClientSize.Width - Panel.Width;
-            }
-
-            // Check bottom boundary
-            if (adjustedLocation.Y + Panel.Height > parentForm.ClientSize.Height)
-            {
-                adjustedLocation.Y = parentForm.ClientSize.Height - Panel.Height;
-            }
-
-            // Ensure menu doesn't go off left or top edges
-            if (adjustedLocation.X < 0)
-            {
-                adjustedLocation.X = 0;
-            }
-
-            if (adjustedLocation.Y < 0)
-            {
-                adjustedLocation.Y = 0;
-            }
+            Point adjustedLocation = new(
+                Math.Max(0, Math.Min(location.X, parentForm.ClientSize.Width - Panel.Width)),
+                Math.Max(0, Math.Min(location.Y, parentForm.ClientSize.Height - Panel.Height))
+            );
 
             // Position the menu
             Panel.Location = adjustedLocation;

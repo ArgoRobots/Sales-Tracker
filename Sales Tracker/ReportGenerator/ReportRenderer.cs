@@ -280,18 +280,10 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static SKBitmap BitmapToSKBitmap(Bitmap bitmap)
         {
-            SKBitmap skBitmap = new(bitmap.Width, bitmap.Height);
-
-            using (MemoryStream stream = new())
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-                stream.Position = 0;
-
-                using SKImage skImage = SKImage.FromEncodedData(stream);
-                skImage.ScalePixels(skBitmap.PeekPixels(), new SKSamplingOptions(SKCubicResampler.Mitchell));
-            }
-
-            return skBitmap;
+            using MemoryStream stream = new();
+            bitmap.Save(stream, ImageFormat.Png);
+            stream.Position = 0;
+            return SKBitmap.Decode(stream);
         }
     }
 }

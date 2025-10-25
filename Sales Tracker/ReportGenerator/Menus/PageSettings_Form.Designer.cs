@@ -197,7 +197,6 @@
             IncludeHeader_Label.Size = new Size(138, 25);
             IncludeHeader_Label.TabIndex = 9;
             IncludeHeader_Label.Text = "Include header";
-            IncludeHeader_Label.Click += IncludeHeader_Label_Click;
             // 
             // IncludeFooter_CheckBox
             // 
@@ -229,7 +228,6 @@
             IncludeFooter_Label.Size = new Size(130, 25);
             IncludeFooter_Label.TabIndex = 11;
             IncludeFooter_Label.Text = "Include footer";
-            IncludeFooter_Label.Click += IncludeFooter_Label_Click;
             // 
             // HeaderFooterSeparator
             // 
@@ -281,7 +279,6 @@
             ShowPageNumbers_Label.Size = new Size(184, 25);
             ShowPageNumbers_Label.TabIndex = 15;
             ShowPageNumbers_Label.Text = "Show page numbers";
-            ShowPageNumbers_Label.Click += ShowPageNumbers_Label_Click;
             // 
             // StartingNumber_Label
             // 

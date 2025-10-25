@@ -445,11 +445,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
             numericUpDown.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    // Remove Windows "ding" noise when user presses enter
-                    e.SuppressKeyPress = true;
-                }
+                // Remove Windows "ding" noise when user presses enter
+                e.SuppressKeyPress = e.KeyCode == Keys.Enter;
             };
 
             numericUpDown.DisableScrollAndForwardToPanel();
