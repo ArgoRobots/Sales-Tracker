@@ -29,7 +29,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public ImageScaleMode ScaleMode { get; set; } = ImageScaleMode.Fit;
         public Color BackgroundColor { get; set; } = Color.Transparent;
         public Color BorderColor { get; set; } = Color.Transparent;
-        public int BorderThickness { get; set; } = 0;
+        public int BorderThickness { get; set; } = 1;
         public int CornerRadius_Percent { get; set; } = 0;
         public byte Opacity { get; set; } = 255;
 
@@ -61,7 +61,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 ImagePath = ImagePath,
                 ScaleMode = ScaleMode,

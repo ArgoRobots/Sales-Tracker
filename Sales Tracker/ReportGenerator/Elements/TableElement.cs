@@ -107,7 +107,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 DataSelection = DataSelection,
                 SortOrder = SortOrder,
@@ -660,6 +659,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 stylePanel.Visible = false;
                 columnsPanel.Visible = false;
 
+                ThemeManager.RemoveCustomScrollBar(generalPanel);
+                ThemeManager.RemoveCustomScrollBar(stylePanel);
+                ThemeManager.RemoveCustomScrollBar(columnsPanel);
+
                 if (tabIndex == 0)
                 {
                     generalPanel.Visible = true;
@@ -676,6 +679,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ThemeManager.CustomizeScrollBar(columnsPanel);
                 }
 
+                UpdateAllControlValues();
                 LoadingPanel.HideBlankLoadingPanel(CachedPropertyPanel);
             }
 

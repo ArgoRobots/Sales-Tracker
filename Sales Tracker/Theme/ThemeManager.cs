@@ -304,15 +304,10 @@ namespace Sales_Tracker.Theme
                 button.BorderColor = CustomColors.ControlBorder;
             }
         }
+        private static readonly Dictionary<Control, Guna2VScrollBar> _scrollBars = [];
         public static void CustomizeScrollBar(Control control)
         {
-            // Remove any existing Guna2VScrollBar
-            Guna2VScrollBar existingScrollBar = control.Controls.OfType<Guna2VScrollBar>().FirstOrDefault();
-            if (existingScrollBar != null)
-            {
-                control.Controls.Remove(existingScrollBar);
-                existingScrollBar.Dispose();
-            }
+            RemoveCustomScrollBar(control);
 
             // Add new scrollbar
             Guna2VScrollBar vScrollBar = new()
@@ -326,6 +321,17 @@ namespace Sales_Tracker.Theme
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();
             vScrollBar.BindingContainer = control;
+
+            _scrollBars[control] = vScrollBar;
+        }
+        public static void RemoveCustomScrollBar(Control control)
+        {
+            if (_scrollBars.TryGetValue(control, out Guna2VScrollBar? scrollBar))
+            {
+                scrollBar.Parent?.Controls.Remove(scrollBar);
+                scrollBar.Dispose();
+                _scrollBars.Remove(control);
+            }
         }
         public static void SetThemeForForm(Form form)
         {

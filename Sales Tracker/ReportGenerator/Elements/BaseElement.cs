@@ -40,11 +40,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public int ZOrder { get; set; }
 
         /// <summary>
-        /// Whether the element is currently selected in the designer.
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        /// <summary>
         /// Whether the element is visible in the report.
         /// </summary>
         public bool IsVisible { get; set; } = true;
@@ -87,13 +82,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (!_controlsCreated)
             {
                 // Set size first so child controls can calculate their positions correctly
-                int panelWidth = container.Width > 0 ? container.Width - 5 : 340; // Default to 340 if container width not set
+                int panelWidth = container.Width - 5;
 
                 CachedPropertyPanel = new Panel
                 {
-                    Location = new Point(0, 0),
                     Size = new Size(panelWidth, container.Height),
-                    AutoSize = false,
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
@@ -162,7 +155,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Updates all cached control values without recreating them.
         /// </summary>
-        protected void UpdateAllControlValues()
+        public void UpdateAllControlValues()
         {
             foreach (Action updateAction in UpdateActionCache.Values)
             {
@@ -445,11 +438,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
             numericUpDown.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    // Remove Windows "ding" noise when user presses enter
-                    e.SuppressKeyPress = true;
-                }
+                // Remove Windows "ding" noise when user presses enter
+                e.SuppressKeyPress = e.KeyCode == Keys.Enter;
             };
 
             numericUpDown.DisableScrollAndForwardToPanel();

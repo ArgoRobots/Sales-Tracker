@@ -26,6 +26,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SetupPageSettings();
             ScaleControls();
 
+            IncludeHeader_Label.Click += (s, e) => IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
+            IncludeFooter_Label.Click += (s, e) => IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
+            ShowPageNumbers_Label.Click += (s, e) => ShowPageNumbers_CheckBox.Checked = !ShowPageNumbers_CheckBox.Checked;
+
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -127,10 +131,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
-        private void IncludeHeader_Label_Click(object sender, EventArgs e)
-        {
-            IncludeHeader_CheckBox.Checked = !IncludeHeader_CheckBox.Checked;
-        }
         private void IncludeFooter_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (_isUpdating || ReportConfig == null) { return; }
@@ -149,10 +149,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
-        private void IncludeFooter_Label_Click(object sender, EventArgs e)
-        {
-            IncludeFooter_CheckBox.Checked = !IncludeFooter_CheckBox.Checked;
-        }
         private void ShowPageNumbers_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (_isUpdating || ReportConfig == null) { return; }
@@ -167,11 +163,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Notify parent form to redraw
             ReportLayoutDesigner_Form.Instance.OnPageSettingsChanged();
         }
-
-        private void ShowPageNumbers_Label_Click(object sender, EventArgs e)
-        {
-            ShowPageNumbers_CheckBox.Checked = !ShowPageNumbers_CheckBox.Checked;
-        }
         private void PageNumber_NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             if (_isUpdating || ReportConfig == null) { return; }
@@ -183,11 +174,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void PageNumber_NumericUpDown_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                // Remove Windows "ding" noise when user presses enter
-                e.SuppressKeyPress = true;
-            }
+            // Remove Windows "ding" noise when user presses enter
+            e.SuppressKeyPress = e.KeyCode == Keys.Enter;
         }
         private void Close_Button_Click(object sender, EventArgs e)
         {

@@ -412,10 +412,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     if (ctrlPressed)
                     {
                         // Toggle selection
-                        if (_selectedElements.Contains(clickedElement))
+                        if (_selectedElements.Remove(clickedElement))
                         {
-                            clickedElement.IsSelected = false;
-                            _selectedElements.Remove(clickedElement);
+                            // Remove succeeded, so it was in the list
                             if (_selectedElement == clickedElement)
                             {
                                 _selectedElement = _selectedElements.FirstOrDefault();
@@ -427,6 +426,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         }
                         else
                         {
+                            // Remove failed, so it wasn't in the list - add it
                             SelectElement(clickedElement, true);
                         }
                     }
@@ -1543,16 +1543,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!addToSelection && !_isMultiSelecting)
             {
                 // Clear existing selection
-                foreach (BaseElement el in _selectedElements)
-                {
-                    el.IsSelected = false;
-                }
                 _selectedElements.Clear();
             }
 
             if (!_selectedElements.Contains(element))
             {
-                element.IsSelected = true;
                 _selectedElements.Add(element);
                 _selectedElement = element;
             }
@@ -1615,11 +1610,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void ClearAllSelections()
         {
-            foreach (BaseElement element in _selectedElements)
-            {
-                element.IsSelected = false;
-            }
-
             _selectedElements.Clear();
             _selectedElement = null;
             Canvas_Panel.Invalidate();
@@ -1664,7 +1654,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 if (!_selectedElements.Contains(element))
                 {
-                    element.IsSelected = true;
                     _selectedElements.Add(element);
                     InvalidateElementRegion(element.Bounds);
                 }
@@ -1677,7 +1666,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in toRemove)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 InvalidateElementRegion(element.Bounds);
             }
@@ -1708,7 +1696,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if the primary selected element was removed
             if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
             {
-                _selectedElement.IsSelected = false;
                 _selectedElement = null;
                 selectionChanged = true;
             }
@@ -1720,7 +1707,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in removedElements)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 selectionChanged = true;
             }
@@ -1743,12 +1729,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Property panel methods
         private void CreateOrShowPropertiesPanel()
         {
-            if (_selectedElement == null)
-            {
-                HidePropertiesPanel();
-                return;
-            }
-
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
             ElementProperties_Label.Text = $"Selected: {elementName}";
@@ -1769,6 +1749,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
+
+                if (_selectedElement is TableElement)
+                {
+                    _selectedElement.UpdateAllControlValues();
+                }
 
                 LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
@@ -1852,6 +1837,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void UpdatePropertyValues()
         {
+            // Don't show element properties if multiple elements are selected
+            if (_selectedElements.Count > 1)
+            {
+                return;
+            }
+
             // Element handles its own value updates internally
             _selectedElement?.CreatePropertyControls(
                 PropertiesContainer_Panel,
@@ -1884,7 +1875,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // Clear the current property element reference
             _currentPropertyElement = null;
 
             // Recreate the property panel for the currently selected element with new translations
@@ -2000,8 +1990,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Enforce canvas bounds
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-            if (newBounds.X < 0) newBounds.X = 0;
-            if (newBounds.Y < 0) newBounds.Y = 0;
+            if (newBounds.X < 0) { newBounds.X = 0; }
+            if (newBounds.Y < 0) { newBounds.Y = 0; }
             if (newBounds.Right > pageSize.Width)
             {
                 newBounds.Width = pageSize.Width - newBounds.X;
