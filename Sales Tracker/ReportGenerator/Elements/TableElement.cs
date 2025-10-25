@@ -680,6 +680,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ThemeManager.CustomizeScrollBar(columnsPanel);
                 }
 
+                UpdateAllControlValues();
                 LoadingPanel.HideBlankLoadingPanel(CachedPropertyPanel);
             }
 
