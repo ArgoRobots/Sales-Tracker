@@ -25,7 +25,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
         // Private backing fields
         private Control _chartControl;
-        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalSales;
+        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalRevenue;
         private bool _showLegend = true;
         private bool _showTitle = true;
         private Color _borderColor = Color.Gray;
@@ -351,23 +351,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Load charts with filtered DataGridViews
                 switch (chartType)
                 {
-                    case MainMenu_Form.ChartDataType.TotalSales:
+                    case MainMenu_Form.ChartDataType.TotalRevenue:
                         LoadChart.LoadTotalsIntoChart(salesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalPurchases:
+                    case MainMenu_Form.ChartDataType.TotalExpenses:
                         LoadChart.LoadTotalsIntoChart(purchasesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    case MainMenu_Form.ChartDataType.RevenueDistribution:
                         LoadChart.LoadDistributionIntoChart(salesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    case MainMenu_Form.ChartDataType.ExpensesDistribution:
                         LoadChart.LoadDistributionIntoChart(purchasesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Profits:
+                    case MainMenu_Form.ChartDataType.TotalProfits:
                         LoadChart.LoadProfitsIntoChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -388,13 +388,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Accountants:
+                    case MainMenu_Form.ChartDataType.AccountantsTransactions:
                         LoadChart.LoadAccountantsIntoChart((PieChart)_chartControl, PieChartGrouping.Top8,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    case MainMenu_Form.ChartDataType.SalesVsExpenses:
                         LoadChart.LoadSalesVsExpensesChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -587,10 +587,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsCartesianChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.TotalSales or
-                MainMenu_Form.ChartDataType.TotalPurchases or
-                MainMenu_Form.ChartDataType.Profits or
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales or
+                MainMenu_Form.ChartDataType.TotalRevenue or
+                MainMenu_Form.ChartDataType.TotalExpenses or
+                MainMenu_Form.ChartDataType.TotalProfits or
+                MainMenu_Form.ChartDataType.SalesVsExpenses or
                 MainMenu_Form.ChartDataType.AverageTransactionValue or
                 MainMenu_Form.ChartDataType.TotalTransactions or
                 MainMenu_Form.ChartDataType.AverageShippingCosts or
@@ -605,12 +605,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsPieChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.DistributionOfSales or
-                MainMenu_Form.ChartDataType.DistributionOfPurchases or
+                MainMenu_Form.ChartDataType.RevenueDistribution or
+                MainMenu_Form.ChartDataType.ExpensesDistribution or
                 MainMenu_Form.ChartDataType.CountriesOfOrigin or
                 MainMenu_Form.ChartDataType.CompaniesOfOrigin or
                 MainMenu_Form.ChartDataType.CountriesOfDestination or
-                MainMenu_Form.ChartDataType.Accountants or
+                MainMenu_Form.ChartDataType.AccountantsTransactions or
                 MainMenu_Form.ChartDataType.ReturnReasons or
                 MainMenu_Form.ChartDataType.ReturnsByCategory or
                 MainMenu_Form.ChartDataType.ReturnsByProduct or

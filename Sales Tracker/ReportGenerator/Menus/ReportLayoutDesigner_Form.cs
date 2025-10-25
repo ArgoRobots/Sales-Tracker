@@ -2247,7 +2247,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
-            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
+            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private static BaseElement? GetElementAtPoint(Point point)
         {
