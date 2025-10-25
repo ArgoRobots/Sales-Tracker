@@ -311,6 +311,8 @@ namespace Sales_Tracker.UI
         }
         private static void BrowseForCompanyLogo()
         {
+            Hide();
+
             using OpenFileDialog dialog = new();
 
             dialog.Title = "Select Company Logo";
@@ -385,6 +387,7 @@ namespace Sales_Tracker.UI
         }
         private static void RemoveCompanyLogo()
         {
+            Hide();
             RemoveOldLogoFile();
 
             Properties.Settings.Default.CompanyLogoPath = "";

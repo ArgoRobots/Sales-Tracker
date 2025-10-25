@@ -651,8 +651,7 @@ namespace Sales_Tracker.Charts
         // Other methods
         public static void Show(Control chart, Point mousePosition)
         {
-            // First hide other right click panels
-            MainMenu_Form.CloseRightClickPanels();
+            MainMenu_Form.Instance.ClosePanels();
 
             if (!ChartHasData(chart)) { return; }
 
