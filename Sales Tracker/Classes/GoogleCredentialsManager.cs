@@ -13,30 +13,47 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                string projectId = DotEnv.Get("GOOGLE_PROJECT_ID");
-                string privateKey = DotEnv.Get("GOOGLE_PRIVATE_KEY")?.Replace("\\n", "\n");
-                string clientEmail = DotEnv.Get("GOOGLE_CLIENT_EMAIL");
+                string type = DotEnv.Get("GOOGLE_TYPE");
+                string project_id = DotEnv.Get("GOOGLE_PROJECT_ID");
+                string private_key_id = DotEnv.Get("GOOGLE_PRIVATE_KEY_ID");
+                string private_key = DotEnv.Get("GOOGLE_PRIVATE_KEY")?.Replace("\\n", "\n");
+                string client_email = DotEnv.Get("GOOGLE_CLIENT_EMAIL");
+                string client_id = DotEnv.Get("GOOGLE_CLIENT_ID");
+                string auth_uri = DotEnv.Get("GOOGLE_AUTH_URI");
+                string token_uri = DotEnv.Get("GOOGLE_TOKEN_URI");
+                string auth_provider_x509_cert_url = DotEnv.Get("GOOGLE_AUTH_PROVIDER_CERT_URL");
+                string client_x509_cert_url = DotEnv.Get("GOOGLE_CLIENT_CERT_URL");
+                string universe_domain = DotEnv.Get("GOOGLE_UNIVERSE_DOMAIN");
 
-                if (string.IsNullOrEmpty(projectId) || string.IsNullOrEmpty(privateKey) || string.IsNullOrEmpty(clientEmail))
+                if (string.IsNullOrEmpty(project_id) ||
+                    string.IsNullOrEmpty(private_key) ||
+                    string.IsNullOrEmpty(client_email) ||
+                    string.IsNullOrEmpty(type) ||
+                    string.IsNullOrEmpty(private_key_id) ||
+                    string.IsNullOrEmpty(client_id) ||
+                    string.IsNullOrEmpty(auth_uri) ||
+                    string.IsNullOrEmpty(token_uri) ||
+                    string.IsNullOrEmpty(auth_provider_x509_cert_url) ||
+                    string.IsNullOrEmpty(client_x509_cert_url) ||
+                    string.IsNullOrEmpty(universe_domain))
                 {
                     throw new Exception("Missing required Google credentials in .env file");
                 }
 
                 // Create credentials JSON from environment variables
-                var credentialJson = new
-                {
-                    type = DotEnv.Get("GOOGLE_TYPE"),
-                    project_id = projectId,
-                    private_key_id = DotEnv.Get("GOOGLE_PRIVATE_KEY_ID"),
-                    private_key = privateKey,
-                    client_email = clientEmail,
-                    client_id = DotEnv.Get("GOOGLE_CLIENT_ID"),
-                    auth_uri = DotEnv.Get("GOOGLE_AUTH_URI"),
-                    token_uri = DotEnv.Get("GOOGLE_TOKEN_URI"),
-                    auth_provider_x509_cert_url = DotEnv.Get("GOOGLE_AUTH_PROVIDER_CERT_URL"),
-                    client_x509_cert_url = DotEnv.Get("GOOGLE_CLIENT_CERT_URL"),
-                    universe_domain = DotEnv.Get("GOOGLE_UNIVERSE_DOMAIN")
-                };
+                var credentialJson = (
+                    type,
+                    project_id,
+                    private_key_id,
+                    private_key,
+                    client_email,
+                    client_id,
+                    auth_uri,
+                    token_uri,
+                    auth_provider_x509_cert_url,
+                    client_x509_cert_url,
+                    universe_domain
+                );
 
                 // Convert to JSON string
                 string json = JsonSerializer.Serialize(credentialJson);
