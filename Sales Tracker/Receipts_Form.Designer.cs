@@ -104,6 +104,7 @@
             Search_TextBox.PlaceholderText = "Search for receipts";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 6;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
