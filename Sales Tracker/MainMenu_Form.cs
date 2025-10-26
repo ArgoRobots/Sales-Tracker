@@ -90,7 +90,8 @@ namespace Sales_Tracker
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 DateRangePanel,
                 File_Button,
-                Help_Button);
+                Help_Button,
+                TimeRange_Button);
 
             Application.AddMessageFilter(panelCloseFilter);
 
