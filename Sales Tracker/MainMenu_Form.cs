@@ -88,7 +88,9 @@ namespace Sales_Tracker
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
                 CompanyLogo.CompanyLogoRightClick_Panel,
-                DateRangePanel);
+                DateRangePanel,
+                File_Button,
+                Help_Button);
 
             Application.AddMessageFilter(panelCloseFilter);
 
