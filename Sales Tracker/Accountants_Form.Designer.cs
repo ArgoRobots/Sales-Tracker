@@ -212,6 +212,7 @@ namespace Sales_Tracker
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += Accountants_Form_Shown;
+            Resize += Accountants_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningAccountantName_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();

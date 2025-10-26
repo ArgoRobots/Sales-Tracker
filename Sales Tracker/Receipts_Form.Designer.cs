@@ -443,6 +443,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += Receipts_Form_Shown;
+            Resize += Receipts_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

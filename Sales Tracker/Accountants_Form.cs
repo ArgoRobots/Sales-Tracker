@@ -73,6 +73,10 @@ namespace Sales_Tracker
             _accountant_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void Accountants_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
 
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)

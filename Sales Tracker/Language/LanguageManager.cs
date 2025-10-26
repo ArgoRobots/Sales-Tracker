@@ -126,7 +126,7 @@ namespace Sales_Tracker.Language
             try
             {
                 string currentVersion = Tools.GetVersionNumber();
-                string downloadUrl = $"https://argorobots.com/resources/downloads/versions/{currentVersion}/languages/{languageAbbreviation}.json";
+                string downloadUrl = $"https://dev.argorobots.com/resources/downloads/versions/{currentVersion}/languages/{languageAbbreviation}.json";
 
                 HttpResponseMessage response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
 
