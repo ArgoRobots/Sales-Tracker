@@ -52,7 +52,11 @@ namespace Sales_Tracker.ReportGenerator
             AlignControlsAfterLanguageChange();
             AnimateButtons();
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel, UndoRedoHistoryDropdown.Panel);
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                RightClickElementMenu.Panel,
+                UndoRedoHistoryDropdown.Panel,
+                SearchBox.SearchResultBoxContainer);
+
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -232,6 +236,10 @@ namespace Sales_Tracker.ReportGenerator
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void ReportGenerator_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clean up child forms
@@ -319,6 +327,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             RightClickElementMenu.Hide();
             UndoRedoHistoryDropdown.Remove();
+            SearchBox.Close();
         }
     }
 }

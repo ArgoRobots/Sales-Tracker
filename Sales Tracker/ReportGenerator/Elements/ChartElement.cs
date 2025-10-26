@@ -927,14 +927,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Chart type selector
-            text = LanguageManager.TranslateString("Chart") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
-                GetAvailableChartTypes(),
+            // Chart type selection
+            text = LanguageManager.TranslateString("Chart Type") + ":";
+            Label chartTypeLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox chartTypeTextBox = AddPropertySearchBox(
+                container,
+                TranslatedChartTitles.GetChartDisplayName(ChartType),
+                yPosition,
+                GetChartTypeSearchResults,
                 value =>
                 {
-                    MainMenu_Form.ChartDataType newChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                    MainMenu_Form.ChartDataType newChartType = GetChartTypeFromDisplayName(value);
                     if (ChartType != newChartType)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -942,28 +946,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             nameof(ChartType),
                             ChartType,
                             newChartType,
-                            () =>
-                            {
-                                // Dispose old chart control when type changes
-                                _chartControl?.Dispose();
-                                _chartControl = null;
-                                onPropertyChanged();
-                            }));
+                            onPropertyChanged));
                         ChartType = newChartType;
-                        _chartControl?.Dispose();
-                        _chartControl = null;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
+                },
+                chartTypeLabel);
+
+            CacheControl("ChartType", chartTypeTextBox,
+                () => chartTypeTextBox.Text = TranslatedChartTitles.GetChartDisplayName(ChartType));
             yPosition += ControlRowHeight;
 
-            // Font family
+            // Font Family
             text = LanguageManager.TranslateString("Font") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
-                             "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
+            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                container,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -977,9 +979,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
+
+            // Make both TextBoxes the same size
+            if (chartTypeTextBox.Width < fontTextBox.Width)
+            {
+                fontTextBox.Width = chartTypeTextBox.Width;
+                fontTextBox.Left = chartTypeTextBox.Left;
+            }
+            else
+            {
+                chartTypeTextBox.Width = fontTextBox.Width;
+                chartTypeTextBox.Left = fontTextBox.Left;
+            }
 
             // Title font size
             text = LanguageManager.TranslateString("Title Size") + ":";
@@ -1111,9 +1127,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition;
         }
-        private static string[] GetAvailableChartTypes()
+        private static List<SearchResult> GetChartTypeSearchResults()
         {
-            return Enum.GetNames<MainMenu_Form.ChartDataType>();
+            return Enum.GetValues<MainMenu_Form.ChartDataType>()
+                .Select(type => new SearchResult(
+                    TranslatedChartTitles.GetChartDisplayName(type),
+                    null,
+                    0))
+                .ToList();
+        }
+        private static MainMenu_Form.ChartDataType GetChartTypeFromDisplayName(string displayName)
+        {
+            foreach (MainMenu_Form.ChartDataType type in Enum.GetValues<MainMenu_Form.ChartDataType>())
+            {
+                if (TranslatedChartTitles.GetChartDisplayName(type) == displayName)
+                {
+                    return type;
+                }
+            }
+            return MainMenu_Form.ChartDataType.TotalRevenue;  // Default fallback
         }
         private void RenderPlaceholder(Graphics graphics, string text)
         {

@@ -23,6 +23,8 @@ namespace Sales_Tracker.UI
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
         public const string AddLine = "ADD LINE CONTROL";
         private static Action _validationCallback;
+        private static int? _containerWidth = null;
+        private static int? _containerLeft = null;
         private static int ExtraWidth => (int)(350 * DpiHelper.GetRelativeDpiScale());
 
         // Getters
@@ -34,9 +36,20 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
-        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results,
-            int maxHeight, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
+        public static void Attach(Guna2TextBox textBox,
+            Control searchBoxParent,
+            Func<List<SearchResult>> results,
+            int maxHeight,
+            bool increaseWidth,
+            bool translateText,
+            bool allowTextBoxEmpty,
+            bool sortAlphabetically,
+            int? containerWidth = null,
+            int? containerLeft = null)
         {
+            _containerWidth = containerWidth;
+            _containerLeft = containerLeft;
+
             if (!translateText)
             {
                 textBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
@@ -104,8 +117,15 @@ namespace Sales_Tracker.UI
         }
 
         // Main methods
-        private static void Show(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
-            int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
+        private static void Show(Control searchBoxParent,
+            Guna2TextBox textBox,
+            Func<List<SearchResult>> resultsFunc,
+            int maxHeight,
+            bool alwaysShow,
+            bool increaseWidth,
+            bool translateText,
+            bool allowTextBoxEmpty,
+            bool sortAlphabetically)
         {
             // Check if the search box is already shown for the same text box
             if (_searchTextBox == textBox && !alwaysShow
@@ -195,6 +215,19 @@ namespace Sales_Tracker.UI
 
             metaList = metaList.OrderByDescending(x => x.Score).ToList();
 
+            // Set width
+            if (_containerWidth.HasValue)
+            {
+                SearchResultBoxContainer.Width = _containerWidth.Value;
+                SearchResultBox.Width = _containerWidth.Value - 3;
+            }
+            else
+            {
+                int newContainerWidth = textBox.Width + (increaseWidth ? ExtraWidth : 0);
+                SearchResultBoxContainer.Width = newContainerWidth;
+                SearchResultBox.Width = newContainerWidth - 3;
+            }
+
             // Add results to _searchResultBox
             float scale = DpiHelper.GetRelativeDpiScale();
             int yOffset = 1;
@@ -267,11 +300,6 @@ namespace Sales_Tracker.UI
                 controlIndex++;
             }
 
-            // Set width
-            int containerWidth = textBox.Width + (increaseWidth ? ExtraWidth : 0);
-            SearchResultBoxContainer.Width = containerWidth;
-            SearchResultBox.Width = containerWidth - 3;
-
             int totalHeight = yOffset + 1;
             if (totalHeight > maxHeight)
             {
@@ -300,7 +328,26 @@ namespace Sales_Tracker.UI
             }
 
             // Show search box
-            SetSearchBoxLocation(textBox);
+            if (_containerLeft.HasValue)
+            {
+                // Calculate Top position manually when Left is overridden
+                Point location = textBox.Location;
+                Control parent = textBox.Parent;
+
+                while (parent != null && parent != _searchBoxParent)
+                {
+                    location.Offset(parent.Location);
+                    parent = parent.Parent;
+                }
+
+                SearchResultBoxContainer.Left = _containerLeft.Value;
+                SearchResultBoxContainer.Top = location.Y + textBox.Height;
+            }
+            else
+            {
+                SetSearchBoxLocation(textBox);
+            }
+
             if (!_searchBoxParent.Controls.Contains(SearchResultBoxContainer))
             {
                 _searchBoxParent.Controls.Add(SearchResultBoxContainer);
@@ -332,7 +379,7 @@ namespace Sales_Tracker.UI
         }
         private static int CalculateControlWidth(int count, Guna2TextBox textBox, bool increaseWidth)
         {
-            int baseWidth = textBox.Width + (increaseWidth ? ExtraWidth : 0);
+            int baseWidth = SearchResultBoxContainer?.Width ?? (textBox.Width + (increaseWidth ? ExtraWidth : 0));
             if (count > 12)
             {
                 return baseWidth - SystemInformation.VerticalScrollBarWidth - 4;
@@ -380,6 +427,13 @@ namespace Sales_Tracker.UI
         }
         private static void SearchTextBox_KeyDown(KeyEventArgs e)
         {
+            // Only handle navigation keys
+            if (e.KeyCode != Keys.Down && e.KeyCode != Keys.Up &&
+                e.KeyCode != Keys.Tab && e.KeyCode != Keys.Enter)
+            {
+                return;
+            }
+
             List<Guna2Button> results = SearchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
             if (results.Count == 0) { return; }
 
@@ -420,6 +474,7 @@ namespace Sales_Tracker.UI
                         else
                         {
                             SelectResult(results[^1]);
+                            isResultSelected = true;
                         }
                         break;
                     }
@@ -455,6 +510,8 @@ namespace Sales_Tracker.UI
         {
             control.BorderThickness = 1;
             SearchResultBox.ScrollControlIntoView(control);
+
+            ThemeManager.UpdateScrollBarForControl(SearchResultBox);
         }
         private static void SetTextBoxToInvalid(Guna2TextBox textBox)
         {
@@ -472,7 +529,14 @@ namespace Sales_Tracker.UI
         }
         private static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyData == Keys.Tab || e.KeyData == Keys.Enter)
+            // Always allow these keys to be handled by the textbox (prevent designer form from capturing them)
+            if ((e.KeyData == Keys.Up ||
+                e.KeyData == Keys.Down ||
+                e.KeyData == Keys.Tab ||
+                e.KeyData == Keys.Enter ||
+                e.KeyData == (Keys.Control | Keys.A)) &&
+                _searchBoxParent != null &&
+                _searchBoxParent.Controls.Contains(SearchResultBoxContainer))
             {
                 e.IsInputKey = true;
             }

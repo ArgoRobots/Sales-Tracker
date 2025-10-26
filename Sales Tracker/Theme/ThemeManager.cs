@@ -324,6 +324,13 @@ namespace Sales_Tracker.Theme
 
             _scrollBars[control] = vScrollBar;
         }
+        public static void UpdateScrollBarForControl(ScrollableControl control)
+        {
+            if (_scrollBars.TryGetValue(control, out Guna2VScrollBar scrollBar))
+            {
+                scrollBar.Value = control.VerticalScroll.Value;
+            }
+        }
         public static void RemoveCustomScrollBar(Control control)
         {
             if (_scrollBars.TryGetValue(control, out Guna2VScrollBar? scrollBar))
