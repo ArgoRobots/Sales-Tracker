@@ -101,6 +101,10 @@ namespace Sales_Tracker
         {
             ClosePanels();
         }
+        private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ClosePanels();
+        }
 
         // Event handlers
         private void ClearFilters_Button_Click(object sender, EventArgs e)
