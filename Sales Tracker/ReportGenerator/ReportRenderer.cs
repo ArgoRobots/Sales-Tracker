@@ -15,9 +15,9 @@ namespace Sales_Tracker.ReportGenerator
         // Properties
         private readonly ReportConfiguration _config = config ?? throw new ArgumentNullException(nameof(config));
         private readonly ExportSettings _exportSettings = exportSettings ?? throw new ArgumentNullException(nameof(exportSettings));
-        private static readonly byte _headerHeight = 50;
-        private static readonly byte _footerHeight = 30;
-        private static readonly byte _separatorHeight = 5;
+        public static byte HeaderHeight { get; } = 50;
+        public static byte FooterHeight { get; } = 30;
+        public static byte SeparatorHeight { get; } = 5;
 
         public static float RenderScale { get; } = 3;
 
@@ -200,7 +200,7 @@ namespace Sales_Tracker.ReportGenerator
                 config.PageMargins.Left,
                 config.PageMargins.Top,
                 pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
-                _headerHeight
+                HeaderHeight
             );
 
             using (Font titleFont = new("Segoe UI", 18, FontStyle.Bold))
@@ -218,16 +218,16 @@ namespace Sales_Tracker.ReportGenerator
             // Draw separator line
             using Pen pen = new(Color.LightGray, 1);
             graphics.DrawLine(pen,
-                headerRect.Left, headerRect.Bottom + _separatorHeight,
-                headerRect.Right, headerRect.Bottom + _separatorHeight);
+                headerRect.Left, headerRect.Bottom + SeparatorHeight,
+                headerRect.Right, headerRect.Bottom + SeparatorHeight);
         }
         private static void RenderFooter(Graphics graphics, Size pageSize, ReportConfiguration config)
         {
             Rectangle footerRect = new(
                 config.PageMargins.Left,
-                pageSize.Height - config.PageMargins.Bottom - _footerHeight,
+                pageSize.Height - config.PageMargins.Bottom - FooterHeight,
                 pageSize.Width - config.PageMargins.Left - config.PageMargins.Right,
-                _footerHeight
+                FooterHeight
             );
 
             using Font footerFont = new("Segoe UI", 9);
@@ -255,12 +255,12 @@ namespace Sales_Tracker.ReportGenerator
 
             if (config.ShowHeader)
             {
-                topY = config.PageMargins.Top + _headerHeight + _separatorHeight;
+                topY = config.PageMargins.Top + HeaderHeight + SeparatorHeight;
             }
 
             if (config.ShowFooter)
             {
-                bottomY = pageSize.Height - config.PageMargins.Bottom - _footerHeight;
+                bottomY = pageSize.Height - config.PageMargins.Bottom - FooterHeight;
             }
 
             using Pen pen = new(Color.LightGray);

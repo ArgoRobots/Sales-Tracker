@@ -104,6 +104,7 @@
             Search_TextBox.PlaceholderText = "Search for receipts";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 6;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
@@ -442,7 +443,9 @@
             Name = "Receipts_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += Receipts_Form_FormClosed;
             Shown += Receipts_Form_Shown;
+            Resize += Receipts_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

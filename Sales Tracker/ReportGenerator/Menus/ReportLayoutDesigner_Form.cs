@@ -179,6 +179,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Don't intercept arrow keys if properties panel has focus
+            if (ActiveControl is Guna2GroupBox)
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+
             // Undo/Redo shortcuts
             if (keyData == (Keys.Control | Keys.Z))
             {
@@ -246,26 +252,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return true;
             }
 
-            // Shift+Arrow for larger movements (10 pixels)
-            if (keyData == (Keys.Shift | Keys.Left))
+            // Shift+Arrow or Ctrl+Arrow for larger movements (10 pixels)
+            if (keyData == (Keys.Shift | Keys.Left) || keyData == (Keys.Control | Keys.Left))
             {
                 MoveSelectedElementsWithUndo(-10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Right))
+            if (keyData == (Keys.Shift | Keys.Right) || keyData == (Keys.Control | Keys.Right))
             {
                 MoveSelectedElementsWithUndo(10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Up))
+            if (keyData == (Keys.Shift | Keys.Up) || keyData == (Keys.Control | Keys.Up))
             {
                 MoveSelectedElementsWithUndo(0, -10);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Down))
+            if (keyData == (Keys.Shift | Keys.Down) || keyData == (Keys.Control | Keys.Down))
             {
                 MoveSelectedElementsWithUndo(0, 10);
                 return true;
@@ -1523,14 +1526,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             int topY = 0;
             if (ReportConfig.ShowHeader)
             {
-                topY = ReportConfig.PageMargins.Top + 50 + 5;  // Header height + separator
+                topY = ReportConfig.PageMargins.Top + ReportRenderer.HeaderHeight + ReportRenderer.SeparatorHeight;
             }
 
             int x = (point.X + GridSize / 2) / GridSize * GridSize;  // Snap to nearest
 
             // Snap Y relative to content area top
             int relativeY = point.Y - topY;
-            int snappedRelativeY = ((relativeY + GridSize / 2) / GridSize) * GridSize;
+            int snappedRelativeY = (relativeY + GridSize / 2) / GridSize * GridSize;
             int y = topY + snappedRelativeY;
 
             return new Point(x, y);
@@ -2247,7 +2250,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
-            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
+            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private static BaseElement? GetElementAtPoint(Point point)
         {

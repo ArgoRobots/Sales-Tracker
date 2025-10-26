@@ -79,6 +79,10 @@ namespace Sales_Tracker
             ModifyRow_Label.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void ModifyRow_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void ModifyRow_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();

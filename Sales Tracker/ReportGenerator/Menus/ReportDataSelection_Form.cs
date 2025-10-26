@@ -72,8 +72,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Overview Section
             title = LanguageManager.TranslateString("Overview");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalExpensesVsSales, TranslatedChartTitles.SalesVsExpenses);
-            AddChartItem(MainMenu_Form.ChartDataType.Profits, TranslatedChartTitles.TotalProfits);
+            AddChartItem(MainMenu_Form.ChartDataType.SalesVsExpenses, TranslatedChartTitles.SalesVsExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalProfits, TranslatedChartTitles.TotalProfits);
             AddChartItem(MainMenu_Form.ChartDataType.TotalTransactions, TranslatedChartTitles.TotalTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageTransactionValue, TranslatedChartTitles.AverageTransactionValue);
 
@@ -81,10 +81,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ChartSelection_CheckedListBox.AddSpacer(10);
             title = LanguageManager.TranslateString("Financial");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalSales, TranslatedChartTitles.TotalRevenue);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalPurchases, TranslatedChartTitles.TotalExpenses);
-            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfSales, TranslatedChartTitles.RevenueDistribution);
-            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfPurchases, TranslatedChartTitles.ExpensesDistribution);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalRevenue, TranslatedChartTitles.TotalRevenue);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalExpenses, TranslatedChartTitles.TotalExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.RevenueDistribution, TranslatedChartTitles.RevenueDistribution);
+            AddChartItem(MainMenu_Form.ChartDataType.ExpensesDistribution, TranslatedChartTitles.ExpensesDistribution);
 
             // Geographic Section
             ChartSelection_CheckedListBox.AddSpacer(10);
@@ -105,7 +105,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ChartSelection_CheckedListBox.AddSpacer(10);
             title = LanguageManager.TranslateString("Operational");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.Accountants, TranslatedChartTitles.AccountantsTransactions);
+            AddChartItem(MainMenu_Form.ChartDataType.AccountantsTransactions, TranslatedChartTitles.AccountantsTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageShippingCosts, TranslatedChartTitles.AverageShippingCosts);
 
             // Returns Section
@@ -312,7 +312,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 return _chartTypeOrder[index];
             }
-            return MainMenu_Form.ChartDataType.TotalSales;
+            return MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private List<MainMenu_Form.ChartDataType> GetSelectedChartTypes()
         {

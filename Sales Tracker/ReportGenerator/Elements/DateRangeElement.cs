@@ -99,11 +99,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Font Family
             text = LanguageManager.TranslateString("Font") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
-                             "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
-                             "Times New Roman", "Trebuchet MS", "Verdana"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
+            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                container,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -117,8 +119,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font Size

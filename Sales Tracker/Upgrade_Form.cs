@@ -28,6 +28,10 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             CenterButton();
             CenterLabels();
+
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, TextBoxManager.RightClickTextBox_Panel);
+            Application.AddMessageFilter(panelCloseFilter);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         int CenterHorizontally(Control control) => control.Left = (ClientSize.Width - Benifits_Panel.Width - control.Width) / 2;
@@ -319,6 +323,10 @@ namespace Sales_Tracker
         private void BackButton_Click(object sender, EventArgs e)
         {
             _enterKey_Panel.Visible = false;
+        }
+        private void ClosePanels()
+        {
+            TextBoxManager.HideRightClickPanel();
         }
     }
 }
