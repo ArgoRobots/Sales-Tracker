@@ -499,6 +499,10 @@ namespace Sales_Tracker.UI
             {
                 e.SuppressKeyPress = true;
             }
+            else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+            {
+                e.Handled = true;
+            }
 
             // If nothing was selected, select the first result
             if (!isResultSelected)
