@@ -136,7 +136,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
 
             CustomTooltip.SetToolTip(SaveTemplate_Button, "", "Save template");
-            CustomTooltip.SetToolTip(Settings_Button, "", "Page settings");
+            CustomTooltip.SetToolTip(Settings_Button, "", "Settings");
         }
         private void ScaleControls()
         {

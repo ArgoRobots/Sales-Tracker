@@ -439,6 +439,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void OpenTemplates_Button_Click(object sender, EventArgs e)
         {
             using CustomTemplateManager_Form form = new();
+
             if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.SelectedTemplateName))
             {
                 // Load the selected template
