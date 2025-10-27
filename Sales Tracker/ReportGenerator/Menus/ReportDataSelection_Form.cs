@@ -530,7 +530,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Notify changes
             NotifyParentValidationChanged();
-            ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
+            ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded(templateName);
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {

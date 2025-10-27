@@ -33,6 +33,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
         private BaseElement _currentPropertyElement = null;
+        private bool _hasUnsavedChanges = false;
+        private string _currentTemplateName = null;
+        private string _baseFormTitle = "Report Layout Designer";
 
         /// <summary>
         /// Gets the current report configuration.
@@ -2283,6 +2286,49 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Template save/load functionality
         private void SaveTemplate_Button_Click(object sender, EventArgs e)
         {
+            // If there's a current template, ask if user wants to update it or save as new
+            if (!string.IsNullOrEmpty(_currentTemplateName))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Save Template",
+                    $"Update existing template '{_currentTemplateName}' or save as a new template?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.SaveDontSaveCancel); // Using SaveDontSaveCancel where Save = Update, DontSave = Save As New
+
+                if (result == CustomMessageBoxResult.Save)
+                {
+                    // Update existing template
+                    if (CustomTemplateStorage.SaveTemplate(_currentTemplateName, ReportConfig))
+                    {
+                        SetUnsavedChanges(false);
+
+                        CustomMessageBox.Show(
+                            "Template Updated",
+                            $"Template '{_currentTemplateName}' has been updated successfully.",
+                            CustomMessageBoxIcon.Success,
+                            CustomMessageBoxButtons.Ok);
+
+                        // Refresh the template list in the data selection form
+                        ReportDataSelection_Form.Instance?.RefreshTemplates();
+                    }
+                    else
+                    {
+                        CustomMessageBox.Show(
+                            "Save Failed",
+                            $"Failed to update template '{_currentTemplateName}'.",
+                            CustomMessageBoxIcon.Error,
+                            CustomMessageBoxButtons.Ok);
+                    }
+                    return;
+                }
+                else if (result == CustomMessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                // If DontSave (Save As New), continue to show the name dialog below
+            }
+
+            // Show dialog to enter new template name
             using SaveTemplate_Form form = new();
             if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
             {
@@ -2309,8 +2355,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
         }
-        public void OnConfigurationLoaded()
+        public void OnConfigurationLoaded(string templateName = null)
         {
+            _currentTemplateName = templateName;
             SetUnsavedChanges(false);
             RefreshCanvas();
         }
@@ -2318,6 +2365,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             HasUnsavedChanges = hasChanges;
             UnsavedChanges_Label.Visible = hasChanges;
+
+            // Update form title with asterisk if there are unsaved changes
+            if (hasChanges)
+            {
+                Text = _baseFormTitle + " *";
+            }
+            else
+            {
+                Text = _baseFormTitle;
+            }
         }
         private void MarkAsChanged()
         {
