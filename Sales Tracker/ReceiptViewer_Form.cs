@@ -490,7 +490,7 @@ namespace Sales_Tracker
             _skControl.Visible = true;
             WebViewer.Visible = false;
 
-            SetZoomControlsEnabled(true);
+            SetZoomControlsVisible(true);
             FitToWindow();
         }
         private async void LoadDocumentFile()
@@ -500,17 +500,17 @@ namespace Sales_Tracker
             WebViewer.Visible = true;
             _skControl.Visible = false;
 
-            SetZoomControlsEnabled(false);
-            Zoom_Label.Text = "PDF";
+            SetZoomControlsVisible(false);
         }
 
         // Zoom Methods
-        private void SetZoomControlsEnabled(bool enabled)
+        private void SetZoomControlsVisible(bool visible)
         {
-            ZoomIn_Button.Enabled = enabled;
-            ZoomOut_Button.Enabled = enabled;
-            ResetZoom_Button.Enabled = enabled;
-            FitToWindow_Button.Enabled = enabled;
+            ZoomIn_Button.Visible = visible;
+            ZoomOut_Button.Visible = visible;
+            ResetZoom_Button.Visible = visible;
+            FitToWindow_Button.Visible = visible;
+            Zoom_Label.Visible = visible;
         }
         private void ApplyZoom()
         {
