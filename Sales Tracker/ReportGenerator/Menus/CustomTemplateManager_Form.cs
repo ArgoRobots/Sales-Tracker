@@ -120,7 +120,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         "Delete Failed",
                         $"Failed to delete template '{templateName}'.",
                         CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.OK);
+                        CustomMessageBoxButtons.Ok);
                 }
             }
         }

@@ -458,7 +458,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     "Load Failed",
                     $"Failed to load template '{templateName}'.",
                     CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.OK);
+                    CustomMessageBoxButtons.Ok);
                 return;
             }
 
@@ -512,23 +512,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
                 ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
                 ReportConfig.Filters.SelectedChartTypes = new List<MainMenu_Form.ChartDataType>(config.Filters.SelectedChartTypes);
-
-                // Update transaction type radio buttons
-                if (config.Filters.TransactionType == TransactionType.Sales)
-                {
-                    Sales_RadioButton.Checked = true;
-                }
-                else if (config.Filters.TransactionType == TransactionType.Purchases)
-                {
-                    Purchases_RadioButton.Checked = true;
-                }
-                else
-                {
-                    Both_RadioButton.Checked = true;
-                }
-
-                // Update chart selection
-                UpdateChartSelectionFromConfig();
 
                 // Update date preset selection
                 ApplyDatePresetByName(config.Filters.DatePresetName);

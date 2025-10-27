@@ -2293,7 +2293,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         "Template Saved",
                         $"Template '{form.TemplateName}' has been saved successfully.",
                         CustomMessageBoxIcon.Success,
-                        CustomMessageBoxButtons.OK);
+                        CustomMessageBoxButtons.Ok);
 
                     // Refresh the template list in the data selection form
                     ReportDataSelection_Form.Instance?.RefreshTemplates();
@@ -2304,7 +2304,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         "Save Failed",
                         $"Failed to save template '{form.TemplateName}'.",
                         CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.OK);
+                        CustomMessageBoxButtons.Ok);
                 }
             }
         }
@@ -2339,9 +2339,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     "Unsaved Changes",
                     "You have unsaved changes to your template. Do you want to save before closing?",
                     CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNoCancel);
+                    CustomMessageBoxButtons.SaveDontSaveCancel);
 
-                if (result == CustomMessageBoxResult.Yes)
+                if (result == CustomMessageBoxResult.Save)
                 {
                     SaveTemplate_Button_Click(this, EventArgs.Empty);
 
@@ -2355,6 +2355,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     e.Cancel = true;
                 }
+                // If DontSave, just let the form close (do nothing)
             }
         }
     }

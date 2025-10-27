@@ -191,7 +191,7 @@
             SaveTemplate_Button.FillColor = Color.White;
             SaveTemplate_Button.Font = new Font("Segoe UI", 9F);
             SaveTemplate_Button.ForeColor = Color.Black;
-            SaveTemplate_Button.Image = Properties.Resources.Save;
+            SaveTemplate_Button.Image = Properties.Resources.SaveGray;
             SaveTemplate_Button.ImageSize = new Size(20, 20);
             SaveTemplate_Button.Location = new Point(1002, 14);
             SaveTemplate_Button.Name = "SaveTemplate_Button";

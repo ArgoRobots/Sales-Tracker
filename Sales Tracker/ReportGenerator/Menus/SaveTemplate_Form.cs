@@ -51,7 +51,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     "Invalid Template Name",
                     "Please enter a name for the template.",
                     CustomMessageBoxIcon.Warning,
-                    CustomMessageBoxButtons.OK);
+                    CustomMessageBoxButtons.Ok);
                 return;
             }
 
