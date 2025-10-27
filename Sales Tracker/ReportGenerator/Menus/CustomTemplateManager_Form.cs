@@ -9,9 +9,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
     /// </summary>
     public partial class CustomTemplateManager_Form : Form
     {
+        // Properties
         private List<string> _templateNames = [];
         public string SelectedTemplateName { get; private set; }
 
+        // Init.
         public CustomTemplateManager_Form()
         {
             InitializeComponent();
@@ -22,19 +24,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-
         private void UpdateTheme()
         {
             ThemeManager.MakeGButtonBluePrimary(Load_Button);
             ThemeManager.SetThemeForForm(this);
             ThemeManager.CustomizeScrollBar(Templates_ListBox);
         }
-
-        public void AlignControlsAfterLanguageChange()
-        {
-            Title_Label.Left = (ClientSize.Width - Title_Label.Width) / 2;
-        }
-
         private void LoadTemplates()
         {
             _templateNames = CustomTemplateStorage.GetCustomTemplateNames();
@@ -54,7 +49,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 NoTemplates_Label.Visible = false;
             }
         }
-
         private void UpdateButtonStates()
         {
             bool hasSelection = Templates_ListBox.SelectedIndex >= 0;
@@ -62,16 +56,17 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Delete_Button.Enabled = hasSelection;
         }
 
+        // Form event handlers
         private void CustomTemplateManager_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
+        // Event handlers
         private void Templates_ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtonStates();
         }
-
         private void Templates_ListBox_DoubleClick(object sender, EventArgs e)
         {
             if (Templates_ListBox.SelectedIndex >= 0)
@@ -79,7 +74,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 Load_Button_Click(sender, e);
             }
         }
-
         private void Load_Button_Click(object sender, EventArgs e)
         {
             if (Templates_ListBox.SelectedIndex < 0)
@@ -91,7 +85,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DialogResult = DialogResult.OK;
             Close();
         }
-
         private void Delete_Button_Click(object sender, EventArgs e)
         {
             if (Templates_ListBox.SelectedIndex < 0)
@@ -124,7 +117,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
         }
-
         private void Close_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;

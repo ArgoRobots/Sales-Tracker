@@ -311,6 +311,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        private void ReportLayoutDesigner_Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (AskUserToSaveWork())
+            {
+                e.Cancel = true;
+            }
+        }
 
         // Resize debounce timer
         private Timer _resizeDebounceTimer;
@@ -2308,19 +2315,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
         }
-
         public void OnConfigurationLoaded()
         {
             SetUnsavedChanges(false);
             RefreshCanvas();
         }
-
         private void SetUnsavedChanges(bool hasChanges)
         {
             _hasUnsavedChanges = hasChanges;
             UnsavedChanges_Label.Visible = hasChanges;
         }
-
         private void MarkAsChanged()
         {
             if (!_hasUnsavedChanges)
@@ -2329,11 +2333,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        /// <summary>
+        /// If there are unsaved changes, prompts the user to save their work before closing.
+        /// </summary>
+        /// <returns>True of the Form shuould not be closed, otherwise False.</returns>
+        public bool AskUserToSaveWork()
         {
-            base.OnFormClosing(e);
-
-            if (_hasUnsavedChanges && e.CloseReason == CloseReason.UserClosing)
+            if (_hasUnsavedChanges)
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Unsaved Changes",
@@ -2348,15 +2354,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     // If still has unsaved changes (user cancelled save), cancel close
                     if (_hasUnsavedChanges)
                     {
-                        e.Cancel = true;
+                        return true;
                     }
                 }
                 else if (result == CustomMessageBoxResult.Cancel)
                 {
-                    e.Cancel = true;
+                    return true;
                 }
-                // If DontSave, just let the form close (do nothing)
             }
+
+            return false;
         }
     }
 }

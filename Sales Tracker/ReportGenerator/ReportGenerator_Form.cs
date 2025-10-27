@@ -100,51 +100,59 @@ namespace Sales_Tracker.ReportGenerator
             ThemeManager.MakeGButtonBluePrimary(Next_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
 
-            ReportLayoutDesigner_Form form = ReportLayoutDesigner_Form.Instance;
+            ReportLayoutDesigner_Form designer = ReportLayoutDesigner_Form.Instance;
 
             if (ThemeManager.IsDarkTheme())
             {
-                form.Undo_Button.Image = Resources.UndoWhite;
-                form.UndoDropdown_Button.Image = Resources.DropDownWhite;
-                form.Redo_Button.Image = Resources.RedoWhite;
-                form.RedoDropdown_Button.Image = Resources.DropDownWhite;
+                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderWhite;
 
-                form.AlignLeft_Button.Image = Resources.ALignLeftWhite;
-                form.AlignCenter_Button.Image = Resources.AlignCenterWhite;
-                form.AlignRight_Button.Image = Resources.AlignRightWhite;
+                designer.Undo_Button.Image = Resources.UndoWhite;
+                designer.UndoDropdown_Button.Image = Resources.DropDownWhite;
+                designer.Redo_Button.Image = Resources.RedoWhite;
+                designer.RedoDropdown_Button.Image = Resources.DropDownWhite;
 
-                form.AlignTop_Button.Image = Resources.AlignTopWhite;
-                form.AlignMiddle_Button.Image = Resources.AlignMiddleWhite;
-                form.AlignBottom_Button.Image = Resources.AlignBottomWhite;
+                designer.AlignLeft_Button.Image = Resources.ALignLeftWhite;
+                designer.AlignCenter_Button.Image = Resources.AlignCenterWhite;
+                designer.AlignRight_Button.Image = Resources.AlignRightWhite;
 
-                form.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyWhite;
-                form.DistributeVertically_Button.Image = Resources.DistributeVerticallyWhite;
+                designer.AlignTop_Button.Image = Resources.AlignTopWhite;
+                designer.AlignMiddle_Button.Image = Resources.AlignMiddleWhite;
+                designer.AlignBottom_Button.Image = Resources.AlignBottomWhite;
 
-                form.MakeSameWidth_Button.Image = Resources.SameWidthWhite;
-                form.MakeSameHeight_Button.Image = Resources.SameHeightWhite;
-                form.MakeSameSize_Button.Image = Resources.SameSizeWhite;
+                designer.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyWhite;
+                designer.DistributeVertically_Button.Image = Resources.DistributeVerticallyWhite;
+
+                designer.MakeSameWidth_Button.Image = Resources.SameWidthWhite;
+                designer.MakeSameHeight_Button.Image = Resources.SameHeightWhite;
+                designer.MakeSameSize_Button.Image = Resources.SameSizeWhite;
+
+                designer.SaveTemplate_Button.Image = Resources.SaveWhite;
             }
             else
             {
-                form.Undo_Button.Image = Resources.UndoBlack;
-                form.UndoDropdown_Button.Image = Resources.DropDownBlack;
-                form.Redo_Button.Image = Resources.RedoBlack;
-                form.RedoDropdown_Button.Image = Resources.DropDownBlack;
+                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderBlack;
 
-                form.AlignLeft_Button.Image = Resources.ALignLeftBlack;
-                form.AlignCenter_Button.Image = Resources.AlignCenterBlack;
-                form.AlignRight_Button.Image = Resources.AlignRightBlack;
+                designer.Undo_Button.Image = Resources.UndoBlack;
+                designer.UndoDropdown_Button.Image = Resources.DropDownBlack;
+                designer.Redo_Button.Image = Resources.RedoBlack;
+                designer.RedoDropdown_Button.Image = Resources.DropDownBlack;
 
-                form.AlignTop_Button.Image = Resources.AlignTopBlack;
-                form.AlignMiddle_Button.Image = Resources.AlignMiddleBlack;
-                form.AlignBottom_Button.Image = Resources.AlignBottomBlack;
+                designer.AlignLeft_Button.Image = Resources.ALignLeftBlack;
+                designer.AlignCenter_Button.Image = Resources.AlignCenterBlack;
+                designer.AlignRight_Button.Image = Resources.AlignRightBlack;
 
-                form.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyBlack;
-                form.DistributeVertically_Button.Image = Resources.DistributeVerticallyBlack;
+                designer.AlignTop_Button.Image = Resources.AlignTopBlack;
+                designer.AlignMiddle_Button.Image = Resources.AlignMiddleBlack;
+                designer.AlignBottom_Button.Image = Resources.AlignBottomBlack;
 
-                form.MakeSameWidth_Button.Image = Resources.SameWidthBlack;
-                form.MakeSameHeight_Button.Image = Resources.SameHeightBlack;
-                form.MakeSameSize_Button.Image = Resources.SameSizeBlack;
+                designer.DistributeHorizontally_Button.Image = Resources.DistributeHorizontallyBlack;
+                designer.DistributeVertically_Button.Image = Resources.DistributeVerticallyBlack;
+
+                designer.MakeSameWidth_Button.Image = Resources.SameWidthBlack;
+                designer.MakeSameHeight_Button.Image = Resources.SameHeightBlack;
+                designer.MakeSameSize_Button.Image = Resources.SameSizeBlack;
+
+                designer.SaveTemplate_Button.Image = Resources.SaveGray;
             }
         }
         private void SetAccessibleDescriptions()

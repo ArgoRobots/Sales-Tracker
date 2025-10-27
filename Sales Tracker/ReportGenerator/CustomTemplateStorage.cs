@@ -1,6 +1,6 @@
+using Sales_Tracker.ReportGenerator.Elements;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Sales_Tracker.ReportGenerator.Elements;
 
 namespace Sales_Tracker.ReportGenerator
 {
@@ -70,7 +70,7 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = config.Filters.IncludeReturns,
                         IncludeLosses = config.Filters.IncludeLosses,
                         DatePresetName = config.Filters.DatePresetName,
-                        SelectedChartTypes = new List<MainMenu_Form.ChartDataType>(config.Filters.SelectedChartTypes)
+                        SelectedChartTypes = [.. config.Filters.SelectedChartTypes]
                     },
                     Elements = config.Elements.Select(e => SerializeElement(e)).ToList()
                 };
@@ -92,7 +92,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Loads a custom template by name.
         /// </summary>
-        public static ReportConfiguration LoadTemplate(string templateName)
+        public static ReportConfiguration? LoadTemplate(string templateName)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = template.Filters.IncludeReturns,
                         IncludeLosses = template.Filters.IncludeLosses,
                         DatePresetName = template.Filters.DatePresetName,
-                        SelectedChartTypes = new List<MainMenu_Form.ChartDataType>(template.Filters.SelectedChartTypes)
+                        SelectedChartTypes = [.. template.Filters.SelectedChartTypes]
                     }
                 };
 
@@ -169,9 +169,10 @@ namespace Sales_Tracker.ReportGenerator
                 }
 
                 return Directory.GetFiles(_templatesDirectory, "*.json")
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .OrderBy(name => name)
-                    .ToList();
+                   .Select(Path.GetFileNameWithoutExtension)
+                   .Where(name => name != null)
+                   .OrderBy(name => name)
+                   .ToList()!;
             }
             catch
             {
@@ -212,13 +213,11 @@ namespace Sales_Tracker.ReportGenerator
             string filePath = Path.Combine(_templatesDirectory, fileName);
             return File.Exists(filePath);
         }
-
         private static string SanitizeFileName(string fileName)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
             return string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
         }
-
         private static SerializedElement SerializeElement(BaseElement element)
         {
             SerializedElement serialized = new()
@@ -226,45 +225,44 @@ namespace Sales_Tracker.ReportGenerator
                 ElementType = element.GetType().Name,
                 Bounds = element.Bounds,
                 ZOrder = element.ZOrder,
-                IsVisible = element.IsVisible
-            };
+                IsVisible = element.IsVisible,
 
-            // Serialize type-specific properties
-            serialized.Properties = element switch
-            {
-                ChartElement chart => new Dictionary<string, object>
+                // Serialize type-specific properties
+                Properties = element switch
                 {
-                    ["ChartType"] = chart.ChartType.ToString()
-                },
-                LabelElement label => new Dictionary<string, object>
-                {
-                    ["Text"] = label.Text ?? "",
-                    ["FontFamily"] = label.FontFamily ?? "Segoe UI",
-                    ["FontSize"] = label.FontSize,
-                    ["FontStyle"] = label.FontStyle.ToString(),
-                    ["TextColor"] = ColorToHex(label.TextColor),
-                    ["HAlignment"] = label.HAlignment.ToString(),
-                    ["VAlignment"] = label.VAlignment.ToString()
-                },
-                DateRangeElement => new Dictionary<string, object>(),
-                SummaryElement => new Dictionary<string, object>(),
-                TableElement table => new Dictionary<string, object>
-                {
-                    ["TransactionType"] = table.TransactionType.ToString(),
-                    ["IncludeReturns"] = table.IncludeReturns,
-                    ["IncludeLosses"] = table.IncludeLosses
-                },
-                ImageElement image => new Dictionary<string, object>
-                {
-                    ["ImagePath"] = image.ImagePath ?? ""
-                },
-                _ => new Dictionary<string, object>()
+                    ChartElement chart => new Dictionary<string, object>
+                    {
+                        ["ChartType"] = chart.ChartType.ToString()
+                    },
+                    LabelElement label => new Dictionary<string, object>
+                    {
+                        ["Text"] = label.Text ?? "",
+                        ["FontFamily"] = label.FontFamily ?? "Segoe UI",
+                        ["FontSize"] = label.FontSize,
+                        ["FontStyle"] = label.FontStyle.ToString(),
+                        ["TextColor"] = ColorToHex(label.TextColor),
+                        ["HAlignment"] = label.HAlignment.ToString(),
+                        ["VAlignment"] = label.VAlignment.ToString()
+                    },
+                    DateRangeElement => [],
+                    SummaryElement => [],
+                    TableElement table => new Dictionary<string, object>
+                    {
+                        ["TransactionType"] = table.TransactionType.ToString(),
+                        ["IncludeReturns"] = table.IncludeReturns,
+                        ["IncludeLosses"] = table.IncludeLosses
+                    },
+                    ImageElement image => new Dictionary<string, object>
+                    {
+                        ["ImagePath"] = image.ImagePath ?? ""
+                    },
+                    _ => []
+                }
             };
 
             return serialized;
         }
-
-        private static BaseElement DeserializeElement(SerializedElement serialized)
+        private static BaseElement? DeserializeElement(SerializedElement serialized)
         {
             BaseElement element = serialized.ElementType switch
             {
@@ -313,12 +311,10 @@ namespace Sales_Tracker.ReportGenerator
 
             return element;
         }
-
         private static string ColorToHex(Color color)
         {
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
         }
-
         private static Color HexToColor(string hex)
         {
             hex = hex.Replace("#", "");
@@ -337,7 +333,6 @@ namespace Sales_Tracker.ReportGenerator
                 string hex = reader.GetString();
                 return HexToColor(hex);
             }
-
             public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
             {
                 writer.WriteStringValue(ColorToHex(value));
