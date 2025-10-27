@@ -97,23 +97,23 @@ namespace Sales_Tracker.Charts
 
             switch (chart.Tag)
             {
-                case MainMenu_Form.ChartDataType.TotalSales:
+                case MainMenu_Form.ChartDataType.TotalRevenue:
                     LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.TotalSales_Chart, isLine, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.TotalPurchases:
+                case MainMenu_Form.ChartDataType.TotalExpenses:
                     LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.TotalPurchases_Chart, isLine, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.DistributionOfSales:
+                case MainMenu_Form.ChartDataType.RevenueDistribution:
                     LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.DistributionOfSales_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                case MainMenu_Form.ChartDataType.ExpensesDistribution:
                     LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.DistributionOfPurchases_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.Profits:
+                case MainMenu_Form.ChartDataType.TotalProfits:
                     LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, true, directory);
                     break;
 
@@ -129,11 +129,11 @@ namespace Sales_Tracker.Charts
                     LoadChart.LoadCountriesOfDestinationChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.Accountants:
+                case MainMenu_Form.ChartDataType.AccountantsTransactions:
                     LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                case MainMenu_Form.ChartDataType.SalesVsExpenses:
                     LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.TotalExpensesVsSales_Chart, isLine, true, directory);
                     break;
 
@@ -211,7 +211,7 @@ namespace Sales_Tracker.Charts
             {
                 switch (chart.Tag)
                 {
-                    case MainMenu_Form.ChartDataType.TotalSales:
+                    case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
                             ChartData chartData = LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.TotalSales_Chart, isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.TotalRevenue;
@@ -225,7 +225,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalPurchases:
+                    case MainMenu_Form.ChartDataType.TotalExpenses:
                         {
                             ChartData chartData = LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.TotalPurchases_Chart, isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.TotalExpenses;
@@ -239,7 +239,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    case MainMenu_Form.ChartDataType.RevenueDistribution:
                         {
                             ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.DistributionOfSales_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.RevenueDistribution;
@@ -250,7 +250,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    case MainMenu_Form.ChartDataType.ExpensesDistribution:
                         {
                             ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Instance.DistributionOfPurchases_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ExpensesDistribution;
@@ -261,7 +261,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.Profits:
+                    case MainMenu_Form.ChartDataType.TotalProfits:
                         {
                             ChartData chartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.TotalProfits;
@@ -308,7 +308,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.Accountants:
+                    case MainMenu_Form.ChartDataType.AccountantsTransactions:
                         {
                             ChartData chartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.AccountantsTransactions;
@@ -319,7 +319,7 @@ namespace Sales_Tracker.Charts
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    case MainMenu_Form.ChartDataType.SalesVsExpenses:
                         {
                             SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.TotalExpensesVsSales_Chart, isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
@@ -651,8 +651,7 @@ namespace Sales_Tracker.Charts
         // Other methods
         public static void Show(Control chart, Point mousePosition)
         {
-            // First hide other right click panels
-            MainMenu_Form.CloseRightClickPanels();
+            MainMenu_Form.Instance.ClosePanels();
 
             if (!ChartHasData(chart)) { return; }
 

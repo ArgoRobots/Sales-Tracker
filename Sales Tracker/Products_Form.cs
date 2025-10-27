@@ -169,6 +169,14 @@ namespace Sales_Tracker
             _purchase_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void Products_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
+        private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ClosePanels();
+        }
 
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)

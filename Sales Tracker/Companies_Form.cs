@@ -75,6 +75,14 @@ namespace Sales_Tracker
             _company_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void Companies_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
+        private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ClosePanels();
+        }
 
         // Event handlers
         private void AddCompany_Button_Click(object sender, EventArgs e)

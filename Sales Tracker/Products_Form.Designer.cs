@@ -564,7 +564,9 @@ namespace Sales_Tracker
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Activated += Products_Form_Activated;
+            FormClosed += Products_Form_FormClosed;
             Shown += Products_Form_Shown;
+            Resize += Products_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningProductName_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningCategory_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningCompany_PictureBox).EndInit();

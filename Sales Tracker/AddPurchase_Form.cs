@@ -123,6 +123,10 @@ namespace Sales_Tracker
             LoadingPanel.HideBlankLoadingPanel(this);
             OrderNumber_TextBox.Focus();
         }
+        private void AddPurchase_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void AddPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();

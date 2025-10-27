@@ -702,6 +702,7 @@ namespace Sales_Tracker
             FormClosed += AddPurchase_Form_FormClosed;
             Shown += AddPurchase_Form_Shown;
             TextChanged += ValidateInputs;
+            Resize += AddPurchase_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();

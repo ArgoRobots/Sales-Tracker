@@ -52,7 +52,11 @@ namespace Sales_Tracker.ReportGenerator
             AlignControlsAfterLanguageChange();
             AnimateButtons();
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, RightClickElementMenu.Panel, UndoRedoHistoryDropdown.Panel);
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                RightClickElementMenu.Panel,
+                UndoRedoHistoryDropdown.Panel,
+                SearchBox.SearchResultBoxContainer);
+
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -232,6 +236,10 @@ namespace Sales_Tracker.ReportGenerator
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void ReportGenerator_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clean up child forms
@@ -261,7 +269,14 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            if (ConfirmCancellation())
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Cancel Report Generation",
+                "Are you sure you want to cancel? Any unsaved changes will be lost.",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.YesNo
+            );
+
+            if (result == CustomMessageBoxResult.Yes)
             {
                 DialogResult = DialogResult.Cancel;
                 Close();
@@ -297,17 +312,6 @@ namespace Sales_Tracker.ReportGenerator
                 );
             }
         }
-        private static bool ConfirmCancellation()
-        {
-            CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Cancel Report Generation",
-                "Are you sure you want to cancel? Any unsaved changes will be lost.",
-                CustomMessageBoxIcon.Question,
-                CustomMessageBoxButtons.YesNo
-            );
-
-            return result == CustomMessageBoxResult.Yes;
-        }
 
         // Public methods for child Forms
         /// <summary>
@@ -323,6 +327,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             RightClickElementMenu.Hide();
             UndoRedoHistoryDropdown.Remove();
+            SearchBox.Close();
         }
     }
 }

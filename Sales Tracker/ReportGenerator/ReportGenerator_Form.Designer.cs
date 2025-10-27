@@ -226,6 +226,7 @@ namespace Sales_Tracker.ReportGenerator
             Text = "Report Generator";
             FormClosed += ReportGenerator_Form_FormClosed;
             Shown += ReportGenerator_Form_Shown;
+            Resize += ReportGenerator_Form_Resize;
             BottomNavigation_Panel.ResumeLayout(false);
             Top_Panel.ResumeLayout(false);
             Top_Panel.PerformLayout();

@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Guna.UI2.WinForms.Enums;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
@@ -38,11 +39,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// Z-order for layering elements.
         /// </summary>
         public int ZOrder { get; set; }
-
-        /// <summary>
-        /// Whether the element is currently selected in the designer.
-        /// </summary>
-        public bool IsSelected { get; set; }
 
         /// <summary>
         /// Whether the element is visible in the report.
@@ -87,13 +83,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             if (!_controlsCreated)
             {
                 // Set size first so child controls can calculate their positions correctly
-                int panelWidth = container.Width > 0 ? container.Width - 5 : 340; // Default to 340 if container width not set
+                int panelWidth = container.Width - 5;
 
                 CachedPropertyPanel = new Panel
                 {
-                    Location = new Point(0, 0),
                     Size = new Size(panelWidth, container.Height),
-                    AutoSize = false,
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
@@ -162,7 +156,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Updates all cached control values without recreating them.
         /// </summary>
-        protected void UpdateAllControlValues()
+        public void UpdateAllControlValues()
         {
             foreach (Action updateAction in UpdateActionCache.Values)
             {
@@ -445,11 +439,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
             numericUpDown.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    // Remove Windows "ding" noise when user presses enter
-                    e.SuppressKeyPress = true;
-                }
+                // Remove Windows "ding" noise when user presses enter
+                e.SuppressKeyPress = e.KeyCode == Keys.Enter;
             };
 
             numericUpDown.DisableScrollAndForwardToPanel();
@@ -575,6 +566,54 @@ namespace Sales_Tracker.ReportGenerator.Elements
             container.Controls.Add(colorPreview);
 
             return colorPreview;
+        }
+
+        /// <summary>
+        /// Adds a searchable text box property control with dynamic width.
+        /// </summary>
+        protected static Guna2TextBox AddPropertySearchBox(
+            Panel container,
+            string value,
+            int yPosition,
+            Func<List<SearchResult>> getSearchResults,
+            Action<string> onChange,
+            Label label)
+        {
+            int xPosition;
+            int controlWidth;
+
+            // Dynamic width based on label
+            xPosition = label.Right + 10;
+            controlWidth = container.ClientSize.Width - xPosition - leftMargin;
+
+            Guna2TextBox textBox = new()
+            {
+                Text = value,
+                Size = new Size(controlWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+
+            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            textBox.DisableScrollAndForwardToPanel();
+
+            // Attach SearchBox functionality
+            SearchBox.Attach(textBox, container, getSearchResults, 255, false, true, false, true,
+                container.ClientSize.Width - leftMargin - RightMargin + 4,
+                leftMargin);
+
+            container.Controls.Add(textBox);
+            return textBox;
+        }
+        public static List<SearchResult> GetFontSearchResults()
+        {
+            string[] fonts = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
+                      "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
+                      "Times New Roman", "Trebuchet MS", "Verdana"];
+
+            return fonts.Select(font => new SearchResult(font, null, 0)).ToList();
         }
 
         /// <summary>

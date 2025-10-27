@@ -26,8 +26,8 @@ namespace Sales_Tracker.ReportGenerator
             config.Filters.DatePresetName = DatePresetNames.ThisMonth;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.DistributionOfSales,
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.RevenueDistribution,
                 MainMenu_Form.ChartDataType.GrowthRates,
                 MainMenu_Form.ChartDataType.AverageTransactionValue
             ]);
@@ -53,10 +53,10 @@ namespace Sales_Tracker.ReportGenerator
             config.Filters.DatePresetName = DatePresetNames.ThisQuarter;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.TotalPurchases,
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                MainMenu_Form.ChartDataType.Profits
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.TotalExpenses,
+                MainMenu_Form.ChartDataType.SalesVsExpenses,
+                MainMenu_Form.ChartDataType.TotalProfits
             ]);
 
             AddFinancialOverviewElements(config);
@@ -198,14 +198,14 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
+                ChartType = MainMenu_Form.ChartDataType.RevenueDistribution,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
@@ -243,28 +243,28 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
+                ChartType = MainMenu_Form.ChartDataType.SalesVsExpenses,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.Profits,
+                ChartType = MainMenu_Form.ChartDataType.TotalProfits,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[1, 0],
                 ZOrder = 3
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
+                ChartType = MainMenu_Form.ChartDataType.TotalExpenses,
                 Bounds = grid[1, 1],
                 ZOrder = 4
             });

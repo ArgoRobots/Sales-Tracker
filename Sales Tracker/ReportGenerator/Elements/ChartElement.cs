@@ -25,7 +25,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
         // Private backing fields
         private Control _chartControl;
-        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalSales;
+        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalRevenue;
         private bool _showLegend = true;
         private bool _showTitle = true;
         private Color _borderColor = Color.Gray;
@@ -124,7 +124,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
@@ -352,23 +351,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Load charts with filtered DataGridViews
                 switch (chartType)
                 {
-                    case MainMenu_Form.ChartDataType.TotalSales:
+                    case MainMenu_Form.ChartDataType.TotalRevenue:
                         LoadChart.LoadTotalsIntoChart(salesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalPurchases:
+                    case MainMenu_Form.ChartDataType.TotalExpenses:
                         LoadChart.LoadTotalsIntoChart(purchasesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    case MainMenu_Form.ChartDataType.RevenueDistribution:
                         LoadChart.LoadDistributionIntoChart(salesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    case MainMenu_Form.ChartDataType.ExpensesDistribution:
                         LoadChart.LoadDistributionIntoChart(purchasesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Profits:
+                    case MainMenu_Form.ChartDataType.TotalProfits:
                         LoadChart.LoadProfitsIntoChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -389,13 +388,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Accountants:
+                    case MainMenu_Form.ChartDataType.AccountantsTransactions:
                         LoadChart.LoadAccountantsIntoChart((PieChart)_chartControl, PieChartGrouping.Top8,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    case MainMenu_Form.ChartDataType.SalesVsExpenses:
                         LoadChart.LoadSalesVsExpensesChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -588,10 +587,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsCartesianChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.TotalSales or
-                MainMenu_Form.ChartDataType.TotalPurchases or
-                MainMenu_Form.ChartDataType.Profits or
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales or
+                MainMenu_Form.ChartDataType.TotalRevenue or
+                MainMenu_Form.ChartDataType.TotalExpenses or
+                MainMenu_Form.ChartDataType.TotalProfits or
+                MainMenu_Form.ChartDataType.SalesVsExpenses or
                 MainMenu_Form.ChartDataType.AverageTransactionValue or
                 MainMenu_Form.ChartDataType.TotalTransactions or
                 MainMenu_Form.ChartDataType.AverageShippingCosts or
@@ -606,12 +605,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsPieChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.DistributionOfSales or
-                MainMenu_Form.ChartDataType.DistributionOfPurchases or
+                MainMenu_Form.ChartDataType.RevenueDistribution or
+                MainMenu_Form.ChartDataType.ExpensesDistribution or
                 MainMenu_Form.ChartDataType.CountriesOfOrigin or
                 MainMenu_Form.ChartDataType.CompaniesOfOrigin or
                 MainMenu_Form.ChartDataType.CountriesOfDestination or
-                MainMenu_Form.ChartDataType.Accountants or
+                MainMenu_Form.ChartDataType.AccountantsTransactions or
                 MainMenu_Form.ChartDataType.ReturnReasons or
                 MainMenu_Form.ChartDataType.ReturnsByCategory or
                 MainMenu_Form.ChartDataType.ReturnsByProduct or
@@ -928,14 +927,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Chart type selector
-            text = LanguageManager.TranslateString("Chart") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
-                GetAvailableChartTypes(),
+            // Chart type selection
+            text = LanguageManager.TranslateString("Chart Type") + ":";
+            Label chartTypeLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox chartTypeTextBox = AddPropertySearchBox(
+                container,
+                TranslatedChartTitles.GetChartDisplayName(ChartType),
+                yPosition,
+                GetChartTypeSearchResults,
                 value =>
                 {
-                    MainMenu_Form.ChartDataType newChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                    MainMenu_Form.ChartDataType newChartType = GetChartTypeFromDisplayName(value);
                     if (ChartType != newChartType)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -943,28 +946,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             nameof(ChartType),
                             ChartType,
                             newChartType,
-                            () =>
-                            {
-                                // Dispose old chart control when type changes
-                                _chartControl?.Dispose();
-                                _chartControl = null;
-                                onPropertyChanged();
-                            }));
+                            onPropertyChanged));
                         ChartType = newChartType;
-                        _chartControl?.Dispose();
-                        _chartControl = null;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
+                },
+                chartTypeLabel);
+
+            CacheControl("ChartType", chartTypeTextBox,
+                () => chartTypeTextBox.Text = TranslatedChartTitles.GetChartDisplayName(ChartType));
             yPosition += ControlRowHeight;
 
-            // Font family
+            // Font Family
             text = LanguageManager.TranslateString("Font") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
-                             "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
+            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                container,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -978,9 +979,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
+
+            // Make both TextBoxes the same size
+            if (chartTypeTextBox.Width < fontTextBox.Width)
+            {
+                fontTextBox.Width = chartTypeTextBox.Width;
+                fontTextBox.Left = chartTypeTextBox.Left;
+            }
+            else
+            {
+                chartTypeTextBox.Width = fontTextBox.Width;
+                chartTypeTextBox.Left = fontTextBox.Left;
+            }
 
             // Title font size
             text = LanguageManager.TranslateString("Title Size") + ":";
@@ -1112,9 +1127,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition;
         }
-        private static string[] GetAvailableChartTypes()
+        private static List<SearchResult> GetChartTypeSearchResults()
         {
-            return Enum.GetNames<MainMenu_Form.ChartDataType>();
+            return Enum.GetValues<MainMenu_Form.ChartDataType>()
+                .Select(type => new SearchResult(
+                    TranslatedChartTitles.GetChartDisplayName(type),
+                    null,
+                    0))
+                .ToList();
+        }
+        private static MainMenu_Form.ChartDataType GetChartTypeFromDisplayName(string displayName)
+        {
+            foreach (MainMenu_Form.ChartDataType type in Enum.GetValues<MainMenu_Form.ChartDataType>())
+            {
+                if (TranslatedChartTitles.GetChartDisplayName(type) == displayName)
+                {
+                    return type;
+                }
+            }
+            return MainMenu_Form.ChartDataType.TotalRevenue;  // Default fallback
         }
         private void RenderPlaceholder(Graphics graphics, string text)
         {

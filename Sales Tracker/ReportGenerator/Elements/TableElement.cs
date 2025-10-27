@@ -107,7 +107,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 DataSelection = DataSelection,
                 SortOrder = SortOrder,
@@ -660,6 +659,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 stylePanel.Visible = false;
                 columnsPanel.Visible = false;
 
+                ThemeManager.RemoveCustomScrollBar(generalPanel);
+                ThemeManager.RemoveCustomScrollBar(stylePanel);
+                ThemeManager.RemoveCustomScrollBar(columnsPanel);
+
                 if (tabIndex == 0)
                 {
                     generalPanel.Visible = true;
@@ -676,6 +679,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ThemeManager.CustomizeScrollBar(columnsPanel);
                 }
 
+                UpdateAllControlValues();
                 LoadingPanel.HideBlankLoadingPanel(CachedPropertyPanel);
             }
 
@@ -880,11 +884,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Font family
-            AddPropertyLabel(panel, "Font:", yPosition);
-            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
-                             "Tahoma", "Georgia", "Courier New", "Consolas"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(panel, FontFamily, yPosition, fontFamilies,
+            // Font Family
+            text = LanguageManager.TranslateString("Font") + ":";
+            Label fontLabel = AddPropertyLabel(panel, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                panel,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -898,8 +906,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
