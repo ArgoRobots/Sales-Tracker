@@ -50,7 +50,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 CustomMessageBox.Show(
                     "Invalid Template Name",
                     "Please enter a name for the template.",
-                    CustomMessageBoxIcon.Warning,
+                    CustomMessageBoxIcon.Exclamation,
                     CustomMessageBoxButtons.Ok);
                 return;
             }

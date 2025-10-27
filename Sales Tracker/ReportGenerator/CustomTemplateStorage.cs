@@ -239,18 +239,20 @@ namespace Sales_Tracker.ReportGenerator
                 LabelElement label => new Dictionary<string, object>
                 {
                     ["Text"] = label.Text ?? "",
-                    ["FontName"] = label.FontName ?? "Segoe UI",
+                    ["FontFamily"] = label.FontFamily ?? "Segoe UI",
                     ["FontSize"] = label.FontSize,
                     ["FontStyle"] = label.FontStyle.ToString(),
                     ["TextColor"] = ColorToHex(label.TextColor),
-                    ["Alignment"] = label.Alignment.ToString()
+                    ["HAlignment"] = label.HAlignment.ToString(),
+                    ["VAlignment"] = label.VAlignment.ToString()
                 },
                 DateRangeElement => new Dictionary<string, object>(),
                 SummaryElement => new Dictionary<string, object>(),
                 TableElement table => new Dictionary<string, object>
                 {
-                    ["IncludeSales"] = table.IncludeSales,
-                    ["IncludePurchases"] = table.IncludePurchases
+                    ["TransactionType"] = table.TransactionType.ToString(),
+                    ["IncludeReturns"] = table.IncludeReturns,
+                    ["IncludeLosses"] = table.IncludeLosses
                 },
                 ImageElement image => new Dictionary<string, object>
                 {
@@ -274,20 +276,26 @@ namespace Sales_Tracker.ReportGenerator
                 nameof(LabelElement) => new LabelElement
                 {
                     Text = serialized.Properties.GetValueOrDefault("Text", "").ToString(),
-                    FontName = serialized.Properties.GetValueOrDefault("FontName", "Segoe UI").ToString(),
+                    FontFamily = serialized.Properties.GetValueOrDefault("FontFamily",
+                        serialized.Properties.GetValueOrDefault("FontName", "Segoe UI")).ToString(),
                     FontSize = Convert.ToSingle(serialized.Properties.GetValueOrDefault("FontSize", 12f)),
                     FontStyle = Enum.Parse<FontStyle>(
                         serialized.Properties.GetValueOrDefault("FontStyle", "Regular").ToString()),
                     TextColor = HexToColor(serialized.Properties.GetValueOrDefault("TextColor", "#000000").ToString()),
-                    Alignment = Enum.Parse<StringAlignment>(
-                        serialized.Properties.GetValueOrDefault("Alignment", "Near").ToString())
+                    HAlignment = Enum.Parse<StringAlignment>(
+                        serialized.Properties.GetValueOrDefault("HAlignment",
+                        serialized.Properties.GetValueOrDefault("Alignment", "Center")).ToString()),
+                    VAlignment = Enum.Parse<StringAlignment>(
+                        serialized.Properties.GetValueOrDefault("VAlignment", "Center").ToString())
                 },
                 nameof(DateRangeElement) => new DateRangeElement(),
                 nameof(SummaryElement) => new SummaryElement(),
                 nameof(TableElement) => new TableElement
                 {
-                    IncludeSales = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludeSales", true)),
-                    IncludePurchases = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludePurchases", true))
+                    TransactionType = Enum.Parse<TransactionType>(
+                        serialized.Properties.GetValueOrDefault("TransactionType", "Both").ToString()),
+                    IncludeReturns = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludeReturns", true)),
+                    IncludeLosses = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludeLosses", true))
                 },
                 nameof(ImageElement) => new ImageElement
                 {
