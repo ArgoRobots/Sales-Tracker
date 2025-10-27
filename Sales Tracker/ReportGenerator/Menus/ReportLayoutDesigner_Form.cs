@@ -2317,6 +2317,42 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SetUnsavedChanges(false);
             RefreshCanvas();
         }
+
+        /// <summary>
+        /// Prompts the user to save unsaved changes.
+        /// Returns true if the operation should continue (Save or Don't Save), false if cancelled.
+        /// </summary>
+        public bool PromptToSaveChanges()
+        {
+            if (!HasUnsavedChanges)
+            {
+                return true; // No unsaved changes, continue
+            }
+
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Unsaved Changes",
+                "You have unsaved changes to your custom template.\nDo you want to save your changes?",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.SaveDontSaveCancel);
+
+            if (result == CustomMessageBoxResult.Cancel)
+            {
+                return false; // User cancelled, don't proceed
+            }
+
+            if (result == CustomMessageBoxResult.Save)
+            {
+                // Trigger the save button click
+                SaveTemplate_Button_Click(this, EventArgs.Empty);
+
+                // Check if there are still unsaved changes (user might have cancelled the save dialog)
+                return !HasUnsavedChanges;
+            }
+
+            // User chose "Don't Save", continue without saving
+            return true;
+        }
+
         private void SetUnsavedChanges(bool hasChanges)
         {
             HasUnsavedChanges = hasChanges;
