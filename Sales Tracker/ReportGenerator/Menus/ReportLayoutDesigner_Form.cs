@@ -1607,7 +1607,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             foreach (BaseElement element in elements)
             {
-                using Pen pen = new(CustomColors.AccentBlue, 3);
+                using Pen pen = new(CustomColors.AccentBlue, 4);
                 pen.DashStyle = DashStyle.Solid;
                 g.DrawRectangle(pen, element.Bounds);
             }
@@ -2023,7 +2023,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private static void DrawResizeHandles(Graphics g, Rectangle bounds)
         {
-            const int handleSize = 8;
+            const int handleSize = 12;
             using Brush brush = new SolidBrush(Color.Blue);
 
             // Corner handles

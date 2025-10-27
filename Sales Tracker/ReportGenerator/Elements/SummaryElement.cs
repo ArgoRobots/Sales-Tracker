@@ -11,7 +11,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class SummaryElement : BaseElement
     {
         // Properties
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
         public bool ShowTotalSales { get; set; } = true;
@@ -24,6 +24,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 10f;
         public FontStyle FontStyle { get; set; } = FontStyle.Regular;
+        public Color TextColor { get; set; } = Color.Black;
         public StringAlignment Alignment { get; set; } = StringAlignment.Near;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Near;
 
@@ -61,52 +62,52 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontFamily = FontFamily,
                 FontSize = FontSize,
                 FontStyle = FontStyle,
+                TextColor = TextColor,
                 Alignment = Alignment,
                 VerticalAlignment = VerticalAlignment
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            // Draw background
-            using SolidBrush bgBrush = new(BackgroundColor);
-            graphics.FillRectangle(bgBrush, Bounds);
-
-            // Draw border
-            if (BorderColor != Color.Transparent && BorderThickness > 0)
-            {
-                using Pen borderPen = new(BorderColor, BorderThickness);
-
-                // Adjust rectangle to account for border thickness to prevent clipping
-                Rectangle borderRect = Bounds;
-                if (BorderThickness > 1)
-                {
-                    int offset = BorderThickness / 2;
-                    borderRect = new Rectangle(
-                        Bounds.X + offset,
-                        Bounds.Y + offset,
-                        Bounds.Width - BorderThickness,
-                        Bounds.Height - BorderThickness
-                    );
-                }
-
-                graphics.DrawRectangle(borderPen, borderRect);
-            }
-
-            // Add clipping region to prevent overflow
             Region originalClip = graphics.Clip;
-            graphics.SetClip(Bounds);
 
             try
             {
+                // Draw background
+                using SolidBrush bgBrush = new(BackgroundColor);
+                graphics.FillRectangle(bgBrush, Bounds);
+
+                // Draw border
+                if (BorderColor != Color.Transparent && BorderThickness > 0)
+                {
+                    using Pen borderPen = new(BorderColor, BorderThickness);
+
+                    // Adjust rectangle to account for border thickness to prevent clipping
+                    Rectangle borderRect = Bounds;
+                    if (BorderThickness > 1)
+                    {
+                        int offset = BorderThickness / 2;
+                        borderRect = new Rectangle(
+                            Bounds.X + offset,
+                            Bounds.Y + offset,
+                            Bounds.Width - BorderThickness,
+                            Bounds.Height - BorderThickness
+                        );
+                    }
+
+                    graphics.DrawRectangle(borderPen, borderRect);
+                }
+
+                // Add clipping region to prevent overflow
+                graphics.SetClip(Bounds);
+
                 // Calculate statistics
                 SummaryStatistics stats = CalculateStatistics(config);
 
                 // Draw summary content with actual values
                 using Font titleFont = new(FontFamily, FontSize + 1, FontStyle.Bold | FontStyle);
                 using Font valueFont = new(FontFamily, FontSize, FontStyle);
-                using SolidBrush textBrush = new(Color.Black);
-                using SolidBrush positiveBrush = new(Color.Green);
-                using SolidBrush negativeBrush = new(Color.Red);
+                using SolidBrush textBrush = new(TextColor);
 
                 int titleHeight = titleFont.Height;
                 int lineHeight = valueFont.Height;
@@ -147,9 +148,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     string totalText = TransactionType switch
                     {
-                        TransactionType.Purchases => LanguageManager.TranslateString("Total Purchases") + $": {FormatCurrency(stats.TotalPurchases)}",
-                        TransactionType.Sales => LanguageManager.TranslateString("Total Sales") + $": {FormatCurrency(stats.TotalSales)}",
-                        _ => LanguageManager.TranslateString("Total") + $": {FormatCurrency(stats.CombinedTotal)}"
+                        TransactionType.Expenses => LanguageManager.TranslateString("Total Expenses") + $": {FormatCurrency(stats.TotalPurchases)}",
+                        TransactionType.Revenue => LanguageManager.TranslateString("Total Revenue") + $": {FormatCurrency(stats.TotalSales)}",
+                        _ => LanguageManager.TranslateString("Total: error")
                     };
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
                     graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
@@ -174,12 +175,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowGrowthRate && startY + lineHeight <= Bounds.Bottom - padding)
                 {
-                    SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
                     string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
                     string text = LanguageManager.TranslateString("Growth Rate");
-                    graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
+                    graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, textBrush, textBounds, format);
                 }
+            }
+            catch
+            {
+                RenderError(graphics);
             }
             finally
             {
@@ -213,7 +217,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             try
             {
                 // Calculate sales if needed
-                if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
+                if (TransactionType == TransactionType.Revenue)
                 {
                     (decimal Total, int Count) = CalculateGridViewTotal(
                         MainMenu_Form.Instance.Sale_DataGridView,
@@ -226,7 +230,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Calculate purchases if needed
-                if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
+                if (TransactionType == TransactionType.Expenses)
                 {
                     (decimal Total, int Count) = CalculateGridViewTotal(
                         MainMenu_Form.Instance.Purchase_DataGridView,
@@ -235,7 +239,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         IncludeReturns);
 
                     stats.TotalPurchases = Total;
-                    if (TransactionType == TransactionType.Purchases)
+                    if (TransactionType == TransactionType.Expenses)
                     {
                         stats.TransactionCount += Count;
                     }
@@ -305,8 +309,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             decimal previousPeriodTotal = 0;
 
             // Get previous period sales
-            if (config.Filters.TransactionType == TransactionType.Sales ||
-                config.Filters.TransactionType == TransactionType.Both)
+            if (config.Filters.TransactionType == TransactionType.Revenue)
             {
                 (decimal Total, _) = CalculateGridViewTotal(
                     MainMenu_Form.Instance.Sale_DataGridView,
@@ -317,8 +320,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
 
             // Get previous period purchases
-            if (config.Filters.TransactionType == TransactionType.Purchases ||
-                config.Filters.TransactionType == TransactionType.Both)
+            if (config.Filters.TransactionType == TransactionType.Expenses)
             {
                 (decimal Total, _) = CalculateGridViewTotal(
                     MainMenu_Form.Instance.Purchase_DataGridView,
@@ -358,15 +360,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Section header for included metrics
-            text = LanguageManager.TranslateString("Include") + ":";
-            AddPropertyLabel(container, text, yPosition, true);
-            yPosition += 35;
-
             // Transaction type
-            AddPropertyLabel(container, "Type:", yPosition);
+            AddPropertyLabel(container, "Data Type:", yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
-                ["Sales", "Purchases", "Both"],
+                Enum.GetNames<TransactionType>(),
                 value =>
                 {
                     TransactionType newType = Enum.Parse<TransactionType>(value);
@@ -381,6 +378,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         TransactionType = newType;
                         onPropertyChanged();
                     }
+
+                    UpdateAllControlValues();  // This will update the "Show Expenses/Revenue" label text
                 });
             CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
@@ -552,6 +551,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             yPosition += ControlRowHeight;
 
+            // Text Color
+            text = LanguageManager.TranslateString("Text Color") + ":";
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
+                newColor =>
+                {
+                    if (TextColor != newColor)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TextColor),
+                            TextColor,
+                            newColor,
+                            onPropertyChanged));
+                        TextColor = newColor;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
+            yPosition += ControlRowHeight;
+
             // Background Color
             text = LanguageManager.TranslateString("Background color") + ":";
             AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
@@ -710,8 +730,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
-            // Total Sales checkbox
-            text = LanguageManager.TranslateString("Show Total Sales");
+            // Total Sales checkbox - label should reflect transaction type
+            text = TransactionType == TransactionType.Revenue
+                ? LanguageManager.TranslateString("Show Revenue")
+                : LanguageManager.TranslateString("Show Expenses");
+
             Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTotalSales, yPosition,
                 value =>
                 {
@@ -727,7 +750,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+
+            // Find the label that was just added (it's added right after the checkbox)
+            Label salesLabel = container.Controls.OfType<Label>()
+                .FirstOrDefault(l => l.Location.Y == yPosition);
+
             CacheControl("ShowTotalSales", salesCheck, () => salesCheck.Checked = ShowTotalSales);
+            if (salesLabel != null)
+            {
+                CacheControl("ShowTotalSalesLabel", salesLabel, () =>
+                {
+                    salesLabel.Text = TransactionType == TransactionType.Revenue
+                        ? LanguageManager.TranslateString("Show Revenue")
+                        : LanguageManager.TranslateString("Show Expenses");
+                });
+            }
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox

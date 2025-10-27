@@ -37,7 +37,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class TableElement : BaseElement
     {
         // Data selection properties (General tab)
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
         public TableDataSelection DataSelection { get; set; } = TableDataSelection.All;
@@ -153,9 +153,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 RenderTable(graphics, transactions);
             }
-            catch (Exception ex)
+            catch
             {
-                RenderErrorMessage(graphics, $"Error: {ex.Message}");
+                RenderError(graphics);
             }
         }
         private List<TransactionData> GetFilteredTransactions(ReportConfiguration config)
@@ -167,17 +167,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             DateTime endDate = config?.Filters?.EndDate ?? DateTime.MaxValue;
 
             // Load sales transactions if needed
-            if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Revenue)
             {
                 DataGridView salesGrid = MainMenu_Form.Instance.Sale_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Sales, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Revenue, IncludeReturns, IncludeLosses));
             }
 
             // Load purchase transactions if needed  
-            if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Expenses)
             {
                 DataGridView purchaseGrid = MainMenu_Form.Instance.Purchase_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Expenses, IncludeReturns, IncludeLosses));
             }
 
             // Sort transactions
@@ -607,24 +607,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             using Pen borderPen = new(Color.Black, 1);
             graphics.DrawRectangle(borderPen, Bounds);
         }
-        private void RenderErrorMessage(Graphics graphics, string message)
-        {
-            using SolidBrush bgBrush = new(Color.FromArgb(255, 240, 240));
-            using Pen borderPen = new(Color.Red, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.DarkRed);
-
-            graphics.FillRectangle(bgBrush, Bounds);
-            graphics.DrawRectangle(borderPen, Bounds);
-
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(message, font, textBrush, Bounds, format);
-        }
 
         // Override the property to indicate this element handles its own common controls
         public override bool HandlesOwnCommonControls => true;
@@ -753,7 +735,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Type") + ":";
             AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
-                ["Sales", "Purchases", "Both"],
+                Enum.GetNames<TransactionType>(),
                 value =>
                 {
                     TransactionType newType = Enum.Parse<TransactionType>(value);

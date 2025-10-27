@@ -40,33 +40,40 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            if (config?.Filters == null) { return; }
-
-            DateTime? startDate = config.Filters.StartDate;
-            DateTime? endDate = config.Filters.EndDate;
-
-            string dateText = LanguageManager.TranslateString("Period") + ": ";
-            if (startDate.HasValue && endDate.HasValue)
+            try
             {
-                dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                if (config?.Filters == null) { return; }
+
+                DateTime? startDate = config.Filters.StartDate;
+                DateTime? endDate = config.Filters.EndDate;
+
+                string dateText = LanguageManager.TranslateString("Period") + ": ";
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                }
+                else
+                {
+                    dateText += LanguageManager.TranslateString("Not specified");
+                }
+
+                using Font font = new(FontFamily, FontSize, FontStyle);
+                using SolidBrush brush = new(TextColor);
+
+                StringFormat format = new()
+                {
+                    Alignment = HAlignment,
+                    LineAlignment = VAlignment,
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+
+                graphics.DrawString(dateText, font, brush, Bounds, format);
             }
-            else
+            catch
             {
-                dateText += LanguageManager.TranslateString("Not specified");
+                RenderError(graphics);
             }
-
-            using Font font = new(FontFamily, FontSize, FontStyle);
-            using SolidBrush brush = new(TextColor);
-
-            StringFormat format = new()
-            {
-                Alignment = HAlignment,
-                LineAlignment = VAlignment,
-                FormatFlags = StringFormatFlags.NoWrap,
-                Trimming = StringTrimming.EllipsisCharacter
-            };
-
-            graphics.DrawString(dateText, font, brush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -267,6 +274,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             yPosition += ControlRowHeight;
 
+            // Text Color
+            text = LanguageManager.TranslateString("Text Color") + ":";
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
+                newColor =>
+                {
+                    if (TextColor != newColor)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TextColor),
+                            TextColor,
+                            newColor,
+                            onPropertyChanged));
+                        TextColor = newColor;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
+            yPosition += ControlRowHeight;
+
             // Horizontal Alignment
             text = LanguageManager.TranslateString("H-Align");
             AddPropertyLabel(container, text, yPosition);
@@ -318,27 +346,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("VAlignment", vAlignCombo,
                 () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VAlignment, isVertical: true));
-            yPosition += ControlRowHeight;
-
-            // Text Color
-            text = LanguageManager.TranslateString("Color") + ":";
-            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
-            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
-                newColor =>
-                {
-                    if (TextColor != newColor)
-                    {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(TextColor),
-                            TextColor,
-                            newColor,
-                            onPropertyChanged));
-                        TextColor = newColor;
-                        onPropertyChanged();
-                    }
-                });
-            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             return yPosition;
