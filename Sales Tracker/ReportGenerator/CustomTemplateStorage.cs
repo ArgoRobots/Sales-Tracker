@@ -265,35 +265,36 @@ namespace Sales_Tracker.ReportGenerator
                 nameof(ChartElement) => new ChartElement
                 {
                     ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(
-                        serialized.Properties.GetValueOrDefault("ChartType", "TotalRevenue").ToString())
+                        GetStringValue(serialized.Properties.GetValueOrDefault("ChartType", "TotalRevenue"), "TotalRevenue"))
                 },
                 nameof(LabelElement) => new LabelElement
                 {
-                    Text = serialized.Properties.GetValueOrDefault("Text", "").ToString(),
-                    FontFamily = serialized.Properties.GetValueOrDefault("FontFamily",
-                        serialized.Properties.GetValueOrDefault("FontName", "Segoe UI")).ToString(),
-                    FontSize = Convert.ToSingle(serialized.Properties.GetValueOrDefault("FontSize", 12f)),
+                    Text = GetStringValue(serialized.Properties.GetValueOrDefault("Text", ""), ""),
+                    FontFamily = GetStringValue(
+                        serialized.Properties.GetValueOrDefault("FontFamily",
+                        serialized.Properties.GetValueOrDefault("FontName", "Segoe UI")), "Segoe UI"),
+                    FontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("FontSize", 12f), 12f),
                     FontStyle = Enum.Parse<FontStyle>(
-                        serialized.Properties.GetValueOrDefault("FontStyle", "Regular").ToString()),
-                    TextColor = HexToColor(serialized.Properties.GetValueOrDefault("TextColor", "#000000").ToString()),
+                        GetStringValue(serialized.Properties.GetValueOrDefault("FontStyle", "Regular"), "Regular")),
+                    TextColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("TextColor", "#000000"), "#000000")),
                     HAlignment = Enum.Parse<StringAlignment>(
-                        serialized.Properties.GetValueOrDefault("HAlignment",
-                        serialized.Properties.GetValueOrDefault("Alignment", "Center")).ToString()),
+                        GetStringValue(serialized.Properties.GetValueOrDefault("HAlignment",
+                        serialized.Properties.GetValueOrDefault("Alignment", "Center")), "Center")),
                     VAlignment = Enum.Parse<StringAlignment>(
-                        serialized.Properties.GetValueOrDefault("VAlignment", "Center").ToString())
+                        GetStringValue(serialized.Properties.GetValueOrDefault("VAlignment", "Center"), "Center"))
                 },
                 nameof(DateRangeElement) => new DateRangeElement(),
                 nameof(SummaryElement) => new SummaryElement(),
                 nameof(TableElement) => new TableElement
                 {
                     TransactionType = Enum.Parse<TransactionType>(
-                        serialized.Properties.GetValueOrDefault("TransactionType", "Both").ToString()),
-                    IncludeReturns = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludeReturns", true)),
-                    IncludeLosses = Convert.ToBoolean(serialized.Properties.GetValueOrDefault("IncludeLosses", true))
+                        GetStringValue(serialized.Properties.GetValueOrDefault("TransactionType", "Both"), "Both")),
+                    IncludeReturns = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeReturns", true), true),
+                    IncludeLosses = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeLosses", true), true)
                 },
                 nameof(ImageElement) => new ImageElement
                 {
-                    ImagePath = serialized.Properties.GetValueOrDefault("ImagePath", "").ToString()
+                    ImagePath = GetStringValue(serialized.Properties.GetValueOrDefault("ImagePath", ""), "")
                 },
                 _ => null
             };
@@ -307,6 +308,59 @@ namespace Sales_Tracker.ReportGenerator
 
             return element;
         }
+
+        /// <summary>
+        /// Helper methods to safely extract values from Properties dictionary,
+        /// handling both JsonElement and regular objects.
+        /// </summary>
+        private static string GetStringValue(object value, string defaultValue = "")
+        {
+            if (value == null) return defaultValue;
+
+            if (value is JsonElement jsonElement)
+            {
+                return jsonElement.ValueKind == JsonValueKind.String
+                    ? jsonElement.GetString() ?? defaultValue
+                    : jsonElement.ToString();
+            }
+
+            return value.ToString() ?? defaultValue;
+        }
+
+        private static bool GetBoolValue(object value, bool defaultValue = false)
+        {
+            if (value == null) return defaultValue;
+
+            if (value is JsonElement jsonElement)
+            {
+                return jsonElement.ValueKind == JsonValueKind.True || jsonElement.ValueKind == JsonValueKind.False
+                    ? jsonElement.GetBoolean()
+                    : defaultValue;
+            }
+
+            if (value is bool boolValue) return boolValue;
+
+            return bool.TryParse(value.ToString(), out bool result) ? result : defaultValue;
+        }
+
+        private static float GetFloatValue(object value, float defaultValue = 0f)
+        {
+            if (value == null) return defaultValue;
+
+            if (value is JsonElement jsonElement)
+            {
+                return jsonElement.ValueKind == JsonValueKind.Number
+                    ? jsonElement.GetSingle()
+                    : defaultValue;
+            }
+
+            if (value is float floatValue) return floatValue;
+            if (value is double doubleValue) return (float)doubleValue;
+            if (value is int intValue) return intValue;
+
+            return float.TryParse(value.ToString(), out float result) ? result : defaultValue;
+        }
+
         private static string ColorToHex(Color color)
         {
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
