@@ -22,6 +22,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             InitializeComponent();
 
             UpdateTheme();
+            TextBoxManager.Attach(TemplateName_TextBox);
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }

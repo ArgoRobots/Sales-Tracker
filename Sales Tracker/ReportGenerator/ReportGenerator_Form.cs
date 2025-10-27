@@ -248,9 +248,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             ClosePanels();
         }
-        private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
+        private void ReportGenerator_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseReportGeneration();
+            if (!AskUserToSaveChanges())
+            {
+                e.Cancel = true;
+            }
 
             // Clean up child forms
             _dataSelectionForm?.Dispose();
@@ -279,7 +282,10 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            CloseReportGeneration();
+            if (AskUserToSaveChanges())
+            {
+                Close();
+            }
         }
 
         // Validation and completion
@@ -311,7 +317,12 @@ namespace Sales_Tracker.ReportGenerator
                 );
             }
         }
-        private void CloseReportGeneration()
+
+        /// <summary>
+        /// Asks the user to confirm closing the report generation process if there are unsaved changes.
+        /// </summary>
+        /// <returns>True if the user selects yes, otherwise False.</returns>
+        private static bool AskUserToSaveChanges()
         {
             if (ReportLayoutDesigner_Form.HasUnsavedChanges)
             {
@@ -322,12 +333,9 @@ namespace Sales_Tracker.ReportGenerator
                     CustomMessageBoxButtons.YesNo
                 );
 
-                if (result == CustomMessageBoxResult.Yes)
-                {
-                    DialogResult = DialogResult.Cancel;
-                    Close();
-                }
+                return result == CustomMessageBoxResult.Yes;
             }
+            return true;
         }
 
         // Public methods for child Forms

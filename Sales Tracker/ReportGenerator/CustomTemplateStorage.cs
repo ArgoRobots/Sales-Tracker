@@ -219,7 +219,7 @@ namespace Sales_Tracker.ReportGenerator
 
                 if (File.Exists(newFilePath))
                 {
-                    return false; // New name already exists
+                    return false;  // New name already exists
                 }
 
                 // Load the template to update its internal Name property

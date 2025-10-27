@@ -152,6 +152,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.PlaceholderText = "Enter template name";
             TemplateName_TextBox.SelectedText = "";
             TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            TemplateName_TextBox.ShortcutsEnabled = false;
             TemplateName_TextBox.Size = new Size(398, 50);
             TemplateName_TextBox.TabIndex = 6;
             TemplateName_TextBox.KeyDown += TemplateName_TextBox_KeyDown;
