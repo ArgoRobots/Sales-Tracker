@@ -2298,16 +2298,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     _currentTemplateName = form.TemplateName;
                     SetUnsavedChanges(false);
 
-                    string message = form.IsUpdate
-                        ? $"Template '{form.TemplateName}' has been updated successfully."
-                        : $"Template '{form.TemplateName}' has been saved successfully.";
-
-                    CustomMessageBox.Show(
-                        form.IsUpdate ? "Template Updated" : "Template Saved",
-                        message,
-                        CustomMessageBoxIcon.Success,
-                        CustomMessageBoxButtons.Ok);
-
                     // Refresh the template list in the data selection form
                     ReportDataSelection_Form.Instance?.RefreshTemplates();
                 }

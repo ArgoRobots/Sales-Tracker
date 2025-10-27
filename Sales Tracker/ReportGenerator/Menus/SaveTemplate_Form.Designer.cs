@@ -50,23 +50,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            Title_Label.Location = new Point(119, 20);
+            Title_Label.Location = new Point(129, 20);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(200, 38);
             Title_Label.TabIndex = 0;
             Title_Label.Text = "Save Template";
-            //
+            // 
             // UpdateExisting_RadioButton
-            //
+            // 
             UpdateExisting_RadioButton.Animated = true;
             UpdateExisting_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             UpdateExisting_RadioButton.CheckedState.BorderThickness = 0;
             UpdateExisting_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             UpdateExisting_RadioButton.CheckedState.InnerColor = Color.White;
-            UpdateExisting_RadioButton.Location = new Point(30, 75);
+            UpdateExisting_RadioButton.Location = new Point(30, 81);
             UpdateExisting_RadioButton.Name = "UpdateExisting_RadioButton";
             UpdateExisting_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges1;
-            UpdateExisting_RadioButton.Size = new Size(23, 23);
+            UpdateExisting_RadioButton.Size = new Size(25, 25);
             UpdateExisting_RadioButton.TabIndex = 1;
             UpdateExisting_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             UpdateExisting_RadioButton.UncheckedState.BorderThickness = 2;
@@ -74,34 +74,34 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdateExisting_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             UpdateExisting_RadioButton.Visible = false;
             UpdateExisting_RadioButton.CheckedChanged += UpdateExisting_RadioButton_CheckedChanged;
-            //
+            // 
             // UpdateExisting_Label
-            //
+            // 
             UpdateExisting_Label.AutoSize = true;
             UpdateExisting_Label.BackColor = Color.Transparent;
             UpdateExisting_Label.Cursor = Cursors.Hand;
             UpdateExisting_Label.Font = new Font("Segoe UI", 10F);
             UpdateExisting_Label.ForeColor = SystemColors.ControlText;
-            UpdateExisting_Label.Location = new Point(58, 71);
+            UpdateExisting_Label.Location = new Point(52, 74);
             UpdateExisting_Label.Name = "UpdateExisting_Label";
-            UpdateExisting_Label.Padding = new Padding(0, 5, 0, 5);
-            UpdateExisting_Label.Size = new Size(276, 38);
+            UpdateExisting_Label.Padding = new Padding(5);
+            UpdateExisting_Label.Size = new Size(242, 38);
             UpdateExisting_Label.TabIndex = 2;
             UpdateExisting_Label.Text = "Update existing template";
             UpdateExisting_Label.Visible = false;
             UpdateExisting_Label.Click += UpdateExisting_Label_Click;
-            //
+            // 
             // SaveAsNew_RadioButton
-            //
+            // 
             SaveAsNew_RadioButton.Animated = true;
             SaveAsNew_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             SaveAsNew_RadioButton.CheckedState.BorderThickness = 0;
             SaveAsNew_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             SaveAsNew_RadioButton.CheckedState.InnerColor = Color.White;
-            SaveAsNew_RadioButton.Location = new Point(30, 113);
+            SaveAsNew_RadioButton.Location = new Point(30, 119);
             SaveAsNew_RadioButton.Name = "SaveAsNew_RadioButton";
             SaveAsNew_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            SaveAsNew_RadioButton.Size = new Size(23, 23);
+            SaveAsNew_RadioButton.Size = new Size(25, 25);
             SaveAsNew_RadioButton.TabIndex = 3;
             SaveAsNew_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             SaveAsNew_RadioButton.UncheckedState.BorderThickness = 2;
@@ -109,35 +109,35 @@ namespace Sales_Tracker.ReportGenerator.Menus
             SaveAsNew_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             SaveAsNew_RadioButton.Visible = false;
             SaveAsNew_RadioButton.CheckedChanged += SaveAsNew_RadioButton_CheckedChanged;
-            //
+            // 
             // SaveAsNew_Label
-            //
+            // 
             SaveAsNew_Label.AutoSize = true;
             SaveAsNew_Label.BackColor = Color.Transparent;
             SaveAsNew_Label.Cursor = Cursors.Hand;
             SaveAsNew_Label.Font = new Font("Segoe UI", 10F);
             SaveAsNew_Label.ForeColor = SystemColors.ControlText;
-            SaveAsNew_Label.Location = new Point(58, 109);
+            SaveAsNew_Label.Location = new Point(52, 112);
             SaveAsNew_Label.Name = "SaveAsNew_Label";
-            SaveAsNew_Label.Padding = new Padding(0, 5, 0, 5);
-            SaveAsNew_Label.Size = new Size(220, 38);
+            SaveAsNew_Label.Padding = new Padding(5);
+            SaveAsNew_Label.Size = new Size(209, 38);
             SaveAsNew_Label.TabIndex = 4;
             SaveAsNew_Label.Text = "Save as new template";
             SaveAsNew_Label.Visible = false;
             SaveAsNew_Label.Click += SaveAsNew_Label_Click;
-            //
+            // 
             // TemplateName_Label
-            //
+            // 
             TemplateName_Label.AutoSize = true;
             TemplateName_Label.Font = new Font("Segoe UI", 10F);
-            TemplateName_Label.Location = new Point(30, 160);
+            TemplateName_Label.Location = new Point(30, 167);
             TemplateName_Label.Name = "TemplateName_Label";
             TemplateName_Label.Size = new Size(152, 28);
             TemplateName_Label.TabIndex = 5;
             TemplateName_Label.Text = "Template Name:";
-            //
+            // 
             // TemplateName_TextBox
-            //
+            // 
             TemplateName_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TemplateName_TextBox.BorderRadius = 4;
             TemplateName_TextBox.Cursor = Cursors.IBeam;
@@ -145,21 +145,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.DefaultText = "";
             TemplateName_TextBox.Font = new Font("Segoe UI", 10F);
             TemplateName_TextBox.ForeColor = Color.Black;
-            TemplateName_TextBox.Location = new Point(30, 195);
+            TemplateName_TextBox.Location = new Point(30, 200);
             TemplateName_TextBox.Margin = new Padding(4, 5, 4, 5);
             TemplateName_TextBox.MaxLength = 100;
             TemplateName_TextBox.Name = "TemplateName_TextBox";
             TemplateName_TextBox.PlaceholderText = "Enter template name";
             TemplateName_TextBox.SelectedText = "";
             TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            TemplateName_TextBox.Size = new Size(378, 45);
+            TemplateName_TextBox.Size = new Size(398, 50);
             TemplateName_TextBox.TabIndex = 6;
             TemplateName_TextBox.KeyDown += TemplateName_TextBox_KeyDown;
-            //
+            // 
             // Save_Button
-            //
+            // 
             Save_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            Save_Button.BorderRadius = 4;
+            Save_Button.BorderRadius = 2;
             Save_Button.CustomizableEdges = customizableEdges5;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -167,19 +167,19 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Save_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             Save_Button.Font = new Font("Segoe UI", 9.5F);
             Save_Button.ForeColor = Color.White;
-            Save_Button.Location = new Point(180, 260);
+            Save_Button.Location = new Point(200, 277);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Save_Button.Size = new Size(120, 45);
             Save_Button.TabIndex = 7;
             Save_Button.Text = "Save";
             Save_Button.Click += Save_Button_Click;
-            //
+            // 
             // Cancel_Button
-            //
+            // 
             Cancel_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Cancel_Button.BorderColor = Color.LightGray;
-            Cancel_Button.BorderRadius = 4;
+            Cancel_Button.BorderRadius = 2;
             Cancel_Button.BorderThickness = 1;
             Cancel_Button.CustomizableEdges = customizableEdges5;
             Cancel_Button.DisabledState.BorderColor = Color.DarkGray;
@@ -189,7 +189,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9.5F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(306, 260);
+            Cancel_Button.Location = new Point(326, 277);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Cancel_Button.Size = new Size(120, 45);
@@ -198,22 +198,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.Click += Cancel_Button_Click;
             // 
             // SaveTemplate_Form
-            //
+            // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(438, 317);
+            ClientSize = new Size(458, 334);
+            Controls.Add(SaveAsNew_RadioButton);
+            Controls.Add(UpdateExisting_RadioButton);
             Controls.Add(Cancel_Button);
             Controls.Add(Save_Button);
             Controls.Add(TemplateName_TextBox);
             Controls.Add(TemplateName_Label);
             Controls.Add(SaveAsNew_Label);
-            Controls.Add(SaveAsNew_RadioButton);
             Controls.Add(UpdateExisting_Label);
-            Controls.Add(UpdateExisting_RadioButton);
             Controls.Add(Title_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimumSize = new Size(460, 373);
             Name = "SaveTemplate_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Save Template";
             Shown += SaveTemplate_Form_Shown;

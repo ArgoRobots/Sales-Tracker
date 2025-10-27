@@ -48,6 +48,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 NoTemplates_Label.Visible = false;
             }
+            NoTemplates_Label.BackColor = CustomColors.ControlBack;
+            NoTemplates_Label.ForeColor = CustomColors.Text;
         }
         private void UpdateButtonStates()
         {
@@ -106,6 +108,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     LoadTemplates();
                     UpdateButtonStates();
+                    ReportDataSelection_Form.Instance.RefreshTemplates();
                 }
                 else
                 {

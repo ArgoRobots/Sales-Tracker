@@ -444,13 +444,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 // Load the selected template
                 LoadCustomTemplate(form.SelectedTemplateName);
+
+                // Show ReportDataSelection_Form
+                ReportGenerator_Form.Instance.Next_Button.PerformClick();
             }
-
-            // Refresh templates list in case any were deleted
-            RefreshTemplates();
-
-            // Show ReportDataSelection_Form
-            ReportGenerator_Form.Instance.Next_Button.PerformClick();
         }
         private void LoadCustomTemplate(string templateName)
         {
@@ -646,7 +643,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     }
                 }
 
-                SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             });
         }

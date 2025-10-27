@@ -188,7 +188,7 @@ namespace Sales_Tracker.ReportGenerator
 
                 if (File.Exists(filePath))
                 {
-                    File.Delete(filePath);
+                    Directories.DeleteFile(filePath);
                     return true;
                 }
 

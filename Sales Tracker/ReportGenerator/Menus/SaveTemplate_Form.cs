@@ -1,6 +1,7 @@
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using System.ComponentModel;
 
 namespace Sales_Tracker.ReportGenerator.Menus
 {
@@ -11,10 +12,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
     {
         // Properties
         public string TemplateName { get; private set; }
-
-        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrentTemplateName { get; set; }
-
         public bool IsUpdate { get; private set; }
 
         // Init.
@@ -48,7 +47,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_RadioButton.Checked = true;
                 SaveAsNew_RadioButton.Checked = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;
-                TemplateName_TextBox.Enabled = false;
             }
             else
             {
@@ -56,7 +54,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_Label.Visible = false;
                 SaveAsNew_RadioButton.Visible = false;
                 SaveAsNew_Label.Visible = false;
-                TemplateName_TextBox.Enabled = true;
+                TemplateName_TextBox.Top = (ClientSize.Height - TemplateName_TextBox.Height) / 2;
+                TemplateName_Label.Top = TemplateName_TextBox.Top - TemplateName_TextBox.Height - 5;
             }
 
             TemplateName_TextBox.Focus();
@@ -136,11 +135,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 e.SuppressKeyPress = true;
                 Save_Button_Click(sender, e);
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                e.SuppressKeyPress = true;
-                Cancel_Button_Click(sender, e);
             }
         }
         private void UpdateExisting_Label_Click(object sender, EventArgs e)
