@@ -26,16 +26,11 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             InitializeTimeSpanOptions();
             LanguageManager.UpdateLanguageForControl(this);
+            AdjustLabels();
 
             ResetControls();
             SetCustomRangeControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
-        }
-        public void ResetControls()
-        {
-            AllTime_RadioButton.Checked = true;
-            From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? GetOldestDate();
-            To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
         }
         private void UpdateTheme()
         {
@@ -66,6 +61,50 @@ namespace Sales_Tracker
                 { TimeSpan.FromDays(365 * 2), Last2Years_RadioButton },
                 { TimeSpan.FromDays(365 * 5), Last5Years_RadioButton }
             };
+        }
+        public void AdjustLabels()
+        {
+            int padding = 5;
+
+            int availableSpaceLeft = Last30Days_RadioButton.Left - AllTime_Label.Left - padding;
+            Label[] leftLabels = [
+                AllTime_Label,
+                Last24Hours_Label,
+                Last48Hours_Label,
+                Last3Days_Label,
+                Last5Days_Label,
+                Last10Days_Label
+            ];
+            ShrinkLabelsToFit(availableSpaceLeft, leftLabels);
+
+            int availableSpaceRight = ClientSize.Width - Last30Days_Label.Left - padding;
+            Label[] rightLabels = [
+                Last30Days_Label,
+                Last100Days_Label,
+                LastYear_Label,
+                Last2Years_Label,
+                Last5Years_Label,
+                Custom_Label
+            ];
+            ShrinkLabelsToFit(availableSpaceRight, rightLabels);
+        }
+        private static void ShrinkLabelsToFit(int availableSpace, Label[] labels)
+        {
+            foreach (Label label in labels)
+            {
+                label.Font = label.Font = new Font(label.Font.FontFamily, 11.25f, label.Font.Style);
+
+                while (label.PreferredWidth > availableSpace)
+                {
+                    label.Font = new Font(label.Font.FontFamily, (float)(label.Font.Size - .5), label.Font.Style);
+                }
+            }
+        }
+        public void ResetControls()
+        {
+            AllTime_RadioButton.Checked = true;
+            From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? GetOldestDate();
+            To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
         }
 
         // Form event handlers

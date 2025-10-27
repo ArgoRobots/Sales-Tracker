@@ -1164,6 +1164,7 @@ namespace Sales_Tracker
             }
             else
             {
+                ClosePanels();
                 button.Image = whiteImage;
 
                 // Calculate X position based on left or right alignment
@@ -1365,7 +1366,7 @@ namespace Sales_Tracker
         }
 
         // DateRange
-        public static Guna2Panel DateRangePanel { get; private set; }
+        public static Guna2Panel DateRangePanel { get; set; }
         private static void ConstructTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
@@ -1379,6 +1380,8 @@ namespace Sales_Tracker
             }
             else
             {
+                ClosePanels();
+
                 // Set the location for the panel
                 DateRangePanel.Location = new Point(
                     TimeRange_Button.Right - DateRangePanel.Width,
