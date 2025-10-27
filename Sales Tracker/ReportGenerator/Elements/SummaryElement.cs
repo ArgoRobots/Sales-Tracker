@@ -360,13 +360,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Section header for included metrics
-            text = LanguageManager.TranslateString("Include") + ":";
-            AddPropertyLabel(container, text, yPosition, true);
-            yPosition += 35;
-
             // Transaction type
-            AddPropertyLabel(container, "Type:", yPosition);
+            AddPropertyLabel(container, "Data Type:", yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
                 Enum.GetNames<TransactionType>(),
                 value =>
@@ -383,6 +378,8 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         TransactionType = newType;
                         onPropertyChanged();
                     }
+
+                    UpdateAllControlValues();  // This will update the "Show Expenses/Revenue" label text
                 });
             CacheControl("TransactionType", typeCombo, () => typeCombo.SelectedItem = TransactionType.ToString());
             yPosition += ControlRowHeight;
@@ -733,8 +730,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("IncludeLosses", lossesCheck, () => lossesCheck.Checked = IncludeLosses);
             yPosition += CheckBoxRowHeight;
 
-            // Total Sales checkbox
-            text = LanguageManager.TranslateString("Show Revenue");
+            // Total Sales checkbox - label should reflect transaction type
+            text = TransactionType == TransactionType.Revenue
+                ? LanguageManager.TranslateString("Show Revenue")
+                : LanguageManager.TranslateString("Show Expenses");
+
             Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTotalSales, yPosition,
                 value =>
                 {
@@ -750,7 +750,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 });
+
+            // Find the label that was just added (it's added right after the checkbox)
+            Label salesLabel = container.Controls.OfType<Label>()
+                .FirstOrDefault(l => l.Location.Y == yPosition);
+
             CacheControl("ShowTotalSales", salesCheck, () => salesCheck.Checked = ShowTotalSales);
+            if (salesLabel != null)
+            {
+                CacheControl("ShowTotalSalesLabel", salesLabel, () =>
+                {
+                    salesLabel.Text = TransactionType == TransactionType.Revenue
+                        ? LanguageManager.TranslateString("Show Revenue")
+                        : LanguageManager.TranslateString("Show Expenses");
+                });
+            }
             yPosition += CheckBoxRowHeight;
 
             // Total Transactions checkbox
