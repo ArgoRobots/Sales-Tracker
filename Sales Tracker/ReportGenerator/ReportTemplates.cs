@@ -22,7 +22,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for sales data
-            config.Filters.TransactionType = TransactionType.Sales;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisMonth;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -49,7 +49,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for financial data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisQuarter;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -76,7 +76,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for performance data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -103,7 +103,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for returns data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = true;
             config.Filters.IncludeLosses = false;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -133,7 +133,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for losses data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = false;
             config.Filters.IncludeLosses = true;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -163,7 +163,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for geographic data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [

@@ -275,7 +275,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Text Color
-            text = LanguageManager.TranslateString("Color") + ":";
+            text = LanguageManager.TranslateString("Text Color") + ":";
             AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
             Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
                 newColor =>

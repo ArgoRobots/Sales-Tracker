@@ -37,7 +37,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class TableElement : BaseElement
     {
         // Data selection properties (General tab)
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
         public TableDataSelection DataSelection { get; set; } = TableDataSelection.All;
@@ -167,17 +167,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             DateTime endDate = config?.Filters?.EndDate ?? DateTime.MaxValue;
 
             // Load sales transactions if needed
-            if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Revenue)
             {
                 DataGridView salesGrid = MainMenu_Form.Instance.Sale_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Sales, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Revenue, IncludeReturns, IncludeLosses));
             }
 
             // Load purchase transactions if needed  
-            if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Expenses)
             {
                 DataGridView purchaseGrid = MainMenu_Form.Instance.Purchase_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Expenses, IncludeReturns, IncludeLosses));
             }
 
             // Sort transactions
@@ -753,7 +753,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Type") + ":";
             AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
-                ["Sales", "Purchases", "Both"],
+                Enum.GetNames<TransactionType>(),
                 value =>
                 {
                     TransactionType newType = Enum.Parse<TransactionType>(value);

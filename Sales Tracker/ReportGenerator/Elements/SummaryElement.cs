@@ -11,7 +11,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class SummaryElement : BaseElement
     {
         // Properties
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
         public bool ShowTotalSales { get; set; } = true;
@@ -147,9 +147,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     string totalText = TransactionType switch
                     {
-                        TransactionType.Purchases => LanguageManager.TranslateString("Total Purchases") + $": {FormatCurrency(stats.TotalPurchases)}",
-                        TransactionType.Sales => LanguageManager.TranslateString("Total Sales") + $": {FormatCurrency(stats.TotalSales)}",
-                        _ => LanguageManager.TranslateString("Total") + $": {FormatCurrency(stats.CombinedTotal)}"
+                        TransactionType.Expenses => LanguageManager.TranslateString("Total Expenses") + $": {FormatCurrency(stats.TotalPurchases)}",
+                        TransactionType.Revenue => LanguageManager.TranslateString("Total Revenue") + $": {FormatCurrency(stats.TotalSales)}",
+                        _ => LanguageManager.TranslateString("Total: error")
                     };
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
                     graphics.DrawString(totalText, valueFont, textBrush, textBounds, format);
@@ -213,7 +213,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             try
             {
                 // Calculate sales if needed
-                if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
+                if (TransactionType == TransactionType.Revenue)
                 {
                     (decimal Total, int Count) = CalculateGridViewTotal(
                         MainMenu_Form.Instance.Sale_DataGridView,
@@ -226,7 +226,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Calculate purchases if needed
-                if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
+                if (TransactionType == TransactionType.Expenses)
                 {
                     (decimal Total, int Count) = CalculateGridViewTotal(
                         MainMenu_Form.Instance.Purchase_DataGridView,
@@ -235,7 +235,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         IncludeReturns);
 
                     stats.TotalPurchases = Total;
-                    if (TransactionType == TransactionType.Purchases)
+                    if (TransactionType == TransactionType.Expenses)
                     {
                         stats.TransactionCount += Count;
                     }
@@ -305,8 +305,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             decimal previousPeriodTotal = 0;
 
             // Get previous period sales
-            if (config.Filters.TransactionType == TransactionType.Sales ||
-                config.Filters.TransactionType == TransactionType.Both)
+            if (config.Filters.TransactionType == TransactionType.Revenue)
             {
                 (decimal Total, _) = CalculateGridViewTotal(
                     MainMenu_Form.Instance.Sale_DataGridView,
@@ -317,8 +316,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
 
             // Get previous period purchases
-            if (config.Filters.TransactionType == TransactionType.Purchases ||
-                config.Filters.TransactionType == TransactionType.Both)
+            if (config.Filters.TransactionType == TransactionType.Expenses)
             {
                 (decimal Total, _) = CalculateGridViewTotal(
                     MainMenu_Form.Instance.Purchase_DataGridView,
@@ -366,7 +364,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Transaction type
             AddPropertyLabel(container, "Type:", yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(container, TransactionType.ToString(), yPosition,
-                ["Sales", "Purchases", "Both"],
+                Enum.GetNames<TransactionType>(),
                 value =>
                 {
                     TransactionType newType = Enum.Parse<TransactionType>(value);
@@ -711,7 +709,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += CheckBoxRowHeight;
 
             // Total Sales checkbox
-            text = LanguageManager.TranslateString("Show Total Sales");
+            text = LanguageManager.TranslateString("Show Revenue");
             Guna2CustomCheckBox salesCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTotalSales, yPosition,
                 value =>
                 {
