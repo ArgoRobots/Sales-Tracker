@@ -477,6 +477,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     });
                 }
             }
+
+            // Show and activate ReportDataSelection_Form
+            if (!Visible)
+            {
+                Show();
+            }
+            Activate();
         }
         private int GetTemplateIndex(string templateName)
         {

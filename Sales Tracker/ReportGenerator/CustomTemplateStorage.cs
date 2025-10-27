@@ -71,7 +71,7 @@ namespace Sales_Tracker.ReportGenerator
                     Elements = config.Elements.Select(e => SerializeElement(e)).ToList()
                 };
 
-                string fileName = SanitizeFileName(templateName) + ".json";
+                string fileName = SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
                 string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 string json = JsonSerializer.Serialize(template, _jsonOptions);
@@ -92,7 +92,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             try
             {
-                string fileName = SanitizeFileName(templateName) + ".json";
+                string fileName = SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
                 string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 if (!File.Exists(filePath))
@@ -183,7 +183,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             try
             {
-                string fileName = SanitizeFileName(templateName) + ".json";
+                string fileName = SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
                 string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 if (File.Exists(filePath))
@@ -205,7 +205,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         public static bool TemplateExists(string templateName)
         {
-            string fileName = SanitizeFileName(templateName) + ".json";
+            string fileName = SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
             string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
             return File.Exists(filePath);
         }

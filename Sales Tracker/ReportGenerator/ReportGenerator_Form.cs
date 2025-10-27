@@ -250,6 +250,8 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
+            CancelReportGeneration();
+
             // Clean up child forms
             _dataSelectionForm?.Dispose();
             _layoutDesignerForm?.Dispose();
@@ -276,6 +278,11 @@ namespace Sales_Tracker.ReportGenerator
             }
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
+        {
+            CancelReportGeneration();
+        }
+
+        private void CancelReportGeneration()
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Cancel Report Generation",

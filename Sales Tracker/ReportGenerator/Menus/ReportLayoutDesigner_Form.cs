@@ -158,6 +158,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ResizeCanvasToPageSize();
                 NotifyParentValidationChanged();
             }
+            else
+            {
+                // When navigating away from the form, ask user to save work
+                if (AskUserToSaveWork())
+                {
+                    // User cancelled, prevent navigation by showing the form again
+                    Show();
+                }
+            }
         }
         private void ReportLayoutDesigner_Form_Resize(object sender, EventArgs e)
         {
@@ -313,10 +322,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void ReportLayoutDesigner_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (AskUserToSaveWork())
-            {
-                e.Cancel = true;
-            }
+            // Form closing is allowed - AskUserToSaveWork is now handled in VisibleChanged
         }
 
         // Resize debounce timer
