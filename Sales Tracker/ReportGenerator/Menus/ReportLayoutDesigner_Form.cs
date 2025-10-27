@@ -2286,59 +2286,25 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Template save/load functionality
         private void SaveTemplate_Button_Click(object sender, EventArgs e)
         {
-            // If there's a current template, ask if user wants to update it or save as new
-            if (!string.IsNullOrEmpty(_currentTemplateName))
+            using SaveTemplate_Form form = new()
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    "Save Template",
-                    $"Update existing template '{_currentTemplateName}' or save as a new template?",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.SaveDontSaveCancel); // Using SaveDontSaveCancel where Save = Update, DontSave = Save As New
+                CurrentTemplateName = _currentTemplateName
+            };
 
-                if (result == CustomMessageBoxResult.Save)
-                {
-                    // Update existing template
-                    if (CustomTemplateStorage.SaveTemplate(_currentTemplateName, ReportConfig))
-                    {
-                        SetUnsavedChanges(false);
-
-                        CustomMessageBox.Show(
-                            "Template Updated",
-                            $"Template '{_currentTemplateName}' has been updated successfully.",
-                            CustomMessageBoxIcon.Success,
-                            CustomMessageBoxButtons.Ok);
-
-                        // Refresh the template list in the data selection form
-                        ReportDataSelection_Form.Instance?.RefreshTemplates();
-                    }
-                    else
-                    {
-                        CustomMessageBox.Show(
-                            "Save Failed",
-                            $"Failed to update template '{_currentTemplateName}'.",
-                            CustomMessageBoxIcon.Error,
-                            CustomMessageBoxButtons.Ok);
-                    }
-                    return;
-                }
-                else if (result == CustomMessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                // If DontSave (Save As New), continue to show the name dialog below
-            }
-
-            // Show dialog to enter new template name
-            using SaveTemplate_Form form = new();
             if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
             {
                 if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
                 {
+                    _currentTemplateName = form.TemplateName;
                     SetUnsavedChanges(false);
 
+                    string message = form.IsUpdate
+                        ? $"Template '{form.TemplateName}' has been updated successfully."
+                        : $"Template '{form.TemplateName}' has been saved successfully.";
+
                     CustomMessageBox.Show(
-                        "Template Saved",
-                        $"Template '{form.TemplateName}' has been saved successfully.",
+                        form.IsUpdate ? "Template Updated" : "Template Saved",
+                        message,
                         CustomMessageBoxIcon.Success,
                         CustomMessageBoxButtons.Ok);
 
