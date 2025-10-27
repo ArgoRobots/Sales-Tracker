@@ -32,6 +32,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges53 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges54 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -82,6 +84,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges48 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             RightCanvas_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Settings_Button = new Guna.UI2.WinForms.Guna2Button();
+            SaveTemplate_Button = new Guna.UI2.WinForms.Guna2Button();
+            UnsavedChanges_Label = new Label();
             Canvas_Panel = new Panel();
             MakeSameSize_Button = new Guna.UI2.WinForms.Guna2Button();
             MakeSameHeight_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -122,6 +126,8 @@
             // 
             RightCanvas_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             RightCanvas_Panel.Controls.Add(Settings_Button);
+            RightCanvas_Panel.Controls.Add(SaveTemplate_Button);
+            RightCanvas_Panel.Controls.Add(UnsavedChanges_Label);
             RightCanvas_Panel.Controls.Add(Canvas_Panel);
             RightCanvas_Panel.Controls.Add(MakeSameSize_Button);
             RightCanvas_Panel.Controls.Add(MakeSameHeight_Button);
@@ -170,7 +176,43 @@
             Settings_Button.Size = new Size(40, 40);
             Settings_Button.TabIndex = 11;
             Settings_Button.Click += Settings_Button_Click;
-            // 
+            //
+            // SaveTemplate_Button
+            //
+            SaveTemplate_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            SaveTemplate_Button.BorderColor = Color.LightGray;
+            SaveTemplate_Button.BorderRadius = 4;
+            SaveTemplate_Button.BorderThickness = 1;
+            SaveTemplate_Button.CustomizableEdges = customizableEdges53;
+            SaveTemplate_Button.DisabledState.BorderColor = Color.DarkGray;
+            SaveTemplate_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            SaveTemplate_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            SaveTemplate_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            SaveTemplate_Button.FillColor = Color.White;
+            SaveTemplate_Button.Font = new Font("Segoe UI", 9F);
+            SaveTemplate_Button.ForeColor = Color.Black;
+            SaveTemplate_Button.Image = Properties.Resources.Save;
+            SaveTemplate_Button.ImageSize = new Size(20, 20);
+            SaveTemplate_Button.Location = new Point(1002, 14);
+            SaveTemplate_Button.Name = "SaveTemplate_Button";
+            SaveTemplate_Button.ShadowDecoration.CustomizableEdges = customizableEdges54;
+            SaveTemplate_Button.Size = new Size(40, 40);
+            SaveTemplate_Button.TabIndex = 16;
+            SaveTemplate_Button.Click += SaveTemplate_Button_Click;
+            //
+            // UnsavedChanges_Label
+            //
+            UnsavedChanges_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            UnsavedChanges_Label.AutoSize = true;
+            UnsavedChanges_Label.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            UnsavedChanges_Label.ForeColor = Color.OrangeRed;
+            UnsavedChanges_Label.Location = new Point(982, 18);
+            UnsavedChanges_Label.Name = "UnsavedChanges_Label";
+            UnsavedChanges_Label.Size = new Size(22, 30);
+            UnsavedChanges_Label.TabIndex = 17;
+            UnsavedChanges_Label.Text = "*";
+            UnsavedChanges_Label.Visible = false;
+            //
             // Canvas_Panel
             // 
             Canvas_Panel.AllowDrop = true;
@@ -839,6 +881,8 @@
         public Guna.UI2.WinForms.Guna2Button MakeSameWidth_Button;
         public Guna.UI2.WinForms.Guna2Button AddImageElement_Button;
         public Guna.UI2.WinForms.Guna2Button Settings_Button;
+        public Guna.UI2.WinForms.Guna2Button SaveTemplate_Button;
+        private Label UnsavedChanges_Label;
         public Guna.UI2.WinForms.Guna2Button Undo_Button;
         public Guna.UI2.WinForms.Guna2Button UndoDropdown_Button;
         public Guna.UI2.WinForms.Guna2Button Redo_Button;

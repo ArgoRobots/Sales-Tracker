@@ -33,6 +33,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
         private BaseElement _currentPropertyElement = null;
+        private bool _hasUnsavedChanges = false;
+        private string _currentTemplateName = null;
 
         /// <summary>
         /// Gets the current report configuration.
@@ -744,6 +746,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             RefreshCanvas));
 
                         MarkChartLayoutAsManualIfNeeded();
+                        MarkAsChanged();
                     }
                 }
                 else if (_selectedElement != null && _dragStartBounds.Count > 0)
@@ -757,6 +760,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             RefreshCanvas));
 
                         MarkChartLayoutAsManualIfNeeded();
+                        MarkAsChanged();
                     }
                 }
             }
@@ -773,6 +777,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         RefreshCanvas));
 
                     MarkChartLayoutAsManualIfNeeded();
+                    MarkAsChanged();
                 }
             }
 
@@ -1863,6 +1868,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             Canvas_Panel.Invalidate();
             NotifyParentValidationChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -2097,6 +2103,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 SelectElement(element);
                 Canvas_Panel.Invalidate();
                 NotifyParentValidationChanged();
+                MarkAsChanged();
             }
         }
         private static BaseElement? CreateElementByType(ReportElementType elementType, Point location)
@@ -2246,6 +2253,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ClearAllSelections();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
+            MarkAsChanged();
         }
         private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
@@ -2268,6 +2276,86 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static void NotifyParentValidationChanged()
         {
             ReportGenerator_Form.Instance.OnChildFormValidationChanged();
+        }
+
+        // Template save/load functionality
+        private void SaveTemplate_Button_Click(object sender, EventArgs e)
+        {
+            using SaveTemplate_Form form = new();
+            if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
+            {
+                if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
+                {
+                    _currentTemplateName = form.TemplateName;
+                    SetUnsavedChanges(false);
+
+                    CustomMessageBox.Show(
+                        "Template Saved",
+                        $"Template '{form.TemplateName}' has been saved successfully.",
+                        CustomMessageBoxIcon.Success,
+                        CustomMessageBoxButtons.OK);
+
+                    // Refresh the template list in the data selection form
+                    ReportDataSelection_Form.Instance?.RefreshTemplates();
+                }
+                else
+                {
+                    CustomMessageBox.Show(
+                        "Save Failed",
+                        $"Failed to save template '{form.TemplateName}'.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.OK);
+                }
+            }
+        }
+
+        public void OnConfigurationLoaded()
+        {
+            SetUnsavedChanges(false);
+            RefreshCanvas();
+        }
+
+        private void SetUnsavedChanges(bool hasChanges)
+        {
+            _hasUnsavedChanges = hasChanges;
+            UnsavedChanges_Label.Visible = hasChanges;
+        }
+
+        private void MarkAsChanged()
+        {
+            if (!_hasUnsavedChanges)
+            {
+                SetUnsavedChanges(true);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (_hasUnsavedChanges && e.CloseReason == CloseReason.UserClosing)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Unsaved Changes",
+                    "You have unsaved changes to your template. Do you want to save before closing?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNoCancel);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    SaveTemplate_Button_Click(this, EventArgs.Empty);
+
+                    // If still has unsaved changes (user cancelled save), cancel close
+                    if (_hasUnsavedChanges)
+                    {
+                        e.Cancel = true;
+                    }
+                }
+                else if (result == CustomMessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }

@@ -60,10 +60,12 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Right_Panel = new Guna.UI2.WinForms.Guna2Panel();
             DateRange_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             StartDate_Label = new Label();
@@ -104,6 +106,7 @@
             Template_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             Template_Label = new Label();
             Template_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            OpenTemplates_Button = new Guna.UI2.WinForms.Guna2Button();
             Right_Panel.SuspendLayout();
             DateRange_GroupBox.SuspendLayout();
             ReportSettings_GroupBox.SuspendLayout();
@@ -765,6 +768,7 @@
             Template_GroupBox.BorderThickness = 0;
             Template_GroupBox.Controls.Add(Template_Label);
             Template_GroupBox.Controls.Add(Template_ComboBox);
+            Template_GroupBox.Controls.Add(OpenTemplates_Button);
             Template_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
             Template_GroupBox.CustomizableEdges = customizableEdges33;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
@@ -809,7 +813,29 @@
             Template_ComboBox.Size = new Size(280, 50);
             Template_ComboBox.TabIndex = 1;
             Template_ComboBox.SelectedIndexChanged += Template_ComboBox_SelectedIndexChanged;
-            // 
+            //
+            // OpenTemplates_Button
+            //
+            OpenTemplates_Button.BorderColor = Color.LightGray;
+            OpenTemplates_Button.BorderRadius = 4;
+            OpenTemplates_Button.BorderThickness = 1;
+            OpenTemplates_Button.CustomizableEdges = customizableEdges35;
+            OpenTemplates_Button.DisabledState.BorderColor = Color.DarkGray;
+            OpenTemplates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            OpenTemplates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            OpenTemplates_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            OpenTemplates_Button.FillColor = Color.White;
+            OpenTemplates_Button.Font = new Font("Segoe UI", 9F);
+            OpenTemplates_Button.ForeColor = Color.Black;
+            OpenTemplates_Button.Image = Properties.Resources.Folder;
+            OpenTemplates_Button.ImageSize = new Size(20, 20);
+            OpenTemplates_Button.Location = new Point(415, 70);
+            OpenTemplates_Button.Name = "OpenTemplates_Button";
+            OpenTemplates_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            OpenTemplates_Button.Size = new Size(50, 50);
+            OpenTemplates_Button.TabIndex = 2;
+            OpenTemplates_Button.Click += OpenTemplates_Button_Click;
+            //
             // ReportDataSelection_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -847,6 +873,7 @@
         private Guna.UI2.WinForms.Guna2GroupBox Template_GroupBox;
         private Label Template_Label;
         private Guna.UI2.WinForms.Guna2ComboBox Template_ComboBox;
+        private Guna.UI2.WinForms.Guna2Button OpenTemplates_Button;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Today_RadioButton;
         private Label Today_Label;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Yesterday_RadioButton;

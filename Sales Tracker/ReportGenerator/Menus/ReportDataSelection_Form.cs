@@ -167,6 +167,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Select "Custom Report" by default
             Template_ComboBox.SelectedIndex = 0;
         }
+        public void RefreshTemplates()
+        {
+            int previousIndex = Template_ComboBox.SelectedIndex;
+            SetupTemplates();
+
+            // Try to restore previous selection if still valid
+            if (previousIndex >= 0 && previousIndex < Template_ComboBox.Items.Count)
+            {
+                Template_ComboBox.SelectedIndex = previousIndex;
+            }
+            else
+            {
+                Template_ComboBox.SelectedIndex = 0;
+            }
+        }
         private void StoreInitialSizes()
         {
             _initialFormWidth = Width;
@@ -420,6 +435,115 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 NotifyParentValidationChanged();
             });
+        }
+        private void OpenTemplates_Button_Click(object sender, EventArgs e)
+        {
+            using CustomTemplateManager_Form form = new();
+            if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.SelectedTemplateName))
+            {
+                // Load the selected template
+                LoadCustomTemplate(form.SelectedTemplateName);
+            }
+
+            // Refresh templates list in case any were deleted
+            RefreshTemplates();
+        }
+        private void LoadCustomTemplate(string templateName)
+        {
+            ReportConfiguration config = CustomTemplateStorage.LoadTemplate(templateName);
+
+            if (config == null)
+            {
+                CustomMessageBox.Show(
+                    "Load Failed",
+                    $"Failed to load template '{templateName}'.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.OK);
+                return;
+            }
+
+            // Apply the loaded configuration
+            if (ReportConfig != null)
+            {
+                ApplyLoadedConfiguration(config);
+
+                // Update the template combo box to show the loaded template name
+                int templateIndex = GetTemplateIndex(templateName);
+                if (templateIndex >= 0)
+                {
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = templateIndex;
+                    });
+                }
+            }
+        }
+        private int GetTemplateIndex(string templateName)
+        {
+            for (int i = 0; i < Template_ComboBox.Items.Count; i++)
+            {
+                if (Template_ComboBox.Items[i].ToString() == templateName)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        private void ApplyLoadedConfiguration(ReportConfiguration config)
+        {
+            PerformUpdate(() =>
+            {
+                // Update title
+                ReportTitle_TextBox.Text = config.Title;
+                ReportConfig.Title = config.Title;
+
+                // Update page settings
+                ReportConfig.PageSize = config.PageSize;
+                ReportConfig.PageOrientation = config.PageOrientation;
+                ReportConfig.ShowHeader = config.ShowHeader;
+                ReportConfig.ShowFooter = config.ShowFooter;
+                ReportConfig.ShowPageNumbers = config.ShowPageNumbers;
+                ReportConfig.BackgroundColor = config.BackgroundColor;
+                ReportConfig.PageMargins = config.PageMargins;
+
+                // Update filters
+                ReportConfig.Filters.TransactionType = config.Filters.TransactionType;
+                ReportConfig.Filters.IncludeReturns = config.Filters.IncludeReturns;
+                ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
+                ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
+                ReportConfig.Filters.SelectedChartTypes = new List<MainMenu_Form.ChartDataType>(config.Filters.SelectedChartTypes);
+
+                // Update transaction type radio buttons
+                if (config.Filters.TransactionType == TransactionType.Sales)
+                {
+                    Sales_RadioButton.Checked = true;
+                }
+                else if (config.Filters.TransactionType == TransactionType.Purchases)
+                {
+                    Purchases_RadioButton.Checked = true;
+                }
+                else
+                {
+                    Both_RadioButton.Checked = true;
+                }
+
+                // Update chart selection
+                UpdateChartSelectionFromConfig();
+
+                // Update date preset selection
+                ApplyDatePresetByName(config.Filters.DatePresetName);
+
+                // Copy elements
+                ReportConfig.Elements.Clear();
+                foreach (BaseElement element in config.Elements)
+                {
+                    ReportConfig.Elements.Add(element);
+                }
+            });
+
+            // Notify changes
+            NotifyParentValidationChanged();
+            ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
