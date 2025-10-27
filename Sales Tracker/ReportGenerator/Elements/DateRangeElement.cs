@@ -267,6 +267,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             yPosition += ControlRowHeight;
 
+            // Text Color
+            text = LanguageManager.TranslateString("Text Color") + ":";
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
+                newColor =>
+                {
+                    if (TextColor != newColor)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TextColor),
+                            TextColor,
+                            newColor,
+                            onPropertyChanged));
+                        TextColor = newColor;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
+            yPosition += ControlRowHeight;
+
             // Horizontal Alignment
             text = LanguageManager.TranslateString("H-Align");
             AddPropertyLabel(container, text, yPosition);
@@ -318,27 +339,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 });
             CacheControl("VAlignment", vAlignCombo,
                 () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VAlignment, isVertical: true));
-            yPosition += ControlRowHeight;
-
-            // Text Color
-            text = LanguageManager.TranslateString("Text Color") + ":";
-            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
-            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
-                newColor =>
-                {
-                    if (TextColor != newColor)
-                    {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(TextColor),
-                            TextColor,
-                            newColor,
-                            onPropertyChanged));
-                        TextColor = newColor;
-                        onPropertyChanged();
-                    }
-                });
-            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             return yPosition;

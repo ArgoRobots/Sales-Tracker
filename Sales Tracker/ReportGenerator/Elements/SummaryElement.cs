@@ -24,6 +24,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 10f;
         public FontStyle FontStyle { get; set; } = FontStyle.Regular;
+        public Color TextColor { get; set; } = Color.Black;
         public StringAlignment Alignment { get; set; } = StringAlignment.Near;
         public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Near;
 
@@ -61,6 +62,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 FontFamily = FontFamily,
                 FontSize = FontSize,
                 FontStyle = FontStyle,
+                TextColor = TextColor,
                 Alignment = Alignment,
                 VerticalAlignment = VerticalAlignment
             };
@@ -104,9 +106,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Draw summary content with actual values
                 using Font titleFont = new(FontFamily, FontSize + 1, FontStyle.Bold | FontStyle);
                 using Font valueFont = new(FontFamily, FontSize, FontStyle);
-                using SolidBrush textBrush = new(Color.Black);
-                using SolidBrush positiveBrush = new(Color.Green);
-                using SolidBrush negativeBrush = new(Color.Red);
+                using SolidBrush textBrush = new(TextColor);
 
                 int titleHeight = titleFont.Height;
                 int lineHeight = valueFont.Height;
@@ -174,11 +174,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (ShowGrowthRate && startY + lineHeight <= Bounds.Bottom - padding)
                 {
-                    SolidBrush growthBrush = stats.GrowthRate >= 0 ? positiveBrush : negativeBrush;
                     string growthSymbol = stats.GrowthRate >= 0 ? "↑" : "↓";
                     RectangleF textBounds = new(Bounds.X + padding, startY, Bounds.Width - (padding * 2), lineHeight);
                     string text = LanguageManager.TranslateString("Growth Rate");
-                    graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, growthBrush, textBounds, format);
+                    graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, textBrush, textBounds, format);
                 }
             }
             finally
@@ -548,6 +547,27 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
             };
 
+            yPosition += ControlRowHeight;
+
+            // Text Color
+            text = LanguageManager.TranslateString("Text Color") + ":";
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
+                newColor =>
+                {
+                    if (TextColor != newColor)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(TextColor),
+                            TextColor,
+                            newColor,
+                            onPropertyChanged));
+                        TextColor = newColor;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
             yPosition += ControlRowHeight;
 
             // Background Color
