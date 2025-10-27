@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -56,6 +57,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             bool hasSelection = Templates_ListBox.SelectedIndex >= 0;
             Load_Button.Enabled = hasSelection;
             Delete_Button.Enabled = hasSelection;
+            Rename_Button.Enabled = hasSelection;
         }
 
         // Form event handlers
@@ -118,6 +120,61 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok);
                 }
+            }
+        }
+        private void Rename_Button_Click(object sender, EventArgs e)
+        {
+            if (Templates_ListBox.SelectedIndex < 0)
+            {
+                return;
+            }
+
+            string oldTemplateName = _templateNames[Templates_ListBox.SelectedIndex];
+
+            // Show input dialog for new name
+            string newTemplateName = Interaction.InputBox(
+                $"Enter new name for template '{oldTemplateName}':",
+                "Rename Template",
+                oldTemplateName);
+
+            // Check if user cancelled or entered empty name
+            if (string.IsNullOrWhiteSpace(newTemplateName) || newTemplateName == oldTemplateName)
+            {
+                return;
+            }
+
+            // Check if a template with the new name already exists
+            if (_templateNames.Contains(newTemplateName))
+            {
+                CustomMessageBox.Show(
+                    "Template Exists",
+                    $"A template named '{newTemplateName}' already exists.\nPlease choose a different name.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            // Rename the template
+            if (CustomTemplateStorage.RenameTemplate(oldTemplateName, newTemplateName))
+            {
+                LoadTemplates();
+                UpdateButtonStates();
+                ReportDataSelection_Form.Instance.RefreshTemplates();
+
+                // Select the renamed template
+                int index = _templateNames.IndexOf(newTemplateName);
+                if (index >= 0)
+                {
+                    Templates_ListBox.SelectedIndex = index;
+                }
+            }
+            else
+            {
+                CustomMessageBox.Show(
+                    "Rename Failed",
+                    $"Failed to rename template '{oldTemplateName}' to '{newTemplateName}'.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok);
             }
         }
         private void Close_Button_Click(object sender, EventArgs e)

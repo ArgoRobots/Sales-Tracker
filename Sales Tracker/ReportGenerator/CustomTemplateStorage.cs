@@ -201,6 +201,55 @@ namespace Sales_Tracker.ReportGenerator
         }
 
         /// <summary>
+        /// Renames a custom template.
+        /// </summary>
+        public static bool RenameTemplate(string oldTemplateName, string newTemplateName)
+        {
+            try
+            {
+                string oldFileName = SanitizeFileName(oldTemplateName) + ArgoFiles.JsonFileExtension;
+                string newFileName = SanitizeFileName(newTemplateName) + ArgoFiles.JsonFileExtension;
+                string oldFilePath = Path.Combine(Directories.ReportTemplates_dir, oldFileName);
+                string newFilePath = Path.Combine(Directories.ReportTemplates_dir, newFileName);
+
+                if (!File.Exists(oldFilePath))
+                {
+                    return false;
+                }
+
+                if (File.Exists(newFilePath))
+                {
+                    return false; // New name already exists
+                }
+
+                // Load the template to update its internal Name property
+                CustomTemplate template = JsonSerializer.Deserialize<CustomTemplate>(
+                    File.ReadAllText(oldFilePath), _jsonOptions);
+
+                if (template == null)
+                {
+                    return false;
+                }
+
+                // Update the template name and save to new file
+                template.Name = newTemplateName;
+                template.LastModified = DateTime.Now;
+
+                string json = JsonSerializer.Serialize(template, _jsonOptions);
+                File.WriteAllText(newFilePath, json);
+
+                // Delete the old file
+                Directories.DeleteFile(oldFilePath);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Checks if a template with the given name already exists.
         /// </summary>
         public static bool TemplateExists(string templateName)
