@@ -1,3 +1,4 @@
+using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,11 +10,7 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public static class CustomTemplateStorage
     {
-        private static readonly string _templatesDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "SalesTracker",
-            "ReportTemplates"
-        );
+        private static string _templatesDirectory => Path.Combine(Directories.Cache_dir, "ReportTemplates");
 
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -21,7 +18,8 @@ namespace Sales_Tracker.ReportGenerator
             Converters =
             {
                 new JsonStringEnumConverter(),
-                new ColorConverter()
+                new ColorConverter(),
+                new MarginsConverter()
             }
         };
 
@@ -336,6 +334,62 @@ namespace Sales_Tracker.ReportGenerator
             public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
             {
                 writer.WriteStringValue(ColorToHex(value));
+            }
+        }
+
+        // Custom JSON converter for Margins
+        private class MarginsConverter : JsonConverter<Margins>
+        {
+            public override Margins Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType != JsonTokenType.StartObject)
+                {
+                    throw new JsonException();
+                }
+
+                int left = 0, top = 0, right = 0, bottom = 0;
+
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject)
+                    {
+                        return new Margins(left, top, right, bottom);
+                    }
+
+                    if (reader.TokenType == JsonTokenType.PropertyName)
+                    {
+                        string propertyName = reader.GetString();
+                        reader.Read();
+
+                        switch (propertyName)
+                        {
+                            case "Left":
+                                left = reader.GetInt32();
+                                break;
+                            case "Top":
+                                top = reader.GetInt32();
+                                break;
+                            case "Right":
+                                right = reader.GetInt32();
+                                break;
+                            case "Bottom":
+                                bottom = reader.GetInt32();
+                                break;
+                        }
+                    }
+                }
+
+                throw new JsonException();
+            }
+
+            public override void Write(Utf8JsonWriter writer, Margins value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WriteNumber("Left", value.Left);
+                writer.WriteNumber("Top", value.Top);
+                writer.WriteNumber("Right", value.Right);
+                writer.WriteNumber("Bottom", value.Bottom);
+                writer.WriteEndObject();
             }
         }
 
