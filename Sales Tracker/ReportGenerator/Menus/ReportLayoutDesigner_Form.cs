@@ -33,8 +33,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
         private BaseElement _currentPropertyElement = null;
-        private bool _hasUnsavedChanges = false;
-        private string _currentTemplateName = null;
 
         /// <summary>
         /// Gets the current report configuration.
@@ -55,6 +53,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
         // Getters
         public static ReportLayoutDesigner_Form Instance => _instance;
+        public static bool HasUnsavedChanges { get; set; } = false;
 
         // Init.
         public ReportLayoutDesigner_Form()
@@ -135,6 +134,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             CustomTooltip.SetToolTip(MakeSameWidth_Button, "", "Make same width");
             CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "Make same height");
             CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
+
+            CustomTooltip.SetToolTip(SaveTemplate_Button, "", "Save template");
+            CustomTooltip.SetToolTip(Settings_Button, "", "Page settings");
         }
         private void ScaleControls()
         {
@@ -157,15 +159,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 ResizeCanvasToPageSize();
                 NotifyParentValidationChanged();
-            }
-            else
-            {
-                // When navigating away from the form, ask user to save work
-                if (AskUserToSaveWork())
-                {
-                    // User cancelled, prevent navigation by showing the form again
-                    Show();
-                }
             }
         }
         private void ReportLayoutDesigner_Form_Resize(object sender, EventArgs e)
@@ -319,10 +312,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-        private void ReportLayoutDesigner_Form_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Form closing is allowed - AskUserToSaveWork is now handled in VisibleChanged
         }
 
         // Resize debounce timer
@@ -2299,7 +2288,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
                 {
-                    _currentTemplateName = form.TemplateName;
                     SetUnsavedChanges(false);
 
                     CustomMessageBox.Show(
@@ -2328,48 +2316,15 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void SetUnsavedChanges(bool hasChanges)
         {
-            _hasUnsavedChanges = hasChanges;
+            HasUnsavedChanges = hasChanges;
             UnsavedChanges_Label.Visible = hasChanges;
         }
         private void MarkAsChanged()
         {
-            if (!_hasUnsavedChanges)
+            if (!HasUnsavedChanges)
             {
                 SetUnsavedChanges(true);
             }
-        }
-
-        /// <summary>
-        /// If there are unsaved changes, prompts the user to save their work before closing.
-        /// </summary>
-        /// <returns>True of the Form shuould not be closed, otherwise False.</returns>
-        public bool AskUserToSaveWork()
-        {
-            if (_hasUnsavedChanges)
-            {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    "Unsaved Changes",
-                    "You have unsaved changes to your template. Do you want to save before closing?",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.SaveDontSaveCancel);
-
-                if (result == CustomMessageBoxResult.Save)
-                {
-                    SaveTemplate_Button_Click(this, EventArgs.Empty);
-
-                    // If still has unsaved changes (user cancelled save), cancel close
-                    if (_hasUnsavedChanges)
-                    {
-                        return true;
-                    }
-                }
-                else if (result == CustomMessageBoxResult.Cancel)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

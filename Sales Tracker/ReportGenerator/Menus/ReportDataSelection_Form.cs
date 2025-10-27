@@ -447,6 +447,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Refresh templates list in case any were deleted
             RefreshTemplates();
+
+            // Show ReportDataSelection_Form
+            ReportGenerator_Form.Instance.Next_Button.PerformClick();
         }
         private void LoadCustomTemplate(string templateName)
         {
@@ -477,13 +480,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     });
                 }
             }
-
-            // Show and activate ReportDataSelection_Form
-            if (!Visible)
-            {
-                Show();
-            }
-            Activate();
         }
         private int GetTemplateIndex(string templateName)
         {
@@ -518,7 +514,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig.Filters.IncludeReturns = config.Filters.IncludeReturns;
                 ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
                 ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
-                ReportConfig.Filters.SelectedChartTypes = new List<MainMenu_Form.ChartDataType>(config.Filters.SelectedChartTypes);
+                ReportConfig.Filters.SelectedChartTypes = [.. config.Filters.SelectedChartTypes];
 
                 // Update date preset selection
                 ApplyDatePresetByName(config.Filters.DatePresetName);

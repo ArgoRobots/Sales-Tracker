@@ -250,7 +250,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void ReportGenerator_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CancelReportGeneration();
+            CloseReportGeneration();
 
             // Clean up child forms
             _dataSelectionForm?.Dispose();
@@ -279,23 +279,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            CancelReportGeneration();
-        }
-
-        private void CancelReportGeneration()
-        {
-            CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Cancel Report Generation",
-                "Are you sure you want to cancel? Any unsaved changes will be lost.",
-                CustomMessageBoxIcon.Question,
-                CustomMessageBoxButtons.YesNo
-            );
-
-            if (result == CustomMessageBoxResult.Yes)
-            {
-                DialogResult = DialogResult.Cancel;
-                Close();
-            }
+            CloseReportGeneration();
         }
 
         // Validation and completion
@@ -325,6 +309,24 @@ namespace Sales_Tracker.ReportGenerator
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok
                 );
+            }
+        }
+        private void CloseReportGeneration()
+        {
+            if (ReportLayoutDesigner_Form.HasUnsavedChanges)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Cancel Report Generation",
+                    "Are you sure you want to exit? Any unsaved changes will be lost.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo
+                );
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
             }
         }
 
