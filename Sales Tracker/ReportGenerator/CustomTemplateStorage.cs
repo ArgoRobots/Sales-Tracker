@@ -10,8 +10,6 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public static class CustomTemplateStorage
     {
-        private static string _templatesDirectory => Path.Combine(Directories.Cache_dir, "ReportTemplates");
-
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = true,
@@ -26,9 +24,9 @@ namespace Sales_Tracker.ReportGenerator
         static CustomTemplateStorage()
         {
             // Ensure templates directory exists
-            if (!Directory.Exists(_templatesDirectory))
+            if (!Directory.Exists(Directories.ReportTemplates_dir))
             {
-                Directory.CreateDirectory(_templatesDirectory);
+                Directory.CreateDirectory(Directories.ReportTemplates_dir);
             }
         }
 
@@ -74,7 +72,7 @@ namespace Sales_Tracker.ReportGenerator
                 };
 
                 string fileName = SanitizeFileName(templateName) + ".json";
-                string filePath = Path.Combine(_templatesDirectory, fileName);
+                string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 string json = JsonSerializer.Serialize(template, _jsonOptions);
                 File.WriteAllText(filePath, json);
@@ -95,7 +93,7 @@ namespace Sales_Tracker.ReportGenerator
             try
             {
                 string fileName = SanitizeFileName(templateName) + ".json";
-                string filePath = Path.Combine(_templatesDirectory, fileName);
+                string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 if (!File.Exists(filePath))
                 {
@@ -161,12 +159,12 @@ namespace Sales_Tracker.ReportGenerator
         {
             try
             {
-                if (!Directory.Exists(_templatesDirectory))
+                if (!Directory.Exists(Directories.ReportTemplates_dir))
                 {
                     return [];
                 }
 
-                return Directory.GetFiles(_templatesDirectory, "*.json")
+                return Directory.GetFiles(Directories.ReportTemplates_dir, "*.json")
                    .Select(Path.GetFileNameWithoutExtension)
                    .Where(name => name != null)
                    .OrderBy(name => name)
@@ -186,7 +184,7 @@ namespace Sales_Tracker.ReportGenerator
             try
             {
                 string fileName = SanitizeFileName(templateName) + ".json";
-                string filePath = Path.Combine(_templatesDirectory, fileName);
+                string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
 
                 if (File.Exists(filePath))
                 {
@@ -208,7 +206,7 @@ namespace Sales_Tracker.ReportGenerator
         public static bool TemplateExists(string templateName)
         {
             string fileName = SanitizeFileName(templateName) + ".json";
-            string filePath = Path.Combine(_templatesDirectory, fileName);
+            string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
             return File.Exists(filePath);
         }
         private static string SanitizeFileName(string fileName)
