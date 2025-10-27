@@ -11,7 +11,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
     {
         // Properties
         public string TemplateName { get; private set; }
+
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string CurrentTemplateName { get; set; }
+
         public bool IsUpdate { get; private set; }
 
         // Init.
@@ -38,8 +41,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!string.IsNullOrEmpty(CurrentTemplateName))
             {
                 UpdateExisting_RadioButton.Visible = true;
+                UpdateExisting_Label.Visible = true;
                 SaveAsNew_RadioButton.Visible = true;
-                UpdateExisting_RadioButton.Text = $"Update existing template: '{CurrentTemplateName}'";
+                SaveAsNew_Label.Visible = true;
+                UpdateExisting_Label.Text = $"Update existing template: '{CurrentTemplateName}'";
                 UpdateExisting_RadioButton.Checked = true;
                 SaveAsNew_RadioButton.Checked = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;
@@ -48,7 +53,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else
             {
                 UpdateExisting_RadioButton.Visible = false;
+                UpdateExisting_Label.Visible = false;
                 SaveAsNew_RadioButton.Visible = false;
+                SaveAsNew_Label.Visible = false;
                 TemplateName_TextBox.Enabled = true;
             }
 
@@ -135,6 +142,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 e.SuppressKeyPress = true;
                 Cancel_Button_Click(sender, e);
             }
+        }
+        private void UpdateExisting_Label_Click(object sender, EventArgs e)
+        {
+            UpdateExisting_RadioButton.Checked = !UpdateExisting_RadioButton.Checked;
+        }
+        private void SaveAsNew_Label_Click(object sender, EventArgs e)
+        {
+            SaveAsNew_RadioButton.Checked = !SaveAsNew_RadioButton.Checked;
         }
     }
 }

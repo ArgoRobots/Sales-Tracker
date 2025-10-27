@@ -2321,9 +2321,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
         }
-        public void OnConfigurationLoaded(string templateName = null)
+        public void OnConfigurationLoaded()
         {
-            _currentTemplateName = templateName;
+            _currentTemplateName = ReportConfig?.Title;
             SetUnsavedChanges(false);
             RefreshCanvas();
         }
