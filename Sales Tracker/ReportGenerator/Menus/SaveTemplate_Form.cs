@@ -11,6 +11,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
     {
         // Properties
         public string TemplateName { get; private set; }
+        public string CurrentTemplateName { get; set; }
+        public bool IsUpdate { get; private set; }
 
         // Init.
         public SaveTemplate_Form()
@@ -31,12 +33,60 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void SaveTemplate_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+
+            // If there's a current template, show the update option
+            if (!string.IsNullOrEmpty(CurrentTemplateName))
+            {
+                UpdateExisting_RadioButton.Visible = true;
+                SaveAsNew_RadioButton.Visible = true;
+                UpdateExisting_RadioButton.Text = $"Update existing template: '{CurrentTemplateName}'";
+                UpdateExisting_RadioButton.Checked = true;
+                SaveAsNew_RadioButton.Checked = false;
+                TemplateName_TextBox.Text = CurrentTemplateName;
+                TemplateName_TextBox.Enabled = false;
+            }
+            else
+            {
+                UpdateExisting_RadioButton.Visible = false;
+                SaveAsNew_RadioButton.Visible = false;
+                TemplateName_TextBox.Enabled = true;
+            }
+
             TemplateName_TextBox.Focus();
         }
 
         // Event handlers
+        private void UpdateExisting_RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdateExisting_RadioButton.Checked)
+            {
+                TemplateName_TextBox.Text = CurrentTemplateName;
+                TemplateName_TextBox.Enabled = false;
+            }
+        }
+        private void SaveAsNew_RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SaveAsNew_RadioButton.Checked)
+            {
+                TemplateName_TextBox.Text = "";
+                TemplateName_TextBox.Enabled = true;
+                TemplateName_TextBox.Focus();
+            }
+        }
         private void Save_Button_Click(object sender, EventArgs e)
         {
+            // Check if we're updating an existing template
+            if (UpdateExisting_RadioButton.Visible && UpdateExisting_RadioButton.Checked)
+            {
+                IsUpdate = true;
+                TemplateName = CurrentTemplateName;
+                DialogResult = DialogResult.OK;
+                Close();
+                return;
+            }
+
+            // Saving as new template
+            IsUpdate = false;
             string templateName = TemplateName_TextBox.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(templateName))

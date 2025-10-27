@@ -35,6 +35,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
+            UpdateExisting_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
+            SaveAsNew_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
             TemplateName_Label = new Label();
             TemplateName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -51,15 +53,57 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Size = new Size(200, 38);
             Title_Label.TabIndex = 0;
             Title_Label.Text = "Save Template";
-            // 
+            //
+            // UpdateExisting_RadioButton
+            //
+            UpdateExisting_RadioButton.AutoSize = true;
+            UpdateExisting_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            UpdateExisting_RadioButton.CheckedState.BorderThickness = 0;
+            UpdateExisting_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            UpdateExisting_RadioButton.CheckedState.InnerColor = Color.White;
+            UpdateExisting_RadioButton.CheckedState.InnerOffset = -4;
+            UpdateExisting_RadioButton.Font = new Font("Segoe UI", 10F);
+            UpdateExisting_RadioButton.Location = new Point(30, 75);
+            UpdateExisting_RadioButton.Name = "UpdateExisting_RadioButton";
+            UpdateExisting_RadioButton.Size = new Size(276, 32);
+            UpdateExisting_RadioButton.TabIndex = 1;
+            UpdateExisting_RadioButton.Text = "Update existing template";
+            UpdateExisting_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            UpdateExisting_RadioButton.UncheckedState.BorderThickness = 2;
+            UpdateExisting_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            UpdateExisting_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            UpdateExisting_RadioButton.Visible = false;
+            UpdateExisting_RadioButton.CheckedChanged += UpdateExisting_RadioButton_CheckedChanged;
+            //
+            // SaveAsNew_RadioButton
+            //
+            SaveAsNew_RadioButton.AutoSize = true;
+            SaveAsNew_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            SaveAsNew_RadioButton.CheckedState.BorderThickness = 0;
+            SaveAsNew_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            SaveAsNew_RadioButton.CheckedState.InnerColor = Color.White;
+            SaveAsNew_RadioButton.CheckedState.InnerOffset = -4;
+            SaveAsNew_RadioButton.Font = new Font("Segoe UI", 10F);
+            SaveAsNew_RadioButton.Location = new Point(30, 113);
+            SaveAsNew_RadioButton.Name = "SaveAsNew_RadioButton";
+            SaveAsNew_RadioButton.Size = new Size(220, 32);
+            SaveAsNew_RadioButton.TabIndex = 2;
+            SaveAsNew_RadioButton.Text = "Save as new template";
+            SaveAsNew_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            SaveAsNew_RadioButton.UncheckedState.BorderThickness = 2;
+            SaveAsNew_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            SaveAsNew_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            SaveAsNew_RadioButton.Visible = false;
+            SaveAsNew_RadioButton.CheckedChanged += SaveAsNew_RadioButton_CheckedChanged;
+            //
             // TemplateName_Label
-            // 
+            //
             TemplateName_Label.AutoSize = true;
             TemplateName_Label.Font = new Font("Segoe UI", 10F);
-            TemplateName_Label.Location = new Point(30, 80);
+            TemplateName_Label.Location = new Point(30, 160);
             TemplateName_Label.Name = "TemplateName_Label";
             TemplateName_Label.Size = new Size(152, 28);
-            TemplateName_Label.TabIndex = 1;
+            TemplateName_Label.TabIndex = 3;
             TemplateName_Label.Text = "Template Name:";
             // 
             // TemplateName_TextBox
@@ -71,7 +115,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.DefaultText = "";
             TemplateName_TextBox.Font = new Font("Segoe UI", 10F);
             TemplateName_TextBox.ForeColor = Color.Black;
-            TemplateName_TextBox.Location = new Point(30, 115);
+            TemplateName_TextBox.Location = new Point(30, 195);
             TemplateName_TextBox.Margin = new Padding(4, 5, 4, 5);
             TemplateName_TextBox.MaxLength = 100;
             TemplateName_TextBox.Name = "TemplateName_TextBox";
@@ -79,7 +123,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.SelectedText = "";
             TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             TemplateName_TextBox.Size = new Size(378, 45);
-            TemplateName_TextBox.TabIndex = 2;
+            TemplateName_TextBox.TabIndex = 4;
             TemplateName_TextBox.KeyDown += TemplateName_TextBox_KeyDown;
             // 
             // Save_Button
@@ -93,16 +137,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Save_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             Save_Button.Font = new Font("Segoe UI", 9.5F);
             Save_Button.ForeColor = Color.White;
-            Save_Button.Location = new Point(180, 197);
+            Save_Button.Location = new Point(180, 260);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Save_Button.Size = new Size(120, 45);
-            Save_Button.TabIndex = 3;
+            Save_Button.TabIndex = 5;
             Save_Button.Text = "Save";
             Save_Button.Click += Save_Button_Click;
-            // 
+            //
             // Cancel_Button
-            // 
+            //
             Cancel_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 4;
@@ -115,26 +159,28 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9.5F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(306, 197);
+            Cancel_Button.Location = new Point(306, 260);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Cancel_Button.Size = new Size(120, 45);
-            Cancel_Button.TabIndex = 4;
+            Cancel_Button.TabIndex = 6;
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
             // SaveTemplate_Form
-            // 
+            //
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(438, 254);
+            ClientSize = new Size(438, 317);
             Controls.Add(Cancel_Button);
             Controls.Add(Save_Button);
             Controls.Add(TemplateName_TextBox);
             Controls.Add(TemplateName_Label);
+            Controls.Add(SaveAsNew_RadioButton);
+            Controls.Add(UpdateExisting_RadioButton);
             Controls.Add(Title_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(460, 310);
+            MinimumSize = new Size(460, 373);
             Name = "SaveTemplate_Form";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Save Template";
@@ -146,6 +192,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         #endregion
 
         private Label Title_Label;
+        private Guna.UI2.WinForms.Guna2RadioButton UpdateExisting_RadioButton;
+        private Guna.UI2.WinForms.Guna2RadioButton SaveAsNew_RadioButton;
         private Label TemplateName_Label;
         private Guna.UI2.WinForms.Guna2TextBox TemplateName_TextBox;
         private Guna.UI2.WinForms.Guna2Button Save_Button;
