@@ -28,12 +28,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             TemplateName_Label = new Label();
             TemplateName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -46,7 +46,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            Title_Label.Location = new Point(127, 20);
+            Title_Label.Location = new Point(119, 20);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(200, 38);
             Title_Label.TabIndex = 0;
@@ -67,7 +67,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TemplateName_TextBox.BorderRadius = 4;
             TemplateName_TextBox.Cursor = Cursors.IBeam;
-            TemplateName_TextBox.CustomizableEdges = customizableEdges7;
+            TemplateName_TextBox.CustomizableEdges = customizableEdges19;
             TemplateName_TextBox.DefaultText = "";
             TemplateName_TextBox.Font = new Font("Segoe UI", 10F);
             TemplateName_TextBox.ForeColor = Color.Black;
@@ -77,7 +77,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.Name = "TemplateName_TextBox";
             TemplateName_TextBox.PlaceholderText = "Enter template name";
             TemplateName_TextBox.SelectedText = "";
-            TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             TemplateName_TextBox.Size = new Size(378, 45);
             TemplateName_TextBox.TabIndex = 2;
             TemplateName_TextBox.KeyDown += TemplateName_TextBox_KeyDown;
@@ -86,7 +86,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // 
             Save_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Save_Button.BorderRadius = 4;
-            Save_Button.CustomizableEdges = customizableEdges9;
+            Save_Button.CustomizableEdges = customizableEdges21;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Save_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -95,7 +95,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Save_Button.ForeColor = Color.White;
             Save_Button.Location = new Point(180, 197);
             Save_Button.Name = "Save_Button";
-            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Save_Button.Size = new Size(120, 45);
             Save_Button.TabIndex = 3;
             Save_Button.Text = "Save";
@@ -107,7 +107,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 4;
             Cancel_Button.BorderThickness = 1;
-            Cancel_Button.CustomizableEdges = customizableEdges11;
+            Cancel_Button.CustomizableEdges = customizableEdges23;
             Cancel_Button.DisabledState.BorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -117,7 +117,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.ForeColor = Color.Black;
             Cancel_Button.Location = new Point(306, 197);
             Cancel_Button.Name = "Cancel_Button";
-            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Cancel_Button.Size = new Size(120, 45);
             Cancel_Button.TabIndex = 4;
             Cancel_Button.Text = "Cancel";
