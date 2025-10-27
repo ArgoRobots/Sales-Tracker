@@ -69,6 +69,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale);
 
+        /// <summary>
+        /// Renders an error message centered within the element's bounds.
+        /// Used as a fallback when element rendering fails.
+        /// </summary>
+        protected void RenderError(Graphics graphics)
+        {
+            string message = LanguageManager.TranslateString("Error rendering element");
+
+            using Font font = new("Arial", 10f);
+            using SolidBrush brush = new(Color.Red);
+            using StringFormat format = new()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+            graphics.DrawString(message, font, brush, Bounds, format);
+        }
+
         public Panel CachedPropertyPanel { get; private set; }
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];

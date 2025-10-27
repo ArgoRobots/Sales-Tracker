@@ -69,37 +69,38 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            // Draw background
-            using SolidBrush bgBrush = new(BackgroundColor);
-            graphics.FillRectangle(bgBrush, Bounds);
-
-            // Draw border
-            if (BorderColor != Color.Transparent && BorderThickness > 0)
-            {
-                using Pen borderPen = new(BorderColor, BorderThickness);
-
-                // Adjust rectangle to account for border thickness to prevent clipping
-                Rectangle borderRect = Bounds;
-                if (BorderThickness > 1)
-                {
-                    int offset = BorderThickness / 2;
-                    borderRect = new Rectangle(
-                        Bounds.X + offset,
-                        Bounds.Y + offset,
-                        Bounds.Width - BorderThickness,
-                        Bounds.Height - BorderThickness
-                    );
-                }
-
-                graphics.DrawRectangle(borderPen, borderRect);
-            }
-
-            // Add clipping region to prevent overflow
             Region originalClip = graphics.Clip;
-            graphics.SetClip(Bounds);
 
             try
             {
+                // Draw background
+                using SolidBrush bgBrush = new(BackgroundColor);
+                graphics.FillRectangle(bgBrush, Bounds);
+
+                // Draw border
+                if (BorderColor != Color.Transparent && BorderThickness > 0)
+                {
+                    using Pen borderPen = new(BorderColor, BorderThickness);
+
+                    // Adjust rectangle to account for border thickness to prevent clipping
+                    Rectangle borderRect = Bounds;
+                    if (BorderThickness > 1)
+                    {
+                        int offset = BorderThickness / 2;
+                        borderRect = new Rectangle(
+                            Bounds.X + offset,
+                            Bounds.Y + offset,
+                            Bounds.Width - BorderThickness,
+                            Bounds.Height - BorderThickness
+                        );
+                    }
+
+                    graphics.DrawRectangle(borderPen, borderRect);
+                }
+
+                // Add clipping region to prevent overflow
+                graphics.SetClip(Bounds);
+
                 // Calculate statistics
                 SummaryStatistics stats = CalculateStatistics(config);
 
@@ -179,6 +180,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     string text = LanguageManager.TranslateString("Growth Rate");
                     graphics.DrawString($"{text}: {growthSymbol} {Math.Abs(stats.GrowthRate):F1}%", valueFont, textBrush, textBounds, format);
                 }
+            }
+            catch
+            {
+                RenderError(graphics);
             }
             finally
             {

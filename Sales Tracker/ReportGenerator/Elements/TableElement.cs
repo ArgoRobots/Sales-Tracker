@@ -153,9 +153,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 RenderTable(graphics, transactions);
             }
-            catch (Exception ex)
+            catch
             {
-                RenderErrorMessage(graphics, $"Error: {ex.Message}");
+                RenderError(graphics);
             }
         }
         private List<TransactionData> GetFilteredTransactions(ReportConfiguration config)
@@ -606,24 +606,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Draw border
             using Pen borderPen = new(Color.Black, 1);
             graphics.DrawRectangle(borderPen, Bounds);
-        }
-        private void RenderErrorMessage(Graphics graphics, string message)
-        {
-            using SolidBrush bgBrush = new(Color.FromArgb(255, 240, 240));
-            using Pen borderPen = new(Color.Red, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.DarkRed);
-
-            graphics.FillRectangle(bgBrush, Bounds);
-            graphics.DrawRectangle(borderPen, Bounds);
-
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(message, font, textBrush, Bounds, format);
         }
 
         // Override the property to indicate this element handles its own common controls

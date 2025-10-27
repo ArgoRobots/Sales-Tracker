@@ -55,21 +55,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 graphics.DrawString(Text, font, brush, Bounds, format);
             }
-            catch (ArgumentException)
+            catch
             {
-                // Fallback if font family is not available
-                using Font fallbackFont = new("Segoe UI", FontSize, FontStyle);
-                using SolidBrush fallbackBrush = new(TextColor);
-
-                StringFormat fallbackFormat = new()
-                {
-                    Alignment = HAlignment,
-                    LineAlignment = VAlignment,
-                    FormatFlags = StringFormatFlags.NoWrap,
-                    Trimming = StringTrimming.EllipsisCharacter
-                };
-
-                graphics.DrawString(Text, fallbackFont, fallbackBrush, Bounds, fallbackFormat);
+                RenderError(graphics);
             }
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)

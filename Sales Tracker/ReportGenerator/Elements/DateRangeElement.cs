@@ -40,33 +40,40 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            if (config?.Filters == null) { return; }
-
-            DateTime? startDate = config.Filters.StartDate;
-            DateTime? endDate = config.Filters.EndDate;
-
-            string dateText = LanguageManager.TranslateString("Period") + ": ";
-            if (startDate.HasValue && endDate.HasValue)
+            try
             {
-                dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                if (config?.Filters == null) { return; }
+
+                DateTime? startDate = config.Filters.StartDate;
+                DateTime? endDate = config.Filters.EndDate;
+
+                string dateText = LanguageManager.TranslateString("Period") + ": ";
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                }
+                else
+                {
+                    dateText += LanguageManager.TranslateString("Not specified");
+                }
+
+                using Font font = new(FontFamily, FontSize, FontStyle);
+                using SolidBrush brush = new(TextColor);
+
+                StringFormat format = new()
+                {
+                    Alignment = HAlignment,
+                    LineAlignment = VAlignment,
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+
+                graphics.DrawString(dateText, font, brush, Bounds, format);
             }
-            else
+            catch
             {
-                dateText += LanguageManager.TranslateString("Not specified");
+                RenderError(graphics);
             }
-
-            using Font font = new(FontFamily, FontSize, FontStyle);
-            using SolidBrush brush = new(TextColor);
-
-            StringFormat format = new()
-            {
-                Alignment = HAlignment,
-                LineAlignment = VAlignment,
-                FormatFlags = StringFormatFlags.NoWrap,
-                Trimming = StringTrimming.EllipsisCharacter
-            };
-
-            graphics.DrawString(dateText, font, brush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
