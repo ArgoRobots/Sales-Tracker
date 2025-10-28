@@ -162,7 +162,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             NoTemplates_Label.AutoSize = true;
             NoTemplates_Label.BackColor = Color.White;
             NoTemplates_Label.Font = new Font("Segoe UI", 10F);
-            NoTemplates_Label.Location = new Point(199, 207);
+            NoTemplates_Label.Location = new Point(202, 207);
             NoTemplates_Label.Name = "NoTemplates_Label";
             NoTemplates_Label.Size = new Size(254, 28);
             NoTemplates_Label.TabIndex = 2;
