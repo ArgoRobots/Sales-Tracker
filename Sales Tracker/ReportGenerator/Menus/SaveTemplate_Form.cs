@@ -47,7 +47,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 SaveAsNew_Label.Visible = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;
                 TemplateName_TextBox.Enabled = true;
-                Text = "Rename Template";
+                Text = LanguageManager.TranslateString("Rename Template");
             }
             // If there's a current template, show the update option
             else if (!string.IsNullOrEmpty(CurrentTemplateName))
@@ -56,7 +56,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_Label.Visible = true;
                 SaveAsNew_RadioButton.Visible = true;
                 SaveAsNew_Label.Visible = true;
-                UpdateExisting_Label.Text = $"Update existing template: '{CurrentTemplateName}'";
+                UpdateExisting_Label.Text = LanguageManager.TranslateString("Update existing template") + ": '" + CurrentTemplateName + "'";
                 UpdateExisting_RadioButton.Checked = true;
                 SaveAsNew_RadioButton.Checked = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;

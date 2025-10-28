@@ -28,7 +28,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             ThemeManager.MakeGButtonBluePrimary(Load_Button);
             ThemeManager.SetThemeForForm(this);
-            ThemeManager.UpdateDataGridViewTheme(Templates_DataGridView);
         }
         private void LoadTemplates()
         {
