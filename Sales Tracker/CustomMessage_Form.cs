@@ -112,6 +112,16 @@ namespace Sales_Tracker
                     Yes_Button.Focus();
                     break;
 
+                case CustomMessageBoxButtons.YesNoCancel:
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
+                    No_Button.Left = Cancel_Button.Left - No_Button.Width - CustomControls.SpaceBetweenControls;
+                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - CustomControls.SpaceBetweenControls;
+                    Controls.Add(Yes_Button);
+                    Controls.Add(No_Button);
+                    Controls.Add(Cancel_Button);
+                    Yes_Button.Focus();
+                    break;
+
                 case CustomMessageBoxButtons.YesNoAll:
                     NoAll_Button.Left = Width - NoAll_Button.Width - buttonSpace;
                     No_Button.Left = NoAll_Button.Left - No_Button.Width - CustomControls.SpaceBetweenControls;
@@ -403,6 +413,7 @@ namespace Sales_Tracker
     public enum CustomMessageBoxButtons
     {
         YesNo,
+        YesNoCancel,
         YesNoAll,
         Ok,
         OkCancel,

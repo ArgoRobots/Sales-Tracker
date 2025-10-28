@@ -33,9 +33,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
         private BaseElement _currentPropertyElement = null;
-        private bool _hasUnsavedChanges = false;
         private string _currentTemplateName = null;
-        private string _baseFormTitle = "Report Layout Designer";
 
         /// <summary>
         /// Gets the current report configuration.
@@ -2320,52 +2318,50 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
         /// <summary>
         /// Prompts the user to save unsaved changes.
-        /// Returns true if the operation should continue (Save or Don't Save), false if cancelled.
         /// </summary>
+        /// <returns>True if the operation should continue, false if cancelled</returns>
         public bool PromptToSaveChanges()
         {
-            if (!HasUnsavedChanges)
-            {
-                return true; // No unsaved changes, continue
-            }
+            if (!HasUnsavedChanges) { return true; }
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Unsaved Changes",
                 "You have unsaved changes to your custom template.\nDo you want to save your changes?",
                 CustomMessageBoxIcon.Question,
-                CustomMessageBoxButtons.SaveDontSaveCancel);
+                CustomMessageBoxButtons.YesNoCancel);
 
-            if (result == CustomMessageBoxResult.Cancel)
+            if (result == CustomMessageBoxResult.Yes)
             {
-                return false; // User cancelled, don't proceed
+                // Save the template
+                SaveTemplate_Button.PerformClick();
+                return true;
+            }
+            if (result == CustomMessageBoxResult.No)
+            {
+                // User chose not to save
+                SetUnsavedChanges(false);
+                return true;
             }
 
-            if (result == CustomMessageBoxResult.Save)
-            {
-                // Trigger the save button click
-                SaveTemplate_Button_Click(this, EventArgs.Empty);
-
-                // Check if there are still unsaved changes (user might have cancelled the save dialog)
-                return !HasUnsavedChanges;
-            }
-
-            // User chose "Don't Save", continue without saving
-            return true;
+            // The user clicked Cancel or closed the message dialog, so do not continue the operation
+            return false;
         }
 
         private void SetUnsavedChanges(bool hasChanges)
         {
+            string title = LanguageManager.TranslateString("Report Layout Designer");
+
             HasUnsavedChanges = hasChanges;
             UnsavedChanges_Label.Visible = hasChanges;
 
             // Update form title with asterisk if there are unsaved changes
             if (hasChanges)
             {
-                Text = _baseFormTitle + " *";
+                Text = title + " *";
             }
             else
             {
-                Text = _baseFormTitle;
+                Text = title;
             }
         }
         private void MarkAsChanged()

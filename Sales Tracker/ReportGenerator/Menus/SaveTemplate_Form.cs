@@ -14,7 +14,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         public string TemplateName { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrentTemplateName { get; set; }
-        public bool IsUpdate { get; private set; }
 
         // Init.
         public SaveTemplate_Form()
@@ -85,7 +84,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if we're updating an existing template
             if (UpdateExisting_RadioButton.Visible && UpdateExisting_RadioButton.Checked)
             {
-                IsUpdate = true;
                 TemplateName = CurrentTemplateName;
                 DialogResult = DialogResult.OK;
                 Close();
@@ -93,7 +91,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Saving as new template
-            IsUpdate = false;
             string templateName = TemplateName_TextBox.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(templateName))
