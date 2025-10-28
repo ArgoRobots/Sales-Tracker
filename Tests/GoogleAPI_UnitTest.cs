@@ -1,6 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -33,10 +32,10 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestCredentialsLoading()
+        public async Task TestCredentialsLoading()
         {
             // Test passes if credentials load without throwing an exception
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             // Verify we can create a service with the credentials
             _ = new SheetsService(new BaseClientService.Initializer
@@ -49,7 +48,7 @@ namespace Tests
         [TestMethod]
         public async Task TestGoogleSheetsAccess()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -69,48 +68,9 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task TestBasicOperations()
-        {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
-
-            SheetsService sheetsService = new(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Argo Sales Tracker"
-            });
-
-            // Create spreadsheet
-            Spreadsheet spreadsheet = new()
-            {
-                Properties = new SpreadsheetProperties { Title = "Test Operations" }
-            };
-
-            Spreadsheet result = await sheetsService.Spreadsheets.Create(spreadsheet).ExecuteAsync();
-            Assert.IsNotNull(result.SpreadsheetId);
-
-            // Set permissions
-            DriveService driveService = new(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Argo Sales Tracker"
-            });
-
-            Permission permission = new()
-            {
-                Type = "anyone",
-                Role = "writer"
-            };
-
-            await driveService.Permissions.Create(permission, result.SpreadsheetId).ExecuteAsync();
-
-            _testSpreadsheetId = result.SpreadsheetId;
-            Assert.IsNotNull(_testSpreadsheetId);
-        }
-
-        [TestMethod]
         public async Task TestSpreadsheetCreation()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -137,7 +97,7 @@ namespace Tests
         [TestMethod]
         public async Task TestWriteData()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -176,7 +136,7 @@ namespace Tests
         [TestMethod]
         public async Task TestReadData()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -219,50 +179,9 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task TestDrivePermissions()
-        {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
-
-            SheetsService sheetsService = new(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Argo Sales Tracker"
-            });
-
-            DriveService driveService = new(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "Argo Sales Tracker"
-            });
-
-            // Create spreadsheet
-            Spreadsheet spreadsheet = new()
-            {
-                Properties = new SpreadsheetProperties { Title = "Test Permissions" }
-            };
-
-            Spreadsheet result = await sheetsService.Spreadsheets.Create(spreadsheet).ExecuteAsync();
-            _testSpreadsheetId = result.SpreadsheetId;
-
-            // Set public permission
-            Permission permission = new()
-            {
-                Type = "anyone",
-                Role = "reader"
-            };
-
-            Permission permissionResult = await driveService.Permissions
-                .Create(permission, result.SpreadsheetId)
-                .ExecuteAsync();
-
-            Assert.AreEqual("anyone", permissionResult.Type);
-            Assert.AreEqual("reader", permissionResult.Role);
-        }
-
-        [TestMethod]
         public async Task TestMultipleSheets()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -293,7 +212,7 @@ namespace Tests
         [TestMethod]
         public async Task TestBatchUpdate()
         {
-            GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+            UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
             SheetsService service = new(new BaseClientService.Initializer
             {
@@ -353,7 +272,7 @@ namespace Tests
         {
             try
             {
-                GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+                UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
                 DriveService driveService = new(new BaseClientService.Initializer
                 {
