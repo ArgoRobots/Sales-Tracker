@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -29,16 +28,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             ThemeManager.MakeGButtonBluePrimary(Load_Button);
             ThemeManager.SetThemeForForm(this);
-            ThemeManager.CustomizeScrollBar(Templates_ListBox);
+            ThemeManager.UpdateDataGridViewTheme(Templates_DataGridView);
         }
         private void LoadTemplates()
         {
             _templateNames = CustomTemplateStorage.GetCustomTemplateNames();
 
-            Templates_ListBox.Items.Clear();
+            Templates_DataGridView.Rows.Clear();
             foreach (string templateName in _templateNames)
             {
-                Templates_ListBox.Items.Add(templateName);
+                Templates_DataGridView.Rows.Add(templateName);
             }
 
             if (_templateNames.Count == 0)
@@ -54,7 +53,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void UpdateButtonStates()
         {
-            bool hasSelection = Templates_ListBox.SelectedIndex >= 0;
+            bool hasSelection = Templates_DataGridView.SelectedRows.Count > 0;
             Load_Button.Enabled = hasSelection;
             Delete_Button.Enabled = hasSelection;
             Rename_Button.Enabled = hasSelection;
@@ -67,36 +66,38 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         // Event handlers
-        private void Templates_ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void Templates_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
             UpdateButtonStates();
         }
-        private void Templates_ListBox_DoubleClick(object sender, EventArgs e)
+        private void Templates_DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (Templates_ListBox.SelectedIndex >= 0)
+            if (e.RowIndex >= 0)
             {
                 Load_Button_Click(sender, e);
             }
         }
         private void Load_Button_Click(object sender, EventArgs e)
         {
-            if (Templates_ListBox.SelectedIndex < 0)
+            if (Templates_DataGridView.SelectedRows.Count == 0)
             {
                 return;
             }
 
-            SelectedTemplateName = _templateNames[Templates_ListBox.SelectedIndex];
+            int selectedIndex = Templates_DataGridView.SelectedRows[0].Index;
+            SelectedTemplateName = _templateNames[selectedIndex];
             DialogResult = DialogResult.OK;
             Close();
         }
         private void Delete_Button_Click(object sender, EventArgs e)
         {
-            if (Templates_ListBox.SelectedIndex < 0)
+            if (Templates_DataGridView.SelectedRows.Count == 0)
             {
                 return;
             }
 
-            string templateName = _templateNames[Templates_ListBox.SelectedIndex];
+            int selectedIndex = Templates_DataGridView.SelectedRows[0].Index;
+            string templateName = _templateNames[selectedIndex];
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Delete Template",
@@ -124,20 +125,28 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void Rename_Button_Click(object sender, EventArgs e)
         {
-            if (Templates_ListBox.SelectedIndex < 0)
+            if (Templates_DataGridView.SelectedRows.Count == 0)
             {
                 return;
             }
 
-            string oldTemplateName = _templateNames[Templates_ListBox.SelectedIndex];
+            int selectedIndex = Templates_DataGridView.SelectedRows[0].Index;
+            string oldTemplateName = _templateNames[selectedIndex];
 
-            // Show input dialog for new name
-            string newTemplateName = Interaction.InputBox(
-                $"Enter new name for template '{oldTemplateName}':",
-                "Rename Template",
-                oldTemplateName);
+            // Show SaveTemplate_Form dialog for new name
+            SaveTemplate_Form renameForm = new()
+            {
+                CurrentTemplateName = oldTemplateName
+            };
 
-            // Check if user cancelled or entered empty name
+            if (renameForm.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            string newTemplateName = renameForm.TemplateName;
+
+            // Check if user entered empty name or same name
             if (string.IsNullOrWhiteSpace(newTemplateName) || newTemplateName == oldTemplateName)
             {
                 return;
@@ -165,7 +174,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 int index = _templateNames.IndexOf(newTemplateName);
                 if (index >= 0)
                 {
-                    Templates_ListBox.SelectedIndex = index;
+                    Templates_DataGridView.ClearSelection();
+                    Templates_DataGridView.Rows[index].Selected = true;
                 }
             }
             else

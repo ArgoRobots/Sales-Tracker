@@ -28,6 +28,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -37,12 +40,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
-            Templates_ListBox = new ListBox();
+            Templates_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
+            TemplateName = new DataGridViewTextBoxColumn();
             Load_Button = new Guna.UI2.WinForms.Guna2Button();
             Delete_Button = new Guna.UI2.WinForms.Guna2Button();
             Rename_Button = new Guna.UI2.WinForms.Guna2Button();
             Close_Button = new Guna.UI2.WinForms.Guna2Button();
             NoTemplates_Label = new Label();
+            ((System.ComponentModel.ISupportInitialize)Templates_DataGridView).BeginInit();
             SuspendLayout();
             // 
             // Title_Label
@@ -55,18 +60,79 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Size = new Size(250, 38);
             Title_Label.TabIndex = 0;
             Title_Label.Text = "Custom Templates";
-            // 
-            // Templates_ListBox
-            // 
-            Templates_ListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Templates_ListBox.Font = new Font("Segoe UI", 10F);
-            Templates_ListBox.FormattingEnabled = true;
-            Templates_ListBox.Location = new Point(30, 80);
-            Templates_ListBox.Name = "Templates_ListBox";
-            Templates_ListBox.Size = new Size(598, 284);
-            Templates_ListBox.TabIndex = 1;
-            Templates_ListBox.SelectedIndexChanged += Templates_ListBox_SelectedIndexChanged;
-            Templates_ListBox.DoubleClick += Templates_ListBox_DoubleClick;
+            //
+            // Templates_DataGridView
+            //
+            Templates_DataGridView.AllowUserToAddRows = false;
+            Templates_DataGridView.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = Color.White;
+            Templates_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            Templates_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = Color.White;
+            dataGridViewCellStyle2.Padding = new Padding(10, 0, 0, 0);
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            Templates_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            Templates_DataGridView.ColumnHeadersHeight = 60;
+            Templates_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            Templates_DataGridView.ColumnHeadersVisible = false;
+            Templates_DataGridView.Columns.AddRange(new DataGridViewColumn[] { TemplateName });
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.White;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 12F);
+            dataGridViewCellStyle3.ForeColor = Color.FromArgb(71, 69, 94);
+            dataGridViewCellStyle3.Padding = new Padding(10, 0, 0, 0);
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            Templates_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            Templates_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
+            Templates_DataGridView.Location = new Point(30, 80);
+            Templates_DataGridView.MultiSelect = false;
+            Templates_DataGridView.Name = "Templates_DataGridView";
+            Templates_DataGridView.ReadOnly = true;
+            Templates_DataGridView.RowHeadersVisible = false;
+            Templates_DataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            Templates_DataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            Templates_DataGridView.RowTemplate.Height = 35;
+            Templates_DataGridView.ScrollBars = ScrollBars.Vertical;
+            Templates_DataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            Templates_DataGridView.Size = new Size(598, 284);
+            Templates_DataGridView.TabIndex = 1;
+            Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
+            Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
+            Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.Empty;
+            Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.Empty;
+            Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
+            Templates_DataGridView.ThemeStyle.BackColor = Color.White;
+            Templates_DataGridView.ThemeStyle.GridColor = Color.FromArgb(231, 229, 255);
+            Templates_DataGridView.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
+            Templates_DataGridView.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.Single;
+            Templates_DataGridView.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            Templates_DataGridView.ThemeStyle.HeaderStyle.ForeColor = Color.White;
+            Templates_DataGridView.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            Templates_DataGridView.ThemeStyle.HeaderStyle.Height = 60;
+            Templates_DataGridView.ThemeStyle.ReadOnly = true;
+            Templates_DataGridView.ThemeStyle.RowsStyle.BackColor = Color.White;
+            Templates_DataGridView.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.None;
+            Templates_DataGridView.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 12F);
+            Templates_DataGridView.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
+            Templates_DataGridView.ThemeStyle.RowsStyle.Height = 35;
+            Templates_DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            Templates_DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            Templates_DataGridView.SelectionChanged += Templates_DataGridView_SelectionChanged;
+            Templates_DataGridView.CellDoubleClick += Templates_DataGridView_CellDoubleClick;
+            //
+            // TemplateName
+            //
+            TemplateName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            TemplateName.HeaderText = "Template Name";
+            TemplateName.Name = "TemplateName";
+            TemplateName.ReadOnly = true;
             // 
             // Load_Button
             // 
@@ -180,7 +246,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Controls.Add(Rename_Button);
             Controls.Add(Delete_Button);
             Controls.Add(Load_Button);
-            Controls.Add(Templates_ListBox);
+            Controls.Add(Templates_DataGridView);
             Controls.Add(Title_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimumSize = new Size(646, 520);
@@ -189,6 +255,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             StartPosition = FormStartPosition.CenterParent;
             Text = "Custom Templates";
             Shown += CustomTemplateManager_Form_Shown;
+            ((System.ComponentModel.ISupportInitialize)Templates_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -196,7 +263,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         #endregion
 
         private Label Title_Label;
-        private ListBox Templates_ListBox;
+        private Guna.UI2.WinForms.Guna2DataGridView Templates_DataGridView;
+        private DataGridViewTextBoxColumn TemplateName;
         private Label NoTemplates_Label;
         private Guna.UI2.WinForms.Guna2Button Load_Button;
         private Guna.UI2.WinForms.Guna2Button Delete_Button;
