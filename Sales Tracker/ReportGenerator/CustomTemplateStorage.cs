@@ -521,7 +521,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return value.ToString() ?? defaultValue;
         }
-
         private static bool GetBoolValue(object value, bool defaultValue = false)
         {
             if (value == null) return defaultValue;
@@ -537,7 +536,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return bool.TryParse(value.ToString(), out bool result) ? result : defaultValue;
         }
-
         private static float GetFloatValue(object value, float defaultValue = 0f)
         {
             if (value == null) return defaultValue;
@@ -555,7 +553,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return float.TryParse(value.ToString(), out float result) ? result : defaultValue;
         }
-
         private static int GetIntValue(object value, int defaultValue = 0)
         {
             if (value == null) return defaultValue;
@@ -574,7 +571,6 @@ namespace Sales_Tracker.ReportGenerator
 
             return int.TryParse(value.ToString(), out int result) ? result : defaultValue;
         }
-
         private static string ColorToHex(Color color)
         {
             // Include alpha channel if not fully opaque
@@ -669,7 +665,6 @@ namespace Sales_Tracker.ReportGenerator
 
                 throw new JsonException();
             }
-
             public override void Write(Utf8JsonWriter writer, Margins value, JsonSerializerOptions options)
             {
                 writer.WriteStartObject();
