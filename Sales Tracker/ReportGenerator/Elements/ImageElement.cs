@@ -29,7 +29,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public ImageScaleMode ScaleMode { get; set; } = ImageScaleMode.Fit;
         public Color BackgroundColor { get; set; } = Color.Transparent;
         public Color BorderColor { get; set; } = Color.Transparent;
-        public int BorderThickness { get; set; } = 0;
+        public int BorderThickness { get; set; } = 1;
         public int CornerRadius_Percent { get; set; } = 0;
         public byte Opacity { get; set; } = 255;
 
@@ -61,7 +61,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 ImagePath = ImagePath,
                 ScaleMode = ScaleMode,
@@ -74,55 +73,62 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            int actualRadius = GetActualCornerRadius();
-
-            // Draw background if not transparent
-            if (BackgroundColor != Color.Transparent)
+            try
             {
-                using SolidBrush bgBrush = new(BackgroundColor);
-                if (actualRadius > 0)
+                int actualRadius = GetActualCornerRadius();
+
+                // Draw background if not transparent
+                if (BackgroundColor != Color.Transparent)
                 {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                    graphics.FillPath(bgBrush, path);
+                    using SolidBrush bgBrush = new(BackgroundColor);
+                    if (actualRadius > 0)
+                    {
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                        graphics.FillPath(bgBrush, path);
+                    }
+                    else
+                    {
+                        graphics.FillRectangle(bgBrush, Bounds);
+                    }
+                }
+
+                // Load and render image
+                if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
+                {
+                    string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
+
+                    if (extension == ".svg")
+                    {
+                        RenderSvgImage(graphics);
+                    }
+                    else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                    {
+                        RenderBitmapImage(graphics);
+                    }
                 }
                 else
                 {
-                    graphics.FillRectangle(bgBrush, Bounds);
+                    RenderPlaceholder(graphics);
+                }
+
+                // Draw border if specified
+                if (BorderColor != Color.Transparent && BorderThickness > 0)
+                {
+                    using Pen borderPen = new(BorderColor, BorderThickness);
+                    if (actualRadius > 0)
+                    {
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                        graphics.DrawPath(borderPen, path);
+                    }
+                    else
+                    {
+                        graphics.DrawRectangle(borderPen, Bounds);
+                    }
                 }
             }
-
-            // Load and render image
-            if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
+            catch
             {
-                string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
-
-                if (extension == ".svg")
-                {
-                    RenderSvgImage(graphics);
-                }
-                else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
-                {
-                    RenderBitmapImage(graphics);
-                }
-            }
-            else
-            {
-                RenderPlaceholder(graphics);
-            }
-
-            // Draw border if specified
-            if (BorderColor != Color.Transparent && BorderThickness > 0)
-            {
-                using Pen borderPen = new(BorderColor, BorderThickness);
-                if (actualRadius > 0)
-                {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                    graphics.DrawPath(borderPen, path);
-                }
-                else
-                {
-                    graphics.DrawRectangle(borderPen, Bounds);
-                }
+                RenderError(graphics);
             }
         }
 

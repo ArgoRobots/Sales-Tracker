@@ -25,7 +25,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
         // Private backing fields
         private Control _chartControl;
-        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalSales;
+        private MainMenu_Form.ChartDataType _chartType = MainMenu_Form.ChartDataType.TotalRevenue;
         private bool _showLegend = true;
         private bool _showTitle = true;
         private Color _borderColor = Color.Gray;
@@ -124,7 +124,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Id = Guid.NewGuid().ToString(),
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
@@ -137,123 +136,130 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            // Get the current graphics transform
-            float scaleX = graphics.Transform.Elements[0];
-            float scaleY = graphics.Transform.Elements[3];
-
-            // Check if we need to regenerate the cached bitmap
-            bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
-
-            if (needsRegeneration)
+            try
             {
-                // Check if configuration has changed and reload chart data if necessary
-                bool needsReload = ShouldReloadChart(ChartType, config);
+                // Get the current graphics transform
+                float scaleX = graphics.Transform.Elements[0];
+                float scaleY = graphics.Transform.Elements[3];
 
-                if (_chartControl == null || needsReload)
+                // Check if we need to regenerate the cached bitmap
+                bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
+
+                if (needsRegeneration)
                 {
-                    // Dispose of old control if reloading
-                    if (_chartControl != null && needsReload)
+                    // Check if configuration has changed and reload chart data if necessary
+                    bool needsReload = ShouldReloadChart(ChartType, config);
+
+                    if (_chartControl == null || needsReload)
                     {
-                        _chartControl.Dispose();
-                        _chartControl = null;
+                        // Dispose of old control if reloading
+                        if (_chartControl != null && needsReload)
+                        {
+                            _chartControl.Dispose();
+                            _chartControl = null;
+                        }
+
+                        LoadChartData(ChartType, config);
                     }
 
-                    LoadChartData(ChartType, config);
-                }
-
-                // Clear old cached bitmap
-                if (_cachedBitmap != null)
-                {
-                    _cachedBitmap.Dispose();
-                    _cachedBitmap = null;
-                }
-
-                // Generate and cache the new bitmap
-                if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
-                {
-                    _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
-                }
-                else if (_chartControl != null && _chartControl is PieChart pieChart)
-                {
-                    _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
-                }
-                else if (_chartControl != null && _chartControl is GeoMap geoMap)
-                {
-                    _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
-                }
-
-                // Update cache metadata
-                if (_cachedBitmap != null)
-                {
-                    _cachedSize = Bounds.Size;
-                    _cachedRenderScale = renderScale;
-
-                    if (config?.Filters != null)
+                    // Clear old cached bitmap
+                    if (_cachedBitmap != null)
                     {
-                        _cachedConfig = (
-                            config.Filters.StartDate,
-                            config.Filters.EndDate,
-                            config.Filters.IncludeReturns,
-                            config.Filters.IncludeLosses
+                        _cachedBitmap.Dispose();
+                        _cachedBitmap = null;
+                    }
+
+                    // Generate and cache the new bitmap
+                    if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
+                    {
+                        _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is PieChart pieChart)
+                    {
+                        _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is GeoMap geoMap)
+                    {
+                        _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
+                    }
+
+                    // Update cache metadata
+                    if (_cachedBitmap != null)
+                    {
+                        _cachedSize = Bounds.Size;
+                        _cachedRenderScale = renderScale;
+
+                        if (config?.Filters != null)
+                        {
+                            _cachedConfig = (
+                                config.Filters.StartDate,
+                                config.Filters.EndDate,
+                                config.Filters.IncludeReturns,
+                                config.Filters.IncludeLosses
+                            );
+                        }
+                    }
+                }
+
+                // Render the cached bitmap
+                if (_cachedBitmap != null)
+                {
+                    GraphicsState state = graphics.Save();
+                    try
+                    {
+                        graphics.ResetTransform();
+                        PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                        Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                        tempTransform.TransformPoints(points);
+
+                        Rectangle targetRect = new(
+                            (int)points[0].X,
+                            (int)points[0].Y,
+                            (int)(Bounds.Width * scaleX),
+                            (int)(Bounds.Height * scaleY)
+                        );
+
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                        graphics.DrawImage(_cachedBitmap, targetRect);
+                    }
+                    finally
+                    {
+                        graphics.Restore(state);
+                    }
+                }
+                else
+                {
+                    // Fallback to placeholder if chart control is not available
+                    RenderPlaceholder(graphics, $"Chart: {ChartType}");
+                }
+
+                // Draw border if needed (drawn after bitmap)
+                if (_borderColor != Color.Transparent && _borderThickness > 0)
+                {
+                    using Pen borderPen = new(_borderColor, _borderThickness);
+
+                    // Adjust rectangle to account for border thickness to prevent clipping
+                    Rectangle borderRect = Bounds;
+                    if (_borderThickness > 1)
+                    {
+                        int offset = _borderThickness / 2;
+                        borderRect = new Rectangle(
+                            Bounds.X + offset,
+                            Bounds.Y + offset,
+                            Bounds.Width - _borderThickness,
+                            Bounds.Height - _borderThickness
                         );
                     }
+
+                    graphics.DrawRectangle(borderPen, borderRect);
                 }
             }
-
-            // Render the cached bitmap
-            if (_cachedBitmap != null)
+            catch
             {
-                GraphicsState state = graphics.Save();
-                try
-                {
-                    graphics.ResetTransform();
-                    PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                    Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                    tempTransform.TransformPoints(points);
-
-                    Rectangle targetRect = new(
-                        (int)points[0].X,
-                        (int)points[0].Y,
-                        (int)(Bounds.Width * scaleX),
-                        (int)(Bounds.Height * scaleY)
-                    );
-
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                    graphics.DrawImage(_cachedBitmap, targetRect);
-                }
-                finally
-                {
-                    graphics.Restore(state);
-                }
-            }
-            else
-            {
-                // Fallback to placeholder if chart control is not available
-                RenderPlaceholder(graphics, $"Chart: {ChartType}");
-            }
-
-            // Draw border if needed (drawn after bitmap)
-            if (_borderColor != Color.Transparent && _borderThickness > 0)
-            {
-                using Pen borderPen = new(_borderColor, _borderThickness);
-
-                // Adjust rectangle to account for border thickness to prevent clipping
-                Rectangle borderRect = Bounds;
-                if (_borderThickness > 1)
-                {
-                    int offset = _borderThickness / 2;
-                    borderRect = new Rectangle(
-                        Bounds.X + offset,
-                        Bounds.Y + offset,
-                        Bounds.Width - _borderThickness,
-                        Bounds.Height - _borderThickness
-                    );
-                }
-
-                graphics.DrawRectangle(borderPen, borderRect);
+                RenderError(graphics);
             }
         }
         private bool ShouldRegenerateBitmap(ReportConfiguration config, float renderScale)
@@ -352,23 +358,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 // Load charts with filtered DataGridViews
                 switch (chartType)
                 {
-                    case MainMenu_Form.ChartDataType.TotalSales:
+                    case MainMenu_Form.ChartDataType.TotalRevenue:
                         LoadChart.LoadTotalsIntoChart(salesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalPurchases:
+                    case MainMenu_Form.ChartDataType.TotalExpenses:
                         LoadChart.LoadTotalsIntoChart(purchasesDataGridView, (CartesianChart)_chartControl, isLine);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    case MainMenu_Form.ChartDataType.RevenueDistribution:
                         LoadChart.LoadDistributionIntoChart(salesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    case MainMenu_Form.ChartDataType.ExpensesDistribution:
                         LoadChart.LoadDistributionIntoChart(purchasesDataGridView, (PieChart)_chartControl, PieChartGrouping.Top12);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Profits:
+                    case MainMenu_Form.ChartDataType.TotalProfits:
                         LoadChart.LoadProfitsIntoChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -389,13 +395,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.Accountants:
+                    case MainMenu_Form.ChartDataType.AccountantsTransactions:
                         LoadChart.LoadAccountantsIntoChart((PieChart)_chartControl, PieChartGrouping.Top8,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
                         break;
 
-                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    case MainMenu_Form.ChartDataType.SalesVsExpenses:
                         LoadChart.LoadSalesVsExpensesChart((CartesianChart)_chartControl, isLine,
                             purchasesDataGridView: purchasesDataGridView,
                             salesDataGridView: salesDataGridView);
@@ -588,10 +594,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsCartesianChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.TotalSales or
-                MainMenu_Form.ChartDataType.TotalPurchases or
-                MainMenu_Form.ChartDataType.Profits or
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales or
+                MainMenu_Form.ChartDataType.TotalRevenue or
+                MainMenu_Form.ChartDataType.TotalExpenses or
+                MainMenu_Form.ChartDataType.TotalProfits or
+                MainMenu_Form.ChartDataType.SalesVsExpenses or
                 MainMenu_Form.ChartDataType.AverageTransactionValue or
                 MainMenu_Form.ChartDataType.TotalTransactions or
                 MainMenu_Form.ChartDataType.AverageShippingCosts or
@@ -606,12 +612,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private static bool IsPieChartType(MainMenu_Form.ChartDataType chartType)
         {
             return chartType is
-                MainMenu_Form.ChartDataType.DistributionOfSales or
-                MainMenu_Form.ChartDataType.DistributionOfPurchases or
+                MainMenu_Form.ChartDataType.RevenueDistribution or
+                MainMenu_Form.ChartDataType.ExpensesDistribution or
                 MainMenu_Form.ChartDataType.CountriesOfOrigin or
                 MainMenu_Form.ChartDataType.CompaniesOfOrigin or
                 MainMenu_Form.ChartDataType.CountriesOfDestination or
-                MainMenu_Form.ChartDataType.Accountants or
+                MainMenu_Form.ChartDataType.AccountantsTransactions or
                 MainMenu_Form.ChartDataType.ReturnReasons or
                 MainMenu_Form.ChartDataType.ReturnsByCategory or
                 MainMenu_Form.ChartDataType.ReturnsByProduct or
@@ -928,14 +934,18 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Chart type selector
-            text = LanguageManager.TranslateString("Chart") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Guna2ComboBox chartCombo = AddPropertyComboBox(container, ChartType.ToString(), yPosition,
-                GetAvailableChartTypes(),
+            // Chart type selection
+            text = LanguageManager.TranslateString("Chart Type") + ":";
+            Label chartTypeLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox chartTypeTextBox = AddPropertySearchBox(
+                container,
+                TranslatedChartTitles.GetChartDisplayName(ChartType),
+                yPosition,
+                GetChartTypeSearchResults,
                 value =>
                 {
-                    MainMenu_Form.ChartDataType newChartType = Enum.Parse<MainMenu_Form.ChartDataType>(value);
+                    MainMenu_Form.ChartDataType newChartType = GetChartTypeFromDisplayName(value);
                     if (ChartType != newChartType)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -943,28 +953,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             nameof(ChartType),
                             ChartType,
                             newChartType,
-                            () =>
-                            {
-                                // Dispose old chart control when type changes
-                                _chartControl?.Dispose();
-                                _chartControl = null;
-                                onPropertyChanged();
-                            }));
+                            onPropertyChanged));
                         ChartType = newChartType;
-                        _chartControl?.Dispose();
-                        _chartControl = null;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("ChartType", chartCombo, () => chartCombo.SelectedItem = ChartType.ToString());
+                },
+                chartTypeLabel);
+
+            CacheControl("ChartType", chartTypeTextBox,
+                () => chartTypeTextBox.Text = TranslatedChartTitles.GetChartDisplayName(ChartType));
             yPosition += ControlRowHeight;
 
-            // Font family
+            // Font Family
             text = LanguageManager.TranslateString("Font") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
-                             "Tahoma", "Georgia", "Courier New", "Consolas", "Trebuchet MS"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
+            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                container,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -978,9 +986,23 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
+
+            // Make both TextBoxes the same size
+            if (chartTypeTextBox.Width < fontTextBox.Width)
+            {
+                fontTextBox.Width = chartTypeTextBox.Width;
+                fontTextBox.Left = chartTypeTextBox.Left;
+            }
+            else
+            {
+                chartTypeTextBox.Width = fontTextBox.Width;
+                chartTypeTextBox.Left = fontTextBox.Left;
+            }
 
             // Title font size
             text = LanguageManager.TranslateString("Title Size") + ":";
@@ -1112,9 +1134,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             return yPosition;
         }
-        private static string[] GetAvailableChartTypes()
+        private static List<SearchResult> GetChartTypeSearchResults()
         {
-            return Enum.GetNames<MainMenu_Form.ChartDataType>();
+            return Enum.GetValues<MainMenu_Form.ChartDataType>()
+                .Select(type => new SearchResult(
+                    TranslatedChartTitles.GetChartDisplayName(type),
+                    null,
+                    0))
+                .ToList();
+        }
+        private static MainMenu_Form.ChartDataType GetChartTypeFromDisplayName(string displayName)
+        {
+            foreach (MainMenu_Form.ChartDataType type in Enum.GetValues<MainMenu_Form.ChartDataType>())
+            {
+                if (TranslatedChartTitles.GetChartDisplayName(type) == displayName)
+                {
+                    return type;
+                }
+            }
+            return MainMenu_Form.ChartDataType.TotalRevenue;  // Default fallback
         }
         private void RenderPlaceholder(Graphics graphics, string text)
         {

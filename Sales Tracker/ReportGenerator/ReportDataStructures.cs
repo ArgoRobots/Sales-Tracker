@@ -159,7 +159,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Transaction types to include.
         /// </summary>
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
 
         /// <summary>
         /// Selected chart types to include.
@@ -188,9 +188,8 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public enum TransactionType
     {
-        Sales,
-        Purchases,
-        Both
+        Expenses,
+        Revenue
     }
 
     /// <summary>

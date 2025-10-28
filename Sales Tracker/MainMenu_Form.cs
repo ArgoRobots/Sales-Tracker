@@ -87,7 +87,11 @@ namespace Sales_Tracker
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
-                CompanyLogo.CompanyLogoRightClick_Panel);
+                CompanyLogo.CompanyLogoRightClick_Panel,
+                DateRangePanel,
+                File_Button,
+                Help_Button,
+                TimeRange_Button);
 
             Application.AddMessageFilter(panelCloseFilter);
 
@@ -374,11 +378,11 @@ namespace Sales_Tracker
         private void InitChartTags()
         {
             // Main charts
-            TotalPurchases_Chart.Tag = ChartDataType.TotalPurchases;
-            DistributionOfPurchases_Chart.Tag = ChartDataType.DistributionOfPurchases;
-            TotalSales_Chart.Tag = ChartDataType.TotalSales;
-            DistributionOfSales_Chart.Tag = ChartDataType.DistributionOfSales;
-            Profits_Chart.Tag = ChartDataType.Profits;
+            TotalPurchases_Chart.Tag = ChartDataType.TotalExpenses;
+            DistributionOfPurchases_Chart.Tag = ChartDataType.ExpensesDistribution;
+            TotalSales_Chart.Tag = ChartDataType.TotalRevenue;
+            DistributionOfSales_Chart.Tag = ChartDataType.RevenueDistribution;
+            Profits_Chart.Tag = ChartDataType.TotalProfits;
 
             // Geographic Analysis Charts
             CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
@@ -387,11 +391,11 @@ namespace Sales_Tracker
             WorldMap_GeoMap.Tag = ChartDataType.WorldMap;
 
             // Operational Charts
-            Accountants_Chart.Tag = ChartDataType.Accountants;
+            Accountants_Chart.Tag = ChartDataType.AccountantsTransactions;
 
             // Performance and Growth Charts
             GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
-            TotalExpensesVsSales_Chart.Tag = ChartDataType.TotalExpensesVsSales;
+            TotalExpensesVsSales_Chart.Tag = ChartDataType.SalesVsExpenses;
             TotalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
             AverageTransactionValue_Chart.Tag = ChartDataType.AverageTransactionValue;
             AverageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
@@ -1160,6 +1164,7 @@ namespace Sales_Tracker
             }
             else
             {
+                ClosePanels();
                 button.Image = whiteImage;
 
                 // Calculate X position based on left or right alignment
@@ -1361,7 +1366,7 @@ namespace Sales_Tracker
         }
 
         // DateRange
-        public static Guna2Panel DateRangePanel { get; private set; }
+        public static Guna2Panel DateRangePanel { get; set; }
         private static void ConstructTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
@@ -1375,6 +1380,8 @@ namespace Sales_Tracker
             }
             else
             {
+                ClosePanels();
+
                 // Set the location for the panel
                 DateRangePanel.Location = new Point(
                     TimeRange_Button.Right - DateRangePanel.Width,
@@ -2264,16 +2271,16 @@ namespace Sales_Tracker
         }
         public enum ChartDataType
         {
-            TotalSales,
-            TotalPurchases,
-            DistributionOfSales,
-            DistributionOfPurchases,
-            Profits,
+            TotalRevenue,
+            TotalExpenses,
+            RevenueDistribution,
+            ExpensesDistribution,
+            TotalProfits,
             CountriesOfOrigin,
             CompaniesOfOrigin,
             CountriesOfDestination,
-            Accountants,
-            TotalExpensesVsSales,
+            AccountantsTransactions,
+            SalesVsExpenses,
             AverageTransactionValue,
             TotalTransactions,
             AverageShippingCosts,

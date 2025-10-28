@@ -3,6 +3,7 @@ using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -178,6 +179,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Don't intercept arrow keys if properties panel has focus
+            if (ActiveControl is Guna2GroupBox)
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+
             // Undo/Redo shortcuts
             if (keyData == (Keys.Control | Keys.Z))
             {
@@ -245,26 +252,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return true;
             }
 
-            // Shift+Arrow for larger movements (10 pixels)
-            if (keyData == (Keys.Shift | Keys.Left))
+            // Shift+Arrow or Ctrl+Arrow for larger movements (10 pixels)
+            if (keyData == (Keys.Shift | Keys.Left) || keyData == (Keys.Control | Keys.Left))
             {
                 MoveSelectedElementsWithUndo(-10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Right))
+            if (keyData == (Keys.Shift | Keys.Right) || keyData == (Keys.Control | Keys.Right))
             {
                 MoveSelectedElementsWithUndo(10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Up))
+            if (keyData == (Keys.Shift | Keys.Up) || keyData == (Keys.Control | Keys.Up))
             {
                 MoveSelectedElementsWithUndo(0, -10);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Down))
+            if (keyData == (Keys.Shift | Keys.Down) || keyData == (Keys.Control | Keys.Down))
             {
                 MoveSelectedElementsWithUndo(0, 10);
                 return true;
@@ -298,7 +302,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Grid toggle
             if (keyData == (Keys.Control | Keys.G))
             {
-                ToggleSnapToGrid();
+                ShowGrid = !ShowGrid;
+                OnGridSettingsChanged();
                 return true;
             }
 
@@ -352,12 +357,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
 
             graphics.ScaleTransform(_canvasScaleFactor, _canvasScaleFactor);
-            ReportRenderer.RenderReport(graphics, pageSize, ReportConfig);
 
-            if (_snapToGrid)
-            {
-                DrawGrid(graphics);
-            }
+            ReportRenderer.RenderReport(graphics, pageSize, ReportConfig, ShowGrid);
 
             DrawSelectionForElements(graphics);
         }
@@ -375,7 +376,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
+                        ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             _isResizing = true;
@@ -392,7 +393,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Check single selected element
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, _selectedElement);
                     if (handle != ResizeHandle.None)
                     {
                         _isResizing = true;
@@ -411,11 +412,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     if (ctrlPressed)
                     {
-                        // Toggle selection
-                        if (_selectedElements.Contains(clickedElement))
+                        if (_selectedElements.Remove(clickedElement))
                         {
-                            clickedElement.IsSelected = false;
-                            _selectedElements.Remove(clickedElement);
+                            // Remove succeeded, so it was in the list
                             if (_selectedElement == clickedElement)
                             {
                                 _selectedElement = _selectedElements.FirstOrDefault();
@@ -427,6 +426,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         }
                         else
                         {
+                            // Remove failed, so it wasn't in the list - add it
                             SelectElement(clickedElement, true);
                         }
                     }
@@ -473,7 +473,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
+                        ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             newCursor = GetCursorForHandle(handle);
@@ -483,7 +483,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, _selectedElement);
                     newCursor = GetCursorForHandle(handle);
                 }
 
@@ -604,6 +604,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Apply movement if there's any valid delta
                 if (actualDeltaX != 0 || actualDeltaY != 0)
                 {
+                    // For grid snapping with multiple elements, snap the first element
+                    // and use its actual movement for all others
+                    if (ShowGrid && _selectedElements.Count > 0)
+                    {
+                        BaseElement firstElement = _selectedElements[0];
+                        Rectangle firstOldBounds = firstElement.Bounds;
+                        Rectangle firstNewBounds = firstOldBounds;
+                        firstNewBounds.X += actualDeltaX;
+                        firstNewBounds.Y += actualDeltaY;
+
+                        firstNewBounds = SnapToGrid(firstNewBounds);
+
+                        // Recalculate actual deltas based on snapped position
+                        actualDeltaX = firstNewBounds.X - firstOldBounds.X;
+                        actualDeltaY = firstNewBounds.Y - firstOldBounds.Y;
+                    }
+
                     foreach (BaseElement element in _selectedElements)
                     {
                         Rectangle oldBounds = element.Bounds;
@@ -611,12 +628,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                         newBounds.X += actualDeltaX;
                         newBounds.Y += actualDeltaY;
-
-                        // Apply grid snapping if enabled
-                        if (_snapToGrid)
-                        {
-                            newBounds = SnapToGrid(newBounds);
-                        }
 
                         element.Bounds = newBounds;
 
@@ -660,7 +671,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     newBounds.Y = newY;
 
                     // Apply grid snapping if enabled
-                    if (_snapToGrid)
+                    if (ShowGrid)
                     {
                         newBounds = SnapToGrid(newBounds);
                         actualDeltaX = newBounds.X - oldBounds.X;
@@ -877,6 +888,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             NotifyParentValidationChanged();
             Canvas_Panel.Invalidate();
         }
+        public void OnGridSettingsChanged()
+        {
+            Canvas_Panel.Invalidate();
+        }
 
         /// <summary>
         /// Resizes the canvas to match the current page dimensions, maximizing size while fitting in the panel.
@@ -951,7 +966,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    // Calculate dropdown position (below the button, aligned with main undo button)
                     Point dropdownLocation = new(
                         RightCanvas_Panel.Left + Undo_Button.Left,
                         Undo_Button.Bottom + 2
@@ -972,7 +986,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    // Calculate dropdown position (below the button, aligned with main redo button)
                     Point dropdownLocation = new(
                         RightCanvas_Panel.Left + Redo_Button.Left,
                         Redo_Button.Bottom + 2
@@ -1492,47 +1505,38 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         // Grids
-        private const int GRID_SIZE = 10;
-        private bool _snapToGrid = false;
-        private static void DrawGrid(Graphics g)
-        {
-            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-
-            using Pen pen = new(Color.FromArgb(30, CustomColors.ControlBorder), 1);
-            pen.DashStyle = DashStyle.Dot;
-
-            // Draw in page coordinates
-            for (int x = 0; x < pageSize.Width; x += GRID_SIZE)
-            {
-                g.DrawLine(pen, x, 0, x, pageSize.Height);
-            }
-
-            for (int y = 0; y < pageSize.Height; y += GRID_SIZE)
-            {
-                g.DrawLine(pen, 0, y, pageSize.Width, y);
-            }
-        }
-        private void ToggleSnapToGrid()
-        {
-            _snapToGrid = !_snapToGrid;
-        }
-        private Point SnapToGrid(Point point)
-        {
-            if (!_snapToGrid) { return point; }
-
-            int x = (point.X / GRID_SIZE) * GRID_SIZE;
-            int y = (point.Y / GRID_SIZE) * GRID_SIZE;
-            return new Point(x, y);
-        }
+        public static int GridSize { get; set; } = 30;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowGrid { get; set; } = false;
         private Rectangle SnapToGrid(Rectangle rect)
         {
-            if (!_snapToGrid) { return rect; }
+            if (!ShowGrid) { return rect; }
 
-            Point snappedLocation = SnapToGrid(rect.Location);
-            int width = ((rect.Width + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
-            int height = ((rect.Height + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
+            Point snappedLocation = GetGridPosition(rect.Location);
+            int width = (rect.Width + GridSize / 2) / GridSize * GridSize;
+            int height = (rect.Height + GridSize / 2) / GridSize * GridSize;
 
             return new Rectangle(snappedLocation, new Size(width, height));
+        }
+        private Point GetGridPosition(Point point)
+        {
+            if (!ShowGrid) { return point; }
+
+            // Calculate grid offset based on header
+            int topY = 0;
+            if (ReportConfig.ShowHeader)
+            {
+                topY = ReportConfig.PageMargins.Top + ReportRenderer.HeaderHeight + ReportRenderer.SeparatorHeight;
+            }
+
+            int x = (point.X + GridSize / 2) / GridSize * GridSize;  // Snap to nearest
+
+            // Snap Y relative to content area top
+            int relativeY = point.Y - topY;
+            int snappedRelativeY = (relativeY + GridSize / 2) / GridSize * GridSize;
+            int y = topY + snappedRelativeY;
+
+            return new Point(x, y);
         }
 
         // Selection
@@ -1543,16 +1547,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!addToSelection && !_isMultiSelecting)
             {
                 // Clear existing selection
-                foreach (BaseElement el in _selectedElements)
-                {
-                    el.IsSelected = false;
-                }
                 _selectedElements.Clear();
             }
 
             if (!_selectedElements.Contains(element))
             {
-                element.IsSelected = true;
                 _selectedElements.Add(element);
                 _selectedElement = element;
             }
@@ -1608,18 +1607,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             foreach (BaseElement element in elements)
             {
-                using Pen pen = new(CustomColors.AccentBlue, 3);
+                using Pen pen = new(CustomColors.AccentBlue, 4);
                 pen.DashStyle = DashStyle.Solid;
                 g.DrawRectangle(pen, element.Bounds);
             }
         }
         public void ClearAllSelections()
         {
-            foreach (BaseElement element in _selectedElements)
-            {
-                element.IsSelected = false;
-            }
-
             _selectedElements.Clear();
             _selectedElement = null;
             Canvas_Panel.Invalidate();
@@ -1664,7 +1658,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 if (!_selectedElements.Contains(element))
                 {
-                    element.IsSelected = true;
                     _selectedElements.Add(element);
                     InvalidateElementRegion(element.Bounds);
                 }
@@ -1677,7 +1670,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in toRemove)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 InvalidateElementRegion(element.Bounds);
             }
@@ -1708,7 +1700,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if the primary selected element was removed
             if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
             {
-                _selectedElement.IsSelected = false;
                 _selectedElement = null;
                 selectionChanged = true;
             }
@@ -1720,7 +1711,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in removedElements)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 selectionChanged = true;
             }
@@ -1743,12 +1733,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Property panel methods
         private void CreateOrShowPropertiesPanel()
         {
-            if (_selectedElement == null)
-            {
-                HidePropertiesPanel();
-                return;
-            }
-
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
             ElementProperties_Label.Text = $"Selected: {elementName}";
@@ -1769,6 +1753,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
+
+                if (_selectedElement is TableElement)
+                {
+                    _selectedElement.UpdateAllControlValues();
+                }
 
                 LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
@@ -1852,6 +1841,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void UpdatePropertyValues()
         {
+            // Don't show element properties if multiple elements are selected
+            if (_selectedElements.Count > 1)
+            {
+                return;
+            }
+
             // Element handles its own value updates internally
             _selectedElement?.CreatePropertyControls(
                 PropertiesContainer_Panel,
@@ -1884,7 +1879,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // Clear the current property element reference
             _currentPropertyElement = null;
 
             // Recreate the property panel for the currently selected element with new translations
@@ -2000,8 +1994,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Enforce canvas bounds
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-            if (newBounds.X < 0) newBounds.X = 0;
-            if (newBounds.Y < 0) newBounds.Y = 0;
+            if (newBounds.X < 0) { newBounds.X = 0; }
+            if (newBounds.Y < 0) { newBounds.Y = 0; }
             if (newBounds.Right > pageSize.Width)
             {
                 newBounds.Width = pageSize.Width - newBounds.X;
@@ -2012,7 +2006,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Apply grid snapping if enabled
-            if (_snapToGrid)
+            if (ShowGrid)
             {
                 newBounds = SnapToGrid(newBounds);
             }
@@ -2029,7 +2023,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private static void DrawResizeHandles(Graphics g, Rectangle bounds)
         {
-            const int handleSize = 8;
+            const int handleSize = 12;
             using Brush brush = new SolidBrush(Color.Blue);
 
             // Corner handles
@@ -2038,7 +2032,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
             g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
         }
-        private static ResizeHandle GetResizeHandleAt(Point point, BaseElement element)
+        private static ResizeHandle GetResizeHandleAtPoint(Point point, BaseElement element)
         {
             if (element == null) { return ResizeHandle.None; }
 
@@ -2256,7 +2250,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
-            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
+            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private static BaseElement? GetElementAtPoint(Point point)
         {

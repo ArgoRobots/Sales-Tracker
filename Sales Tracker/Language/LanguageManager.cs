@@ -326,6 +326,8 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
 
+            DateRange_Form.Instance?.BeginInvoke(new Action(DateRange_Form.Instance.AdjustLabels));
+
             // Update all custom tooltips with the new language
             CustomTooltip.UpdateAllToolTipTranslations(targetLanguageAbbreviation);
         }
@@ -915,6 +917,9 @@ namespace Sales_Tracker.Language
             {
                 key += $"_{section}";
             }
+
+            // Handle DateRangePanel special case - Main_Panel is moved from DateRange_Form to MainMenu_Form
+            key = key.Replace("MainMenu_Form.Main_Panel", "DateRange_Form.Main_Panel");
 
             return key;
         }

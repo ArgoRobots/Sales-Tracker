@@ -47,7 +47,7 @@
             ZoomOut_Button = new Guna.UI2.WinForms.Guna2Button();
             ImagePanel = new Panel();
             ReceiptPictureBox = new PictureBox();
-            WebBrowser = new WebBrowser();
+            WebViewer = new Microsoft.Web.WebView2.WinForms.WebView2();
             ControlsPanel.SuspendLayout();
             ImagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ReceiptPictureBox).BeginInit();
@@ -218,24 +218,23 @@
             ReceiptPictureBox.TabIndex = 0;
             ReceiptPictureBox.TabStop = false;
             // 
-            // WebBrowser
+            // WebView2r
             // 
-            WebBrowser.Dock = DockStyle.Fill;
-            WebBrowser.Location = new Point(0, 0);
-            WebBrowser.Margin = new Padding(4, 5, 4, 5);
-            WebBrowser.MinimumSize = new Size(29, 33);
-            WebBrowser.Name = "WebBrowser";
-            WebBrowser.ScriptErrorsSuppressed = true;
-            WebBrowser.Size = new Size(1128, 914);
-            WebBrowser.TabIndex = 2;
-            WebBrowser.Visible = false;
+            WebViewer.Dock = DockStyle.Fill;
+            WebViewer.Location = new Point(0, 0);
+            WebViewer.Margin = new Padding(4, 5, 4, 5);
+            WebViewer.MinimumSize = new Size(29, 33);
+            WebViewer.Name = "WebView2r";
+            WebViewer.Size = new Size(1128, 914);
+            WebViewer.TabIndex = 2;
+            WebViewer.Visible = false;
             // 
             // ReceiptViewer_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1128, 994);
-            Controls.Add(WebBrowser);
+            Controls.Add(WebViewer);
             Controls.Add(ImagePanel);
             Controls.Add(ControlsPanel);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
@@ -267,6 +266,6 @@
         private System.Windows.Forms.Label Zoom_Label;
         private System.Windows.Forms.Panel ImagePanel;
         private System.Windows.Forms.PictureBox ReceiptPictureBox;
-        private WebBrowser WebBrowser;
+        private Microsoft.Web.WebView2.WinForms.WebView2 WebViewer;
     }
 }

@@ -42,6 +42,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             PageConfig_Label = new Label();
             PageSize_Label = new Label();
@@ -61,7 +65,14 @@
             StartingNumber_Label = new Label();
             PageNumber_NumericUpDown = new Guna.UI2.WinForms.Guna2NumericUpDown();
             Close_Button = new Guna.UI2.WinForms.Guna2Button();
+            GridSize_NumericUpDown = new Guna.UI2.WinForms.Guna2NumericUpDown();
+            GridSize_Label = new Label();
+            label3 = new Label();
+            guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
+            ShowGrid_Label = new Label();
+            ShowGrid_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ((System.ComponentModel.ISupportInitialize)PageNumber_NumericUpDown).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)GridSize_NumericUpDown).BeginInit();
             SuspendLayout();
             // 
             // Title_Label
@@ -69,11 +80,11 @@
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            Title_Label.Location = new Point(180, 20);
+            Title_Label.Location = new Point(215, 20);
             Title_Label.Name = "Title_Label";
-            Title_Label.Size = new Size(189, 38);
+            Title_Label.Size = new Size(119, 38);
             Title_Label.TabIndex = 0;
-            Title_Label.Text = "Page Settings";
+            Title_Label.Text = "Settings";
             // 
             // PageConfig_Label
             // 
@@ -81,7 +92,7 @@
             PageConfig_Label.AutoSize = true;
             PageConfig_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             PageConfig_Label.ForeColor = Color.Gray;
-            PageConfig_Label.Location = new Point(50, 80);
+            PageConfig_Label.Location = new Point(172, 80);
             PageConfig_Label.Name = "PageConfig_Label";
             PageConfig_Label.Size = new Size(205, 25);
             PageConfig_Label.TabIndex = 1;
@@ -92,7 +103,7 @@
             PageSize_Label.Anchor = AnchorStyles.Top;
             PageSize_Label.AutoSize = true;
             PageSize_Label.Font = new Font("Segoe UI", 9.5F);
-            PageSize_Label.Location = new Point(70, 125);
+            PageSize_Label.Location = new Point(70, 105);
             PageSize_Label.Name = "PageSize_Label";
             PageSize_Label.Size = new Size(92, 25);
             PageSize_Label.TabIndex = 2;
@@ -110,7 +121,7 @@
             PageSize_ComboBox.Font = new Font("Segoe UI", 9F);
             PageSize_ComboBox.ForeColor = Color.Black;
             PageSize_ComboBox.ItemHeight = 39;
-            PageSize_ComboBox.Location = new Point(70, 155);
+            PageSize_ComboBox.Location = new Point(70, 135);
             PageSize_ComboBox.Name = "PageSize_ComboBox";
             PageSize_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             PageSize_ComboBox.Size = new Size(400, 45);
@@ -122,7 +133,7 @@
             Orientation_Label.Anchor = AnchorStyles.Top;
             Orientation_Label.AutoSize = true;
             Orientation_Label.Font = new Font("Segoe UI", 9.5F);
-            Orientation_Label.Location = new Point(70, 210);
+            Orientation_Label.Location = new Point(70, 183);
             Orientation_Label.Name = "Orientation_Label";
             Orientation_Label.Size = new Size(108, 25);
             Orientation_Label.TabIndex = 4;
@@ -140,7 +151,7 @@
             PageOrientation_ComboBox.Font = new Font("Segoe UI", 9F);
             PageOrientation_ComboBox.ForeColor = Color.Black;
             PageOrientation_ComboBox.ItemHeight = 39;
-            PageOrientation_ComboBox.Location = new Point(70, 240);
+            PageOrientation_ComboBox.Location = new Point(70, 213);
             PageOrientation_ComboBox.Name = "PageOrientation_ComboBox";
             PageOrientation_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             PageOrientation_ComboBox.Size = new Size(400, 45);
@@ -150,7 +161,7 @@
             // PageConfigSeparator
             // 
             PageConfigSeparator.Anchor = AnchorStyles.Top;
-            PageConfigSeparator.Location = new Point(50, 295);
+            PageConfigSeparator.Location = new Point(50, 264);
             PageConfigSeparator.Name = "PageConfigSeparator";
             PageConfigSeparator.Size = new Size(450, 10);
             PageConfigSeparator.TabIndex = 6;
@@ -161,7 +172,7 @@
             HeaderFooter_Label.AutoSize = true;
             HeaderFooter_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             HeaderFooter_Label.ForeColor = Color.Gray;
-            HeaderFooter_Label.Location = new Point(50, 315);
+            HeaderFooter_Label.Location = new Point(190, 277);
             HeaderFooter_Label.Name = "HeaderFooter_Label";
             HeaderFooter_Label.Size = new Size(168, 25);
             HeaderFooter_Label.TabIndex = 7;
@@ -176,7 +187,7 @@
             IncludeHeader_CheckBox.CheckedState.BorderThickness = 0;
             IncludeHeader_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeHeader_CheckBox.CustomizableEdges = customizableEdges5;
-            IncludeHeader_CheckBox.Location = new Point(70, 355);
+            IncludeHeader_CheckBox.Location = new Point(70, 317);
             IncludeHeader_CheckBox.Name = "IncludeHeader_CheckBox";
             IncludeHeader_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             IncludeHeader_CheckBox.Size = new Size(20, 20);
@@ -192,12 +203,11 @@
             IncludeHeader_Label.Anchor = AnchorStyles.Top;
             IncludeHeader_Label.AutoSize = true;
             IncludeHeader_Label.Font = new Font("Segoe UI", 9.5F);
-            IncludeHeader_Label.Location = new Point(95, 352);
+            IncludeHeader_Label.Location = new Point(95, 314);
             IncludeHeader_Label.Name = "IncludeHeader_Label";
             IncludeHeader_Label.Size = new Size(138, 25);
             IncludeHeader_Label.TabIndex = 9;
             IncludeHeader_Label.Text = "Include header";
-            IncludeHeader_Label.Click += IncludeHeader_Label_Click;
             // 
             // IncludeFooter_CheckBox
             // 
@@ -208,7 +218,7 @@
             IncludeFooter_CheckBox.CheckedState.BorderThickness = 0;
             IncludeFooter_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeFooter_CheckBox.CustomizableEdges = customizableEdges7;
-            IncludeFooter_CheckBox.Location = new Point(70, 390);
+            IncludeFooter_CheckBox.Location = new Point(70, 352);
             IncludeFooter_CheckBox.Name = "IncludeFooter_CheckBox";
             IncludeFooter_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             IncludeFooter_CheckBox.Size = new Size(20, 20);
@@ -224,17 +234,16 @@
             IncludeFooter_Label.Anchor = AnchorStyles.Top;
             IncludeFooter_Label.AutoSize = true;
             IncludeFooter_Label.Font = new Font("Segoe UI", 9.5F);
-            IncludeFooter_Label.Location = new Point(95, 387);
+            IncludeFooter_Label.Location = new Point(95, 349);
             IncludeFooter_Label.Name = "IncludeFooter_Label";
             IncludeFooter_Label.Size = new Size(130, 25);
             IncludeFooter_Label.TabIndex = 11;
             IncludeFooter_Label.Text = "Include footer";
-            IncludeFooter_Label.Click += IncludeFooter_Label_Click;
             // 
             // HeaderFooterSeparator
             // 
             HeaderFooterSeparator.Anchor = AnchorStyles.Top;
-            HeaderFooterSeparator.Location = new Point(50, 430);
+            HeaderFooterSeparator.Location = new Point(50, 378);
             HeaderFooterSeparator.Name = "HeaderFooterSeparator";
             HeaderFooterSeparator.Size = new Size(450, 10);
             HeaderFooterSeparator.TabIndex = 12;
@@ -245,7 +254,7 @@
             PageNumbers_Label.AutoSize = true;
             PageNumbers_Label.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             PageNumbers_Label.ForeColor = Color.Gray;
-            PageNumbers_Label.Location = new Point(50, 450);
+            PageNumbers_Label.Location = new Point(201, 391);
             PageNumbers_Label.Name = "PageNumbers_Label";
             PageNumbers_Label.Size = new Size(146, 25);
             PageNumbers_Label.TabIndex = 13;
@@ -260,7 +269,7 @@
             ShowPageNumbers_CheckBox.CheckedState.BorderThickness = 0;
             ShowPageNumbers_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             ShowPageNumbers_CheckBox.CustomizableEdges = customizableEdges9;
-            ShowPageNumbers_CheckBox.Location = new Point(70, 490);
+            ShowPageNumbers_CheckBox.Location = new Point(70, 431);
             ShowPageNumbers_CheckBox.Name = "ShowPageNumbers_CheckBox";
             ShowPageNumbers_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ShowPageNumbers_CheckBox.Size = new Size(20, 20);
@@ -276,19 +285,18 @@
             ShowPageNumbers_Label.Anchor = AnchorStyles.Top;
             ShowPageNumbers_Label.AutoSize = true;
             ShowPageNumbers_Label.Font = new Font("Segoe UI", 9.5F);
-            ShowPageNumbers_Label.Location = new Point(95, 487);
+            ShowPageNumbers_Label.Location = new Point(95, 428);
             ShowPageNumbers_Label.Name = "ShowPageNumbers_Label";
             ShowPageNumbers_Label.Size = new Size(184, 25);
             ShowPageNumbers_Label.TabIndex = 15;
             ShowPageNumbers_Label.Text = "Show page numbers";
-            ShowPageNumbers_Label.Click += ShowPageNumbers_Label_Click;
             // 
             // StartingNumber_Label
             // 
             StartingNumber_Label.Anchor = AnchorStyles.Top;
             StartingNumber_Label.AutoSize = true;
             StartingNumber_Label.Font = new Font("Segoe UI", 9.5F);
-            StartingNumber_Label.Location = new Point(70, 538);
+            StartingNumber_Label.Location = new Point(70, 479);
             StartingNumber_Label.Name = "StartingNumber_Label";
             StartingNumber_Label.Size = new Size(152, 25);
             StartingNumber_Label.TabIndex = 16;
@@ -301,7 +309,7 @@
             PageNumber_NumericUpDown.BorderRadius = 4;
             PageNumber_NumericUpDown.CustomizableEdges = customizableEdges11;
             PageNumber_NumericUpDown.Font = new Font("Segoe UI", 9F);
-            PageNumber_NumericUpDown.Location = new Point(230, 525);
+            PageNumber_NumericUpDown.Location = new Point(230, 466);
             PageNumber_NumericUpDown.Margin = new Padding(4, 5, 4, 5);
             PageNumber_NumericUpDown.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
             PageNumber_NumericUpDown.Name = "PageNumber_NumericUpDown";
@@ -309,7 +317,7 @@
             PageNumber_NumericUpDown.Size = new Size(120, 50);
             PageNumber_NumericUpDown.TabIndex = 17;
             PageNumber_NumericUpDown.ValueChanged += PageNumber_NumericUpDown_ValueChanged;
-            PageNumber_NumericUpDown.KeyDown += PageNumber_NumericUpDown_KeyDown;
+            PageNumber_NumericUpDown.KeyDown += NumericUpDown_KeyDown;
             // 
             // Close_Button
             // 
@@ -325,7 +333,7 @@
             Close_Button.FillColor = Color.White;
             Close_Button.Font = new Font("Segoe UI", 10F);
             Close_Button.ForeColor = Color.Black;
-            Close_Button.Location = new Point(378, 599);
+            Close_Button.Location = new Point(396, 667);
             Close_Button.Name = "Close_Button";
             Close_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Close_Button.Size = new Size(140, 45);
@@ -333,11 +341,99 @@
             Close_Button.Text = "Close";
             Close_Button.Click += Close_Button_Click;
             // 
+            // GridSize_NumericUpDown
+            // 
+            GridSize_NumericUpDown.Anchor = AnchorStyles.Top;
+            GridSize_NumericUpDown.BackColor = Color.Transparent;
+            GridSize_NumericUpDown.BorderRadius = 4;
+            GridSize_NumericUpDown.CustomizableEdges = customizableEdges15;
+            GridSize_NumericUpDown.Font = new Font("Segoe UI", 9F);
+            GridSize_NumericUpDown.Increment = new decimal(new int[] { 5, 0, 0, 0 });
+            GridSize_NumericUpDown.Location = new Point(166, 611);
+            GridSize_NumericUpDown.Margin = new Padding(4, 5, 4, 5);
+            GridSize_NumericUpDown.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
+            GridSize_NumericUpDown.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
+            GridSize_NumericUpDown.Name = "GridSize_NumericUpDown";
+            GridSize_NumericUpDown.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            GridSize_NumericUpDown.Size = new Size(120, 50);
+            GridSize_NumericUpDown.TabIndex = 23;
+            GridSize_NumericUpDown.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            GridSize_NumericUpDown.ValueChanged += GridSize_NumericUpDown_ValueChanged;
+            GridSize_NumericUpDown.KeyDown += NumericUpDown_KeyDown;
+            // 
+            // GridSize_Label
+            // 
+            GridSize_Label.Anchor = AnchorStyles.Top;
+            GridSize_Label.AutoSize = true;
+            GridSize_Label.Font = new Font("Segoe UI", 9.5F);
+            GridSize_Label.Location = new Point(70, 624);
+            GridSize_Label.Name = "GridSize_Label";
+            GridSize_Label.Size = new Size(89, 25);
+            GridSize_Label.TabIndex = 22;
+            GridSize_Label.Text = "Grid size:";
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Top;
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label3.ForeColor = Color.Gray;
+            label3.Location = new Point(247, 537);
+            label3.Name = "label3";
+            label3.Size = new Size(54, 25);
+            label3.TabIndex = 20;
+            label3.Text = "GRID";
+            // 
+            // guna2Separator1
+            // 
+            guna2Separator1.Anchor = AnchorStyles.Top;
+            guna2Separator1.Location = new Point(50, 524);
+            guna2Separator1.Name = "guna2Separator1";
+            guna2Separator1.Size = new Size(450, 10);
+            guna2Separator1.TabIndex = 19;
+            // 
+            // ShowGrid_Label
+            // 
+            ShowGrid_Label.Anchor = AnchorStyles.Top;
+            ShowGrid_Label.AutoSize = true;
+            ShowGrid_Label.Font = new Font("Segoe UI", 9.5F);
+            ShowGrid_Label.Location = new Point(95, 573);
+            ShowGrid_Label.Name = "ShowGrid_Label";
+            ShowGrid_Label.Size = new Size(99, 25);
+            ShowGrid_Label.TabIndex = 25;
+            ShowGrid_Label.Text = "Show Grid";
+            // 
+            // ShowGrid_CheckBox
+            // 
+            ShowGrid_CheckBox.Anchor = AnchorStyles.Top;
+            ShowGrid_CheckBox.Animated = true;
+            ShowGrid_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ShowGrid_CheckBox.CheckedState.BorderRadius = 2;
+            ShowGrid_CheckBox.CheckedState.BorderThickness = 0;
+            ShowGrid_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            ShowGrid_CheckBox.CustomizableEdges = customizableEdges17;
+            ShowGrid_CheckBox.Location = new Point(70, 576);
+            ShowGrid_CheckBox.Name = "ShowGrid_CheckBox";
+            ShowGrid_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            ShowGrid_CheckBox.Size = new Size(20, 20);
+            ShowGrid_CheckBox.TabIndex = 24;
+            ShowGrid_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            ShowGrid_CheckBox.UncheckedState.BorderRadius = 2;
+            ShowGrid_CheckBox.UncheckedState.BorderThickness = 0;
+            ShowGrid_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            ShowGrid_CheckBox.CheckedChanged += ShowGrid_CheckBox_CheckedChanged;
+            // 
             // PageSettings_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(548, 669);
+            ClientSize = new Size(548, 724);
+            Controls.Add(ShowGrid_Label);
+            Controls.Add(ShowGrid_CheckBox);
+            Controls.Add(GridSize_NumericUpDown);
+            Controls.Add(GridSize_Label);
+            Controls.Add(label3);
+            Controls.Add(guna2Separator1);
             Controls.Add(Close_Button);
             Controls.Add(PageNumber_NumericUpDown);
             Controls.Add(StartingNumber_Label);
@@ -366,6 +462,7 @@
             Text = "Settings";
             Shown += PageSettings_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)PageNumber_NumericUpDown).EndInit();
+            ((System.ComponentModel.ISupportInitialize)GridSize_NumericUpDown).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -391,5 +488,11 @@
         private Label StartingNumber_Label;
         private Guna.UI2.WinForms.Guna2NumericUpDown PageNumber_NumericUpDown;
         public Guna.UI2.WinForms.Guna2Button Close_Button;
+        private Guna.UI2.WinForms.Guna2NumericUpDown GridSize_NumericUpDown;
+        private Label GridSize_Label;
+        private Label label3;
+        private Guna.UI2.WinForms.Guna2Separator guna2Separator1;
+        private Label ShowGrid_Label;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox ShowGrid_CheckBox;
     }
 }

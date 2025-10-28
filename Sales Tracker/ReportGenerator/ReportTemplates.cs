@@ -22,12 +22,12 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for sales data
-            config.Filters.TransactionType = TransactionType.Sales;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisMonth;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.DistributionOfSales,
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.RevenueDistribution,
                 MainMenu_Form.ChartDataType.GrowthRates,
                 MainMenu_Form.ChartDataType.AverageTransactionValue
             ]);
@@ -49,14 +49,14 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for financial data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisQuarter;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.TotalPurchases,
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                MainMenu_Form.ChartDataType.Profits
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.TotalExpenses,
+                MainMenu_Form.ChartDataType.SalesVsExpenses,
+                MainMenu_Form.ChartDataType.TotalProfits
             ]);
 
             AddFinancialOverviewElements(config);
@@ -76,7 +76,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for performance data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -103,7 +103,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for returns data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = true;
             config.Filters.IncludeLosses = false;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -133,7 +133,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for losses data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = false;
             config.Filters.IncludeLosses = true;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -163,7 +163,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for geographic data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -198,14 +198,14 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
+                ChartType = MainMenu_Form.ChartDataType.RevenueDistribution,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
@@ -243,28 +243,28 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
+                ChartType = MainMenu_Form.ChartDataType.SalesVsExpenses,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.Profits,
+                ChartType = MainMenu_Form.ChartDataType.TotalProfits,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[1, 0],
                 ZOrder = 3
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
+                ChartType = MainMenu_Form.ChartDataType.TotalExpenses,
                 Bounds = grid[1, 1],
                 ZOrder = 4
             });
