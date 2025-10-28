@@ -2357,11 +2357,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Update form title with asterisk if there are unsaved changes
             if (hasChanges)
             {
-                Text = title + " *";
+                ReportGenerator_Form.Instance.Text = title + " *";
             }
             else
             {
-                Text = title;
+                ReportGenerator_Form.Instance.Text = title;
             }
         }
         private void MarkAsChanged()
