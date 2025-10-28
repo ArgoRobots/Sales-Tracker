@@ -31,14 +31,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             Templates_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             TemplateName = new DataGridViewTextBoxColumn();
@@ -60,14 +60,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Size = new Size(250, 38);
             Title_Label.TabIndex = 0;
             Title_Label.Text = "Custom Templates";
-            //
+            // 
             // Templates_DataGridView
-            //
+            // 
             Templates_DataGridView.AllowUserToAddRows = false;
             Templates_DataGridView.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = Color.White;
             Templates_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             Templates_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Templates_DataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            Templates_DataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
@@ -78,7 +80,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             Templates_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             Templates_DataGridView.ColumnHeadersHeight = 60;
-            Templates_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             Templates_DataGridView.ColumnHeadersVisible = false;
             Templates_DataGridView.Columns.AddRange(new DataGridViewColumn[] { TemplateName });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -92,15 +93,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Templates_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             Templates_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
             Templates_DataGridView.Location = new Point(30, 80);
-            Templates_DataGridView.MultiSelect = true;
             Templates_DataGridView.Name = "Templates_DataGridView";
             Templates_DataGridView.ReadOnly = true;
             Templates_DataGridView.RowHeadersVisible = false;
+            Templates_DataGridView.RowHeadersWidth = 62;
             Templates_DataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             Templates_DataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             Templates_DataGridView.RowTemplate.Height = 35;
             Templates_DataGridView.ScrollBars = ScrollBars.Vertical;
-            Templates_DataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             Templates_DataGridView.Size = new Size(598, 284);
             Templates_DataGridView.TabIndex = 1;
             Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
@@ -124,13 +124,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Templates_DataGridView.ThemeStyle.RowsStyle.Height = 35;
             Templates_DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
             Templates_DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            Templates_DataGridView.SelectionChanged += Templates_DataGridView_SelectionChanged;
             Templates_DataGridView.CellDoubleClick += Templates_DataGridView_CellDoubleClick;
-            //
+            Templates_DataGridView.SelectionChanged += Templates_DataGridView_SelectionChanged;
+            // 
             // TemplateName
-            //
+            // 
             TemplateName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             TemplateName.HeaderText = "Template Name";
+            TemplateName.MinimumWidth = 8;
             TemplateName.Name = "TemplateName";
             TemplateName.ReadOnly = true;
             // 
@@ -138,7 +139,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // 
             Load_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             Load_Button.BorderRadius = 2;
-            Load_Button.CustomizableEdges = customizableEdges9;
+            Load_Button.CustomizableEdges = customizableEdges1;
             Load_Button.DisabledState.BorderColor = Color.DarkGray;
             Load_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Load_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -148,7 +149,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Load_Button.ForeColor = Color.White;
             Load_Button.Location = new Point(30, 399);
             Load_Button.Name = "Load_Button";
-            Load_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Load_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Load_Button.Size = new Size(130, 45);
             Load_Button.TabIndex = 3;
             Load_Button.Text = "Load";
@@ -160,7 +161,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Delete_Button.BorderColor = Color.LightGray;
             Delete_Button.BorderRadius = 2;
             Delete_Button.BorderThickness = 1;
-            Delete_Button.CustomizableEdges = customizableEdges11;
+            Delete_Button.CustomizableEdges = customizableEdges3;
             Delete_Button.DisabledState.BorderColor = Color.DarkGray;
             Delete_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Delete_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -171,7 +172,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Delete_Button.ForeColor = Color.Black;
             Delete_Button.Location = new Point(166, 399);
             Delete_Button.Name = "Delete_Button";
-            Delete_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Delete_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Delete_Button.Size = new Size(130, 45);
             Delete_Button.TabIndex = 4;
             Delete_Button.Text = "Delete";
@@ -183,7 +184,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Rename_Button.BorderColor = Color.LightGray;
             Rename_Button.BorderRadius = 2;
             Rename_Button.BorderThickness = 1;
-            Rename_Button.CustomizableEdges = customizableEdges13;
+            Rename_Button.CustomizableEdges = customizableEdges5;
             Rename_Button.DisabledState.BorderColor = Color.DarkGray;
             Rename_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Rename_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -194,7 +195,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Rename_Button.ForeColor = Color.Black;
             Rename_Button.Location = new Point(302, 399);
             Rename_Button.Name = "Rename_Button";
-            Rename_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Rename_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Rename_Button.Size = new Size(130, 45);
             Rename_Button.TabIndex = 5;
             Rename_Button.Text = "Rename";
@@ -206,7 +207,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Close_Button.BorderColor = Color.LightGray;
             Close_Button.BorderRadius = 2;
             Close_Button.BorderThickness = 1;
-            Close_Button.CustomizableEdges = customizableEdges15;
+            Close_Button.CustomizableEdges = customizableEdges7;
             Close_Button.DisabledState.BorderColor = Color.DarkGray;
             Close_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Close_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -216,7 +217,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Close_Button.ForeColor = Color.Black;
             Close_Button.Location = new Point(498, 399);
             Close_Button.Name = "Close_Button";
-            Close_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Close_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Close_Button.Size = new Size(130, 45);
             Close_Button.TabIndex = 6;
             Close_Button.Text = "Close";
@@ -249,7 +250,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Controls.Add(Templates_DataGridView);
             Controls.Add(Title_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(646, 520);
+            MinimumSize = new Size(680, 520);
             Name = "CustomTemplateManager_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
