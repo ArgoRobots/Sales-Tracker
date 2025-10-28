@@ -517,30 +517,16 @@ namespace Sales_Tracker.ReportGenerator
 
             return templates;
         }
-
-        /// <summary>
-        /// Checks if a template name is a built-in template.
-        /// </summary>
-        public static bool IsBuiltInTemplate(string templateName)
-        {
-            return templateName == TemplateNames.Custom ||
-                   templateName == TemplateNames.MonthlySales ||
-                   templateName == TemplateNames.FinancialOverview ||
-                   templateName == TemplateNames.PerformanceAnalysis ||
-                   templateName == TemplateNames.ReturnsAnalysis ||
-                   templateName == TemplateNames.LossesAnalysis ||
-                   templateName == TemplateNames.GeographicAnalysis;
-        }
         public static ReportConfiguration CreateFromTemplateIndex(int index)
         {
             // First 7 templates are built-in
-            if (index == 0) return new ReportConfiguration();  // Custom report
-            if (index == 1) return CreateMonthlySalesTemplate();
-            if (index == 2) return CreateFinancialOverviewTemplate();
-            if (index == 3) return CreatePerformanceAnalysisTemplate();
-            if (index == 4) return CreateReturnsAnalysisTemplate();
-            if (index == 5) return CreateLossesAnalysisTemplate();
-            if (index == 6) return CreateGeographicAnalysisTemplate();
+            if (index == 0) { return new ReportConfiguration(); }  // Custom report
+            if (index == 1) { return CreateMonthlySalesTemplate(); }
+            if (index == 2) { return CreateFinancialOverviewTemplate(); }
+            if (index == 3) { return CreatePerformanceAnalysisTemplate(); }
+            if (index == 4) { return CreateReturnsAnalysisTemplate(); }
+            if (index == 5) { return CreateLossesAnalysisTemplate(); }
+            if (index == 6) { return CreateGeographicAnalysisTemplate(); }
 
             // Custom templates start at index 7
             List<string> customTemplates = CustomTemplateStorage.GetCustomTemplateNames();
@@ -553,35 +539,6 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return new ReportConfiguration();
-        }
-
-        /// <summary>
-        /// Creates a ReportConfiguration from a template name.
-        /// </summary>
-        public static ReportConfiguration CreateFromTemplateName(string templateName)
-        {
-            if (string.IsNullOrEmpty(templateName))
-            {
-                return new ReportConfiguration();
-            }
-
-            // Check if it's a built-in template
-            if (templateName == TemplateNames.MonthlySales)
-                return CreateMonthlySalesTemplate();
-            if (templateName == TemplateNames.FinancialOverview)
-                return CreateFinancialOverviewTemplate();
-            if (templateName == TemplateNames.PerformanceAnalysis)
-                return CreatePerformanceAnalysisTemplate();
-            if (templateName == TemplateNames.ReturnsAnalysis)
-                return CreateReturnsAnalysisTemplate();
-            if (templateName == TemplateNames.LossesAnalysis)
-                return CreateLossesAnalysisTemplate();
-            if (templateName == TemplateNames.GeographicAnalysis)
-                return CreateGeographicAnalysisTemplate();
-
-            // Try to load as custom template
-            ReportConfiguration config = CustomTemplateStorage.LoadTemplate(templateName);
-            return config ?? new ReportConfiguration();
         }
     }
 }
