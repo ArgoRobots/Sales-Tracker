@@ -14,6 +14,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         public string TemplateName { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrentTemplateName { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsRenameMode { get; set; }
 
         // Init.
         public SaveTemplate_Form()
@@ -36,8 +38,19 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             LoadingPanel.HideBlankLoadingPanel(this);
 
+            // If in rename mode, only show the template name input
+            if (IsRenameMode)
+            {
+                UpdateExisting_RadioButton.Visible = false;
+                UpdateExisting_Label.Visible = false;
+                SaveAsNew_RadioButton.Visible = false;
+                SaveAsNew_Label.Visible = false;
+                TemplateName_TextBox.Text = CurrentTemplateName;
+                TemplateName_TextBox.Enabled = true;
+                Text = "Rename Template";
+            }
             // If there's a current template, show the update option
-            if (!string.IsNullOrEmpty(CurrentTemplateName))
+            else if (!string.IsNullOrEmpty(CurrentTemplateName))
             {
                 UpdateExisting_RadioButton.Visible = true;
                 UpdateExisting_Label.Visible = true;
@@ -47,6 +60,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_RadioButton.Checked = true;
                 SaveAsNew_RadioButton.Checked = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;
+                TemplateName_TextBox.Enabled = false;
             }
             else
             {
@@ -54,8 +68,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_Label.Visible = false;
                 SaveAsNew_RadioButton.Visible = false;
                 SaveAsNew_Label.Visible = false;
-                TemplateName_TextBox.Top = (ClientSize.Height - TemplateName_TextBox.Height) / 2;
-                TemplateName_Label.Top = TemplateName_TextBox.Top - TemplateName_TextBox.Height - 5;
+                TemplateName_TextBox.Enabled = true;
             }
 
             TemplateName_TextBox.Focus();
@@ -81,6 +94,27 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
+            // In rename mode, just return the new name
+            if (IsRenameMode)
+            {
+                string templateName = TemplateName_TextBox.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(templateName))
+                {
+                    CustomMessageBox.Show(
+                        "Invalid Template Name",
+                        "Please enter a name for the template.",
+                        CustomMessageBoxIcon.Exclamation,
+                        CustomMessageBoxButtons.Ok);
+                    return;
+                }
+
+                TemplateName = templateName;
+                DialogResult = DialogResult.OK;
+                Close();
+                return;
+            }
+
             // Check if we're updating an existing template
             if (UpdateExisting_RadioButton.Visible && UpdateExisting_RadioButton.Checked)
             {
@@ -91,9 +125,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Saving as new template
-            string templateName = TemplateName_TextBox.Text.Trim();
+            string newTemplateName = TemplateName_TextBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(templateName))
+            if (string.IsNullOrWhiteSpace(newTemplateName))
             {
                 CustomMessageBox.Show(
                     "Invalid Template Name",
@@ -104,11 +138,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Check if template already exists
-            if (CustomTemplateStorage.TemplateExists(templateName))
+            if (CustomTemplateStorage.TemplateExists(newTemplateName))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Template Exists",
-                    $"A template named '{templateName}' already exists.\nDo you want to overwrite it?",
+                    $"A template named '{newTemplateName}' already exists.\nDo you want to overwrite it?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo);
 
@@ -118,7 +152,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            TemplateName = templateName;
+            TemplateName = newTemplateName;
             DialogResult = DialogResult.OK;
             Close();
         }

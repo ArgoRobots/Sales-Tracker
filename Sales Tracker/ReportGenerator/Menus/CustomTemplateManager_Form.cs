@@ -53,10 +53,14 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void UpdateButtonStates()
         {
-            bool hasSelection = Templates_DataGridView.SelectedRows.Count > 0;
-            Load_Button.Enabled = hasSelection;
-            Delete_Button.Enabled = hasSelection;
-            Rename_Button.Enabled = hasSelection;
+            int selectedCount = Templates_DataGridView.SelectedRows.Count;
+
+            // Load and Rename only work with a single selection
+            Load_Button.Enabled = selectedCount == 1;
+            Rename_Button.Enabled = selectedCount == 1;
+
+            // Delete works with one or more selections
+            Delete_Button.Enabled = selectedCount > 0;
         }
 
         // Form event handlers
@@ -96,28 +100,57 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 return;
             }
 
-            int selectedIndex = Templates_DataGridView.SelectedRows[0].Index;
-            string templateName = _templateNames[selectedIndex];
+            // Get all selected template names
+            List<string> selectedTemplateNames = [];
+            foreach (DataGridViewRow row in Templates_DataGridView.SelectedRows)
+            {
+                selectedTemplateNames.Add(_templateNames[row.Index]);
+            }
+
+            // Confirm deletion
+            string message;
+            if (selectedTemplateNames.Count == 1)
+            {
+                message = $"Are you sure you want to delete the template '{selectedTemplateNames[0]}'?\nThis action cannot be undone.";
+            }
+            else
+            {
+                message = $"Are you sure you want to delete {selectedTemplateNames.Count} templates?\nThis action cannot be undone.";
+            }
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Delete Template",
-                $"Are you sure you want to delete the template '{templateName}'?\nThis action cannot be undone.",
+                "Delete Template" + (selectedTemplateNames.Count > 1 ? "s" : ""),
+                message,
                 CustomMessageBoxIcon.Question,
                 CustomMessageBoxButtons.YesNo);
 
             if (result == CustomMessageBoxResult.Yes)
             {
-                if (CustomTemplateStorage.DeleteTemplate(templateName))
+                int successCount = 0;
+                int failCount = 0;
+
+                foreach (string templateName in selectedTemplateNames)
                 {
-                    LoadTemplates();
-                    UpdateButtonStates();
-                    ReportDataSelection_Form.Instance.RefreshTemplates();
+                    if (CustomTemplateStorage.DeleteTemplate(templateName))
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        failCount++;
+                    }
                 }
-                else
+
+                LoadTemplates();
+                UpdateButtonStates();
+                ReportDataSelection_Form.Instance.RefreshTemplates();
+
+                // Show error message if any deletions failed
+                if (failCount > 0)
                 {
                     CustomMessageBox.Show(
                         "Delete Failed",
-                        $"Failed to delete template '{templateName}'.",
+                        $"Failed to delete {failCount} template{(failCount > 1 ? "s" : "")}.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok);
                 }
@@ -136,7 +169,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Show SaveTemplate_Form dialog for new name
             SaveTemplate_Form renameForm = new()
             {
-                CurrentTemplateName = oldTemplateName
+                CurrentTemplateName = oldTemplateName,
+                IsRenameMode = true
             };
 
             if (renameForm.ShowDialog(this) != DialogResult.OK)

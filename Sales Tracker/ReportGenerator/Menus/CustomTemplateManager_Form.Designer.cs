@@ -92,7 +92,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Templates_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             Templates_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
             Templates_DataGridView.Location = new Point(30, 80);
-            Templates_DataGridView.MultiSelect = false;
+            Templates_DataGridView.MultiSelect = true;
             Templates_DataGridView.Name = "Templates_DataGridView";
             Templates_DataGridView.ReadOnly = true;
             Templates_DataGridView.RowHeadersVisible = false;
