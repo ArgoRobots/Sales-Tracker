@@ -47,6 +47,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 SaveAsNew_Label.Visible = false;
                 TemplateName_TextBox.Text = CurrentTemplateName;
                 TemplateName_TextBox.Enabled = true;
+                CenterTemplateNameTextBoxAndLabel();
                 Text = LanguageManager.TranslateString("Rename Template");
             }
             // If there's a current template, show the update option
@@ -68,12 +69,17 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 UpdateExisting_Label.Visible = false;
                 SaveAsNew_RadioButton.Visible = false;
                 SaveAsNew_Label.Visible = false;
+                CenterTemplateNameTextBoxAndLabel();
                 TemplateName_TextBox.Enabled = true;
             }
 
             TemplateName_TextBox.Focus();
         }
-
+        private void CenterTemplateNameTextBoxAndLabel()
+        {
+            TemplateName_TextBox.Top = (ClientSize.Height - TemplateName_TextBox.Height) / 2;
+            TemplateName_Label.Top = TemplateName_TextBox.Top - TemplateName_Label.Height - 5;
+        }
         // Event handlers
         private void UpdateExisting_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
