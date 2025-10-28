@@ -277,7 +277,12 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     ChartElement chart => new Dictionary<string, object>
                     {
-                        ["ChartType"] = chart.ChartType.ToString()
+                        ["ChartType"] = chart.ChartType.ToString(),
+                        ["ShowLegend"] = chart.ShowLegend,
+                        ["ShowTitle"] = chart.ShowTitle,
+                        ["FontFamily"] = chart.FontFamily ?? "Segoe UI",
+                        ["TitleFontSize"] = chart.TitleFontSize,
+                        ["LegendFontSize"] = chart.LegendFontSize
                     },
                     LabelElement label => new Dictionary<string, object>
                     {
@@ -289,8 +294,34 @@ namespace Sales_Tracker.ReportGenerator
                         ["HAlignment"] = label.HAlignment.ToString(),
                         ["VAlignment"] = label.VAlignment.ToString()
                     },
-                    DateRangeElement => [],
-                    SummaryElement => [],
+                    DateRangeElement dateRange => new Dictionary<string, object>
+                    {
+                        ["DateFormat"] = dateRange.DateFormat ?? "yyyy-MM-dd",
+                        ["TextColor"] = ColorToHex(dateRange.TextColor),
+                        ["FontSize"] = dateRange.FontSize,
+                        ["FontStyle"] = dateRange.FontStyle.ToString(),
+                        ["FontFamily"] = dateRange.FontFamily ?? "Segoe UI",
+                        ["HAlignment"] = dateRange.HAlignment.ToString(),
+                        ["VAlignment"] = dateRange.VAlignment.ToString()
+                    },
+                    SummaryElement summary => new Dictionary<string, object>
+                    {
+                        ["TransactionType"] = summary.TransactionType.ToString(),
+                        ["IncludeReturns"] = summary.IncludeReturns,
+                        ["IncludeLosses"] = summary.IncludeLosses,
+                        ["ShowTotalSales"] = summary.ShowTotalSales,
+                        ["ShowTotalTransactions"] = summary.ShowTotalTransactions,
+                        ["ShowAverageValue"] = summary.ShowAverageValue,
+                        ["ShowGrowthRate"] = summary.ShowGrowthRate,
+                        ["BackgroundColor"] = ColorToHex(summary.BackgroundColor),
+                        ["BorderThickness"] = summary.BorderThickness,
+                        ["BorderColor"] = ColorToHex(summary.BorderColor),
+                        ["FontFamily"] = summary.FontFamily ?? "Segoe UI",
+                        ["FontSize"] = summary.FontSize,
+                        ["FontStyle"] = summary.FontStyle.ToString(),
+                        ["Alignment"] = summary.Alignment.ToString(),
+                        ["VerticalAlignment"] = summary.VerticalAlignment.ToString()
+                    },
                     TableElement table => new Dictionary<string, object>
                     {
                         ["TransactionType"] = table.TransactionType.ToString(),
@@ -299,7 +330,13 @@ namespace Sales_Tracker.ReportGenerator
                     },
                     ImageElement image => new Dictionary<string, object>
                     {
-                        ["ImagePath"] = image.ImagePath ?? ""
+                        ["ImagePath"] = image.ImagePath ?? "",
+                        ["ScaleMode"] = image.ScaleMode.ToString(),
+                        ["BackgroundColor"] = ColorToHex(image.BackgroundColor),
+                        ["BorderColor"] = ColorToHex(image.BorderColor),
+                        ["BorderThickness"] = image.BorderThickness,
+                        ["CornerRadius_Percent"] = image.CornerRadius_Percent,
+                        ["Opacity"] = image.Opacity
                     },
                     _ => []
                 }
@@ -314,7 +351,12 @@ namespace Sales_Tracker.ReportGenerator
                 nameof(ChartElement) => new ChartElement
                 {
                     ChartType = Enum.Parse<MainMenu_Form.ChartDataType>(
-                        GetStringValue(serialized.Properties.GetValueOrDefault("ChartType", "TotalRevenue"), "TotalRevenue"))
+                        GetStringValue(serialized.Properties.GetValueOrDefault("ChartType", "TotalRevenue"), "TotalRevenue")),
+                    ShowLegend = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowLegend", true), true),
+                    ShowTitle = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTitle", true), true),
+                    FontFamily = GetStringValue(serialized.Properties.GetValueOrDefault("FontFamily", "Segoe UI"), "Segoe UI"),
+                    TitleFontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("TitleFontSize", 12f), 12f),
+                    LegendFontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("LegendFontSize", 11f), 11f)
                 },
                 nameof(LabelElement) => new LabelElement
                 {
@@ -332,8 +374,41 @@ namespace Sales_Tracker.ReportGenerator
                     VAlignment = Enum.Parse<StringAlignment>(
                         GetStringValue(serialized.Properties.GetValueOrDefault("VAlignment", "Center"), "Center"))
                 },
-                nameof(DateRangeElement) => new DateRangeElement(),
-                nameof(SummaryElement) => new SummaryElement(),
+                nameof(DateRangeElement) => new DateRangeElement
+                {
+                    DateFormat = GetStringValue(serialized.Properties.GetValueOrDefault("DateFormat", "yyyy-MM-dd"), "yyyy-MM-dd"),
+                    TextColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("TextColor", "#808080"), "#808080")),
+                    FontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("FontSize", 10f), 10f),
+                    FontStyle = Enum.Parse<FontStyle>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("FontStyle", "Italic"), "Italic")),
+                    FontFamily = GetStringValue(serialized.Properties.GetValueOrDefault("FontFamily", "Segoe UI"), "Segoe UI"),
+                    HAlignment = Enum.Parse<StringAlignment>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("HAlignment", "Center"), "Center")),
+                    VAlignment = Enum.Parse<StringAlignment>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("VAlignment", "Center"), "Center"))
+                },
+                nameof(SummaryElement) => new SummaryElement
+                {
+                    TransactionType = Enum.Parse<TransactionType>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("TransactionType", "Both"), "Both")),
+                    IncludeReturns = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeReturns", true), true),
+                    IncludeLosses = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeLosses", true), true),
+                    ShowTotalSales = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTotalSales", true), true),
+                    ShowTotalTransactions = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTotalTransactions", true), true),
+                    ShowAverageValue = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowAverageValue", true), true),
+                    ShowGrowthRate = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowGrowthRate", true), true),
+                    BackgroundColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BackgroundColor", "#F5F5F5"), "#F5F5F5")),
+                    BorderThickness = GetIntValue(serialized.Properties.GetValueOrDefault("BorderThickness", 1), 1),
+                    BorderColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BorderColor", "#D3D3D3"), "#D3D3D3")),
+                    FontFamily = GetStringValue(serialized.Properties.GetValueOrDefault("FontFamily", "Segoe UI"), "Segoe UI"),
+                    FontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("FontSize", 10f), 10f),
+                    FontStyle = Enum.Parse<FontStyle>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("FontStyle", "Regular"), "Regular")),
+                    Alignment = Enum.Parse<StringAlignment>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("Alignment", "Near"), "Near")),
+                    VerticalAlignment = Enum.Parse<StringAlignment>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("VerticalAlignment", "Near"), "Near"))
+                },
                 nameof(TableElement) => new TableElement
                 {
                     TransactionType = Enum.Parse<TransactionType>(
@@ -343,7 +418,14 @@ namespace Sales_Tracker.ReportGenerator
                 },
                 nameof(ImageElement) => new ImageElement
                 {
-                    ImagePath = GetStringValue(serialized.Properties.GetValueOrDefault("ImagePath", ""), "")
+                    ImagePath = GetStringValue(serialized.Properties.GetValueOrDefault("ImagePath", ""), ""),
+                    ScaleMode = Enum.Parse<ImageScaleMode>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("ScaleMode", "Fit"), "Fit")),
+                    BackgroundColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BackgroundColor", "#00FFFFFF"), "#00FFFFFF")),
+                    BorderColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BorderColor", "#00FFFFFF"), "#00FFFFFF")),
+                    BorderThickness = GetIntValue(serialized.Properties.GetValueOrDefault("BorderThickness", 1), 1),
+                    CornerRadius_Percent = GetIntValue(serialized.Properties.GetValueOrDefault("CornerRadius_Percent", 0), 0),
+                    Opacity = (byte)GetIntValue(serialized.Properties.GetValueOrDefault("Opacity", 255), 255)
                 },
                 _ => null
             };
@@ -410,18 +492,59 @@ namespace Sales_Tracker.ReportGenerator
             return float.TryParse(value.ToString(), out float result) ? result : defaultValue;
         }
 
+        private static int GetIntValue(object value, int defaultValue = 0)
+        {
+            if (value == null) return defaultValue;
+
+            if (value is JsonElement jsonElement)
+            {
+                return jsonElement.ValueKind == JsonValueKind.Number
+                    ? jsonElement.GetInt32()
+                    : defaultValue;
+            }
+
+            if (value is int intValue) return intValue;
+            if (value is long longValue) return (int)longValue;
+            if (value is double doubleValue) return (int)doubleValue;
+            if (value is float floatValue) return (int)floatValue;
+
+            return int.TryParse(value.ToString(), out int result) ? result : defaultValue;
+        }
+
         private static string ColorToHex(Color color)
         {
+            // Include alpha channel if not fully opaque
+            if (color.A < 255)
+            {
+                return $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
+            }
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
         }
         private static Color HexToColor(string hex)
         {
             hex = hex.Replace("#", "");
-            return Color.FromArgb(
-                Convert.ToInt32(hex.Substring(0, 2), 16),
-                Convert.ToInt32(hex.Substring(2, 2), 16),
-                Convert.ToInt32(hex.Substring(4, 2), 16)
-            );
+
+            // Support both RGB (6 chars) and ARGB (8 chars) formats
+            if (hex.Length == 8)
+            {
+                return Color.FromArgb(
+                    Convert.ToInt32(hex.Substring(0, 2), 16),  // Alpha
+                    Convert.ToInt32(hex.Substring(2, 2), 16),  // Red
+                    Convert.ToInt32(hex.Substring(4, 2), 16),  // Green
+                    Convert.ToInt32(hex.Substring(6, 2), 16)   // Blue
+                );
+            }
+            else if (hex.Length == 6)
+            {
+                return Color.FromArgb(
+                    255,  // Fully opaque
+                    Convert.ToInt32(hex.Substring(0, 2), 16),  // Red
+                    Convert.ToInt32(hex.Substring(2, 2), 16),  // Green
+                    Convert.ToInt32(hex.Substring(4, 2), 16)   // Blue
+                );
+            }
+
+            return Color.Black;  // Fallback
         }
 
         // Custom JSON converter for Color
