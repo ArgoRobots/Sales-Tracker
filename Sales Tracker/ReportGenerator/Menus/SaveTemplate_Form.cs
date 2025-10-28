@@ -140,11 +140,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if template already exists
             if (CustomTemplateStorage.TemplateExists(newTemplateName))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Template Exists",
-                    $"A template named '{newTemplateName}' already exists.\nDo you want to overwrite it?",
+                    "A template named '{0}' already exists.\nDo you want to overwrite it?",
                     CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo);
+                    CustomMessageBoxButtons.YesNo,
+                    newTemplateName);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {

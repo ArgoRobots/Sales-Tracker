@@ -107,51 +107,73 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Confirm deletion
-            string message;
             if (selectedTemplateNames.Count == 1)
             {
-                message = $"Are you sure you want to delete the template '{selectedTemplateNames[0]}'?\nThis action cannot be undone.";
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Delete Template",
+                    "Are you sure you want to delete the template '{0}'?\nThis action cannot be undone.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    selectedTemplateNames[0]);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return;
+                }
             }
             else
             {
-                message = $"Are you sure you want to delete {selectedTemplateNames.Count} templates?\nThis action cannot be undone.";
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Delete Templates",
+                    "Are you sure you want to delete {0} templates?\nThis action cannot be undone.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    selectedTemplateNames.Count);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return;
+                }
             }
 
-            CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Delete Template" + (selectedTemplateNames.Count > 1 ? "s" : ""),
-                message,
-                CustomMessageBoxIcon.Question,
-                CustomMessageBoxButtons.YesNo);
+            int successCount = 0;
+            int failCount = 0;
 
-            if (result == CustomMessageBoxResult.Yes)
+            foreach (string templateName in selectedTemplateNames)
             {
-                int successCount = 0;
-                int failCount = 0;
-
-                foreach (string templateName in selectedTemplateNames)
+                if (CustomTemplateStorage.DeleteTemplate(templateName))
                 {
-                    if (CustomTemplateStorage.DeleteTemplate(templateName))
-                    {
-                        successCount++;
-                    }
-                    else
-                    {
-                        failCount++;
-                    }
+                    successCount++;
                 }
+                else
+                {
+                    failCount++;
+                }
+            }
 
-                LoadTemplates();
-                UpdateButtonStates();
-                ReportDataSelection_Form.Instance.RefreshTemplates();
+            LoadTemplates();
+            UpdateButtonStates();
+            ReportDataSelection_Form.Instance.RefreshTemplates();
 
-                // Show error message if any deletions failed
-                if (failCount > 0)
+            // Show error message if any deletions failed
+            if (failCount > 0)
+            {
+                if (failCount == 1)
                 {
                     CustomMessageBox.Show(
                         "Delete Failed",
-                        $"Failed to delete {failCount} template{(failCount > 1 ? "s" : "")}.",
+                        "Failed to delete 1 template.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "Delete Failed",
+                        "Failed to delete {0} templates.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        failCount);
                 }
             }
         }
@@ -188,11 +210,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if a template with the new name already exists
             if (_templateNames.Contains(newTemplateName))
             {
-                CustomMessageBox.Show(
+                CustomMessageBox.ShowWithFormat(
                     "Template Exists",
-                    $"A template named '{newTemplateName}' already exists.\nPlease choose a different name.",
+                    "A template named '{0}' already exists.\nPlease choose a different name.",
                     CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxButtons.Ok,
+                    newTemplateName);
                 return;
             }
 
@@ -213,11 +236,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
             else
             {
-                CustomMessageBox.Show(
+                CustomMessageBox.ShowWithFormat(
                     "Rename Failed",
-                    $"Failed to rename template '{oldTemplateName}' to '{newTemplateName}'.",
+                    "Failed to rename template '{0}' to '{1}'.",
                     CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxButtons.Ok,
+                    oldTemplateName,
+                    newTemplateName);
             }
         }
         private void Close_Button_Click(object sender, EventArgs e)
