@@ -282,7 +282,9 @@ namespace Sales_Tracker.ReportGenerator
                         ["ShowTitle"] = chart.ShowTitle,
                         ["FontFamily"] = chart.FontFamily ?? "Segoe UI",
                         ["TitleFontSize"] = chart.TitleFontSize,
-                        ["LegendFontSize"] = chart.LegendFontSize
+                        ["LegendFontSize"] = chart.LegendFontSize,
+                        ["BorderColor"] = ColorToHex(chart.BorderColor),
+                        ["BorderThickness"] = chart.BorderThickness
                     },
                     LabelElement label => new Dictionary<string, object>
                     {
@@ -326,7 +328,36 @@ namespace Sales_Tracker.ReportGenerator
                     {
                         ["TransactionType"] = table.TransactionType.ToString(),
                         ["IncludeReturns"] = table.IncludeReturns,
-                        ["IncludeLosses"] = table.IncludeLosses
+                        ["IncludeLosses"] = table.IncludeLosses,
+                        ["DataSelection"] = table.DataSelection.ToString(),
+                        ["SortOrder"] = table.SortOrder.ToString(),
+                        ["MaxRows"] = table.MaxRows,
+                        ["ShowHeaders"] = table.ShowHeaders,
+                        ["AlternateRowColors"] = table.AlternateRowColors,
+                        ["ShowGridLines"] = table.ShowGridLines,
+                        ["ShowTotalsRow"] = table.ShowTotalsRow,
+                        ["AutoSizeColumns"] = table.AutoSizeColumns,
+                        ["FontSize"] = table.FontSize,
+                        ["FontFamily"] = table.FontFamily ?? "Segoe UI",
+                        ["DataRowHeight"] = table.DataRowHeight,
+                        ["HeaderRowHeight"] = table.HeaderRowHeight,
+                        ["CellPadding"] = table.CellPadding,
+                        ["HeaderBackgroundColor"] = ColorToHex(table.HeaderBackgroundColor),
+                        ["HeaderTextColor"] = ColorToHex(table.HeaderTextColor),
+                        ["DataRowTextColor"] = ColorToHex(table.DataRowTextColor),
+                        ["GridLineColor"] = ColorToHex(table.GridLineColor),
+                        ["BaseRowColor"] = ColorToHex(table.BaseRowColor),
+                        ["AlternateRowColor"] = ColorToHex(table.AlternateRowColor),
+                        ["ShowDateColumn"] = table.ShowDateColumn,
+                        ["ShowTransactionIdColumn"] = table.ShowTransactionIdColumn,
+                        ["ShowCompanyColumn"] = table.ShowCompanyColumn,
+                        ["ShowProductColumn"] = table.ShowProductColumn,
+                        ["ShowQuantityColumn"] = table.ShowQuantityColumn,
+                        ["ShowUnitPriceColumn"] = table.ShowUnitPriceColumn,
+                        ["ShowTotalColumn"] = table.ShowTotalColumn,
+                        ["ShowStatusColumn"] = table.ShowStatusColumn,
+                        ["ShowAccountantColumn"] = table.ShowAccountantColumn,
+                        ["ShowShippingColumn"] = table.ShowShippingColumn
                     },
                     ImageElement image => new Dictionary<string, object>
                     {
@@ -356,7 +387,9 @@ namespace Sales_Tracker.ReportGenerator
                     ShowTitle = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTitle", true), true),
                     FontFamily = GetStringValue(serialized.Properties.GetValueOrDefault("FontFamily", "Segoe UI"), "Segoe UI"),
                     TitleFontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("TitleFontSize", 12f), 12f),
-                    LegendFontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("LegendFontSize", 11f), 11f)
+                    LegendFontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("LegendFontSize", 11f), 11f),
+                    BorderColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BorderColor", "#808080"), "#808080")),
+                    BorderThickness = GetIntValue(serialized.Properties.GetValueOrDefault("BorderThickness", 1), 1)
                 },
                 nameof(LabelElement) => new LabelElement
                 {
@@ -414,7 +447,38 @@ namespace Sales_Tracker.ReportGenerator
                     TransactionType = Enum.Parse<TransactionType>(
                         GetStringValue(serialized.Properties.GetValueOrDefault("TransactionType", "Both"), "Both")),
                     IncludeReturns = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeReturns", true), true),
-                    IncludeLosses = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeLosses", true), true)
+                    IncludeLosses = GetBoolValue(serialized.Properties.GetValueOrDefault("IncludeLosses", true), true),
+                    DataSelection = Enum.Parse<TableDataSelection>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("DataSelection", "All"), "All")),
+                    SortOrder = Enum.Parse<TableSortOrder>(
+                        GetStringValue(serialized.Properties.GetValueOrDefault("SortOrder", "DateDescending"), "DateDescending")),
+                    MaxRows = GetIntValue(serialized.Properties.GetValueOrDefault("MaxRows", 10), 10),
+                    ShowHeaders = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowHeaders", true), true),
+                    AlternateRowColors = GetBoolValue(serialized.Properties.GetValueOrDefault("AlternateRowColors", true), true),
+                    ShowGridLines = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowGridLines", true), true),
+                    ShowTotalsRow = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTotalsRow", false), false),
+                    AutoSizeColumns = GetBoolValue(serialized.Properties.GetValueOrDefault("AutoSizeColumns", true), true),
+                    FontSize = GetFloatValue(serialized.Properties.GetValueOrDefault("FontSize", 8f), 8f),
+                    FontFamily = GetStringValue(serialized.Properties.GetValueOrDefault("FontFamily", "Segoe UI"), "Segoe UI"),
+                    DataRowHeight = GetIntValue(serialized.Properties.GetValueOrDefault("DataRowHeight", 20), 20),
+                    HeaderRowHeight = GetIntValue(serialized.Properties.GetValueOrDefault("HeaderRowHeight", 25), 25),
+                    CellPadding = GetIntValue(serialized.Properties.GetValueOrDefault("CellPadding", 3), 3),
+                    HeaderBackgroundColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("HeaderBackgroundColor", "#5E94FF"), "#5E94FF")),
+                    HeaderTextColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("HeaderTextColor", "#FFFFFF"), "#FFFFFF")),
+                    DataRowTextColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("DataRowTextColor", "#000000"), "#000000")),
+                    GridLineColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("GridLineColor", "#D3D3D3"), "#D3D3D3")),
+                    BaseRowColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("BaseRowColor", "#FFFFFF"), "#FFFFFF")),
+                    AlternateRowColor = HexToColor(GetStringValue(serialized.Properties.GetValueOrDefault("AlternateRowColor", "#F8F8F8"), "#F8F8F8")),
+                    ShowDateColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowDateColumn", true), true),
+                    ShowTransactionIdColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTransactionIdColumn", true), true),
+                    ShowCompanyColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowCompanyColumn", true), true),
+                    ShowProductColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowProductColumn", true), true),
+                    ShowQuantityColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowQuantityColumn", true), true),
+                    ShowUnitPriceColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowUnitPriceColumn", false), false),
+                    ShowTotalColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowTotalColumn", true), true),
+                    ShowStatusColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowStatusColumn", false), false),
+                    ShowAccountantColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowAccountantColumn", false), false),
+                    ShowShippingColumn = GetBoolValue(serialized.Properties.GetValueOrDefault("ShowShippingColumn", false), false)
                 },
                 nameof(ImageElement) => new ImageElement
                 {

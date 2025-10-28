@@ -113,6 +113,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
             }
         }
+        public Color BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                if (_borderColor != value)
+                {
+                    _borderColor = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public int BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                if (_borderThickness != value)
+                {
+                    _borderThickness = value;
+                    InvalidateCache();
+                }
+            }
+        }
 
         // Overrides
         public override string DisplayName => LanguageManager.TranslateString("chart");
@@ -128,10 +152,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
                 ShowTitle = ShowTitle,
-                _borderColor = _borderColor,
-                _borderThickness = _borderThickness,
+                BorderColor = BorderColor,
+                BorderThickness = BorderThickness,
                 FontFamily = FontFamily,
-                TitleFontSize = TitleFontSize
+                TitleFontSize = TitleFontSize,
+                LegendFontSize = LegendFontSize
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
