@@ -399,7 +399,8 @@ namespace Sales_Tracker
         Error,
         Info,
         Success,
-        None
+        None,
+        Warning
     }
     public enum CustomMessageBoxButtons
     {
@@ -410,7 +411,8 @@ namespace Sales_Tracker
         SaveDontSaveCancel,
         RetryCancel,
         SkipCancel,
-        SkipRetryCancel
+        SkipRetryCancel,
+        OK
     }
     public enum CustomMessageBoxResult
     {

@@ -614,13 +614,5 @@ namespace Sales_Tracker
             TextBoxManager.HideRightClickPanel();
             RightClickDataGridViewRowMenu.Hide();
         }
-
-        private void Products_Form_Resize(object sender, EventArgs e)
-        {
-            if (Rentable_CheckBox != null && Rentable_Label != null)
-            {
-                PositionRentableControls();
-            }
-        }
     }
 }

@@ -19,7 +19,6 @@ namespace Sales_Tracker
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
         public static Customers_Form Instance => _instance;
 
-        // Init.
         public Customers_Form() : this(false) { }
         public Customers_Form(bool loadExisting)
         {
@@ -57,9 +56,24 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(CustomerID_TextBox);
-            TextBoxManager.Attach(CustomerName_TextBox);
+            
+            TextBoxValidation.OnlyAllowLetters(FirstName_TextBox);
+            FirstName_TextBox.TextChanged += ValidateInputs;
+            TextBoxManager.Attach(FirstName_TextBox);
+            
+            TextBoxValidation.OnlyAllowLetters(LastName_TextBox);
+            LastName_TextBox.TextChanged += ValidateInputs;
+            TextBoxManager.Attach(LastName_TextBox);
+            
+            TextBoxValidation.ValidateEmail(Email_TextBox);
+            Email_TextBox.TextChanged += ValidateInputs;
+            Email_TextBox.Leave += Email_TextBox_Leave;
             TextBoxManager.Attach(Email_TextBox);
+            
+            TextBoxValidation.ValidatePhoneNumber(PhoneNumber_TextBox);
+            PhoneNumber_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(PhoneNumber_TextBox);
+            
             TextBoxManager.Attach(Address_TextBox);
             TextBoxManager.Attach(Notes_TextBox);
             TextBoxManager.Attach(Search_TextBox);
@@ -98,7 +112,8 @@ namespace Sales_Tracker
         private void SetAccessibleDescriptions()
         {
             CustomerID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
-            CustomerName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            FirstName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            LastName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Email_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             PhoneNumber_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Address_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
@@ -115,12 +130,60 @@ namespace Sales_Tracker
         }
 
         // Event handlers
+        private void Email_TextBox_Leave(object sender, EventArgs e)
+        {
+            string email = Email_TextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return;
+            }
+            
+            // Check if email is valid
+            if (!email.Contains('@'))
+            {
+                CustomMessageBox.Show("Invalid email",
+                    "Please enter a valid email address.",
+                    CustomMessageBoxIcon.Warning,
+                    CustomMessageBoxButtons.OK);
+                Email_TextBox.Focus();
+            }
+        }
+
         private void AddCustomer_Button_Click(object sender, EventArgs e)
         {
             string customerID = CustomerID_TextBox.Text.Trim();
             if (customerID == "")
             {
                 customerID = ReadOnlyVariables.EmptyCell;
+            }
+
+            // Validate email before proceeding
+            string email = Email_TextBox.Text.Trim();
+            if (!email.Contains('@'))
+            {
+                CustomMessageBox.Show("Invalid email",
+                    "Please enter a valid email address.",
+                    CustomMessageBoxIcon.Warning,
+                    CustomMessageBoxButtons.OK);
+                Email_TextBox.Focus();
+                return;
+            }
+
+            // Check for duplicate email
+            if (IsEmailDuplicate(email))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Duplicate email",
+                    "Email '{0}' already exists. Add customer anyway?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    email);
+        
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    Email_TextBox.Focus();
+                    return;
+                }
             }
 
             // Check if customer ID already exists
@@ -136,11 +199,16 @@ namespace Sales_Tracker
                 if (result != CustomMessageBoxResult.Yes) return;
             }
 
+            // Combine first and last name
+            string firstName = FirstName_TextBox.Text.Trim();
+            string lastName = LastName_TextBox.Text.Trim();
+            string fullName = $"{firstName} {lastName}".Trim();
+
             // Create new customer
             Customer customer = new(
                 customerID,
-                CustomerName_TextBox.Text.Trim(),
-                Email_TextBox.Text.Trim(),
+                fullName,
+                email,
                 PhoneNumber_TextBox.Text.Trim(),
                 Address_TextBox.Text.Trim())
             {
@@ -173,7 +241,8 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 4, message);
 
             // Clear inputs
-            CustomerName_TextBox.Clear();
+            FirstName_TextBox.Clear();
+            LastName_TextBox.Clear();
             CustomerID_TextBox.Clear();
             Email_TextBox.Clear();
             PhoneNumber_TextBox.Clear();
@@ -297,13 +366,22 @@ namespace Sales_Tracker
         }
 
         // Methods
+        private bool IsEmailDuplicate(string email)
+        {
+            return MainMenu_Form.Instance.CustomerList.Any(c => 
+                c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        }
+
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(CustomerName_TextBox.Text) &&
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(FirstName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(LastName_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Email_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PhoneNumber_TextBox.Text);
 
-            AddCustomer_Button.Enabled = allFieldsFilled;
+            // Check if email is valid 
+            bool emailValid = Email_TextBox.Text.Trim().Contains('@');
+            AddCustomer_Button.Enabled = allFieldsFilled && emailValid;
         }
 
         private static void SaveCustomersToFile()
