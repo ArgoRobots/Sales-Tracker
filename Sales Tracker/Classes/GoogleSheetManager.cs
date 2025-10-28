@@ -13,7 +13,7 @@ namespace Sales_Tracker.Classes
     /// <summary>
     /// Handles the export of chart data to Google Sheets, including creating new spreadsheets and formatting cells.
     /// </summary>
-    internal class GoogleSheetManager
+    public class GoogleSheetManager
     {
         // Properties
         private static SheetsService? _sheetsService;
@@ -26,16 +26,18 @@ namespace Sales_Tracker.Classes
         }
 
         // Initialize the Google Sheets service
-        private static bool InitializeService()
+        private static async Task<bool> InitializeServiceAsync()
         {
+            if (_sheetsService != null) { return true; }
+
             try
             {
-                GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
+                UserCredential credential = await GoogleCredentialsManager.GetUserCredentialAsync();
 
                 _sheetsService = new SheetsService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = credential,
-                    ApplicationName = "Sales Tracker"
+                    ApplicationName = "Argo Sales Tracker"
                 });
 
                 return true;
@@ -60,10 +62,7 @@ namespace Sales_Tracker.Classes
             string column2Text,
             CancellationToken cancellationToken = default)
         {
-            if (_sheetsService == null && !InitializeService())
-            {
-                return;
-            }
+            if (!await InitializeServiceAsync()) { return; }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             string operationMessage = "Exporting chart to Google Sheets...";
@@ -107,27 +106,6 @@ namespace Sales_Tracker.Classes
                 string sheetName = LanguageManager.TranslateString("Chart Data");
 
                 activeCancellationToken.ThrowIfCancellationRequested();
-
-                // Create drive service
-                DriveService driveService = new(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                    ApplicationName = "Sales Tracker"
-                });
-
-                // Set file permissions to be accessible by anyone with the link
-                Permission permission = new()
-                {
-                    Type = "anyone",
-                    Role = "writer",
-                    AllowFileDiscovery = false
-                };
-
-                activeCancellationToken.ThrowIfCancellationRequested();
-
-                await driveService.Permissions
-                    .Create(permission, spreadsheetId)
-                    .ExecuteAsync(activeCancellationToken);
 
                 // Prepare the data
                 List<IList<object>> values =
@@ -248,10 +226,7 @@ namespace Sales_Tracker.Classes
             // Convert int data to double for existing export logic
             Dictionary<string, double> doubleData = data.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
 
-            if (_sheetsService == null && !InitializeService())
-            {
-                return;
-            }
+            if (!await InitializeServiceAsync()) { return; }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             string operationMessage = "Exporting chart to Google Sheets...";
@@ -294,27 +269,6 @@ namespace Sales_Tracker.Classes
                 string sheetName = LanguageManager.TranslateString("Chart Data");
 
                 activeCancellationToken.ThrowIfCancellationRequested();
-
-                // Create drive service
-                DriveService driveService = new(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                    ApplicationName = "Sales Tracker"
-                });
-
-                // Set file permissions to be accessible by anyone with the link
-                Permission permission = new()
-                {
-                    Type = "anyone",
-                    Role = "writer",
-                    AllowFileDiscovery = false
-                };
-
-                activeCancellationToken.ThrowIfCancellationRequested();
-
-                await driveService.Permissions
-                    .Create(permission, spreadsheetId)
-                    .ExecuteAsync(activeCancellationToken);
 
                 // Prepare the data
                 List<IList<object>> values =
@@ -430,10 +384,7 @@ namespace Sales_Tracker.Classes
             ChartType chartType,
             CancellationToken cancellationToken = default)
         {
-            if (_sheetsService == null && !InitializeService())
-            {
-                return;
-            }
+            if (!await InitializeServiceAsync()) { return; }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             string operationMessage = LanguageManager.TranslateString("Exporting multi-dataset chart to Google Sheets...");
@@ -483,7 +434,7 @@ namespace Sales_Tracker.Classes
                 DriveService driveService = new(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                    ApplicationName = "Sales Tracker"
+                    ApplicationName = "Argo Sales Tracker"
                 });
 
                 // Set file permissions to be accessible by anyone with the link
@@ -632,10 +583,7 @@ namespace Sales_Tracker.Classes
             ChartType chartType,
             CancellationToken cancellationToken = default)
         {
-            if (_sheetsService == null && !InitializeService())
-            {
-                return;
-            }
+            if (!await InitializeServiceAsync()) { return; }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             string operationMessage = LanguageManager.TranslateString("Exporting multi-dataset chart to Google Sheets...");
@@ -684,7 +632,7 @@ namespace Sales_Tracker.Classes
                 DriveService driveService = new(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                    ApplicationName = "Sales Tracker"
+                    ApplicationName = "Argo Sales Tracker"
                 });
 
                 // Set file permissions to be accessible by anyone with the link
@@ -739,7 +687,7 @@ namespace Sales_Tracker.Classes
                 List<Request> requests =
                 [
                     CreateHeaderFormatRequest(0, 0, 0, seriesNames.Count),
-        ];
+                ];
 
                 // Format number columns (no decimals for counts)
                 for (int i = 1; i <= seriesNames.Count; i++)
@@ -844,7 +792,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void OpenGoogleSheet(string spreadsheetId)
         {
-            Tools.OpenLink($"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit");
+            Tools.OpenLink($"https://docs.google.com/spreadsheets/d/{spreadsheetId}");
         }
 
         // Helper methods for creating format requests

@@ -1,63 +1,61 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
 using Sales_Tracker.Encryption;
-using System.Text.Json;
 
 namespace Sales_Tracker.Classes
 {
     public class GoogleCredentialsManager
     {
+        private static readonly string[] Scopes =
+        [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive.file"
+        ];
+
         /// <summary>
-        /// Gets Google credentials from environment variables with the appropriate scopes.
+        /// Gets user credentials using OAuth from environment variables.
+        /// First time will prompt user to authenticate in browser.
         /// </summary>
-        public static GoogleCredential GetCredentialsFromEnvironment()
+        public static async Task<UserCredential> GetUserCredentialAsync()
         {
             try
             {
-                string projectId = DotEnv.Get("GOOGLE_PROJECT_ID");
-                string privateKey = DotEnv.Get("GOOGLE_PRIVATE_KEY")?.Replace("\\n", "\n");
-                string clientEmail = DotEnv.Get("GOOGLE_CLIENT_EMAIL");
+                string clientId = DotEnv.Get("GOOGLE_CLIENT_ID");
+                string clientSecret = DotEnv.Get("GOOGLE_CLIENT_SECRET");
 
-                if (string.IsNullOrEmpty(projectId) || string.IsNullOrEmpty(privateKey) || string.IsNullOrEmpty(clientEmail))
+                if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
                 {
-                    throw new Exception("Missing required Google credentials in .env file");
+                    throw new Exception("Missing Google OAuth credentials in .env file");
                 }
 
-                // Create credentials JSON from environment variables
-                var credentialJson = new
+                ClientSecrets secrets = new()
                 {
-                    type = DotEnv.Get("GOOGLE_TYPE"),
-                    project_id = projectId,
-                    private_key_id = DotEnv.Get("GOOGLE_PRIVATE_KEY_ID"),
-                    private_key = privateKey,
-                    client_email = clientEmail,
-                    client_id = DotEnv.Get("GOOGLE_CLIENT_ID"),
-                    auth_uri = DotEnv.Get("GOOGLE_AUTH_URI"),
-                    token_uri = DotEnv.Get("GOOGLE_TOKEN_URI"),
-                    auth_provider_x509_cert_url = DotEnv.Get("GOOGLE_AUTH_PROVIDER_CERT_URL"),
-                    client_x509_cert_url = DotEnv.Get("GOOGLE_CLIENT_CERT_URL"),
-                    universe_domain = DotEnv.Get("GOOGLE_UNIVERSE_DOMAIN")
+                    ClientId = clientId,
+                    ClientSecret = clientSecret
                 };
 
-                // Convert to JSON string
-                string json = JsonSerializer.Serialize(credentialJson);
+                // Store token in AppData
+                string credPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "ArgoSalesTracker",
+                    "google_token"
+                );
 
-                // Create credential from JSON string with only needed scopes for Sheets and Drive
-                GoogleCredential credential = GoogleCredential.FromJson(json)
-                    .CreateScoped(
-                        [
-                            "https://www.googleapis.com/auth/spreadsheets",
-                            "https://www.googleapis.com/auth/drive"
-                        ]
-                    );
-
-                return credential;
+                return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true)
+                );
             }
             catch
             {
                 CustomMessageBox.Show(
-                    "Credentials Error",
-                    $"Failed to load Google credentials from environment",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
+                    "Authentication Error",
+                    "Failed to authenticate with Google. Please check your credentials.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok
                 );
                 throw;
             }
