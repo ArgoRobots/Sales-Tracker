@@ -1919,7 +1919,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Convert page bounds to scaled canvas coordinates for invalidation
             Rectangle scaledBounds = PageToScaledRectangle(bounds);
-            scaledBounds.Inflate(10, 10);
+            // Inflate by 50 pixels to ensure complex elements (like tables with multiple rows)
+            // are fully repainted without leaving artifacts
+            scaledBounds.Inflate(50, 50);
             Canvas_Panel.Invalidate(scaledBounds);
         }
         private Rectangle PageToScaledRectangle(Rectangle pageRect)
@@ -2038,9 +2040,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Update element bounds and invalidate
-            InvalidateElementRegion(_lastElementBounds);
+            // Invalidate the union of old and new bounds to ensure no rendering artifacts remain
+            // This is especially important for complex elements like tables that render multiple rows
+            Rectangle invalidationRect = Rectangle.Union(_lastElementBounds, newBounds);
+            InvalidateElementRegion(invalidationRect);
+
             _selectedElement.Bounds = newBounds;
-            InvalidateElementRegion(newBounds);
             _lastElementBounds = newBounds;
 
             // Defer property panel update
