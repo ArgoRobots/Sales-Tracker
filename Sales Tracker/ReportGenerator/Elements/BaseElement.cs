@@ -20,6 +20,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static byte NumericUpDownWidth { get; } = 100;
         public static byte ColorPickerWidth { get; } = 50;
 
+        // Debounce timers for text input controls
+        private static readonly Dictionary<Control, (System.Windows.Forms.Timer timer, string lastValue)> _textInputDebouncers = [];
+
         /// <summary>
         /// Gets the user-friendly display name for this element type.
         /// </summary>
@@ -432,7 +435,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
-            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            // Set up debounced text change handling
+            SetupDebouncedTextChanged(textBox, value, onChange);
+
             container.Controls.Add(textBox);
             return textBox;
         }
@@ -614,7 +619,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            // Set up debounced text change handling with validation
+            SetupDebouncedTextChanged(textBox, value, onChange, getSearchResults);
+
             textBox.DisableScrollAndForwardToPanel();
 
             // Attach SearchBox functionality
@@ -625,6 +632,104 @@ namespace Sales_Tracker.ReportGenerator.Elements
             container.Controls.Add(textBox);
             return textBox;
         }
+        /// <summary>
+        /// Sets up debounced text change handling for a textbox to prevent recording undo on every keystroke.
+        /// </summary>
+        private static void SetupDebouncedTextChanged(Guna2TextBox textBox, string initialValue, Action<string> onChange, Func<List<SearchResult>> getSearchResults = null)
+        {
+            string lastCommittedValue = initialValue;
+
+            // Create debounce timer for this control
+            System.Windows.Forms.Timer debounceTimer = new()
+            {
+                Interval = 500  // 500ms delay - same as PropertyChangeDebouncer
+            };
+
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                // For search boxes with validation (like font selection), only trigger onChange if value is valid
+                if (getSearchResults != null)
+                {
+                    List<SearchResult> validResults = getSearchResults();
+                    bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
+
+                    // Only call onChange if the value is valid and different from last committed value
+                    if (isValid && currentValue != lastCommittedValue)
+                    {
+                        lastCommittedValue = currentValue;
+                        onChange(currentValue);
+                    }
+                }
+                else
+                {
+                    // For regular text boxes, call onChange if value changed
+                    if (currentValue != lastCommittedValue)
+                    {
+                        lastCommittedValue = currentValue;
+                        onChange(currentValue);
+                    }
+                }
+            };
+
+            // Store the timer and last value
+            _textInputDebouncers[textBox] = (debounceTimer, lastCommittedValue);
+
+            // Handle text changes
+            textBox.TextChanged += (s, e) =>
+            {
+                debounceTimer.Stop();
+                debounceTimer.Start();
+            };
+
+            // Handle focus loss - commit changes immediately when user leaves the field
+            textBox.LostFocus += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    string lastValue = debouncer.lastValue;
+
+                    // For search boxes with validation, only trigger onChange if value is valid
+                    if (getSearchResults != null)
+                    {
+                        List<SearchResult> validResults = getSearchResults();
+                        bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
+
+                        if (isValid && currentValue != lastValue)
+                        {
+                            _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
+                            onChange(currentValue);
+                        }
+                    }
+                    else
+                    {
+                        // For regular text boxes, call onChange if value changed
+                        if (currentValue != lastValue)
+                        {
+                            _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
+                            onChange(currentValue);
+                        }
+                    }
+                }
+            };
+
+            // Clean up timer when control is disposed
+            textBox.Disposed += (s, e) =>
+            {
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    debouncer.timer.Stop();
+                    debouncer.timer.Dispose();
+                    _textInputDebouncers.Remove(textBox);
+                }
+            };
+        }
+
         public static List<SearchResult> GetFontSearchResults()
         {
             string[] fonts = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
