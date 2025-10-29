@@ -2165,8 +2165,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             List<BaseElement> duplicates = [];
 
             string description = _selectedElements.Count > 1
-                ? $"duplicate {_selectedElements.Count} elements"
-                : "duplicate element";
+                ? $"Duplicate {_selectedElements.Count} elements"
+                : "Duplicate element";
             CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
