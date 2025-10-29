@@ -113,6 +113,30 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
             }
         }
+        public Color BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                if (_borderColor != value)
+                {
+                    _borderColor = value;
+                    InvalidateCache();
+                }
+            }
+        }
+        public int BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                if (_borderThickness != value)
+                {
+                    _borderThickness = value;
+                    InvalidateCache();
+                }
+            }
+        }
 
         // Overrides
         public override string DisplayName => LanguageManager.TranslateString("chart");
@@ -128,131 +152,139 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 ChartType = ChartType,
                 ShowLegend = ShowLegend,
                 ShowTitle = ShowTitle,
-                _borderColor = _borderColor,
-                _borderThickness = _borderThickness,
+                BorderColor = BorderColor,
+                BorderThickness = BorderThickness,
                 FontFamily = FontFamily,
-                TitleFontSize = TitleFontSize
+                TitleFontSize = TitleFontSize,
+                LegendFontSize = LegendFontSize
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            // Get the current graphics transform
-            float scaleX = graphics.Transform.Elements[0];
-            float scaleY = graphics.Transform.Elements[3];
-
-            // Check if we need to regenerate the cached bitmap
-            bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
-
-            if (needsRegeneration)
+            try
             {
-                // Check if configuration has changed and reload chart data if necessary
-                bool needsReload = ShouldReloadChart(ChartType, config);
+                // Get the current graphics transform
+                float scaleX = graphics.Transform.Elements[0];
+                float scaleY = graphics.Transform.Elements[3];
 
-                if (_chartControl == null || needsReload)
+                // Check if we need to regenerate the cached bitmap
+                bool needsRegeneration = ShouldRegenerateBitmap(config, renderScale);
+
+                if (needsRegeneration)
                 {
-                    // Dispose of old control if reloading
-                    if (_chartControl != null && needsReload)
+                    // Check if configuration has changed and reload chart data if necessary
+                    bool needsReload = ShouldReloadChart(ChartType, config);
+
+                    if (_chartControl == null || needsReload)
                     {
-                        _chartControl.Dispose();
-                        _chartControl = null;
+                        // Dispose of old control if reloading
+                        if (_chartControl != null && needsReload)
+                        {
+                            _chartControl.Dispose();
+                            _chartControl = null;
+                        }
+
+                        LoadChartData(ChartType, config);
                     }
 
-                    LoadChartData(ChartType, config);
-                }
-
-                // Clear old cached bitmap
-                if (_cachedBitmap != null)
-                {
-                    _cachedBitmap.Dispose();
-                    _cachedBitmap = null;
-                }
-
-                // Generate and cache the new bitmap
-                if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
-                {
-                    _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
-                }
-                else if (_chartControl != null && _chartControl is PieChart pieChart)
-                {
-                    _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
-                }
-                else if (_chartControl != null && _chartControl is GeoMap geoMap)
-                {
-                    _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
-                }
-
-                // Update cache metadata
-                if (_cachedBitmap != null)
-                {
-                    _cachedSize = Bounds.Size;
-                    _cachedRenderScale = renderScale;
-
-                    if (config?.Filters != null)
+                    // Clear old cached bitmap
+                    if (_cachedBitmap != null)
                     {
-                        _cachedConfig = (
-                            config.Filters.StartDate,
-                            config.Filters.EndDate,
-                            config.Filters.IncludeReturns,
-                            config.Filters.IncludeLosses
+                        _cachedBitmap.Dispose();
+                        _cachedBitmap = null;
+                    }
+
+                    // Generate and cache the new bitmap
+                    if (_chartControl != null && _chartControl is CartesianChart cartesianChart)
+                    {
+                        _cachedBitmap = GenerateCartesianChartImage(cartesianChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is PieChart pieChart)
+                    {
+                        _cachedBitmap = GeneratePieChartImage(pieChart, renderScale);
+                    }
+                    else if (_chartControl != null && _chartControl is GeoMap geoMap)
+                    {
+                        _cachedBitmap = GenerateGeoMapImage(geoMap, renderScale);
+                    }
+
+                    // Update cache metadata
+                    if (_cachedBitmap != null)
+                    {
+                        _cachedSize = Bounds.Size;
+                        _cachedRenderScale = renderScale;
+
+                        if (config?.Filters != null)
+                        {
+                            _cachedConfig = (
+                                config.Filters.StartDate,
+                                config.Filters.EndDate,
+                                config.Filters.IncludeReturns,
+                                config.Filters.IncludeLosses
+                            );
+                        }
+                    }
+                }
+
+                // Render the cached bitmap
+                if (_cachedBitmap != null)
+                {
+                    GraphicsState state = graphics.Save();
+                    try
+                    {
+                        graphics.ResetTransform();
+                        PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
+                        Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
+                        tempTransform.TransformPoints(points);
+
+                        Rectangle targetRect = new(
+                            (int)points[0].X,
+                            (int)points[0].Y,
+                            (int)(Bounds.Width * scaleX),
+                            (int)(Bounds.Height * scaleY)
+                        );
+
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                        graphics.DrawImage(_cachedBitmap, targetRect);
+                    }
+                    finally
+                    {
+                        graphics.Restore(state);
+                    }
+                }
+                else
+                {
+                    // Fallback to placeholder if chart control is not available
+                    RenderPlaceholder(graphics, $"Chart: {ChartType}");
+                }
+
+                // Draw border if needed (drawn after bitmap)
+                if (_borderColor != Color.Transparent && _borderThickness > 0)
+                {
+                    using Pen borderPen = new(_borderColor, _borderThickness);
+
+                    // Adjust rectangle to account for border thickness to prevent clipping
+                    Rectangle borderRect = Bounds;
+                    if (_borderThickness > 1)
+                    {
+                        int offset = _borderThickness / 2;
+                        borderRect = new Rectangle(
+                            Bounds.X + offset,
+                            Bounds.Y + offset,
+                            Bounds.Width - _borderThickness,
+                            Bounds.Height - _borderThickness
                         );
                     }
+
+                    graphics.DrawRectangle(borderPen, borderRect);
                 }
             }
-
-            // Render the cached bitmap
-            if (_cachedBitmap != null)
+            catch
             {
-                GraphicsState state = graphics.Save();
-                try
-                {
-                    graphics.ResetTransform();
-                    PointF[] points = [new PointF(Bounds.X, Bounds.Y)];
-                    Matrix tempTransform = new(scaleX, 0, 0, scaleY, graphics.Transform.Elements[4], graphics.Transform.Elements[5]);
-                    tempTransform.TransformPoints(points);
-
-                    Rectangle targetRect = new(
-                        (int)points[0].X,
-                        (int)points[0].Y,
-                        (int)(Bounds.Width * scaleX),
-                        (int)(Bounds.Height * scaleY)
-                    );
-
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                    graphics.DrawImage(_cachedBitmap, targetRect);
-                }
-                finally
-                {
-                    graphics.Restore(state);
-                }
-            }
-            else
-            {
-                // Fallback to placeholder if chart control is not available
-                RenderPlaceholder(graphics, $"Chart: {ChartType}");
-            }
-
-            // Draw border if needed (drawn after bitmap)
-            if (_borderColor != Color.Transparent && _borderThickness > 0)
-            {
-                using Pen borderPen = new(_borderColor, _borderThickness);
-
-                // Adjust rectangle to account for border thickness to prevent clipping
-                Rectangle borderRect = Bounds;
-                if (_borderThickness > 1)
-                {
-                    int offset = _borderThickness / 2;
-                    borderRect = new Rectangle(
-                        Bounds.X + offset,
-                        Bounds.Y + offset,
-                        Bounds.Width - _borderThickness,
-                        Bounds.Height - _borderThickness
-                    );
-                }
-
-                graphics.DrawRectangle(borderPen, borderRect);
+                RenderError(graphics);
             }
         }
         private bool ShouldRegenerateBitmap(ReportConfiguration config, float renderScale)

@@ -32,7 +32,7 @@
                     // Check if click is inside any excluded control
                     foreach (Control control in _excludedControls)
                     {
-                        if (control != null && control.Visible && !control.IsDisposed)
+                        if (control != null && control.Visible && control.Parent != null && !control.IsDisposed)
                         {
                             // Convert control bounds to screen coordinates
                             Rectangle screenBounds = control.RectangleToScreen(control.ClientRectangle);
