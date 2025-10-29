@@ -63,6 +63,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _instance = this;
 
             _undoRedoManager = new UndoRedoManager();
+            _undoRedoManager.StateChanged += OnUndoRedoStateChanged;
 
             SetupCanvas();
             StoreInitialSizes();
@@ -2310,6 +2311,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
                 {
                     _currentTemplateName = form.TemplateName;
+                    _undoRedoManager.MarkSaved();  // Mark this as the saved state
                     SetUnsavedChanges(false);
 
                     // Refresh the template list in the data selection form
@@ -2328,6 +2330,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         public void OnConfigurationLoaded()
         {
             _currentTemplateName = ReportConfig?.Title;
+            _undoRedoManager.MarkSaved();  // Mark this as the saved state
             SetUnsavedChanges(false);
             RefreshCanvas();
         }
@@ -2383,6 +2386,24 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void MarkAsChanged()
         {
             if (!HasUnsavedChanges)
+            {
+                SetUnsavedChanges(true);
+            }
+        }
+
+        /// <summary>
+        /// Called when the undo/redo state changes. Updates the unsaved changes indicator
+        /// based on whether we're at the saved state.
+        /// </summary>
+        private void OnUndoRedoStateChanged(object sender, EventArgs e)
+        {
+            // If we're at the saved state, clear the unsaved changes indicator
+            if (_undoRedoManager.IsAtSavedState)
+            {
+                SetUnsavedChanges(false);
+            }
+            // If we're not at the saved state and indicator is not showing, mark as changed
+            else if (!HasUnsavedChanges)
             {
                 SetUnsavedChanges(true);
             }
