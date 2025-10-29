@@ -619,8 +619,19 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            // Set up debounced text change handling with validation
-            SetupDebouncedTextChanged(textBox, value, onChange, getSearchResults);
+            // Only trigger onChange when the value is valid (matches a search result)
+            textBox.TextChanged += (s, e) =>
+            {
+                string currentValue = textBox.Text;
+                List<SearchResult> validResults = getSearchResults();
+                bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
+
+                // Only call onChange if the value is valid
+                if (isValid)
+                {
+                    onChange(currentValue);
+                }
+            };
 
             textBox.DisableScrollAndForwardToPanel();
 
@@ -634,8 +645,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         /// <summary>
         /// Sets up debounced text change handling for a textbox to prevent recording undo on every keystroke.
+        /// This is used for regular text boxes (not searchboxes).
         /// </summary>
-        private static void SetupDebouncedTextChanged(Guna2TextBox textBox, string initialValue, Action<string> onChange, Func<List<SearchResult>> getSearchResults = null)
+        private static void SetupDebouncedTextChanged(Guna2TextBox textBox, string initialValue, Action<string> onChange)
         {
             string lastCommittedValue = initialValue;
 
@@ -650,27 +662,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 debounceTimer.Stop();
                 string currentValue = textBox.Text;
 
-                // For search boxes with validation (like font selection), only trigger onChange if value is valid
-                if (getSearchResults != null)
+                // Call onChange if value changed
+                if (currentValue != lastCommittedValue)
                 {
-                    List<SearchResult> validResults = getSearchResults();
-                    bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
-
-                    // Only call onChange if the value is valid and different from last committed value
-                    if (isValid && currentValue != lastCommittedValue)
-                    {
-                        lastCommittedValue = currentValue;
-                        onChange(currentValue);
-                    }
-                }
-                else
-                {
-                    // For regular text boxes, call onChange if value changed
-                    if (currentValue != lastCommittedValue)
-                    {
-                        lastCommittedValue = currentValue;
-                        onChange(currentValue);
-                    }
+                    lastCommittedValue = currentValue;
+                    onChange(currentValue);
                 }
             };
 
@@ -694,26 +690,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 {
                     string lastValue = debouncer.lastValue;
 
-                    // For search boxes with validation, only trigger onChange if value is valid
-                    if (getSearchResults != null)
+                    // Call onChange if value changed
+                    if (currentValue != lastValue)
                     {
-                        List<SearchResult> validResults = getSearchResults();
-                        bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
-
-                        if (isValid && currentValue != lastValue)
-                        {
-                            _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
-                            onChange(currentValue);
-                        }
-                    }
-                    else
-                    {
-                        // For regular text boxes, call onChange if value changed
-                        if (currentValue != lastValue)
-                        {
-                            _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
-                            onChange(currentValue);
-                        }
+                        _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
+                        onChange(currentValue);
                     }
                 }
             };
