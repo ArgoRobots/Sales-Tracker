@@ -580,12 +580,13 @@ namespace Sales_Tracker
                 Name = "Rentable_Label",
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11),
+                ForeColor = CustomColors.Text, 
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
             Rentable_Label.Click += Rentable_Label_Click;
             Controls.Add(Rentable_Label);
 
-            ThemeManager.SetThemeForControls([Rentable_CheckBox]);
+            ThemeManager.SetThemeForControls([Rentable_CheckBox, Rentable_Label]);  
             
             // Position the controls
             PositionRentableControls();

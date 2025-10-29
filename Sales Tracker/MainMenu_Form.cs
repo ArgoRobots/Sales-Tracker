@@ -181,6 +181,7 @@ namespace Sales_Tracker
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
             LoadCustomersFromFile();
+            RentalInventoryManager.LoadInventory();
 
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
@@ -1323,6 +1324,10 @@ namespace Sales_Tracker
         {
             Tools.OpenForm(new AddSale_Form());
         }
+        private void ManageRentals_Button_Click(object sneder, EventArgs e)
+        {
+            Tools.OpenForm(new ManageRentals_Form());
+        }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
             Tools.OpenForm(new Accountants_Form());
@@ -2071,7 +2076,8 @@ namespace Sales_Tracker
             Product,
             Accountant,
             ItemsInPurchase,
-            Customer
+            Customer,
+            RentalInventory
         }
 
         // DataGridView methods

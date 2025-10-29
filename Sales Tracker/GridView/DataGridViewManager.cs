@@ -647,6 +647,22 @@ namespace Sales_Tracker.GridView
                                      selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
             int currentIndex = 0;
 
+            bool isRentalInventory = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.RentalInventory.ToString();
+
+            // Add buttons for Rental Inventory
+            if (isRentalInventory)
+            { 
+                if(isSingleRowSelected)
+                {
+                    RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
+                }
+
+                RightClickDataGridViewRowMenu.Delete_Button.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex++);
+
+                return;  // Don't add any more buttons
+            }    
             // Add buttons for Receipts_Form
             if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
             {

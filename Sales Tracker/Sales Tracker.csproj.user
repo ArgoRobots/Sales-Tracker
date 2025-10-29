@@ -10,6 +10,9 @@
     <Compile Update="AddPurchase_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="AddRentalItem_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="AddSale_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -38,6 +41,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="MainMenu_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ManageRentals_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Passwords\AddPassword_Form.cs">
