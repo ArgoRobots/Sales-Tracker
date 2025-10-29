@@ -51,8 +51,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static byte ControlRowHeight { get; } = 55;
         public static byte CheckBoxRowHeight { get; } = 40;
-
-        public const int ControlHeight = 45;
+        public static byte ControlHeight { get; } = 45;
 
         // Abstract methods
         /// <summary>

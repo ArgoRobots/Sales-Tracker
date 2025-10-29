@@ -610,7 +610,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly string _description;
         private readonly Action _refreshCanvas;
 
-        public LayerOrderAction(List<BaseElement> allElements, List<BaseElement> affectedElements, string description, Action refreshCanvas)
+        public LayerOrderAction(List<BaseElement> allElements, string description, Action refreshCanvas)
         {
             _oldZOrders = [];
             _newZOrders = [];

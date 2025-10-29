@@ -146,7 +146,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             return new ChartElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,

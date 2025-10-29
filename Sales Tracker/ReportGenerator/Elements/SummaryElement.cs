@@ -49,7 +49,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 TransactionType = TransactionType,
                 IncludeReturns = IncludeReturns,
                 IncludeLosses = IncludeLosses,
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,

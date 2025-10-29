@@ -61,12 +61,12 @@ namespace Sales_Tracker.ReportGenerator
         // Event handlers
         private static void DuplicateElement(object sender, EventArgs e)
         {
-            ReportLayoutDesigner_Form.Instance.DuplicateSelectedWithUndo();
+            ReportLayoutDesigner_Form.Instance.DuplicateSelected();
             Hide();
         }
         private static void DeleteElement(object sender, EventArgs e)
         {
-            ReportLayoutDesigner_Form.Instance.DeleteSelectedWithUndo();
+            ReportLayoutDesigner_Form.Instance.DeleteSelected();
             Hide();
         }
         private static void SelectAllElements(object sender, EventArgs e)

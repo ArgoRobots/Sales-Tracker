@@ -26,7 +26,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             return new LabelElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,
@@ -198,11 +198,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();
@@ -224,11 +224,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();
@@ -250,11 +250,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();

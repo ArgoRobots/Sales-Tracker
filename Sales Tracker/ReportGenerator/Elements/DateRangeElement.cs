@@ -26,7 +26,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         {
             return new DateRangeElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,

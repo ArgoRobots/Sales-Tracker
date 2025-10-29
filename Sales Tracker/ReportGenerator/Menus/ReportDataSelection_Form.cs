@@ -537,101 +537,98 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (!_isUpdating)
+            if (_isUpdating) { return; }
+
+            // If a non-custom template is selected and user makes changes, switch to custom
+            if (Template_ComboBox.SelectedIndex > 0)
             {
-                // If a non-custom template is selected and user makes changes, switch to custom
-                if (Template_ComboBox.SelectedIndex > 0)
+                PerformUpdate(() =>
                 {
-                    PerformUpdate(() =>
+                    Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
+                    _previousTemplateIndex = 0;
+                    if (ReportConfig != null)
                     {
-                        Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
-                        _previousTemplateIndex = 0;
-                        if (ReportConfig != null)
-                        {
-                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                        }
-                    });
-                }
-
-                // Update the report configuration with current selections
-                if (ReportConfig != null)
-                {
-                    // Update the selected chart types in filters
-                    ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
-
-                    UpdateElementsFromChartSelection();
-                }
-
-                NotifyParentValidationChanged();
+                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                    }
+                });
             }
+
+            // Update the report configuration with current selections
+            if (ReportConfig != null)
+            {
+                // Update the selected chart types in filters
+                ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
+
+                UpdateElementsFromChartSelection();
+            }
+
+            NotifyParentValidationChanged();
         }
         private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
-            {
-                int templateIndex = Template_ComboBox.SelectedIndex;
+            if (_isUpdating) { return; }
 
-                // Check if template is actually changing
-                if (templateIndex == _previousTemplateIndex)
+            int templateIndex = Template_ComboBox.SelectedIndex;
+
+            // Check if template is actually changing
+            if (templateIndex == _previousTemplateIndex)
+            {
+                return;
+            }
+
+            // Check for unsaved changes before switching templates
+            if (ReportLayoutDesigner_Form.Instance != null && ReportLayoutDesigner_Form.HasUnsavedChanges)
+            {
+                bool shouldContinue = ReportLayoutDesigner_Form.Instance.PromptToSaveChanges();
+
+                if (!shouldContinue)
                 {
+                    // User cancelled, revert to previous selection
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = _previousTemplateIndex;
+                    });
                     return;
                 }
-
-                // Check for unsaved changes before switching templates
-                if (ReportLayoutDesigner_Form.Instance != null && ReportLayoutDesigner_Form.HasUnsavedChanges)
-                {
-                    bool shouldContinue = ReportLayoutDesigner_Form.Instance.PromptToSaveChanges();
-
-                    if (!shouldContinue)
-                    {
-                        // User cancelled, revert to previous selection
-                        PerformUpdate(() =>
-                        {
-                            Template_ComboBox.SelectedIndex = _previousTemplateIndex;
-                        });
-                        return;
-                    }
-                }
-
-                // Apply the new template
-                if (templateIndex == 0)
-                {
-                    // Custom Report selected - don't apply any template
-                    if (ReportConfig != null)
-                    {
-                        PerformUpdate(() =>
-                        {
-                            ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
-                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                        });
-                    }
-                }
-                else
-                {
-                    ApplyTemplateByIndex(templateIndex);
-                }
-
-                // Update the previous template index
-                _previousTemplateIndex = templateIndex;
             }
+
+            // Apply the new template
+            if (templateIndex == 0)
+            {
+                // Custom Report selected - don't apply any template
+                if (ReportConfig != null)
+                {
+                    PerformUpdate(() =>
+                    {
+                        ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                    });
+                }
+            }
+            else
+            {
+                ApplyTemplateByIndex(templateIndex);
+            }
+
+            // Update the previous template index
+            _previousTemplateIndex = templateIndex;
         }
         private void DateRange_ValueChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (_isUpdating) { return; }
+
+            ValidateDateRange();
+
+            // When user manually changes dates, set to Custom preset
+            if (ReportConfig != null)
             {
-                ValidateDateRange();
-
-                // When user manually changes dates, set to Custom preset
-                if (ReportConfig != null)
-                {
-                    ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
-                    ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
-                    ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
-                }
-
-                SwitchToCustomTemplate();
-                NotifyParentValidationChanged();
+                ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
+                ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
             }
+
+            SwitchToCustomTemplate();
+            NotifyParentValidationChanged();
         }
         private void ReportTitle_TextBox_TextChanged(object sender, EventArgs e)
         {

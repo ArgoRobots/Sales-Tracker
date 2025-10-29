@@ -45,7 +45,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Data filtering configuration.
         /// </summary>
-        public ReportFilters Filters { get; set; } = new ReportFilters();
+        public ReportFilters Filters { get; set; } = new();
 
         /// <summary>
         /// Report title.
