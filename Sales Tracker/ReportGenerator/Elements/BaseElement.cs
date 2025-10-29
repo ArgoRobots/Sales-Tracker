@@ -19,6 +19,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static byte RightMargin { get; } = 40;
         public static byte NumericUpDownWidth { get; } = 100;
         public static byte ColorPickerWidth { get; } = 50;
+        public static byte MinimumSize { get; } = 50;
 
         /// <summary>
         /// Gets the user-friendly display name for this element type.

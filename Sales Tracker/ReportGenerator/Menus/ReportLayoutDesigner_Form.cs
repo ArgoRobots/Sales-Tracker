@@ -2000,21 +2000,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Enforce minimum size
-            if (newBounds.Width < 20)
+            if (newBounds.Width < BaseElement.MinimumSize)
             {
-                newBounds.Width = 20;
+                newBounds.Width = BaseElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Left || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.BottomLeft)
                 {
-                    newBounds.X = _originalBounds.Right - 20;
+                    newBounds.X = _originalBounds.Right - BaseElement.MinimumSize;
                 }
             }
 
-            if (newBounds.Height < 20)
+            if (newBounds.Height < BaseElement.MinimumSize)
             {
-                newBounds.Height = 20;
+                newBounds.Height = BaseElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Top || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.TopRight)
                 {
-                    newBounds.Y = _originalBounds.Bottom - 20;
+                    newBounds.Y = _originalBounds.Bottom - BaseElement.MinimumSize;
                 }
             }
 
