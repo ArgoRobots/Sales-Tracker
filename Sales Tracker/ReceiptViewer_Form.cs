@@ -286,7 +286,7 @@ namespace Sales_Tracker
             }
             else
             {
-                x = 0; // Center if smaller
+                x = 0;  // Center if smaller
             }
 
             if (scaledHeight > controlHeight)
@@ -296,7 +296,7 @@ namespace Sales_Tracker
             }
             else
             {
-                y = 0; // Center if smaller
+                y = 0;  // Center if smaller
             }
 
             return new SKPoint(x, y);
