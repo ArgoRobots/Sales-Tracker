@@ -1447,12 +1447,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1 ? "Bring to front" : $"Bring {elementsToMove.Count} elements to front";
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), elementsToMove, description, RefreshCanvas);
+
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
 
             foreach (BaseElement element in elementsToMove.OrderBy(e => e.ZOrder))
             {
                 element.ZOrder = ++maxZOrder;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
@@ -1467,6 +1475,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1 ? "Send to back" : $"Send {elementsToMove.Count} elements to back";
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), elementsToMove, description, RefreshCanvas);
+
             // Shift all non-selected elements up
             int shiftAmount = elementsToMove.Count;
             foreach (BaseElement element in ReportConfig.Elements.Where(e => !elementsToMove.Contains(e)))
@@ -1480,6 +1492,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 element.ZOrder = zOrder++;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
