@@ -566,4 +566,61 @@ namespace Sales_Tracker.ReportGenerator
             _refreshCanvas();
         }
     }
+
+    /// <summary>
+    /// Action for changing element layer order (bring to front / send to back).
+    /// </summary>
+    public class LayerOrderAction : IUndoableAction
+    {
+        private readonly Dictionary<BaseElement, int> _oldZOrders;
+        private readonly Dictionary<BaseElement, int> _newZOrders;
+        private readonly string _description;
+        private readonly Action _refreshCanvas;
+
+        public LayerOrderAction(List<BaseElement> allElements, List<BaseElement> affectedElements, string description, Action refreshCanvas)
+        {
+            _oldZOrders = [];
+            _newZOrders = [];
+            _description = description;
+            _refreshCanvas = refreshCanvas;
+
+            // Store old Z-orders for all elements
+            foreach (BaseElement element in allElements)
+            {
+                _oldZOrders[element] = element.ZOrder;
+            }
+        }
+
+        /// <summary>
+        /// Captures the new Z-orders after the operation has been performed.
+        /// This should be called after the layer order change is applied.
+        /// </summary>
+        public void CaptureNewState(List<BaseElement> allElements)
+        {
+            foreach (BaseElement element in allElements)
+            {
+                _newZOrders[element] = element.ZOrder;
+            }
+        }
+
+        public string Description => _description;
+
+        public void Undo()
+        {
+            foreach (KeyValuePair<BaseElement, int> kvp in _oldZOrders)
+            {
+                kvp.Key.ZOrder = kvp.Value;
+            }
+            _refreshCanvas();
+        }
+
+        public void Redo()
+        {
+            foreach (KeyValuePair<BaseElement, int> kvp in _newZOrders)
+            {
+                kvp.Key.ZOrder = kvp.Value;
+            }
+            _refreshCanvas();
+        }
+    }
 }
