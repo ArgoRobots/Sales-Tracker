@@ -18,7 +18,6 @@ namespace Sales_Tracker.ReportGenerator
         public static byte HeaderHeight { get; } = 50;
         public static byte FooterHeight { get; } = 30;
         public static byte SeparatorHeight { get; } = 5;
-
         public static float RenderScale { get; } = 3;
 
         // Init.
