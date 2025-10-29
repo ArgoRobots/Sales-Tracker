@@ -95,6 +95,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 80;
         public override string DisplayName => LanguageManager.TranslateString("transaction table");
         public override ReportElementType GetElementType() => ReportElementType.TransactionTable;
         public override BaseElement Clone()

@@ -19,6 +19,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment VAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("date range");
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()

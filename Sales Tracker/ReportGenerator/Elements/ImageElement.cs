@@ -52,6 +52,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("image");
         public override ReportElementType GetElementType() => ReportElementType.Image;
         public override BaseElement Clone()
