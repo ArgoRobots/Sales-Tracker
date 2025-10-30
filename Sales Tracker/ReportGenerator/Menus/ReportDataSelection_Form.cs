@@ -460,11 +460,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (config == null)
             {
-                CustomMessageBox.Show(
+                CustomMessageBox.ShowWithFormat(
                     "Load Failed",
-                    $"Failed to load template '{templateName}'.",
+                    "Failed to load template '{0}'.",
                     CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxButtons.Ok,
+                    templateName);
                 return;
             }
 
