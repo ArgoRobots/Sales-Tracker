@@ -222,61 +222,61 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Duplicate shortcut
             if (keyData == (Keys.Control | Keys.D))
             {
-                DuplicateSelectedWithUndo();
+                DuplicateSelected();
                 return true;
             }
 
             // Delete shortcut
             if (keyData == Keys.Delete)
             {
-                DeleteSelectedWithUndo();
+                DeleteSelected();
                 return true;
             }
 
             // Arrow key movement shortcuts (1 pixel)
             if (keyData == Keys.Left)
             {
-                MoveSelectedElementsWithUndo(-1, 0);
+                MoveSelectedElements(-1, 0);
                 return true;
             }
 
             if (keyData == Keys.Right)
             {
-                MoveSelectedElementsWithUndo(1, 0);
+                MoveSelectedElements(1, 0);
                 return true;
             }
 
             if (keyData == Keys.Up)
             {
-                MoveSelectedElementsWithUndo(0, -1);
+                MoveSelectedElements(0, -1);
                 return true;
             }
 
             if (keyData == Keys.Down)
             {
-                MoveSelectedElementsWithUndo(0, 1);
+                MoveSelectedElements(0, 1);
                 return true;
             }
 
             // Shift+Arrow or Ctrl+Arrow for larger movements (10 pixels)
             if (keyData == (Keys.Shift | Keys.Left) || keyData == (Keys.Control | Keys.Left))
             {
-                MoveSelectedElementsWithUndo(-10, 0);
+                MoveSelectedElements(-10, 0);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Right) || keyData == (Keys.Control | Keys.Right))
             {
-                MoveSelectedElementsWithUndo(10, 0);
+                MoveSelectedElements(10, 0);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Up) || keyData == (Keys.Control | Keys.Up))
             {
-                MoveSelectedElementsWithUndo(0, -10);
+                MoveSelectedElements(0, -10);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Down) || keyData == (Keys.Control | Keys.Down))
             {
-                MoveSelectedElementsWithUndo(0, 10);
+                MoveSelectedElements(0, 10);
                 return true;
             }
 
@@ -1046,7 +1046,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// <summary>
         /// Moves all selected elements by the specified delta.
         /// </summary>
-        private void MoveSelectedElements(int deltaX, int deltaY)
+        private void MoveSelectedElementsHelper(int deltaX, int deltaY)
         {
             if (_selectedElements.Count == 0 && _selectedElement == null)
             {
@@ -1097,12 +1097,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdatePropertyValues();
             NotifyParentValidationChanged();
         }
-        private void MoveSelectedElementsWithUndo(int deltaX, int deltaY)
+        private void MoveSelectedElements(int deltaX, int deltaY)
         {
             if (_selectedElements.Count > 0)
             {
                 List<Rectangle> oldBounds = _selectedElements.Select(e => e.Bounds).ToList();
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
                 List<Rectangle> newBounds = _selectedElements.Select(e => e.Bounds).ToList();
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
@@ -1116,7 +1116,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else if (_selectedElement != null)
             {
                 Rectangle oldBounds = _selectedElement.Bounds;
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
                     [_selectedElement],
@@ -1449,8 +1449,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (elementsToMove.Count == 0) { return; }
 
             // Create undo action before making changes
-            string description = elementsToMove.Count == 1 ? "Bring to front" : $"Bring {elementsToMove.Count} elements to front";
-            LayerOrderAction action = new(ReportConfig.Elements.ToList(), elementsToMove, description, RefreshCanvas);
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Bring to front")
+                : LanguageManager.TranslateString("Bring") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to front");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
 
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
 
@@ -1477,8 +1479,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (elementsToMove.Count == 0) { return; }
 
             // Create undo action before making changes
-            string description = elementsToMove.Count == 1 ? "Send to back" : $"Send {elementsToMove.Count} elements to back";
-            LayerOrderAction action = new(ReportConfig.Elements.ToList(), elementsToMove, description, RefreshCanvas);
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Send to back")
+                : LanguageManager.TranslateString("Send") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to back");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
 
             // Shift all non-selected elements up
             int shiftAmount = elementsToMove.Count;
@@ -1658,7 +1662,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else
             {
                 // Show multi-selection info
-                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+                ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + _selectedElements.Count + LanguageManager.TranslateString("elements");
 
                 PropertiesContainer_Panel.Controls.Clear();
             }
@@ -1760,7 +1764,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
-            ElementProperties_Label.Text = $"Selected: {elementName}";
+            ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + elementName;
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
@@ -2002,21 +2006,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Enforce minimum size
-            if (newBounds.Width < BaseElement.MinimumSize)
+            if (newBounds.Width < _selectedElement.MinimumSize)
             {
-                newBounds.Width = BaseElement.MinimumSize;
+                newBounds.Width = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Left || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.BottomLeft)
                 {
-                    newBounds.X = _originalBounds.Right - BaseElement.MinimumSize;
+                    newBounds.X = _originalBounds.Right - _selectedElement.MinimumSize;
                 }
             }
 
-            if (newBounds.Height < BaseElement.MinimumSize)
+            if (newBounds.Height < _selectedElement.MinimumSize)
             {
-                newBounds.Height = BaseElement.MinimumSize;
+                newBounds.Height = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Top || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.TopRight)
                 {
-                    newBounds.Y = _originalBounds.Bottom - BaseElement.MinimumSize;
+                    newBounds.Y = _originalBounds.Bottom - _selectedElement.MinimumSize;
                 }
             }
 
@@ -2127,6 +2131,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig?.AddElement(element);
                 SelectElement(element);
                 Canvas_Panel.Invalidate();
+                Canvas_Panel.Focus();
                 NotifyParentValidationChanged();
                 MarkAsChanged();
             }
@@ -2163,7 +2168,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _ => null
             };
         }
-        public void DuplicateSelectedWithUndo()
+        public void DuplicateSelected()
         {
             if (_selectedElements.Count == 0 && _selectedElement == null) { return; }
             if (ReportConfig == null) { return; }
@@ -2171,8 +2176,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             List<BaseElement> duplicates = [];
 
             string description = _selectedElements.Count > 1
-                ? $"Duplicate {_selectedElements.Count} elements"
-                : "Duplicate element";
+                ? LanguageManager.TranslateString("Duplicate") + " " + _selectedElements.Count + " " + LanguageManager.TranslateString("elements")
+                : LanguageManager.TranslateString("Duplicate element");
             CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
@@ -2220,7 +2225,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Focus canvas to ensure the duplicated element remains selected
             Canvas_Panel.Focus();
         }
-        public void DeleteSelectedWithUndo()
+        public void DeleteSelected()
         {
             // Handle both old single-selection and multi-selection
             if (_selectedElements.Count == 0 && _selectedElement == null)
@@ -2247,8 +2252,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Create undo actions
             string description = elementsToDelete.Count == 1
-                ? "Delete element"
-                : $"Delete {elementsToDelete.Count} elements";
+                ? LanguageManager.TranslateString("Delete element")
+                : LanguageManager.TranslateString("Delete") + " " + elementsToDelete.Count + " " + LanguageManager.TranslateString("elements");
             CompositeAction composite = new(description);
 
             // Delete all selected elements
@@ -2324,11 +2329,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    CustomMessageBox.Show(
+                    CustomMessageBox.ShowWithFormat(
                         "Save Failed",
-                        $"Failed to save template '{form.TemplateName}'.",
+                        "Failed to save template '{0}'.",
                         CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.Ok);
+                        CustomMessageBoxButtons.Ok,
+                        form.TemplateName);
                 }
             }
         }

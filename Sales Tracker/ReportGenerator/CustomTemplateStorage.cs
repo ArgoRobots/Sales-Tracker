@@ -510,7 +510,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private static string GetStringValue(object value, string defaultValue = "")
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -523,7 +523,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static bool GetBoolValue(object value, bool defaultValue = false)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -532,13 +532,13 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is bool boolValue) return boolValue;
+            if (value is bool boolValue) { return boolValue; }
 
             return bool.TryParse(value.ToString(), out bool result) ? result : defaultValue;
         }
         private static float GetFloatValue(object value, float defaultValue = 0f)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -547,15 +547,15 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is float floatValue) return floatValue;
-            if (value is double doubleValue) return (float)doubleValue;
-            if (value is int intValue) return intValue;
+            if (value is float floatValue) { return floatValue; }
+            if (value is double doubleValue) { return (float)doubleValue; }
+            if (value is int intValue) { return intValue; }
 
             return float.TryParse(value.ToString(), out float result) ? result : defaultValue;
         }
         private static int GetIntValue(object value, int defaultValue = 0)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -564,10 +564,10 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is int intValue) return intValue;
-            if (value is long longValue) return (int)longValue;
-            if (value is double doubleValue) return (int)doubleValue;
-            if (value is float floatValue) return (int)floatValue;
+            if (value is int intValue) { return intValue; }
+            if (value is long longValue) { return (int)longValue; }
+            if (value is double doubleValue) { return (int)doubleValue; }
+            if (value is float floatValue) { return (int)floatValue; }
 
             return int.TryParse(value.ToString(), out int result) ? result : defaultValue;
         }

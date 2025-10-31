@@ -19,7 +19,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static byte RightMargin { get; } = 40;
         public static byte NumericUpDownWidth { get; } = 100;
         public static byte ColorPickerWidth { get; } = 50;
-        public static byte MinimumSize { get; } = 50;
+        public abstract byte MinimumSize { get; }
 
         // Debounce timers for text input controls
         private static readonly Dictionary<Control, (System.Windows.Forms.Timer timer, string lastValue)> _textInputDebouncers = [];
@@ -54,8 +54,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static byte ControlRowHeight { get; } = 55;
         public static byte CheckBoxRowHeight { get; } = 40;
-
-        public const int ControlHeight = 45;
+        public static byte ControlHeight { get; } = 45;
 
         // Abstract methods
         /// <summary>

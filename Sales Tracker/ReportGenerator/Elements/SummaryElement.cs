@@ -39,6 +39,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("summary");
         public override ReportElementType GetElementType() => ReportElementType.Summary;
         public override BaseElement Clone()
@@ -48,7 +49,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 TransactionType = TransactionType,
                 IncludeReturns = IncludeReturns,
                 IncludeLosses = IncludeLosses,
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,

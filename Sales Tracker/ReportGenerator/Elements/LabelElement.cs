@@ -19,13 +19,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public StringAlignment VAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("label");
         public override ReportElementType GetElementType() => ReportElementType.Label;
         public override BaseElement Clone()
         {
             return new LabelElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,
@@ -197,11 +198,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();
@@ -223,11 +224,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();
@@ -249,11 +250,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 if (currentFontStyle != newStyle)
                 {
                     undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontStyle),
-                            FontStyle,
-                            newStyle,
-                            onPropertyChanged));
+                        this,
+                        nameof(FontStyle),
+                        FontStyle,
+                        newStyle,
+                        onPropertyChanged));
                     FontStyle = newStyle;
                     currentFontStyle = newStyle;
                     onPropertyChanged();
