@@ -838,6 +838,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 });
 
                 NotifyParentValidationChanged();
+
+                // Notify layout designer that configuration has been loaded
+                ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
             }
             finally
             {
