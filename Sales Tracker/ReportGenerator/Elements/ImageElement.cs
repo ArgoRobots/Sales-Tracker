@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
@@ -94,17 +95,26 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 }
 
                 // Load and render image
-                if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
+                if (!string.IsNullOrEmpty(ImagePath))
                 {
-                    string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
+                    string resolvedPath = ResolveImagePath(ImagePath);
 
-                    if (extension == ".svg")
+                    if (File.Exists(resolvedPath))
                     {
-                        RenderSvgImage(graphics);
+                        string extension = Path.GetExtension(resolvedPath).ToLowerInvariant();
+
+                        if (extension == ".svg")
+                        {
+                            RenderSvgImage(graphics, resolvedPath);
+                        }
+                        else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                        {
+                            RenderBitmapImage(graphics, resolvedPath);
+                        }
                     }
-                    else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                    else
                     {
-                        RenderBitmapImage(graphics);
+                        RenderPlaceholder(graphics);
                     }
                 }
                 else
@@ -133,14 +143,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
             }
         }
 
-        private void RenderBitmapImage(Graphics graphics)
+        private void RenderBitmapImage(Graphics graphics, string resolvedPath)
         {
             // Load image if not cached or path changed
-            if (_cachedImage == null || _cachedImagePath != ImagePath)
+            if (_cachedImage == null || _cachedImagePath != resolvedPath)
             {
                 _cachedImage?.Dispose();
-                _cachedImage = Image.FromFile(ImagePath);
-                _cachedImagePath = ImagePath;
+                _cachedImage = Image.FromFile(resolvedPath);
+                _cachedImagePath = resolvedPath;
             }
 
             if (_cachedImage == null) { return; }
@@ -183,14 +193,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 graphics.Restore(state);
             }
         }
-        private void RenderSvgImage(Graphics graphics)
+        private void RenderSvgImage(Graphics graphics, string resolvedPath)
         {
             // Load SVG if not cached or path changed
-            if (_cachedSvg == null || _cachedImagePath != ImagePath)
+            if (_cachedSvg == null || _cachedImagePath != resolvedPath)
             {
                 _cachedSvg = new SKSvg();
-                _cachedSvg.Load(ImagePath);
-                _cachedImagePath = ImagePath;
+                _cachedSvg.Load(resolvedPath);
+                _cachedImagePath = resolvedPath;
             }
 
             if (_cachedSvg?.Picture == null) { return; }
@@ -452,7 +462,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (openDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string newPath = openDialog.FileName;
+                    string selectedPath = openDialog.FileName;
+
+                    // Copy the image to the template images directory
+                    string newPath = CopyImageToTemplateDirectory(selectedPath);
+
                     if (ImagePath != newPath)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -618,6 +632,90 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             return yPosition;
+        }
+
+        /// <summary>
+        /// Gets the directory where template images are stored.
+        /// </summary>
+        private static string GetImagesDirectory()
+        {
+            string imagesDir = Path.Combine(Directories.ReportTemplates_dir, "Images");
+            if (!Directory.Exists(imagesDir))
+            {
+                Directory.CreateDirectory(imagesDir);
+            }
+            return imagesDir;
+        }
+
+        /// <summary>
+        /// Copies an image file to the template images directory and returns the new path.
+        /// </summary>
+        private static string CopyImageToTemplateDirectory(string sourcePath)
+        {
+            if (string.IsNullOrEmpty(sourcePath) || !File.Exists(sourcePath))
+            {
+                return sourcePath;
+            }
+
+            try
+            {
+                string imagesDir = GetImagesDirectory();
+                string fileName = Path.GetFileName(sourcePath);
+
+                // Generate unique filename if file already exists
+                string destPath = Path.Combine(imagesDir, fileName);
+                int counter = 1;
+                string nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                string extension = Path.GetExtension(fileName);
+
+                while (File.Exists(destPath))
+                {
+                    fileName = $"{nameWithoutExt}_{counter}{extension}";
+                    destPath = Path.Combine(imagesDir, fileName);
+                    counter++;
+                }
+
+                // Copy the file
+                File.Copy(sourcePath, destPath, false);
+
+                // Return just the filename (relative path)
+                return fileName;
+            }
+            catch
+            {
+                // If copy fails, return the original path
+                return sourcePath;
+            }
+        }
+
+        /// <summary>
+        /// Resolves an image path. If it's a relative path (just filename),
+        /// looks for it in the template images directory.
+        /// </summary>
+        private static string ResolveImagePath(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                return imagePath;
+            }
+
+            // If it's already an absolute path and exists, use it
+            if (Path.IsPathRooted(imagePath) && File.Exists(imagePath))
+            {
+                return imagePath;
+            }
+
+            // Try to find it in the template images directory
+            string imagesDir = GetImagesDirectory();
+            string possiblePath = Path.Combine(imagesDir, imagePath);
+
+            if (File.Exists(possiblePath))
+            {
+                return possiblePath;
+            }
+
+            // Return original path if not found
+            return imagePath;
         }
 
         // Dispose
