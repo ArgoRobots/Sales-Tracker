@@ -20,6 +20,7 @@ namespace Sales_Tracker.ReportGenerator
                 new MarginsConverter()
             }
         };
+        private static readonly string[] sourceArray = [".png", ".jpg", ".jpeg", ".svg"];
 
         static CustomTemplateStorage()
         {
@@ -623,7 +624,7 @@ namespace Sales_Tracker.ReportGenerator
 
             try
             {
-                List<string> templateNames = GetAllTemplateNames();
+                List<string> templateNames = ReportTemplates.GetAvailableTemplates();
 
                 foreach (string templateName in templateNames)
                 {
@@ -671,8 +672,7 @@ namespace Sales_Tracker.ReportGenerator
 
                 // Get all image files in the directory
                 string[] imageFiles = Directory.GetFiles(Directories.ReportTemplateImages_dir, "*.*")
-                    .Where(f => new[] { ".png", ".jpg", ".jpeg", ".svg" }
-                        .Contains(Path.GetExtension(f).ToLowerInvariant()))
+                    .Where(f => sourceArray.Contains(Path.GetExtension(f).ToLowerInvariant()))
                     .ToArray();
 
                 // Delete unused images

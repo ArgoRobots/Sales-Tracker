@@ -85,11 +85,11 @@ namespace Sales_Tracker.Classes
             // Cache
             Cache_dir = AppData_dir + @"cache\";
             Logs_dir = Cache_dir + @"logs\";
-            ReportTemplates_dir = Cache_dir + @"ReportTemplates\";
-            ReportTemplateImages_dir = ReportTemplates_dir + @"Images\";
             AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
+            ReportTemplates_dir = AppData_dir + @"ReportTemplates\";
+            ReportTemplateImages_dir = ReportTemplates_dir + @"Images\";
             ExchangeRates_file = AppData_dir + "exchangeRates" + ArgoFiles.JsonFileExtension;
             Translations_file = AppData_dir + "translations" + ArgoFiles.JsonFileExtension;
             GlobalAppDataSettings_file = AppData_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
