@@ -440,7 +440,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
                 Location = new Point(85, yPosition + ControlHeight + 2),
-                AutoSize = true
+                AutoSize = false,
+                Width = container.Width - 95,  // Match button width
+                Height = 15,
+                AutoEllipsis = true,  // Truncate with '...'
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             container.Controls.Add(pathLabel);
             CacheControl("PathLabel", pathLabel, () =>
