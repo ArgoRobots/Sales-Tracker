@@ -252,7 +252,6 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!AskUserToSaveChanges())
             {
-                ReportLayoutDesigner_Form.HasUnsavedChanges = false;
                 e.Cancel = true;
                 return;
             }
