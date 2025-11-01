@@ -2279,12 +2279,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportDataSelection_Form.Instance?.SyncChartSelectionFromConfig();
             }
 
-            // Cleanup unused images if any ImageElements were deleted
-            if (elementsToDelete.Any(e => e is ImageElement))
-            {
-                CustomTemplateStorage.CleanupUnusedImages();
-            }
-
             // Clear selection
             ClearAllSelections();
             Canvas_Panel.Invalidate();

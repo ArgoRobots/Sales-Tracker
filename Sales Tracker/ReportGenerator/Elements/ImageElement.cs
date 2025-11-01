@@ -494,9 +494,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         // Update the label immediately
                         pathLabel.Text = Path.GetFileName(ImagePath);
                         onPropertyChanged();
-
-                        // Cleanup unused images after changing the image
-                        CustomTemplateStorage.CleanupUnusedImages();
                     }
                 }
             };
