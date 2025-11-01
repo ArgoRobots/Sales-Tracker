@@ -166,8 +166,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Select "Custom Report" by default
-            Template_ComboBox.SelectedIndex = 0;
-            _previousTemplateIndex = 0;
+            PerformUpdate(() =>
+            {
+                Template_ComboBox.SelectedIndex = 0;
+                ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                _previousTemplateIndex = 0;
+            });
         }
         public void RefreshTemplates()
         {
