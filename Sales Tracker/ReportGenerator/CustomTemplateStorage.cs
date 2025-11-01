@@ -78,7 +78,6 @@ namespace Sales_Tracker.ReportGenerator
                 string json = JsonSerializer.Serialize(template, _jsonOptions);
                 File.WriteAllText(filePath, json);
 
-                // Cleanup unused images after saving template
                 CleanupUnusedImages();
 
                 return true;
@@ -193,8 +192,6 @@ namespace Sales_Tracker.ReportGenerator
                 if (File.Exists(filePath))
                 {
                     Directories.DeleteFile(filePath);
-
-                    // Cleanup unused images after template deletion
                     CleanupUnusedImages();
 
                     return true;

@@ -2368,7 +2368,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
             if (result == CustomMessageBoxResult.No)
             {
-                // User chose not to save - cleanup any unused images
+                // User chose not to save
                 CustomTemplateStorage.CleanupUnusedImages();
                 SetUnsavedChanges(false);
                 return true;

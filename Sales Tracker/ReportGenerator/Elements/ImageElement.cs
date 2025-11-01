@@ -443,7 +443,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 AutoSize = false,
                 Width = container.Width - 95,  // Match button width
                 Height = 15,
-                AutoEllipsis = true,  // Truncate with '...'
+                AutoEllipsis = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             container.Controls.Add(pathLabel);
