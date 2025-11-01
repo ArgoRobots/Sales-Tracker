@@ -442,7 +442,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Location = new Point(85, yPosition + ControlHeight + 2),
                 AutoSize = false,
                 Width = container.Width - 95,  // Match button width
-                Height = 15,
+                Height = 25,
                 AutoEllipsis = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };

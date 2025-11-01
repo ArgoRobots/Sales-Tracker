@@ -2368,8 +2368,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
             if (result == CustomMessageBoxResult.No)
             {
-                // User chose not to save - cleanup any unused images
-                // First dispose all cached images to release file locks
+                // User chose not to save
                 DisposeCachedImages();
                 CustomTemplateStorage.CleanupUnusedImages();
                 SetUnsavedChanges(false);
@@ -2383,7 +2382,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// <summary>
         /// Disposes all cached images in ImageElements to release file locks.
         /// </summary>
-        private void DisposeCachedImages()
+        public static void DisposeCachedImages()
         {
             if (ReportConfig?.Elements == null) { return; }
 

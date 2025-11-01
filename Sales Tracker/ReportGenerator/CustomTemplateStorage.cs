@@ -1,5 +1,6 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
+using Sales_Tracker.ReportGenerator.Menus;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -663,6 +664,8 @@ namespace Sales_Tracker.ReportGenerator
                 {
                     return;
                 }
+
+                ReportLayoutDesigner_Form.DisposeCachedImages();
 
                 // Get all currently used image paths
                 HashSet<string> usedPaths = GetAllUsedImagePaths();

@@ -257,6 +257,8 @@ namespace Sales_Tracker.ReportGenerator
                 return;
             }
 
+            CustomTemplateStorage.CleanupUnusedImages();
+
             // Clean up child forms
             _dataSelectionForm?.Dispose();
             _layoutDesignerForm?.Dispose();
@@ -286,6 +288,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (AskUserToSaveChanges())
             {
+                CustomTemplateStorage.CleanupUnusedImages();
                 ReportLayoutDesigner_Form.HasUnsavedChanges = false;
                 Close();
             }
@@ -324,7 +327,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Asks the user to confirm closing the report generation process if there are unsaved changes.
         /// </summary>
-        /// <returns>True if the user selects yes, otherwise False.</returns>
+        /// <returns>True if the user selects yes or there are no unsaved changes, otherwise False.</returns>
         private static bool AskUserToSaveChanges()
         {
             if (ReportLayoutDesigner_Form.HasUnsavedChanges)
