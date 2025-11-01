@@ -31,6 +31,7 @@ namespace Sales_Tracker.Classes
         public static string Desktop_dir { get; private set; }
         public static string Cache_dir { get; set; }
         public static string ReportTemplates_dir { get; private set; }
+        public static string ReportTemplateImages_dir { get; private set; }
         public static string Translations_file { get; set; }
         public static string GlobalAppDataSettings_file { get; private set; }
         public static string AnonymousUserData_file { get; private set; }
@@ -85,6 +86,7 @@ namespace Sales_Tracker.Classes
             Cache_dir = AppData_dir + @"cache\";
             Logs_dir = Cache_dir + @"logs\";
             ReportTemplates_dir = Cache_dir + @"ReportTemplates\";
+            ReportTemplateImages_dir = ReportTemplates_dir + @"Images\";
             AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other

@@ -642,12 +642,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         private static string GetImagesDirectory()
         {
-            string imagesDir = Path.Combine(Directories.ReportTemplates_dir, "Images");
-            if (!Directory.Exists(imagesDir))
+            if (!Directory.Exists(Directories.ReportTemplateImages_dir))
             {
-                Directory.CreateDirectory(imagesDir);
+                Directory.CreateDirectory(Directories.ReportTemplateImages_dir);
             }
-            return imagesDir;
+            return Directories.ReportTemplateImages_dir;
         }
 
         /// <summary>

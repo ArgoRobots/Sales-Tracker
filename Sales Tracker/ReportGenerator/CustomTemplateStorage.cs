@@ -661,8 +661,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             try
             {
-                string imagesDir = Path.Combine(Directories.ReportTemplates_dir, "Images");
-                if (!Directory.Exists(imagesDir))
+                if (!Directory.Exists(Directories.ReportTemplateImages_dir))
                 {
                     return;
                 }
@@ -671,7 +670,7 @@ namespace Sales_Tracker.ReportGenerator
                 HashSet<string> usedPaths = GetAllUsedImagePaths();
 
                 // Get all image files in the directory
-                string[] imageFiles = Directory.GetFiles(imagesDir, "*.*")
+                string[] imageFiles = Directory.GetFiles(Directories.ReportTemplateImages_dir, "*.*")
                     .Where(f => new[] { ".png", ".jpg", ".jpeg", ".svg" }
                         .Contains(Path.GetExtension(f).ToLowerInvariant()))
                     .ToArray();
