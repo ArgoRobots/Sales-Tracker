@@ -1,5 +1,6 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
+using Sales_Tracker.ReportGenerator.Menus;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -20,6 +21,7 @@ namespace Sales_Tracker.ReportGenerator
                 new MarginsConverter()
             }
         };
+        private static readonly string[] sourceArray = [".png", ".jpg", ".jpeg", ".svg"];
 
         static CustomTemplateStorage()
         {
@@ -76,6 +78,8 @@ namespace Sales_Tracker.ReportGenerator
 
                 string json = JsonSerializer.Serialize(template, _jsonOptions);
                 File.WriteAllText(filePath, json);
+
+                CleanupUnusedImages();
 
                 return true;
             }
@@ -189,6 +193,8 @@ namespace Sales_Tracker.ReportGenerator
                 if (File.Exists(filePath))
                 {
                     Directories.DeleteFile(filePath);
+                    CleanupUnusedImages();
+
                     return true;
                 }
 
@@ -605,6 +611,91 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return Color.Black;  // Fallback
+        }
+
+        /// <summary>
+        /// Gets all image paths currently used across all templates.
+        /// </summary>
+        private static HashSet<string> GetAllUsedImagePaths()
+        {
+            HashSet<string> usedPaths = [];
+
+            try
+            {
+                List<string> templateNames = ReportTemplates.GetAvailableTemplates();
+
+                foreach (string templateName in templateNames)
+                {
+                    ReportConfiguration config = LoadTemplate(templateName);
+                    if (config?.Elements != null)
+                    {
+                        foreach (BaseElement element in config.Elements)
+                        {
+                            if (element is ImageElement imageElement && !string.IsNullOrEmpty(imageElement.ImagePath))
+                            {
+                                // Store just the filename for comparison
+                                string fileName = Path.GetFileName(imageElement.ImagePath);
+                                if (!string.IsNullOrEmpty(fileName))
+                                {
+                                    usedPaths.Add(fileName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors during scanning
+            }
+
+            return usedPaths;
+        }
+
+        /// <summary>
+        /// Cleans up unused image files from the Images directory.
+        /// Only deletes images that are not referenced by any template.
+        /// </summary>
+        public static void CleanupUnusedImages()
+        {
+            try
+            {
+                if (!Directory.Exists(Directories.ReportTemplateImages_dir))
+                {
+                    return;
+                }
+
+                ReportLayoutDesigner_Form.DisposeCachedImages();
+
+                // Get all currently used image paths
+                HashSet<string> usedPaths = GetAllUsedImagePaths();
+
+                // Get all image files in the directory
+                string[] imageFiles = Directory.GetFiles(Directories.ReportTemplateImages_dir, "*.*")
+                    .Where(f => sourceArray.Contains(Path.GetExtension(f).ToLowerInvariant()))
+                    .ToArray();
+
+                // Delete unused images
+                foreach (string imageFile in imageFiles)
+                {
+                    string fileName = Path.GetFileName(imageFile);
+                    if (!usedPaths.Contains(fileName))
+                    {
+                        try
+                        {
+                            File.Delete(imageFile);
+                        }
+                        catch
+                        {
+                            // Ignore errors deleting individual files
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors during cleanup
+            }
         }
 
         // Custom JSON converter for Color
