@@ -1923,7 +1923,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Convert page bounds to scaled canvas coordinates for invalidation
             Rectangle scaledBounds = PageToScaledRectangle(bounds);
-            scaledBounds.Inflate(10, 10);
+            // Inflate by 50 pixels to ensure complex elements (like tables with multiple rows)
+            // are fully repainted without leaving artifacts
+            scaledBounds.Inflate(50, 50);
             Canvas_Panel.Invalidate(scaledBounds);
         }
         private Rectangle PageToScaledRectangle(Rectangle pageRect)
@@ -2042,9 +2044,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Update element bounds and invalidate
-            InvalidateElementRegion(_lastElementBounds);
+            // Invalidate the union of old and new bounds to ensure no rendering artifacts remain
+            // This is especially important for complex elements like tables that render multiple rows
+            Rectangle invalidationRect = Rectangle.Union(_lastElementBounds, newBounds);
+            InvalidateElementRegion(invalidationRect);
+
             _selectedElement.Bounds = newBounds;
-            InvalidateElementRegion(newBounds);
             _lastElementBounds = newBounds;
 
             // Defer property panel update
@@ -2342,6 +2347,38 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         /// <summary>
+        /// Clears the current template if it matches the given template name.
+        /// This is used when a template is deleted to ensure the designer doesn't keep a deleted template loaded.
+        /// </summary>
+        public void ClearIfTemplateDeleted(string deletedTemplateName)
+        {
+            if (_currentTemplateName == deletedTemplateName)
+            {
+                _currentTemplateName = null;
+                SetUnsavedChanges(false);
+                _undoRedoManager.Clear();
+
+                // Clear all elements from the configuration
+                if (ReportConfig != null)
+                {
+                    // Dispose elements
+                    foreach (BaseElement element in ReportConfig.Elements.ToList())
+                    {
+                        if (element is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+
+                    ReportConfig.Elements.Clear();
+
+                    ClearAllSelections();
+                    RefreshCanvas();
+                }
+            }
+        }
+
+        /// <summary>
         /// Prompts the user to save unsaved changes.
         /// </summary>
         /// <returns>True if the operation should continue, false if cancelled</returns>
@@ -2364,12 +2401,30 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (result == CustomMessageBoxResult.No)
             {
                 // User chose not to save
+                DisposeCachedImages();
+                CustomTemplateStorage.CleanupUnusedImages();
                 SetUnsavedChanges(false);
                 return true;
             }
 
             // The user clicked Cancel or closed the message dialog, so do not continue the operation
             return false;
+        }
+
+        /// <summary>
+        /// Disposes all cached images in ImageElements to release file locks.
+        /// </summary>
+        public static void DisposeCachedImages()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                if (element is ImageElement imageElement)
+                {
+                    imageElement.Dispose();
+                }
+            }
         }
 
         private void SetUnsavedChanges(bool hasChanges)

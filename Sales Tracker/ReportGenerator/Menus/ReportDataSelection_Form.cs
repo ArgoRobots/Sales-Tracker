@@ -166,8 +166,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Select "Custom Report" by default
-            Template_ComboBox.SelectedIndex = 0;
-            _previousTemplateIndex = 0;
+            PerformUpdate(() =>
+            {
+                Template_ComboBox.SelectedIndex = 0;
+                ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                _previousTemplateIndex = 0;
+            });
         }
         public void RefreshTemplates()
         {
@@ -519,6 +523,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig.Filters.IncludeReturns = config.Filters.IncludeReturns;
                 ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
                 ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
+                ReportConfig.Filters.StartDate = config.Filters.StartDate;
+                ReportConfig.Filters.EndDate = config.Filters.EndDate;
                 ReportConfig.Filters.SelectedChartTypes = [.. config.Filters.SelectedChartTypes];
 
                 // Update date preset selection
@@ -838,6 +844,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 });
 
                 NotifyParentValidationChanged();
+
+                // Notify layout designer that configuration has been loaded
+                ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
             }
             finally
             {

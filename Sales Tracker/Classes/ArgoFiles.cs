@@ -10,6 +10,7 @@ namespace Sales_Tracker.Classes
     {
         public static readonly string
             ArgoCompanyFileExtension = ".ArgoSales",
+            ArgoTemplateFileExtension = ".ArgoSalesTemplate",
             TxtFileExtension = ".txt",
             JsonFileExtension = ".json",
             XlsxFileExtension = ".xlsx",
