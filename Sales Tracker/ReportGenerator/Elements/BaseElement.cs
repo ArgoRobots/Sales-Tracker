@@ -254,11 +254,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["X"] = xNumeric;
@@ -289,11 +289,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["Y"] = yNumeric;
@@ -325,11 +325,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Width"] = widthNumeric;
@@ -361,11 +361,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Height"] = heightNumeric;

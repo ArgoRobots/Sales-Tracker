@@ -2369,12 +2369,30 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (result == CustomMessageBoxResult.No)
             {
                 // User chose not to save
+                DisposeCachedImages();
+                CustomTemplateStorage.CleanupUnusedImages();
                 SetUnsavedChanges(false);
                 return true;
             }
 
             // The user clicked Cancel or closed the message dialog, so do not continue the operation
             return false;
+        }
+
+        /// <summary>
+        /// Disposes all cached images in ImageElements to release file locks.
+        /// </summary>
+        public static void DisposeCachedImages()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                if (element is ImageElement imageElement)
+                {
+                    imageElement.Dispose();
+                }
+            }
         }
 
         private void SetUnsavedChanges(bool hasChanges)
