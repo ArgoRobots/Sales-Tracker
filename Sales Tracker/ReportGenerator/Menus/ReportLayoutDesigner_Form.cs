@@ -2347,6 +2347,20 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         /// <summary>
+        /// Clears the current template if it matches the given template name.
+        /// This is used when a template is deleted to ensure the designer doesn't keep a deleted template loaded.
+        /// </summary>
+        public void ClearIfTemplateDeleted(string deletedTemplateName)
+        {
+            if (_currentTemplateName == deletedTemplateName)
+            {
+                _currentTemplateName = null;
+                SetUnsavedChanges(false);
+                _undoRedoManager.ClearHistory();
+            }
+        }
+
+        /// <summary>
         /// Prompts the user to save unsaved changes.
         /// </summary>
         /// <returns>True if the operation should continue, false if cancelled</returns>

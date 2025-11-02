@@ -146,6 +146,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (CustomTemplateStorage.DeleteTemplate(templateName))
                 {
                     successCount++;
+
+                    // Clear the designer if this template was loaded
+                    ReportLayoutDesigner_Form.Instance?.ClearIfTemplateDeleted(templateName);
                 }
                 else
                 {
