@@ -1,3 +1,4 @@
+using Sales_Tracker.Classes;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -289,8 +290,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 CustomMessageBox.ShowWithFormat(
                     "Export Successful",
-                    "Template '{0}' has been exported successfully with all images.",
-                    CustomMessageBoxIcon.Information,
+                    "Template '{0}' has been exported successfully.",
+                    CustomMessageBoxIcon.Info,
                     CustomMessageBoxButtons.Ok,
                     templateName);
             }
@@ -384,8 +385,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 CustomMessageBox.ShowWithFormat(
                     "Import Successful",
-                    "Template '{0}' has been imported successfully with all images.",
-                    CustomMessageBoxIcon.Information,
+                    "Template '{0}' has been imported successfully.",
+                    CustomMessageBoxIcon.Info,
                     CustomMessageBoxButtons.Ok,
                     importedTemplateName);
             }
