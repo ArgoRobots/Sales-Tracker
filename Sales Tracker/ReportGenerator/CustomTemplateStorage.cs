@@ -318,24 +318,35 @@ namespace Sales_Tracker.ReportGenerator
                             if (element.Properties.TryGetValue("ImagePath", out object imagePathObj))
                             {
                                 string imagePath = GetStringValue(imagePathObj, "");
-                                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                                if (!string.IsNullOrEmpty(imagePath))
                                 {
-                                    string fileName = Path.GetFileName(imagePath);
-                                    string destPath = Path.Combine(imagesDir, fileName);
-
-                                    // Handle duplicate filenames
-                                    int counter = 1;
-                                    while (copiedImages.Contains(fileName))
+                                    // Resolve the image path (handle both absolute and relative paths)
+                                    string resolvedPath = imagePath;
+                                    if (!Path.IsPathRooted(imagePath))
                                     {
-                                        string nameWithoutExt = Path.GetFileNameWithoutExtension(imagePath);
-                                        string ext = Path.GetExtension(imagePath);
-                                        fileName = $"{nameWithoutExt}_{counter}{ext}";
-                                        destPath = Path.Combine(imagesDir, fileName);
-                                        counter++;
+                                        // If it's a relative path, look in the template images directory
+                                        resolvedPath = Path.Combine(Directories.ReportTemplateImages_dir, imagePath);
                                     }
 
-                                    File.Copy(imagePath, destPath, true);
-                                    copiedImages.Add(fileName);
+                                    if (File.Exists(resolvedPath))
+                                    {
+                                        string fileName = Path.GetFileName(imagePath);
+                                        string destPath = Path.Combine(imagesDir, fileName);
+
+                                        // Handle duplicate filenames
+                                        int counter = 1;
+                                        while (copiedImages.Contains(fileName))
+                                        {
+                                            string nameWithoutExt = Path.GetFileNameWithoutExtension(imagePath);
+                                            string ext = Path.GetExtension(imagePath);
+                                            fileName = $"{nameWithoutExt}_{counter}{ext}";
+                                            destPath = Path.Combine(imagesDir, fileName);
+                                            counter++;
+                                        }
+
+                                        File.Copy(resolvedPath, destPath, true);
+                                        copiedImages.Add(fileName);
+                                    }
                                 }
                             }
                         }
@@ -451,8 +462,8 @@ namespace Sales_Tracker.ReportGenerator
 
                                             File.Copy(extractedImagePath, newImagePath, true);
 
-                                            // Update the image path in the template
-                                            element.Properties["ImagePath"] = newImagePath;
+                                            // Update the image path in the template (store as relative path - just filename)
+                                            element.Properties["ImagePath"] = fileName;
                                         }
                                     }
                                 }
