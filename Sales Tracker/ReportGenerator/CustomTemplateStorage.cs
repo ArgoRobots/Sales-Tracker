@@ -69,6 +69,8 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = config.Filters.IncludeReturns,
                         IncludeLosses = config.Filters.IncludeLosses,
                         DatePresetName = config.Filters.DatePresetName,
+                        StartDate = config.Filters.StartDate,
+                        EndDate = config.Filters.EndDate,
                         SelectedChartTypes = [.. config.Filters.SelectedChartTypes]
                     },
                     Elements = config.Elements.Select(e => SerializeElement(e)).ToList()
@@ -135,6 +137,8 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = template.Filters.IncludeReturns,
                         IncludeLosses = template.Filters.IncludeLosses,
                         DatePresetName = template.Filters.DatePresetName,
+                        StartDate = template.Filters.StartDate,
+                        EndDate = template.Filters.EndDate,
                         SelectedChartTypes = [.. template.Filters.SelectedChartTypes]
                     }
                 };
