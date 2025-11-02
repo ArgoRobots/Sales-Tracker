@@ -50,7 +50,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             ChartSelection_CheckedListBox = new()
             {
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Padding = new Padding(10)
             };
 
             ChartSelection_CheckedListBox.SetBounds(

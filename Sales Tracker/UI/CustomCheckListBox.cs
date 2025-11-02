@@ -13,6 +13,7 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private readonly Panel _containerPanel;
+        private readonly Panel _bottomSpacer;
         private readonly List<CheckItem> _items = [];
         private bool _isUpdating = false;
 
@@ -61,6 +62,22 @@ namespace Sales_Tracker.UI
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new Padding Padding
+        {
+            get => new(
+                _containerPanel.Padding.Left,
+                _containerPanel.Padding.Top,
+                _containerPanel.Padding.Right,
+                _bottomSpacer.Height
+            );
+            set
+            {
+                _containerPanel.Padding = new Padding(value.Left, value.Top, value.Right, 0);
+                _bottomSpacer.Height = value.Bottom;
+            }
+        }
+
         // Init.
         public CustomCheckListBox()
         {
@@ -70,10 +87,18 @@ namespace Sales_Tracker.UI
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
                 BackColor = Color.Transparent,
-                Padding = new Padding(5, 5, 5, 5)
+                Padding = new Padding(10, 10, 10, 0)  // Bottom padding doesn't work here
             };
-
             Controls.Add(_containerPanel);
+
+            // Add bottom spacer for padding
+            _bottomSpacer = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 10,
+                BackColor = Color.Transparent
+            };
+            _containerPanel.Controls.Add(_bottomSpacer);
 
             // Set default properties on the control itself
             BackColor = Color.White;
