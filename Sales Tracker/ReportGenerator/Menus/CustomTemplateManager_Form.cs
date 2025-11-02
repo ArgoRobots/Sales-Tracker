@@ -273,27 +273,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             try
             {
-                // Get the source template file
-                string sourceFileName = CustomTemplateStorage.SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
-                string sourceFilePath = Path.Combine(Directories.ReportTemplates_dir, sourceFileName);
+                // Export template with images using TAR archive
+                bool success = CustomTemplateStorage.ExportTemplateWithImages(templateName, saveDialog.FileName);
 
-                if (!File.Exists(sourceFilePath))
+                if (!success)
                 {
                     CustomMessageBox.ShowWithFormat(
                         "Export Failed",
-                        "Could not find template file for '{0}'.",
+                        "Could not export template '{0}'.",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok,
                         templateName);
                     return;
                 }
 
-                // Copy the file to the selected location with .ArgoSalesTemplate extension
-                File.Copy(sourceFilePath, saveDialog.FileName, true);
-
                 CustomMessageBox.ShowWithFormat(
                     "Export Successful",
-                    "Template '{0}' has been exported successfully.",
+                    "Template '{0}' has been exported successfully with all images.",
                     CustomMessageBoxIcon.Information,
                     CustomMessageBoxButtons.Ok,
                     templateName);
@@ -327,13 +323,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             try
             {
-                // Read and validate the template file
-                string json = File.ReadAllText(openDialog.FileName);
+                // Get template name without importing
+                string templateName = CustomTemplateStorage.GetTemplateNameFromFile(openDialog.FileName);
 
-                // Try to deserialize to validate it's a proper template
-                var template = System.Text.Json.JsonSerializer.Deserialize<CustomTemplate>(json);
-
-                if (template == null || string.IsNullOrWhiteSpace(template.Name))
+                if (string.IsNullOrEmpty(templateName))
                 {
                     CustomMessageBox.Show(
                         "Import Failed",
@@ -343,10 +336,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     return;
                 }
 
-                string templateName = template.Name;
-
                 // Check if a template with this name already exists
-                if (_templateNames.Contains(templateName))
+                bool templateExists = _templateNames.Contains(templateName);
+                bool shouldOverwrite = true;
+
+                if (templateExists)
                 {
                     CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                         "Template Exists",
@@ -357,15 +351,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                     if (result != CustomMessageBoxResult.Yes)
                     {
+                        shouldOverwrite = false;
                         return;
                     }
                 }
 
-                // Save the template to the templates directory
-                string destinationFileName = CustomTemplateStorage.SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
-                string destinationFilePath = Path.Combine(Directories.ReportTemplates_dir, destinationFileName);
+                // Import template with images from TAR archive
+                string importedTemplateName = CustomTemplateStorage.ImportTemplateWithImages(openDialog.FileName, shouldOverwrite);
 
-                File.Copy(openDialog.FileName, destinationFilePath, true);
+                if (string.IsNullOrEmpty(importedTemplateName))
+                {
+                    CustomMessageBox.Show(
+                        "Import Failed",
+                        "Failed to import the template.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok);
+                    return;
+                }
 
                 // Reload templates and refresh UI
                 LoadTemplates();
@@ -373,7 +375,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportDataSelection_Form.Instance.RefreshTemplates();
 
                 // Select the imported template
-                int index = _templateNames.IndexOf(templateName);
+                int index = _templateNames.IndexOf(importedTemplateName);
                 if (index >= 0)
                 {
                     Templates_DataGridView.ClearSelection();
@@ -382,10 +384,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 CustomMessageBox.ShowWithFormat(
                     "Import Successful",
-                    "Template '{0}' has been imported successfully.",
+                    "Template '{0}' has been imported successfully with all images.",
                     CustomMessageBoxIcon.Information,
                     CustomMessageBoxButtons.Ok,
-                    templateName);
+                    importedTemplateName);
             }
             catch (Exception ex)
             {
@@ -401,12 +403,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        // Helper class to deserialize template for validation during import
-        private class CustomTemplate
-        {
-            public string Name { get; set; }
         }
     }
 }
