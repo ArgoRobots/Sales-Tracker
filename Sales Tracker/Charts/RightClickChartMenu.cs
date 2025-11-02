@@ -632,6 +632,8 @@ namespace Sales_Tracker.Charts
             {
                 ResetCartesianChartZoom(cartesianChart);
             }
+
+            Hide();
         }
         private static void ResetCartesianChartZoom(CartesianChart chart)
         {
