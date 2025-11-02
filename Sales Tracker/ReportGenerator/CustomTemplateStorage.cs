@@ -314,7 +314,7 @@ namespace Sales_Tracker.ReportGenerator
                     string imagesDir = Path.Combine(tempDir, "images");
                     Directory.CreateDirectory(imagesDir);
 
-                    HashSet<string> copiedImages = new();
+                    HashSet<string> copiedImages = [];
                     foreach (SerializedElement element in template.Elements)
                     {
                         if (element.ElementType == nameof(ImageElement))
@@ -381,7 +381,7 @@ namespace Sales_Tracker.ReportGenerator
         /// Imports a template from a .ArgoSalesTemplate file (TAR archive) and restores images.
         /// Returns the template name if successful, null otherwise.
         /// </summary>
-        public static string ImportTemplateWithImages(string sourceFilePath, bool overwriteExisting = true, string newTemplateName = null)
+        public static string? ImportTemplateWithImages(string sourceFilePath, bool overwriteExisting = true, string newTemplateName = null)
         {
             try
             {
@@ -499,7 +499,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Gets the template name from a .ArgoSalesTemplate file without importing it.
         /// </summary>
-        public static string GetTemplateNameFromFile(string sourceFilePath)
+        public static string? GetTemplateNameFromFile(string sourceFilePath)
         {
             try
             {
