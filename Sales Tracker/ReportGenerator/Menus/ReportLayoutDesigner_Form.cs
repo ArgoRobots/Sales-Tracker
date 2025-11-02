@@ -2356,12 +2356,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 _currentTemplateName = null;
                 SetUnsavedChanges(false);
-                _undoRedoManager.ClearHistory();
+                _undoRedoManager.Clear();
 
                 // Clear all elements from the configuration
                 if (ReportConfig != null)
                 {
-                    // Dispose any disposable elements (like images)
+                    // Dispose elements
                     foreach (BaseElement element in ReportConfig.Elements.ToList())
                     {
                         if (element is IDisposable disposable)
@@ -2370,13 +2370,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         }
                     }
 
-                    // Clear the elements list
                     ReportConfig.Elements.Clear();
 
-                    // Clear selections
                     ClearAllSelections();
-
-                    // Refresh the canvas to show the cleared state
                     RefreshCanvas();
                 }
             }

@@ -107,7 +107,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Templates_DataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             Templates_DataGridView.RowTemplate.Height = 35;
             Templates_DataGridView.ScrollBars = ScrollBars.Vertical;
-            Templates_DataGridView.Size = new Size(598, 284);
+            Templates_DataGridView.Size = new Size(598, 294);
             Templates_DataGridView.TabIndex = 1;
             Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             Templates_DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -153,10 +153,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Load_Button.Enabled = false;
             Load_Button.Font = new Font("Segoe UI", 9.5F);
             Load_Button.ForeColor = Color.White;
-            Load_Button.Location = new Point(30, 399);
+            Load_Button.Location = new Point(30, 380);
             Load_Button.Name = "Load_Button";
             Load_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Load_Button.Size = new Size(130, 45);
+            Load_Button.Size = new Size(130, 96);
             Load_Button.TabIndex = 3;
             Load_Button.Text = "Load";
             Load_Button.Click += Load_Button_Click;
@@ -176,7 +176,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Delete_Button.FillColor = Color.White;
             Delete_Button.Font = new Font("Segoe UI", 9.5F);
             Delete_Button.ForeColor = Color.Black;
-            Delete_Button.Location = new Point(166, 399);
+            Delete_Button.Location = new Point(166, 431);
             Delete_Button.Name = "Delete_Button";
             Delete_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Delete_Button.Size = new Size(130, 45);
@@ -199,21 +199,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Rename_Button.FillColor = Color.White;
             Rename_Button.Font = new Font("Segoe UI", 9.5F);
             Rename_Button.ForeColor = Color.Black;
-            Rename_Button.Location = new Point(302, 399);
+            Rename_Button.Location = new Point(302, 431);
             Rename_Button.Name = "Rename_Button";
             Rename_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Rename_Button.Size = new Size(130, 45);
             Rename_Button.TabIndex = 5;
             Rename_Button.Text = "Rename";
             Rename_Button.Click += Rename_Button_Click;
-            //
+            // 
             // Export_Button
-            //
+            // 
             Export_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             Export_Button.BorderColor = Color.LightGray;
             Export_Button.BorderRadius = 2;
             Export_Button.BorderThickness = 1;
-            Export_Button.CustomizableEdges = customizableEdges9;
+            Export_Button.CustomizableEdges = customizableEdges7;
             Export_Button.DisabledState.BorderColor = Color.DarkGray;
             Export_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Export_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -222,21 +222,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 9.5F);
             Export_Button.ForeColor = Color.Black;
-            Export_Button.Location = new Point(30, 370);
+            Export_Button.Location = new Point(166, 380);
             Export_Button.Name = "Export_Button";
-            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            Export_Button.Size = new Size(130, 23);
+            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Export_Button.Size = new Size(130, 45);
             Export_Button.TabIndex = 7;
             Export_Button.Text = "Export";
             Export_Button.Click += Export_Button_Click;
-            //
+            // 
             // Import_Button
-            //
+            // 
             Import_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             Import_Button.BorderColor = Color.LightGray;
             Import_Button.BorderRadius = 2;
             Import_Button.BorderThickness = 1;
-            Import_Button.CustomizableEdges = customizableEdges11;
+            Import_Button.CustomizableEdges = customizableEdges9;
             Import_Button.DisabledState.BorderColor = Color.DarkGray;
             Import_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Import_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -244,21 +244,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Import_Button.FillColor = Color.White;
             Import_Button.Font = new Font("Segoe UI", 9.5F);
             Import_Button.ForeColor = Color.Black;
-            Import_Button.Location = new Point(166, 370);
+            Import_Button.Location = new Point(302, 380);
             Import_Button.Name = "Import_Button";
-            Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Import_Button.Size = new Size(130, 23);
+            Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Import_Button.Size = new Size(130, 45);
             Import_Button.TabIndex = 8;
             Import_Button.Text = "Import";
             Import_Button.Click += Import_Button_Click;
-            //
+            // 
             // Close_Button
             // 
             Close_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Close_Button.BorderColor = Color.LightGray;
             Close_Button.BorderRadius = 2;
             Close_Button.BorderThickness = 1;
-            Close_Button.CustomizableEdges = customizableEdges7;
+            Close_Button.CustomizableEdges = customizableEdges11;
             Close_Button.DisabledState.BorderColor = Color.DarkGray;
             Close_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Close_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -266,9 +266,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Close_Button.FillColor = Color.White;
             Close_Button.Font = new Font("Segoe UI", 9.5F);
             Close_Button.ForeColor = Color.Black;
-            Close_Button.Location = new Point(498, 399);
+            Close_Button.Location = new Point(498, 431);
             Close_Button.Name = "Close_Button";
-            Close_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Close_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Close_Button.Size = new Size(130, 45);
             Close_Button.TabIndex = 6;
             Close_Button.Text = "Close";
@@ -280,7 +280,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             NoTemplates_Label.AutoSize = true;
             NoTemplates_Label.BackColor = Color.White;
             NoTemplates_Label.Font = new Font("Segoe UI", 10F);
-            NoTemplates_Label.Location = new Point(202, 207);
+            NoTemplates_Label.Location = new Point(202, 223);
             NoTemplates_Label.Name = "NoTemplates_Label";
             NoTemplates_Label.Size = new Size(254, 28);
             NoTemplates_Label.TabIndex = 2;
@@ -292,7 +292,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(658, 464);
+            ClientSize = new Size(658, 496);
             Controls.Add(NoTemplates_Label);
             Controls.Add(Close_Button);
             Controls.Add(Import_Button);
