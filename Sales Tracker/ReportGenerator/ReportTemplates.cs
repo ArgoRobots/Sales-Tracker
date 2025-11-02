@@ -517,6 +517,25 @@ namespace Sales_Tracker.ReportGenerator
 
             return templates;
         }
+
+        /// <summary>
+        /// Checks if the given template name is a built-in template.
+        /// </summary>
+        public static bool IsBuiltInTemplate(string templateName)
+        {
+            if (string.IsNullOrWhiteSpace(templateName))
+            {
+                return false;
+            }
+
+            return templateName == TemplateNames.Custom ||
+                   templateName == TemplateNames.MonthlySales ||
+                   templateName == TemplateNames.FinancialOverview ||
+                   templateName == TemplateNames.PerformanceAnalysis ||
+                   templateName == TemplateNames.ReturnsAnalysis ||
+                   templateName == TemplateNames.LossesAnalysis ||
+                   templateName == TemplateNames.GeographicAnalysis;
+        }
         public static ReportConfiguration CreateFromTemplateIndex(int index)
         {
             // First 7 templates are built-in

@@ -340,6 +340,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     return;
                 }
 
+                // Check if trying to import a template with a built-in template name
+                if (ReportTemplates.IsBuiltInTemplate(templateName))
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "Reserved Template Name",
+                        "Cannot import template '{0}' because this name is reserved for a built-in template.\nPlease rename the template before importing.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        templateName);
+                    return;
+                }
+
                 // Check if a template with this name already exists
                 bool templateExists = _templateNames.Contains(templateName);
                 bool shouldOverwrite = true;
