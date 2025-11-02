@@ -50,7 +50,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            Title_Label.Location = new Point(129, 20);
+            Title_Label.Location = new Point(164, 20);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(200, 38);
             Title_Label.TabIndex = 0;
@@ -77,6 +77,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // 
             // UpdateExisting_Label
             // 
+            UpdateExisting_Label.AutoEllipsis = true;
             UpdateExisting_Label.AutoSize = true;
             UpdateExisting_Label.BackColor = Color.Transparent;
             UpdateExisting_Label.Cursor = Cursors.Hand;
@@ -153,7 +154,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             TemplateName_TextBox.SelectedText = "";
             TemplateName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             TemplateName_TextBox.ShortcutsEnabled = false;
-            TemplateName_TextBox.Size = new Size(398, 50);
+            TemplateName_TextBox.Size = new Size(468, 50);
             TemplateName_TextBox.TabIndex = 6;
             TemplateName_TextBox.KeyDown += TemplateName_TextBox_KeyDown;
             // 
@@ -168,7 +169,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Save_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             Save_Button.Font = new Font("Segoe UI", 9.5F);
             Save_Button.ForeColor = Color.White;
-            Save_Button.Location = new Point(200, 277);
+            Save_Button.Location = new Point(270, 287);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Save_Button.Size = new Size(120, 45);
@@ -190,7 +191,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9.5F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(326, 277);
+            Cancel_Button.Location = new Point(396, 287);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Cancel_Button.Size = new Size(120, 45);
@@ -202,7 +203,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(458, 334);
+            ClientSize = new Size(528, 344);
             Controls.Add(SaveAsNew_RadioButton);
             Controls.Add(UpdateExisting_RadioButton);
             Controls.Add(Cancel_Button);
