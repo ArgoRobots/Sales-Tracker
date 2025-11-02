@@ -366,7 +366,7 @@ namespace Sales_Tracker.ReportGenerator
         /// Imports a template from a .ArgoSalesTemplate file (TAR archive) and restores images.
         /// Returns the template name if successful, null otherwise.
         /// </summary>
-        public static string ImportTemplateWithImages(string sourceFilePath, bool overwriteExisting = true)
+        public static string ImportTemplateWithImages(string sourceFilePath, bool overwriteExisting = true, string newTemplateName = null)
         {
             try
             {
@@ -393,6 +393,12 @@ namespace Sales_Tracker.ReportGenerator
                     if (template == null || string.IsNullOrWhiteSpace(template.Name))
                     {
                         return null;
+                    }
+
+                    // Use the new template name if provided
+                    if (!string.IsNullOrWhiteSpace(newTemplateName))
+                    {
+                        template.Name = newTemplateName;
                     }
 
                     // Check if template already exists

@@ -341,19 +341,31 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
 
                 // Check if trying to import a template with a built-in template name
+                string finalTemplateName = templateName;
                 if (ReportTemplates.IsBuiltInTemplate(templateName))
                 {
-                    CustomMessageBox.ShowWithFormat(
+                    // Generate a unique name
+                    List<string> allTemplateNames = ReportTemplates.GetAvailableTemplates();
+                    string suggestedName = Tools.AddNumberForAStringThatAlreadyExists(templateName, allTemplateNames);
+
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                         "Reserved Template Name",
-                        "Cannot import template '{0}' because this name is reserved for a built-in template.\nPlease rename the template before importing.",
-                        CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.Ok,
-                        templateName);
-                    return;
+                        "The template '{0}' uses a name reserved for a built-in template.\nWould you like to import it as '{1}' instead?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNo,
+                        templateName,
+                        suggestedName);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+
+                    finalTemplateName = suggestedName;
                 }
 
                 // Check if a template with this name already exists
-                bool templateExists = _templateNames.Contains(templateName);
+                bool templateExists = _templateNames.Contains(finalTemplateName);
                 bool shouldOverwrite = true;
 
                 if (templateExists)
@@ -363,7 +375,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         "A template named '{0}' already exists. Do you want to overwrite it?",
                         CustomMessageBoxIcon.Question,
                         CustomMessageBoxButtons.YesNo,
-                        templateName);
+                        finalTemplateName);
 
                     if (result != CustomMessageBoxResult.Yes)
                     {
@@ -373,7 +385,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
 
                 // Import template with images from TAR archive
-                string importedTemplateName = CustomTemplateStorage.ImportTemplateWithImages(openDialog.FileName, shouldOverwrite);
+                string newTemplateName = (finalTemplateName != templateName) ? finalTemplateName : null;
+                string importedTemplateName = CustomTemplateStorage.ImportTemplateWithImages(openDialog.FileName, shouldOverwrite, newTemplateName);
 
                 if (string.IsNullOrEmpty(importedTemplateName))
                 {
