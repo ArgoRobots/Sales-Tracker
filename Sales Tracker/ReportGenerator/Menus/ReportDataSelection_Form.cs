@@ -131,6 +131,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             AddChartItem(MainMenu_Form.ChartDataType.LossesByCategory, TranslatedChartTitles.LossesByCategory);
             AddChartItem(MainMenu_Form.ChartDataType.LossesByProduct, TranslatedChartTitles.LossesByProduct);
             AddChartItem(MainMenu_Form.ChartDataType.PurchaseVsSaleLosses, TranslatedChartTitles.PurchaseVsSaleLosses);
+
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox.ContainerPanel);
         }
         private void AddChartItem(MainMenu_Form.ChartDataType chartType, string displayName)
         {

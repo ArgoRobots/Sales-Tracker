@@ -12,7 +12,7 @@ namespace Sales_Tracker.UI
     public class CustomCheckListBox : UserControl
     {
         // Properties
-        private readonly Panel _containerPanel;
+        public Panel ContainerPanel { get; private set; }
         private readonly Panel _bottomSpacer;
         private readonly List<CheckItem> _items = [];
         private bool _isUpdating = false;
@@ -58,7 +58,7 @@ namespace Sales_Tracker.UI
             set
             {
                 base.BorderStyle = value;
-                _containerPanel.BorderStyle = BorderStyle.None;
+                ContainerPanel.BorderStyle = BorderStyle.None;
             }
         }
 
@@ -66,14 +66,14 @@ namespace Sales_Tracker.UI
         public new Padding Padding
         {
             get => new(
-                _containerPanel.Padding.Left,
-                _containerPanel.Padding.Top,
-                _containerPanel.Padding.Right,
+                ContainerPanel.Padding.Left,
+                ContainerPanel.Padding.Top,
+                ContainerPanel.Padding.Right,
                 _bottomSpacer.Height
             );
             set
             {
-                _containerPanel.Padding = new Padding(value.Left, value.Top, value.Right, 0);
+                ContainerPanel.Padding = new Padding(value.Left, value.Top, value.Right, 0);
                 _bottomSpacer.Height = value.Bottom;
             }
         }
@@ -82,14 +82,14 @@ namespace Sales_Tracker.UI
         public CustomCheckListBox()
         {
             // Initialize the container panel
-            _containerPanel = new Panel
+            ContainerPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
                 BackColor = Color.Transparent,
                 Padding = new Padding(10, 10, 10, 0)  // Bottom padding doesn't work here
             };
-            Controls.Add(_containerPanel);
+            Controls.Add(ContainerPanel);
 
             // Add bottom spacer for padding
             _bottomSpacer = new Panel
@@ -98,7 +98,7 @@ namespace Sales_Tracker.UI
                 Height = 10,
                 BackColor = Color.Transparent
             };
-            _containerPanel.Controls.Add(_bottomSpacer);
+            ContainerPanel.Controls.Add(_bottomSpacer);
 
             // Set default properties on the control itself
             BackColor = Color.White;
@@ -153,7 +153,7 @@ namespace Sales_Tracker.UI
             sectionPanel.Controls.Add(sectionLabel);
 
             // Add to container
-            _containerPanel.Controls.Add(sectionPanel);
+            ContainerPanel.Controls.Add(sectionPanel);
             sectionPanel.BringToFront();
         }
 
@@ -169,7 +169,7 @@ namespace Sales_Tracker.UI
                 BackColor = Color.Transparent
             };
 
-            _containerPanel.Controls.Add(spacer);
+            ContainerPanel.Controls.Add(spacer);
             spacer.BringToFront();
         }
 
@@ -178,7 +178,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         public void Clear()
         {
-            _containerPanel.Controls.Clear();
+            ContainerPanel.Controls.Clear();
             _items.Clear();
         }
 
@@ -265,7 +265,7 @@ namespace Sales_Tracker.UI
             itemPanel.Controls.Add(label);
 
             // Add to container panel
-            _containerPanel.Controls.Add(itemPanel);
+            ContainerPanel.Controls.Add(itemPanel);
             itemPanel.BringToFront();
 
             // Create item and add to collection
@@ -670,7 +670,7 @@ namespace Sales_Tracker.UI
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                _owner._containerPanel.Controls.Remove(_owner._items[index].Panel);
+                _owner.ContainerPanel.Controls.Remove(_owner._items[index].Panel);
                 _owner._items.RemoveAt(index);
 
                 // Update indices
