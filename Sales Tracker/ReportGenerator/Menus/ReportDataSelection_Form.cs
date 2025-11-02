@@ -523,6 +523,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig.Filters.IncludeReturns = config.Filters.IncludeReturns;
                 ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
                 ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
+                ReportConfig.Filters.StartDate = config.Filters.StartDate;
+                ReportConfig.Filters.EndDate = config.Filters.EndDate;
                 ReportConfig.Filters.SelectedChartTypes = [.. config.Filters.SelectedChartTypes];
 
                 // Update date preset selection
