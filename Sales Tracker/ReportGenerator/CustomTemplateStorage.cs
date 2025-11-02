@@ -258,7 +258,7 @@ namespace Sales_Tracker.ReportGenerator
             string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
             return File.Exists(filePath);
         }
-        private static string SanitizeFileName(string fileName)
+        public static string SanitizeFileName(string fileName)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
             return string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');

@@ -39,12 +39,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             Templates_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             TemplateName = new DataGridViewTextBoxColumn();
             Load_Button = new Guna.UI2.WinForms.Guna2Button();
             Delete_Button = new Guna.UI2.WinForms.Guna2Button();
             Rename_Button = new Guna.UI2.WinForms.Guna2Button();
+            Export_Button = new Guna.UI2.WinForms.Guna2Button();
+            Import_Button = new Guna.UI2.WinForms.Guna2Button();
             Close_Button = new Guna.UI2.WinForms.Guna2Button();
             NoTemplates_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)Templates_DataGridView).BeginInit();
@@ -200,7 +206,52 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Rename_Button.TabIndex = 5;
             Rename_Button.Text = "Rename";
             Rename_Button.Click += Rename_Button_Click;
-            // 
+            //
+            // Export_Button
+            //
+            Export_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Export_Button.BorderColor = Color.LightGray;
+            Export_Button.BorderRadius = 2;
+            Export_Button.BorderThickness = 1;
+            Export_Button.CustomizableEdges = customizableEdges9;
+            Export_Button.DisabledState.BorderColor = Color.DarkGray;
+            Export_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Export_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Export_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Export_Button.Enabled = false;
+            Export_Button.FillColor = Color.White;
+            Export_Button.Font = new Font("Segoe UI", 9.5F);
+            Export_Button.ForeColor = Color.Black;
+            Export_Button.Location = new Point(30, 370);
+            Export_Button.Name = "Export_Button";
+            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Export_Button.Size = new Size(130, 23);
+            Export_Button.TabIndex = 7;
+            Export_Button.Text = "Export";
+            Export_Button.Click += Export_Button_Click;
+            //
+            // Import_Button
+            //
+            Import_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Import_Button.BorderColor = Color.LightGray;
+            Import_Button.BorderRadius = 2;
+            Import_Button.BorderThickness = 1;
+            Import_Button.CustomizableEdges = customizableEdges11;
+            Import_Button.DisabledState.BorderColor = Color.DarkGray;
+            Import_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Import_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Import_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Import_Button.FillColor = Color.White;
+            Import_Button.Font = new Font("Segoe UI", 9.5F);
+            Import_Button.ForeColor = Color.Black;
+            Import_Button.Location = new Point(166, 370);
+            Import_Button.Name = "Import_Button";
+            Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Import_Button.Size = new Size(130, 23);
+            Import_Button.TabIndex = 8;
+            Import_Button.Text = "Import";
+            Import_Button.Click += Import_Button_Click;
+            //
             // Close_Button
             // 
             Close_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -244,6 +295,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ClientSize = new Size(658, 464);
             Controls.Add(NoTemplates_Label);
             Controls.Add(Close_Button);
+            Controls.Add(Import_Button);
+            Controls.Add(Export_Button);
             Controls.Add(Rename_Button);
             Controls.Add(Delete_Button);
             Controls.Add(Load_Button);
@@ -270,6 +323,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Guna.UI2.WinForms.Guna2Button Load_Button;
         private Guna.UI2.WinForms.Guna2Button Delete_Button;
         private Guna.UI2.WinForms.Guna2Button Rename_Button;
+        private Guna.UI2.WinForms.Guna2Button Export_Button;
+        private Guna.UI2.WinForms.Guna2Button Import_Button;
         private Guna.UI2.WinForms.Guna2Button Close_Button;
     }
 }
