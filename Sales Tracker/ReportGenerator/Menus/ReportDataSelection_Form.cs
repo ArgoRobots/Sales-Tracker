@@ -176,12 +176,34 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _previousTemplateIndex = 0;
             });
         }
-        public void RefreshTemplates()
+        public void RefreshTemplates(string selectTemplateName = null)
         {
             int previousIndex = Template_ComboBox.SelectedIndex;
             SetupTemplates();
 
-            // Try to restore previous selection if still valid
+            // If a specific template name is provided, select it
+            if (!string.IsNullOrEmpty(selectTemplateName))
+            {
+                int newIndex = -1;
+                for (int i = 0; i < Template_ComboBox.Items.Count; i++)
+                {
+                    if (Template_ComboBox.Items[i].ToString() == selectTemplateName)
+                    {
+                        newIndex = i;
+                        break;
+                    }
+                }
+
+                if (newIndex >= 0)
+                {
+                    // Update previous index BEFORE setting selected index to prevent reload
+                    _previousTemplateIndex = newIndex;
+                    Template_ComboBox.SelectedIndex = newIndex;
+                    return;
+                }
+            }
+
+            // Otherwise, try to restore previous selection if still valid
             if (previousIndex >= 0 && previousIndex < Template_ComboBox.Items.Count)
             {
                 Template_ComboBox.SelectedIndex = previousIndex;

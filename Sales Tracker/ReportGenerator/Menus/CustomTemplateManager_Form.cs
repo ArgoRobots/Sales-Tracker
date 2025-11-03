@@ -229,7 +229,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 LoadTemplates();
                 UpdateButtonStates();
-                ReportDataSelection_Form.Instance.RefreshTemplates();
+                ReportDataSelection_Form.Instance.RefreshTemplates(newTemplateName);
 
                 // Select the renamed template
                 int index = _templateNames.IndexOf(newTemplateName);
@@ -401,7 +401,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Reload templates and refresh UI
                 LoadTemplates();
                 UpdateButtonStates();
-                ReportDataSelection_Form.Instance.RefreshTemplates();
+                ReportDataSelection_Form.Instance.RefreshTemplates(importedTemplateName);
 
                 // Select the imported template
                 int index = _templateNames.IndexOf(importedTemplateName);
