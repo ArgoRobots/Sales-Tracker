@@ -352,6 +352,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             ];
         }
+        public void UpdateScrollBarTheme()
+        {
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox.ContainerPanel);
+        }
 
         // Helper methods
         private MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)

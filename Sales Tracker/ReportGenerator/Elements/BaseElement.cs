@@ -761,6 +761,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             {
                                 btn.FillColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBack;
                                 btn.BorderColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBorder;
+                                btn.ForeColor = tagValue == tabIndex ? Color.White : CustomColors.Text;
                             }
                         }
                     }
