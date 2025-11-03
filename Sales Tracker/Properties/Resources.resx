@@ -196,8 +196,8 @@
   <data name="MinusWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Minus - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="OpenFolderBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Open folder - black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="OpenFolderGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OpenFolder_Gray.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="OpenFolderWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Open folder - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

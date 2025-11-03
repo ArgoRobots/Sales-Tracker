@@ -455,7 +455,6 @@ namespace Sales_Tracker.Classes
 
         /// <summary>
         /// Simplified Imports an Argo Tar file into a directory.
-        /// Uses a simpler approach that avoids DecryptFileToMemoryStream.
         /// </summary>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {

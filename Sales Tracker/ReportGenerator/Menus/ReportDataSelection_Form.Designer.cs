@@ -825,7 +825,7 @@
             OpenTemplates_Button.FillColor = Color.White;
             OpenTemplates_Button.Font = new Font("Segoe UI", 9F);
             OpenTemplates_Button.ForeColor = Color.Black;
-            OpenTemplates_Button.Image = Properties.Resources.OpenFolderBlack;
+            OpenTemplates_Button.Image = Properties.Resources.OpenFolderGray;
             OpenTemplates_Button.Location = new Point(415, 70);
             OpenTemplates_Button.Name = "OpenTemplates_Button";
             OpenTemplates_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;

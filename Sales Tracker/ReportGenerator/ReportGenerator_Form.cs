@@ -130,7 +130,7 @@ namespace Sales_Tracker.ReportGenerator
             }
             else
             {
-                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderBlack;
+                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderGray;
 
                 designer.Undo_Button.Image = Resources.UndoBlack;
                 designer.UndoDropdown_Button.Image = Resources.DropDownBlack;
