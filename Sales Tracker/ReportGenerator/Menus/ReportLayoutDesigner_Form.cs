@@ -2331,8 +2331,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     _undoRedoManager.MarkSaved();  // Mark this as the saved state
                     SetUnsavedChanges(false);
 
-                    // Refresh the template list in the data selection form
-                    ReportDataSelection_Form.Instance?.RefreshTemplates();
+                    // Refresh the template list and select the newly saved template
+                    ReportDataSelection_Form.Instance?.RefreshTemplates(form.TemplateName);
                 }
                 else
                 {
