@@ -88,6 +88,7 @@ namespace Sales_Tracker
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
                 CompanyLogo.CompanyLogoRightClick_Panel,
+                ColumnVisibilityPanel.Panel,
                 DateRangePanel,
                 File_Button,
                 Help_Button,

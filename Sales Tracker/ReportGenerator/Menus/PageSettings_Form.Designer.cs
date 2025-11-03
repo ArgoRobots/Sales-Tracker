@@ -470,7 +470,7 @@
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(570, 725);
+            MinimumSize = new Size(570, 780);
             Name = "PageSettings_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Settings";

@@ -50,7 +50,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             ChartSelection_CheckedListBox = new()
             {
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Padding = new Padding(10)
             };
 
             ChartSelection_CheckedListBox.SetBounds(
@@ -130,6 +131,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             AddChartItem(MainMenu_Form.ChartDataType.LossesByCategory, TranslatedChartTitles.LossesByCategory);
             AddChartItem(MainMenu_Form.ChartDataType.LossesByProduct, TranslatedChartTitles.LossesByProduct);
             AddChartItem(MainMenu_Form.ChartDataType.PurchaseVsSaleLosses, TranslatedChartTitles.PurchaseVsSaleLosses);
+
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox.ContainerPanel);
         }
         private void AddChartItem(MainMenu_Form.ChartDataType chartType, string displayName)
         {
