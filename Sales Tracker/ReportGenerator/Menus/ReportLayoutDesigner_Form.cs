@@ -2311,9 +2311,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Template save/load functionality
         private void SaveTemplate_Button_Click(object sender, EventArgs e)
         {
+            // For built-in templates, don't allow updating - only save as new
+            string currentTemplateForSave = _currentTemplateName;
+            if (!string.IsNullOrEmpty(_currentTemplateName) && ReportTemplates.IsBuiltInTemplate(_currentTemplateName))
+            {
+                currentTemplateForSave = null;
+            }
+
             using SaveTemplate_Form form = new()
             {
-                CurrentTemplateName = _currentTemplateName
+                CurrentTemplateName = currentTemplateForSave
             };
 
             if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
