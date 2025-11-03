@@ -135,6 +135,7 @@ namespace Sales_Tracker.Classes
             Products_Form.ThingsThatHaveChangedInFile.Clear();
             AddSale_Form.ThingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.ThingsThatHaveChangedInFile.Clear();
+            DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
         }
 
         /// <summary>
