@@ -187,11 +187,6 @@ namespace Sales_Tracker.Excel
                         // Transaction with no items and no receipt
                         AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern, returnColumnsStartIndex, lossColumnsStartIndex);
                         break;
-                        
-                    default:
-                        // Export basic row data without TagData
-                        AddRowToWorksheet(worksheet, row, currentRow, null, targetCurrency, currencyFormatPattern, returnColumnsStartIndex, lossColumnsStartIndex);
-                        break;
                 }
 
                 // Add receipt to the main transaction row (not item rows)
@@ -203,133 +198,114 @@ namespace Sales_Tracker.Excel
             worksheet.Columns().AdjustToContents();
         }
         private static void AddRowToWorksheet(
-    IXLWorksheet worksheet,
-    DataGridViewRow row,
-    int currentRow,
-    TagData tagData,
-    string targetCurrency,
-    string currencyFormatPattern,
-    int returnColumnsStartIndex,
-    int lossColumnsStartIndex)
-{
-    int excelColumnIndex = 1;
-
-    // Get exchange rate from USD to target currency
-    string transactionDate = row.Cells[6].Value?.ToString() ?? Tools.FormatDate(DateTime.Today);
-    decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
-
-    // Skip the Notes column - it will be handled separately
-    int notesColumnIndex = row.Cells[ReadOnlyVariables.Note_column].ColumnIndex;
-
-    // Skip country and company columns becausethey are already in the product data
-    int countryColumnIndex = row.Cells[ReadOnlyVariables.Country_column].ColumnIndex;
-    int companyColumnIndex = row.Cells[ReadOnlyVariables.Company_column].ColumnIndex;
-
-    for (int i = 0; i < row.Cells.Count; i++)
-    {
-        if (i == notesColumnIndex)
+            IXLWorksheet worksheet,
+            DataGridViewRow row,
+            int currentRow,
+            TagData tagData,
+            string targetCurrency,
+            string currencyFormatPattern,
+            int returnColumnsStartIndex,
+            int lossColumnsStartIndex)
         {
-            break;
-        }
-        if (i == countryColumnIndex || i == companyColumnIndex)
-        {
-            continue;
-        }
+            int excelColumnIndex = 1;
 
-        IXLCell excelCell = worksheet.Cell(currentRow, excelColumnIndex);
+            // Get exchange rate from USD to target currency
+            string transactionDate = row.Cells[6].Value?.ToString() ?? Tools.FormatDate(DateTime.Today);
+            decimal exchangeRate = GetExchangeRateForExport(transactionDate, targetCurrency);
 
-        // Check if this is a monetary column (8-14)
-        if (i >= 8 && i <= 14)
-        {
-            if (tagData != null)
+            // Skip the Notes column - it will be handled separately
+            int notesColumnIndex = row.Cells[ReadOnlyVariables.Note_column].ColumnIndex;
+
+            // Skip country and company columns becausethey are already in the product data
+            int countryColumnIndex = row.Cells[ReadOnlyVariables.Country_column].ColumnIndex;
+            int companyColumnIndex = row.Cells[ReadOnlyVariables.Company_column].ColumnIndex;
+
+            for (int i = 0; i < row.Cells.Count; i++)
             {
-                (decimal usdValue, bool useEmpty) = i switch
+                if (i == notesColumnIndex)
                 {
-                    8 => (tagData.PricePerUnitUSD, tagData.PricePerUnitUSD == 0),
-                    9 => (tagData.ShippingUSD, false),
-                    10 => (tagData.TaxUSD, false),
-                    11 => (tagData.FeeUSD, false),
-                    12 => (tagData.DiscountUSD, false),
-                    13 => (tagData.ChargedDifferenceUSD, false),
-                    14 => (tagData.ChargedOrCreditedUSD, false),
-                    _ => (0, false)
-                };
-
-                if (useEmpty)
+                    break;
+                }
+                if (i == countryColumnIndex || i == companyColumnIndex)
                 {
-                    excelCell.Value = ReadOnlyVariables.EmptyCell;
+                    continue;
+                }
 
-                    // Check if this is the price per unit column (index 8) for multiple items
-                    if (i == 8 && row.Cells[i].Value?.ToString() == ReadOnlyVariables.EmptyCell)
+                IXLCell excelCell = worksheet.Cell(currentRow, excelColumnIndex);
+
+                if (tagData != null && i >= 8 && i <= 14)
+                {
+                    (decimal usdValue, bool useEmpty) = i switch
                     {
-                        excelCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        8 => (tagData.PricePerUnitUSD, tagData.PricePerUnitUSD == 0),
+                        9 => (tagData.ShippingUSD, false),
+                        10 => (tagData.TaxUSD, false),
+                        11 => (tagData.FeeUSD, false),
+                        12 => (tagData.DiscountUSD, false),
+                        13 => (tagData.ChargedDifferenceUSD, false),
+                        14 => (tagData.ChargedOrCreditedUSD, false),
+                        _ => (0, false)
+                    };
+
+                    if (useEmpty)
+                    {
+                        excelCell.Value = ReadOnlyVariables.EmptyCell;
+
+                        // Check if this is the price per unit column (index 8) for multiple items
+                        if (i == 8 && row.Cells[i].Value?.ToString() == ReadOnlyVariables.EmptyCell)
+                        {
+                            excelCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        }
+                    }
+                    else
+                    {
+                        // Convert from USD to target currency
+                        decimal convertedValue = Math.Round(usdValue * exchangeRate, 2, MidpointRounding.AwayFromZero);
+                        excelCell.Value = convertedValue;
+                        excelCell.Style.NumberFormat.Format = currencyFormatPattern;
                     }
                 }
                 else
                 {
-                    // Convert from USD to target currency
-                    decimal convertedValue = Math.Round(usdValue * exchangeRate, 2, MidpointRounding.AwayFromZero);
-                    excelCell.Value = convertedValue;
-                    excelCell.Style.NumberFormat.Format = currencyFormatPattern;
+                    // Handle other cell types
+                    object? cellValue = row.Cells[i].Value;
+
+                    // Special handling for quantity column (index 7) to ensure it's treated as numeric
+                    if (i == 7)
+                    {
+                        if (cellValue != null && decimal.TryParse(cellValue.ToString(), out decimal quantityValue))
+                        {
+                            excelCell.Value = quantityValue;
+                        }
+                        else
+                        {
+                            excelCell.Value = cellValue?.ToString();
+                        }
+                        excelCell.Style.NumberFormat.Format = _numberFormatPattern;
+                    }
+                    else
+                    {
+                        excelCell.Value = cellValue?.ToString();
+                    }
                 }
+
+                excelColumnIndex++;
             }
-            else
-            {
-                // No TagData - get value directly from the DataGridView cell
-                object? cellValue = row.Cells[i].Value;
-                
-                if (cellValue != null && decimal.TryParse(cellValue.ToString(), out decimal numericValue))
-                {
-                    excelCell.Value = numericValue;
-                    excelCell.Style.NumberFormat.Format = currencyFormatPattern;
-                }
-                else
-                {
-                    excelCell.Value = cellValue?.ToString() ?? ReadOnlyVariables.EmptyCell;
-                }
-            }
+
+            // Handle the Notes column
+            DataGridViewCell notesCell = row.Cells[ReadOnlyVariables.Note_column];
+            string? notesCellValue = notesCell.Value?.ToString();
+            IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);
+
+            notesExcelCell.Value = notesCellValue == ReadOnlyVariables.EmptyCell
+                ? ReadOnlyVariables.EmptyCell
+                : (notesCellValue == ReadOnlyVariables.Show_text && notesCell.Tag != null)
+                    ? notesCell.Tag.ToString()
+                    : notesCellValue;
+
+            AddReturnDataToWorksheet(worksheet, currentRow, returnColumnsStartIndex, tagData, row);
+            AddLossDataToWorksheet(worksheet, currentRow, lossColumnsStartIndex, tagData, row);
         }
-        else
-        {
-            // Handle other cell types
-            object? cellValue = row.Cells[i].Value;
-
-            // Special handling for quantity column (index 7) to ensure it's treated as numeric
-            if (i == 7)
-            {
-                if (cellValue != null && decimal.TryParse(cellValue.ToString(), out decimal quantityValue))
-                {
-                    excelCell.Value = quantityValue;
-                }
-                else
-                {
-                    excelCell.Value = cellValue?.ToString();
-                }
-                excelCell.Style.NumberFormat.Format = _numberFormatPattern;
-            }
-            else
-            {
-                excelCell.Value = cellValue?.ToString();
-            }
-        }
-
-        excelColumnIndex++;
-    }
-
-    // Handle the Notes column
-    DataGridViewCell notesCell = row.Cells[ReadOnlyVariables.Note_column];
-    string? notesCellValue = notesCell.Value?.ToString();
-    IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);
-
-    notesExcelCell.Value = notesCellValue == ReadOnlyVariables.EmptyCell
-        ? ReadOnlyVariables.EmptyCell
-        : (notesCellValue == ReadOnlyVariables.Show_text && notesCell.Tag != null)
-            ? notesCell.Tag.ToString()
-            : notesCellValue;
-
-    AddReturnDataToWorksheet(worksheet, currentRow, returnColumnsStartIndex, tagData, row);
-    AddLossDataToWorksheet(worksheet, currentRow, lossColumnsStartIndex, tagData, row);
-}
         private static void AddReturnDataToWorksheet(IXLWorksheet worksheet, int currentRow, int startColumnIndex, TagData tagData, DataGridViewRow row)
         {
             int columnIndex = startColumnIndex;
