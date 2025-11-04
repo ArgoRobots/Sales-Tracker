@@ -87,12 +87,14 @@ namespace Sales_Tracker
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
+                CustomControls.ControlDropDown_Panel,  
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 ColumnVisibilityPanel.Panel,
                 DateRangePanel,
                 File_Button,
                 Help_Button,
-                TimeRange_Button);
+                TimeRange_Button,
+                CustomControls.ControlsDropDown_Button);  
 
             Application.AddMessageFilter(panelCloseFilter);
 
@@ -1108,6 +1110,9 @@ namespace Sales_Tracker
             if (MainTop_Panel.Controls.Contains(CustomControls.ControlsDropDown_Button))
             {
                 MainTop_Panel.Controls.Remove(CustomControls.ControlsDropDown_Button);
+
+                // Also remove the dropdown panel if it's open
+                Controls.Remove(CustomControls.ControlDropDown_Panel);
 
                 foreach (Control button in GetMainTopButtons())
                 {
