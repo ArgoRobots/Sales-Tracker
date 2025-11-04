@@ -123,6 +123,10 @@ namespace Sales_Tracker
             LoadingPanel.HideBlankLoadingPanel(this);
             OrderNumber_TextBox.Focus();
         }
+        private void AddPurchase_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void AddPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();
@@ -228,7 +232,7 @@ namespace Sales_Tracker
                     "The purchase #{0} already exists. Would you like to add this purchase anyways?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
-                    $"#{purchaseNumber}");
+                    purchaseNumber);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -370,6 +374,10 @@ namespace Sales_Tracker
             if (newFilePath != "")
             {
                 MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
+            }
+            else
+            {
+                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = purchaseData;
             }
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));

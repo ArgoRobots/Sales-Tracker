@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Encryption
+﻿using System.Text;
+
+namespace Sales_Tracker.Encryption
 {
     /// <summary>
     /// Contains hardcoded secret constants used for encryption.
@@ -23,7 +25,14 @@
         ];
 
         // This cannot be moved to the env file because it's used to decrypt it
-        private static readonly string _appSpecificString = "ArgoS4lesTrack3r2025S3cur1tyK3y";
+        // Encoded as byte array with XOR obfuscation to avoid plaintext in source
+        private static readonly byte[] _encodedAppSpecificString =
+        [
+            0xA4, 0x97, 0x82, 0x8A, 0xB6, 0xD1, 0x89, 0x80, 0x96, 0xB1,
+            0x97, 0x84, 0x86, 0x8E, 0xD6, 0x97, 0xD7, 0xD5, 0xD7, 0xD0,
+            0xB6, 0xD6, 0x86, 0x90, 0x97, 0xD4, 0x91, 0x9C, 0xAE, 0xD6,
+            0x9C
+        ];
 
         /// <summary>
         /// Gets the salt used for key derivation after applying transformations.
@@ -60,8 +69,17 @@
         /// </summary>
         public static string GetAppSpecificString()
         {
-            // Apply a simple transformation to the string
-            char[] chars = _appSpecificString.ToCharArray();
+            // Decode the byte array by reversing the XOR obfuscation
+            byte[] decoded = new byte[_encodedAppSpecificString.Length];
+            for (int i = 0; i < _encodedAppSpecificString.Length; i++)
+            {
+                // XOR with the obfuscation key to reveal the original value
+                decoded[i] = (byte)(_encodedAppSpecificString[i] ^ 0xE5);
+            }
+
+            // Convert bytes to string and apply additional character transformation
+            char[] chars = Encoding.ASCII.GetString(decoded).ToCharArray();
+
             for (int i = 0; i < chars.Length; i++)
             {
                 // Simple substitution

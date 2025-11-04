@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Guna.UI2.WinForms.Enums;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.Theme;
@@ -14,6 +15,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public abstract class BaseElement
     {
         // Properties
+        private const byte leftMargin = 10;
+        public static byte RightMargin { get; } = 40;
+        public static byte NumericUpDownWidth { get; } = 100;
+        public static byte ColorPickerWidth { get; } = 50;
+        public abstract byte MinimumSize { get; }
+
+        // Debounce timers for text input controls
+        private static readonly Dictionary<Control, (System.Windows.Forms.Timer timer, string lastValue)> _textInputDebouncers = [];
+
         /// <summary>
         /// Gets the user-friendly display name for this element type.
         /// </summary>
@@ -35,11 +45,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public int ZOrder { get; set; }
 
         /// <summary>
-        /// Whether the element is currently selected in the designer.
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        /// <summary>
         /// Whether the element is visible in the report.
         /// </summary>
         public bool IsVisible { get; set; } = true;
@@ -49,8 +54,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static byte ControlRowHeight { get; } = 55;
         public static byte CheckBoxRowHeight { get; } = 40;
-
-        public const int ControlHeight = 45;
+        public static byte ControlHeight { get; } = 45;
 
         // Abstract methods
         /// <summary>
@@ -68,6 +72,24 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public abstract void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale);
 
+        /// <summary>
+        /// Renders an error message centered within the element's bounds.
+        /// Used as a fallback when element rendering fails.
+        /// </summary>
+        protected void RenderError(Graphics graphics)
+        {
+            string message = LanguageManager.TranslateString("Error rendering element");
+
+            using Font font = new("Arial", 10f);
+            using SolidBrush brush = new(Color.Red);
+            using StringFormat format = new()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+            graphics.DrawString(message, font, brush, Bounds, format);
+        }
+
         public Panel CachedPropertyPanel { get; private set; }
         private bool _controlsCreated = false;
         private readonly Dictionary<string, Control> _controlCache = [];
@@ -81,10 +103,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Create controls only once
             if (!_controlsCreated)
             {
+                // Set size first so child controls can calculate their positions correctly
+                int panelWidth = container.Width - 5;
+
                 CachedPropertyPanel = new Panel
                 {
-                    Location = new Point(0, 0),
-                    AutoSize = false,
+                    Size = new Size(panelWidth, container.Height),
                     AutoScroll = true,
                     Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
@@ -130,7 +154,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     container.Controls.Remove(ctrl);
                 }
 
-                CachedPropertyPanel.Size = new Size(container.Width - 5, container.Height);
+                // Update panel size in case container size changed
+                int panelWidth = container.Width > 0 ? container.Width - 5 : 340;
+                CachedPropertyPanel.Size = new Size(panelWidth, container.Height);
                 container.Controls.Add(CachedPropertyPanel);
             }
 
@@ -151,7 +177,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// <summary>
         /// Updates all cached control values without recreating them.
         /// </summary>
-        protected void UpdateAllControlValues()
+        public void UpdateAllControlValues()
         {
             foreach (Action updateAction in UpdateActionCache.Values)
             {
@@ -201,10 +227,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
             string text;
 
             // Get the UndoRedoManager instance
-            UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
+            UndoRedoManager undoRedoManager = ReportLayoutDesigner_Form.Instance.GetUndoRedoManager();
 
             // X position
-            AddPropertyLabel(container, "X:", yPosition);
+            AddPropertyLabel(container, "X:", yPosition, false, NumericUpDownWidth);
             int oldX = element?.Bounds.X ?? 0;
             Guna2NumericUpDown xNumeric = AddPropertyNumericUpDown(container, oldX, yPosition,
                 value =>
@@ -216,7 +242,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         newBounds.X = (int)value;
 
                         // Record undo action if value actually changed
-                        if (oldBounds.X != newBounds.X && undoRedoManager != null)
+                        if (oldBounds.X != newBounds.X)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -228,11 +254,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["X"] = xNumeric;
@@ -240,7 +266,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             yPosition += ControlRowHeight;
 
             // Y position
-            AddPropertyLabel(container, "Y:", yPosition);
+            AddPropertyLabel(container, "Y:", yPosition, false, NumericUpDownWidth);
             int oldY = element?.Bounds.Y ?? 0;
             Guna2NumericUpDown yNumeric = AddPropertyNumericUpDown(container, oldY, yPosition,
                 value =>
@@ -251,7 +277,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Y = (int)value;
 
-                        if (oldBounds.Y != newBounds.Y && undoRedoManager != null)
+                        if (oldBounds.Y != newBounds.Y)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -263,11 +289,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["Y"] = yNumeric;
@@ -276,7 +302,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Width
             text = LanguageManager.TranslateString("Width");
-            AddPropertyLabel(container, text + ":", yPosition);
+            AddPropertyLabel(container, text + ":", yPosition, false, NumericUpDownWidth);
             int oldWidth = element?.Bounds.Width ?? 100;
             Guna2NumericUpDown widthNumeric = AddPropertyNumericUpDown(container, oldWidth, yPosition,
                 value =>
@@ -287,7 +313,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Width = (int)value;
 
-                        if (oldBounds.Width != newBounds.Width && undoRedoManager != null)
+                        if (oldBounds.Width != newBounds.Width)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -299,11 +325,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Width"] = widthNumeric;
@@ -312,7 +338,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Height
             text = LanguageManager.TranslateString("Height");
-            AddPropertyLabel(container, text + ":", yPosition);
+            AddPropertyLabel(container, text + ":", yPosition, false, NumericUpDownWidth);
             int oldHeight = element?.Bounds.Height ?? 100;
             Guna2NumericUpDown heightNumeric = AddPropertyNumericUpDown(container, oldHeight, yPosition,
                 value =>
@@ -323,7 +349,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         Rectangle newBounds = element.Bounds;
                         newBounds.Height = (int)value;
 
-                        if (oldBounds.Height != newBounds.Height && undoRedoManager != null)
+                        if (oldBounds.Height != newBounds.Height)
                         {
                             undoRedoManager.RecordAction(new PropertyChangeAction(
                                 element,
@@ -335,11 +361,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Height"] = heightNumeric;
@@ -349,17 +375,42 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a property label to the container.
+        /// Adds a property label to the container with overflow handling.
         /// </summary>
-        public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false)
+        public static Label AddPropertyLabel(Panel container, string text, int yPosition, bool bold = false, int controlWidth = 170)
         {
+            int maxLabelWidth = container.ClientSize.Width - RightMargin - controlWidth;
+
+            Font labelFont = new("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular);
+
+            // Measure text with current font
+            using (Graphics g = container.CreateGraphics())
+            {
+                Size textSize = TextRenderer.MeasureText(text, labelFont);
+
+                // If text is too wide, try smaller font first
+                if (textSize.Width + 10 > maxLabelWidth)
+                {
+                    labelFont = new Font("Segoe UI", 8, bold ? FontStyle.Bold : FontStyle.Regular);
+                    textSize = TextRenderer.MeasureText(text, labelFont);
+                    maxLabelWidth = textSize.Width;
+                }
+                else
+                {
+                    // Set the label width to the text size if it fits
+                    maxLabelWidth = textSize.Width;
+                }
+            }
+
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 9, bold ? FontStyle.Bold : FontStyle.Regular),
+                Font = labelFont,
                 ForeColor = CustomColors.Text,
-                Location = new Point(10, yPosition + 8),
-                AutoSize = true
+                Location = new Point(leftMargin, yPosition + 8),
+                Size = new Size(maxLabelWidth, 24),
+                AutoEllipsis = true,
+                TextAlign = ContentAlignment.MiddleLeft
             };
 
             container.Controls.Add(label);
@@ -367,47 +418,52 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a text box property control.
+        /// Adds a text box property control aligned to the right.
         /// </summary>
         public static Guna2TextBox AddPropertyTextBox(Panel container, string value, int yPosition, Action<string> onChange)
         {
+            const int controlWidth = 170;
+            int xPosition = container.ClientSize.Width - leftMargin - controlWidth;
+
             Guna2TextBox textBox = new()
             {
                 Text = value,
-                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
-                Location = new Point(85, yPosition),
+                Size = new Size(controlWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
-            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            // Set up debounced text change handling
+            SetupDebouncedTextChanged(textBox, value, onChange);
+
             container.Controls.Add(textBox);
             return textBox;
         }
 
         /// <summary>
-        /// Adds a numeric up/down property control.
+        /// Adds a numeric up/down property control aligned to the right.
         /// </summary>
         public static Guna2NumericUpDown AddPropertyNumericUpDown(Panel container, decimal value, int yPosition, Action<decimal> onChange, decimal min = 0, decimal max = 9999)
         {
+            int xPosition = container.ClientSize.Width - leftMargin - NumericUpDownWidth;
+
             Guna2NumericUpDown numericUpDown = new()
             {
-                Size = new Size(100, ControlHeight),
-                Location = new Point(85, yPosition),
+                Size = new Size(NumericUpDownWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
                 Minimum = min,
                 Maximum = max,
-                Value = value
+                Value = value,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             numericUpDown.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    // Remove Windows "ding" noise when user presses enter
-                    e.SuppressKeyPress = true;
-                }
+                // Remove Windows "ding" noise when user presses enter
+                e.SuppressKeyPress = e.KeyCode == Keys.Enter;
             };
 
             numericUpDown.DisableScrollAndForwardToPanel();
@@ -418,18 +474,21 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         /// <summary>
-        /// Adds a combo box property control.
+        /// Adds a combo box property control aligned to the right.
         /// </summary>
         protected static Guna2ComboBox AddPropertyComboBox(Panel container, string value, int yPosition, string[] items, Action<string> onChange)
         {
+            const int controlWidth = 170;
+            int xPosition = container.ClientSize.Width - leftMargin - controlWidth;
+
             Guna2ComboBox comboBox = new()
             {
-                Size = new Size(container.Width - 95, ControlHeight),  // 95 accounts for the label width of 85 + 10px padding
+                Size = new Size(controlWidth, ControlHeight),
                 ItemHeight = 39,  // Needed to make the height equal to ControlHeight
-                Location = new Point(85, yPosition),
+                Location = new Point(xPosition, yPosition),
                 BorderRadius = 2,
                 Font = new Font("Segoe UI", 9),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             comboBox.Items.AddRange(items);
             comboBox.SelectedItem = value;
@@ -460,7 +519,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             // Add the checkbox
             Guna2CustomCheckBox checkBox = new()
             {
-                Location = new Point(10, yPosition + 6),
+                Location = new Point(leftMargin, yPosition + 6),
                 Size = new Size(22, 22),
                 Animated = true,
                 Checked = isChecked  // This must be set after 'Animated' because Guna is bugged
@@ -491,24 +550,25 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static readonly string ColorPickerTag = "ColorPicker";
 
         /// <summary>
-        /// Adds a color picker control with an optional label.
+        /// Adds a color picker control with an optional label, aligned to the right.
         /// </summary>
         protected static Panel AddColorPicker(
             Panel container,
             int yPosition,
-            int xPosition,
             Color currentColor,
-            Action<Color> onColorChanged,
-            bool showLabel = true)
+            Action<Color> onColorChanged)
         {
+            int xPosition = container.ClientSize.Width - leftMargin - ColorPickerWidth;
+
             Panel colorPreview = new()
             {
                 BackColor = currentColor,
                 BorderStyle = BorderStyle.FixedSingle,
-                Size = new Size(50, 30),
+                Size = new Size(ColorPickerWidth, 30),
                 Location = new Point(xPosition, yPosition + 8),
                 Cursor = Cursors.Hand,
-                Tag = ColorPickerTag
+                Tag = ColorPickerTag,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             colorPreview.Click += (s, e) =>
@@ -528,20 +588,136 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             container.Controls.Add(colorPreview);
 
-            if (showLabel)
-            {
-                Label colorLabel = new()
-                {
-                    Text = LanguageManager.TranslateString("Click to change"),
-                    Font = new Font("Segoe UI", 8),
-                    ForeColor = Color.Gray,
-                    Location = new Point(xPosition + 55, yPosition + 11),
-                    AutoSize = true
-                };
-                container.Controls.Add(colorLabel);
-            }
-
             return colorPreview;
+        }
+
+        /// <summary>
+        /// Adds a searchable text box property control with dynamic width.
+        /// </summary>
+        protected static Guna2TextBox AddPropertySearchBox(
+            Panel container,
+            string value,
+            int yPosition,
+            Func<List<SearchResult>> getSearchResults,
+            Action<string> onChange,
+            Label label)
+        {
+            int xPosition;
+            int controlWidth;
+
+            // Dynamic width based on label
+            xPosition = label.Right + 10;
+            controlWidth = container.ClientSize.Width - xPosition - leftMargin;
+
+            Guna2TextBox textBox = new()
+            {
+                Text = value,
+                Size = new Size(controlWidth, ControlHeight),
+                Location = new Point(xPosition, yPosition),
+                BorderRadius = 2,
+                Font = new Font("Segoe UI", 9),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+
+            // Only trigger onChange when the value is valid (matches a search result)
+            textBox.TextChanged += (s, e) =>
+            {
+                string currentValue = textBox.Text;
+                List<SearchResult> validResults = getSearchResults();
+                bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
+
+                // Only call onChange if the value is valid
+                if (isValid)
+                {
+                    onChange(currentValue);
+                }
+            };
+
+            textBox.DisableScrollAndForwardToPanel();
+
+            // Attach SearchBox functionality
+            SearchBox.Attach(textBox, container, getSearchResults, 255, false, true, false, true,
+                container.ClientSize.Width - leftMargin - RightMargin + 4,
+                leftMargin);
+
+            container.Controls.Add(textBox);
+            return textBox;
+        }
+        /// <summary>
+        /// Sets up debounced text change handling for a textbox to prevent recording undo on every keystroke.
+        /// This is used for regular text boxes (not searchboxes).
+        /// </summary>
+        private static void SetupDebouncedTextChanged(Guna2TextBox textBox, string initialValue, Action<string> onChange)
+        {
+            string lastCommittedValue = initialValue;
+
+            // Create debounce timer for this control
+            System.Windows.Forms.Timer debounceTimer = new()
+            {
+                Interval = 500  // 500ms delay - same as PropertyChangeDebouncer
+            };
+
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                // Call onChange if value changed
+                if (currentValue != lastCommittedValue)
+                {
+                    lastCommittedValue = currentValue;
+                    onChange(currentValue);
+                }
+            };
+
+            // Store the timer and last value
+            _textInputDebouncers[textBox] = (debounceTimer, lastCommittedValue);
+
+            // Handle text changes
+            textBox.TextChanged += (s, e) =>
+            {
+                debounceTimer.Stop();
+                debounceTimer.Start();
+            };
+
+            // Handle focus loss - commit changes immediately when user leaves the field
+            textBox.LostFocus += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    string lastValue = debouncer.lastValue;
+
+                    // Call onChange if value changed
+                    if (currentValue != lastValue)
+                    {
+                        _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
+                        onChange(currentValue);
+                    }
+                }
+            };
+
+            // Clean up timer when control is disposed
+            textBox.Disposed += (s, e) =>
+            {
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    debouncer.timer.Stop();
+                    debouncer.timer.Dispose();
+                    _textInputDebouncers.Remove(textBox);
+                }
+            };
+        }
+
+        public static List<SearchResult> GetFontSearchResults()
+        {
+            string[] fonts = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
+                      "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
+                      "Times New Roman", "Trebuchet MS", "Verdana"];
+
+            return fonts.Select(font => new SearchResult(font, null, 0)).ToList();
         }
 
         /// <summary>
@@ -558,7 +734,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            int buttonWidth = (parentWidth - 10) / tabNames.Length;
+            int buttonWidth = (parentWidth - leftMargin) / tabNames.Length;
             for (int i = 0; i < tabNames.Length; i++)
             {
                 int tabIndex = i;
@@ -585,6 +761,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             {
                                 btn.FillColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBack;
                                 btn.BorderColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBorder;
+                                btn.ForeColor = tagValue == tabIndex ? Color.White : CustomColors.Text;
                             }
                         }
                     }

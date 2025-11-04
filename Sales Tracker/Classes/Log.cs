@@ -274,34 +274,33 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0,
             params object[] args)
         {
-            // Build the complete message template
-            string fullTemplate = messageTemplate;
-
-            // Add link template if provided
+            // Build display message template
+            string displayTemplate = messageTemplate;
             if (!string.IsNullOrEmpty(link))
             {
-                fullTemplate += "\nMore information: " + link;
-                CustomMessageBoxVariables.LinkStart = messageTemplate.Length + 19;  // Highlight "More information: "
+                displayTemplate += "\nMore information: " + link;
+                CustomMessageBoxVariables.LinkStart = messageTemplate.Length + 19;
                 CustomMessageBoxVariables.Link = link;
                 CustomMessageBoxVariables.LinkLength = link.Length;
             }
 
-            // Add debug info for admins
+            // Build log template (includes debug info for admins)
+            string logTemplate = displayTemplate;
             if (MainMenu_Form.IsAdminMode)
             {
-                fullTemplate += "\nDebug info:\nLine: '{" + args.Length + "}'.\nStack trace\n: '{" + (args.Length + 1) + "}'.";
+                logTemplate += "\nDebug info:\nLine: '{" + args.Length + "}'.\nStack trace\n: '{" + (args.Length + 1) + "}'.";
             }
 
-            // Combine args with debug info
+            // Prepare args
             List<object> allArgs = [];
             if (args != null) { allArgs.AddRange(args); }
             allArgs.Add(lineNumber);
             allArgs.Add(Environment.StackTrace);
 
-            // Log error with template
-            WriteLogEntry(LogCategory.Error, fullTemplate, allArgs.ToArray());
+            // Log with debug info
+            WriteLogEntry(LogCategory.Error, logTemplate, allArgs.ToArray());
 
-            // Add to anonymous data collection
+            // Add to anonymous data
             try
             {
                 string errorCode = ExtractErrorCode(messageTemplate);
@@ -309,23 +308,21 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                // Silently fail to avoid recursive error logging
+                // Silently fail
             }
 
-            // Show message box with formatted text (in current language)
+            // Show message box without debug info (only original args)
             string currentLanguage = LanguageManager.GetDefaultLanguageAbbreviation() ?? "en";
             string displayMessage;
-
             if (currentLanguage == "en")
             {
-                displayMessage = string.Format(fullTemplate, allArgs.ToArray());
+                displayMessage = string.Format(displayTemplate, args ?? []);
             }
             else
             {
-                string translatedTemplate = LanguageManager.TranslateString(fullTemplate);
-                displayMessage = string.Format(translatedTemplate, allArgs.ToArray());
+                string translatedTemplate = LanguageManager.TranslateString(displayTemplate);
+                displayMessage = string.Format(translatedTemplate, args ?? []);
             }
-
             CustomMessageBox.Show("Error", displayMessage, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
 

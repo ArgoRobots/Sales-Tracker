@@ -3,6 +3,7 @@ using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Elements;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -32,6 +33,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private Rectangle _selectionRectangle;
         private Point _selectionStartPoint;
         private BaseElement _currentPropertyElement = null;
+        private string _currentTemplateName = null;
 
         /// <summary>
         /// Gets the current report configuration.
@@ -52,6 +54,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
         // Getters
         public static ReportLayoutDesigner_Form Instance => _instance;
+        public static bool HasUnsavedChanges { get; set; } = false;
 
         // Init.
         public ReportLayoutDesigner_Form()
@@ -60,6 +63,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _instance = this;
 
             _undoRedoManager = new UndoRedoManager();
+            _undoRedoManager.StateChanged += OnUndoRedoStateChanged;
 
             SetupCanvas();
             StoreInitialSizes();
@@ -132,11 +136,19 @@ namespace Sales_Tracker.ReportGenerator.Menus
             CustomTooltip.SetToolTip(MakeSameWidth_Button, "", "Make same width");
             CustomTooltip.SetToolTip(MakeSameHeight_Button, "", "Make same height");
             CustomTooltip.SetToolTip(MakeSameSize_Button, "", "Make same size");
+
+            CustomTooltip.SetToolTip(SaveTemplate_Button, "", "Save template");
+            CustomTooltip.SetToolTip(Settings_Button, "", "Settings");
         }
         private void ScaleControls()
         {
             DpiHelper.ScaleGroupBox(Elements_GroupBox);
             DpiHelper.ScaleGroupBox(Properties_GroupBox);
+        }
+        public void UpdateTheme()
+        {
+            ThemeManager.CustomizeScrollBar(_selectedElement?.CachedPropertyPanel);
+            UpdatePropertyContainerTheme();
         }
 
         // Form event handlers
@@ -178,6 +190,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Don't intercept arrow keys if properties panel has focus
+            if (ActiveControl is Guna2GroupBox)
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+
             // Undo/Redo shortcuts
             if (keyData == (Keys.Control | Keys.Z))
             {
@@ -209,64 +227,61 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Duplicate shortcut
             if (keyData == (Keys.Control | Keys.D))
             {
-                DuplicateSelectedWithUndo();
+                DuplicateSelected();
                 return true;
             }
 
             // Delete shortcut
             if (keyData == Keys.Delete)
             {
-                DeleteSelectedWithUndo();
+                DeleteSelected();
                 return true;
             }
 
             // Arrow key movement shortcuts (1 pixel)
             if (keyData == Keys.Left)
             {
-                MoveSelectedElementsWithUndo(-1, 0);
+                MoveSelectedElements(-1, 0);
                 return true;
             }
 
             if (keyData == Keys.Right)
             {
-                MoveSelectedElementsWithUndo(1, 0);
+                MoveSelectedElements(1, 0);
                 return true;
             }
 
             if (keyData == Keys.Up)
             {
-                MoveSelectedElementsWithUndo(0, -1);
+                MoveSelectedElements(0, -1);
                 return true;
             }
 
             if (keyData == Keys.Down)
             {
-                MoveSelectedElementsWithUndo(0, 1);
+                MoveSelectedElements(0, 1);
                 return true;
             }
 
-            // Shift+Arrow for larger movements (10 pixels)
-            if (keyData == (Keys.Shift | Keys.Left))
+            // Shift+Arrow or Ctrl+Arrow for larger movements (10 pixels)
+            if (keyData == (Keys.Shift | Keys.Left) || keyData == (Keys.Control | Keys.Left))
             {
-                MoveSelectedElementsWithUndo(-10, 0);
+                MoveSelectedElements(-10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Right))
+            if (keyData == (Keys.Shift | Keys.Right) || keyData == (Keys.Control | Keys.Right))
             {
-                MoveSelectedElementsWithUndo(10, 0);
+                MoveSelectedElements(10, 0);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Up))
+            if (keyData == (Keys.Shift | Keys.Up) || keyData == (Keys.Control | Keys.Up))
             {
-                MoveSelectedElementsWithUndo(0, -10);
+                MoveSelectedElements(0, -10);
                 return true;
             }
-
-            if (keyData == (Keys.Shift | Keys.Down))
+            if (keyData == (Keys.Shift | Keys.Down) || keyData == (Keys.Control | Keys.Down))
             {
-                MoveSelectedElementsWithUndo(0, 10);
+                MoveSelectedElements(0, 10);
                 return true;
             }
 
@@ -298,7 +313,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Grid toggle
             if (keyData == (Keys.Control | Keys.G))
             {
-                ToggleSnapToGrid();
+                ShowGrid = !ShowGrid;
+                OnGridSettingsChanged();
                 return true;
             }
 
@@ -352,12 +368,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
 
             graphics.ScaleTransform(_canvasScaleFactor, _canvasScaleFactor);
-            ReportRenderer.RenderReport(graphics, pageSize, ReportConfig);
 
-            if (_snapToGrid)
-            {
-                DrawGrid(graphics);
-            }
+            ReportRenderer.RenderReport(graphics, pageSize, ReportConfig, ShowGrid);
 
             DrawSelectionForElements(graphics);
         }
@@ -375,7 +387,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
+                        ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             _isResizing = true;
@@ -392,7 +404,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Check single selected element
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, _selectedElement);
                     if (handle != ResizeHandle.None)
                     {
                         _isResizing = true;
@@ -411,11 +423,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     if (ctrlPressed)
                     {
-                        // Toggle selection
-                        if (_selectedElements.Contains(clickedElement))
+                        if (_selectedElements.Remove(clickedElement))
                         {
-                            clickedElement.IsSelected = false;
-                            _selectedElements.Remove(clickedElement);
+                            // Remove succeeded, so it was in the list
                             if (_selectedElement == clickedElement)
                             {
                                 _selectedElement = _selectedElements.FirstOrDefault();
@@ -427,6 +437,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         }
                         else
                         {
+                            // Remove failed, so it wasn't in the list - add it
                             SelectElement(clickedElement, true);
                         }
                     }
@@ -473,7 +484,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 {
                     foreach (BaseElement element in _selectedElements)
                     {
-                        ResizeHandle handle = GetResizeHandleAt(pageLocation, element);
+                        ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, element);
                         if (handle != ResizeHandle.None)
                         {
                             newCursor = GetCursorForHandle(handle);
@@ -483,7 +494,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else if (_selectedElement != null)
                 {
-                    ResizeHandle handle = GetResizeHandleAt(pageLocation, _selectedElement);
+                    ResizeHandle handle = GetResizeHandleAtPoint(pageLocation, _selectedElement);
                     newCursor = GetCursorForHandle(handle);
                 }
 
@@ -604,6 +615,23 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 // Apply movement if there's any valid delta
                 if (actualDeltaX != 0 || actualDeltaY != 0)
                 {
+                    // For grid snapping with multiple elements, snap the first element
+                    // and use its actual movement for all others
+                    if (ShowGrid && _selectedElements.Count > 0)
+                    {
+                        BaseElement firstElement = _selectedElements[0];
+                        Rectangle firstOldBounds = firstElement.Bounds;
+                        Rectangle firstNewBounds = firstOldBounds;
+                        firstNewBounds.X += actualDeltaX;
+                        firstNewBounds.Y += actualDeltaY;
+
+                        firstNewBounds = SnapToGrid(firstNewBounds);
+
+                        // Recalculate actual deltas based on snapped position
+                        actualDeltaX = firstNewBounds.X - firstOldBounds.X;
+                        actualDeltaY = firstNewBounds.Y - firstOldBounds.Y;
+                    }
+
                     foreach (BaseElement element in _selectedElements)
                     {
                         Rectangle oldBounds = element.Bounds;
@@ -611,12 +639,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                         newBounds.X += actualDeltaX;
                         newBounds.Y += actualDeltaY;
-
-                        // Apply grid snapping if enabled
-                        if (_snapToGrid)
-                        {
-                            newBounds = SnapToGrid(newBounds);
-                        }
 
                         element.Bounds = newBounds;
 
@@ -660,7 +682,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     newBounds.Y = newY;
 
                     // Apply grid snapping if enabled
-                    if (_snapToGrid)
+                    if (ShowGrid)
                     {
                         newBounds = SnapToGrid(newBounds);
                         actualDeltaX = newBounds.X - oldBounds.X;
@@ -733,6 +755,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             RefreshCanvas));
 
                         MarkChartLayoutAsManualIfNeeded();
+                        MarkAsChanged();
                     }
                 }
                 else if (_selectedElement != null && _dragStartBounds.Count > 0)
@@ -746,6 +769,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                             RefreshCanvas));
 
                         MarkChartLayoutAsManualIfNeeded();
+                        MarkAsChanged();
                     }
                 }
             }
@@ -762,6 +786,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                         RefreshCanvas));
 
                     MarkChartLayoutAsManualIfNeeded();
+                    MarkAsChanged();
                 }
             }
 
@@ -877,6 +902,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             NotifyParentValidationChanged();
             Canvas_Panel.Invalidate();
         }
+        public void OnGridSettingsChanged()
+        {
+            Canvas_Panel.Invalidate();
+        }
 
         /// <summary>
         /// Resizes the canvas to match the current page dimensions, maximizing size while fitting in the panel.
@@ -951,7 +980,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    // Calculate dropdown position (below the button, aligned with main undo button)
                     Point dropdownLocation = new(
                         RightCanvas_Panel.Left + Undo_Button.Left,
                         Undo_Button.Bottom + 2
@@ -972,7 +1000,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
                 else
                 {
-                    // Calculate dropdown position (below the button, aligned with main redo button)
                     Point dropdownLocation = new(
                         RightCanvas_Panel.Left + Redo_Button.Left,
                         Redo_Button.Bottom + 2
@@ -1024,7 +1051,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// <summary>
         /// Moves all selected elements by the specified delta.
         /// </summary>
-        private void MoveSelectedElements(int deltaX, int deltaY)
+        private void MoveSelectedElementsHelper(int deltaX, int deltaY)
         {
             if (_selectedElements.Count == 0 && _selectedElement == null)
             {
@@ -1075,12 +1102,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdatePropertyValues();
             NotifyParentValidationChanged();
         }
-        private void MoveSelectedElementsWithUndo(int deltaX, int deltaY)
+        private void MoveSelectedElements(int deltaX, int deltaY)
         {
             if (_selectedElements.Count > 0)
             {
                 List<Rectangle> oldBounds = _selectedElements.Select(e => e.Bounds).ToList();
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
                 List<Rectangle> newBounds = _selectedElements.Select(e => e.Bounds).ToList();
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
@@ -1094,7 +1121,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else if (_selectedElement != null)
             {
                 Rectangle oldBounds = _selectedElement.Bounds;
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
                     [_selectedElement],
@@ -1426,12 +1453,22 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Bring to front")
+                : LanguageManager.TranslateString("Bring") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to front");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
+
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
 
             foreach (BaseElement element in elementsToMove.OrderBy(e => e.ZOrder))
             {
                 element.ZOrder = ++maxZOrder;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
@@ -1446,6 +1483,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Send to back")
+                : LanguageManager.TranslateString("Send") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to back");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
+
             // Shift all non-selected elements up
             int shiftAmount = elementsToMove.Count;
             foreach (BaseElement element in ReportConfig.Elements.Where(e => !elementsToMove.Contains(e)))
@@ -1459,6 +1502,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 element.ZOrder = zOrder++;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
@@ -1492,47 +1539,38 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
 
         // Grids
-        private const int GRID_SIZE = 10;
-        private bool _snapToGrid = false;
-        private static void DrawGrid(Graphics g)
-        {
-            Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-
-            using Pen pen = new(Color.FromArgb(30, CustomColors.ControlBorder), 1);
-            pen.DashStyle = DashStyle.Dot;
-
-            // Draw in page coordinates
-            for (int x = 0; x < pageSize.Width; x += GRID_SIZE)
-            {
-                g.DrawLine(pen, x, 0, x, pageSize.Height);
-            }
-
-            for (int y = 0; y < pageSize.Height; y += GRID_SIZE)
-            {
-                g.DrawLine(pen, 0, y, pageSize.Width, y);
-            }
-        }
-        private void ToggleSnapToGrid()
-        {
-            _snapToGrid = !_snapToGrid;
-        }
-        private Point SnapToGrid(Point point)
-        {
-            if (!_snapToGrid) { return point; }
-
-            int x = (point.X / GRID_SIZE) * GRID_SIZE;
-            int y = (point.Y / GRID_SIZE) * GRID_SIZE;
-            return new Point(x, y);
-        }
+        public static int GridSize { get; set; } = 30;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowGrid { get; set; } = false;
         private Rectangle SnapToGrid(Rectangle rect)
         {
-            if (!_snapToGrid) { return rect; }
+            if (!ShowGrid) { return rect; }
 
-            Point snappedLocation = SnapToGrid(rect.Location);
-            int width = ((rect.Width + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
-            int height = ((rect.Height + GRID_SIZE / 2) / GRID_SIZE) * GRID_SIZE;
+            Point snappedLocation = GetGridPosition(rect.Location);
+            int width = (rect.Width + GridSize / 2) / GridSize * GridSize;
+            int height = (rect.Height + GridSize / 2) / GridSize * GridSize;
 
             return new Rectangle(snappedLocation, new Size(width, height));
+        }
+        private Point GetGridPosition(Point point)
+        {
+            if (!ShowGrid) { return point; }
+
+            // Calculate grid offset based on header
+            int topY = 0;
+            if (ReportConfig.ShowHeader)
+            {
+                topY = ReportConfig.PageMargins.Top + ReportRenderer.HeaderHeight + ReportRenderer.SeparatorHeight;
+            }
+
+            int x = (point.X + GridSize / 2) / GridSize * GridSize;  // Snap to nearest
+
+            // Snap Y relative to content area top
+            int relativeY = point.Y - topY;
+            int snappedRelativeY = (relativeY + GridSize / 2) / GridSize * GridSize;
+            int y = topY + snappedRelativeY;
+
+            return new Point(x, y);
         }
 
         // Selection
@@ -1543,16 +1581,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (!addToSelection && !_isMultiSelecting)
             {
                 // Clear existing selection
-                foreach (BaseElement el in _selectedElements)
-                {
-                    el.IsSelected = false;
-                }
                 _selectedElements.Clear();
             }
 
             if (!_selectedElements.Contains(element))
             {
-                element.IsSelected = true;
                 _selectedElements.Add(element);
                 _selectedElement = element;
             }
@@ -1608,18 +1641,13 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             foreach (BaseElement element in elements)
             {
-                using Pen pen = new(CustomColors.AccentBlue, 3);
+                using Pen pen = new(CustomColors.AccentBlue, 4);
                 pen.DashStyle = DashStyle.Solid;
                 g.DrawRectangle(pen, element.Bounds);
             }
         }
         public void ClearAllSelections()
         {
-            foreach (BaseElement element in _selectedElements)
-            {
-                element.IsSelected = false;
-            }
-
             _selectedElements.Clear();
             _selectedElement = null;
             Canvas_Panel.Invalidate();
@@ -1639,7 +1667,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else
             {
                 // Show multi-selection info
-                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+                ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + _selectedElements.Count + LanguageManager.TranslateString("elements");
 
                 PropertiesContainer_Panel.Controls.Clear();
             }
@@ -1664,7 +1692,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 if (!_selectedElements.Contains(element))
                 {
-                    element.IsSelected = true;
                     _selectedElements.Add(element);
                     InvalidateElementRegion(element.Bounds);
                 }
@@ -1677,7 +1704,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in toRemove)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 InvalidateElementRegion(element.Bounds);
             }
@@ -1708,7 +1734,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Check if the primary selected element was removed
             if (_selectedElement != null && !ReportConfig.Elements.Contains(_selectedElement))
             {
-                _selectedElement.IsSelected = false;
                 _selectedElement = null;
                 selectionChanged = true;
             }
@@ -1720,7 +1745,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             foreach (BaseElement element in removedElements)
             {
-                element.IsSelected = false;
                 _selectedElements.Remove(element);
                 selectionChanged = true;
             }
@@ -1743,15 +1767,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Property panel methods
         private void CreateOrShowPropertiesPanel()
         {
-            if (_selectedElement == null)
-            {
-                HidePropertiesPanel();
-                return;
-            }
-
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
-            ElementProperties_Label.Text = $"Selected: {elementName}";
+            ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + elementName;
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
@@ -1769,6 +1787,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
                 ThemeManager.CustomizeScrollBar(_selectedElement.CachedPropertyPanel);
                 UpdatePropertyContainerTheme();
+
+                if (_selectedElement is TableElement)
+                {
+                    _selectedElement.UpdateAllControlValues();
+                }
 
                 LoadingPanel.HideBlankLoadingPanel(PropertiesContainer_Panel);
             }
@@ -1852,6 +1875,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         public void UpdatePropertyValues()
         {
+            // Don't show element properties if multiple elements are selected
+            if (_selectedElements.Count > 1)
+            {
+                return;
+            }
+
             // Element handles its own value updates internally
             _selectedElement?.CreatePropertyControls(
                 PropertiesContainer_Panel,
@@ -1868,6 +1897,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             Canvas_Panel.Invalidate();
             NotifyParentValidationChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -1884,7 +1914,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             }
 
-            // Clear the current property element reference
             _currentPropertyElement = null;
 
             // Recreate the property panel for the currently selected element with new translations
@@ -1899,7 +1928,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Convert page bounds to scaled canvas coordinates for invalidation
             Rectangle scaledBounds = PageToScaledRectangle(bounds);
-            scaledBounds.Inflate(10, 10);
+            // Inflate by 50 pixels to ensure complex elements (like tables with multiple rows)
+            // are fully repainted without leaving artifacts
+            scaledBounds.Inflate(50, 50);
             Canvas_Panel.Invalidate(scaledBounds);
         }
         private Rectangle PageToScaledRectangle(Rectangle pageRect)
@@ -1980,28 +2011,28 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Enforce minimum size
-            if (newBounds.Width < 20)
+            if (newBounds.Width < _selectedElement.MinimumSize)
             {
-                newBounds.Width = 20;
+                newBounds.Width = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Left || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.BottomLeft)
                 {
-                    newBounds.X = _originalBounds.Right - 20;
+                    newBounds.X = _originalBounds.Right - _selectedElement.MinimumSize;
                 }
             }
 
-            if (newBounds.Height < 20)
+            if (newBounds.Height < _selectedElement.MinimumSize)
             {
-                newBounds.Height = 20;
+                newBounds.Height = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Top || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.TopRight)
                 {
-                    newBounds.Y = _originalBounds.Bottom - 20;
+                    newBounds.Y = _originalBounds.Bottom - _selectedElement.MinimumSize;
                 }
             }
 
             // Enforce canvas bounds
             Size pageSize = PageDimensions.GetDimensions(ReportConfig.PageSize, ReportConfig.PageOrientation);
-            if (newBounds.X < 0) newBounds.X = 0;
-            if (newBounds.Y < 0) newBounds.Y = 0;
+            if (newBounds.X < 0) { newBounds.X = 0; }
+            if (newBounds.Y < 0) { newBounds.Y = 0; }
             if (newBounds.Right > pageSize.Width)
             {
                 newBounds.Width = pageSize.Width - newBounds.X;
@@ -2012,15 +2043,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Apply grid snapping if enabled
-            if (_snapToGrid)
+            if (ShowGrid)
             {
                 newBounds = SnapToGrid(newBounds);
             }
 
             // Update element bounds and invalidate
-            InvalidateElementRegion(_lastElementBounds);
+            // Invalidate the union of old and new bounds to ensure no rendering artifacts remain
+            // This is especially important for complex elements like tables that render multiple rows
+            Rectangle invalidationRect = Rectangle.Union(_lastElementBounds, newBounds);
+            InvalidateElementRegion(invalidationRect);
+
             _selectedElement.Bounds = newBounds;
-            InvalidateElementRegion(newBounds);
             _lastElementBounds = newBounds;
 
             // Defer property panel update
@@ -2029,7 +2063,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         }
         private static void DrawResizeHandles(Graphics g, Rectangle bounds)
         {
-            const int handleSize = 8;
+            const int handleSize = 12;
             using Brush brush = new SolidBrush(Color.Blue);
 
             // Corner handles
@@ -2038,7 +2072,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             g.FillRectangle(brush, bounds.Left - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
             g.FillRectangle(brush, bounds.Right - handleSize / 2, bounds.Bottom - handleSize / 2, handleSize, handleSize);
         }
-        private static ResizeHandle GetResizeHandleAt(Point point, BaseElement element)
+        private static ResizeHandle GetResizeHandleAtPoint(Point point, BaseElement element)
         {
             if (element == null) { return ResizeHandle.None; }
 
@@ -2102,7 +2136,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig?.AddElement(element);
                 SelectElement(element);
                 Canvas_Panel.Invalidate();
+                Canvas_Panel.Focus();
                 NotifyParentValidationChanged();
+                MarkAsChanged();
             }
         }
         private static BaseElement? CreateElementByType(ReportElementType elementType, Point location)
@@ -2137,7 +2173,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _ => null
             };
         }
-        public void DuplicateSelectedWithUndo()
+        public void DuplicateSelected()
         {
             if (_selectedElements.Count == 0 && _selectedElement == null) { return; }
             if (ReportConfig == null) { return; }
@@ -2145,8 +2181,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             List<BaseElement> duplicates = [];
 
             string description = _selectedElements.Count > 1
-                ? $"duplicate {_selectedElements.Count} elements"
-                : "duplicate element";
+                ? LanguageManager.TranslateString("Duplicate") + " " + _selectedElements.Count + " " + LanguageManager.TranslateString("elements")
+                : LanguageManager.TranslateString("Duplicate element");
             CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
@@ -2194,7 +2230,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Focus canvas to ensure the duplicated element remains selected
             Canvas_Panel.Focus();
         }
-        public void DeleteSelectedWithUndo()
+        public void DeleteSelected()
         {
             // Handle both old single-selection and multi-selection
             if (_selectedElements.Count == 0 && _selectedElement == null)
@@ -2221,8 +2257,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Create undo actions
             string description = elementsToDelete.Count == 1
-                ? "Delete element"
-                : $"Delete {elementsToDelete.Count} elements";
+                ? LanguageManager.TranslateString("Delete element")
+                : LanguageManager.TranslateString("Delete") + " " + elementsToDelete.Count + " " + LanguageManager.TranslateString("elements");
             CompositeAction composite = new(description);
 
             // Delete all selected elements
@@ -2252,11 +2288,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ClearAllSelections();
             Canvas_Panel.Invalidate();
             OnPropertyChanged();
+            MarkAsChanged();
         }
         private static MainMenu_Form.ChartDataType GetDefaultChartType()
         {
             // Use the first selected chart type, or default to TotalSales
-            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalSales;
+            return ReportConfig?.Filters?.SelectedChartTypes?.FirstOrDefault() ?? MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private static BaseElement? GetElementAtPoint(Point point)
         {
@@ -2274,6 +2311,175 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private static void NotifyParentValidationChanged()
         {
             ReportGenerator_Form.Instance.OnChildFormValidationChanged();
+        }
+
+        // Template save/load functionality
+        private void SaveTemplate_Button_Click(object sender, EventArgs e)
+        {
+            // For built-in templates, don't allow updating - only save as new
+            string currentTemplateForSave = _currentTemplateName;
+            if (!string.IsNullOrEmpty(_currentTemplateName) && ReportTemplates.IsBuiltInTemplate(_currentTemplateName))
+            {
+                currentTemplateForSave = null;
+            }
+
+            using SaveTemplate_Form form = new()
+            {
+                CurrentTemplateName = currentTemplateForSave
+            };
+
+            if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
+            {
+                if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
+                {
+                    _currentTemplateName = form.TemplateName;
+                    _undoRedoManager.MarkSaved();  // Mark this as the saved state
+                    SetUnsavedChanges(false);
+
+                    // Refresh the template list and select the newly saved template
+                    ReportDataSelection_Form.Instance?.RefreshTemplates(form.TemplateName);
+                }
+                else
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "Save Failed",
+                        "Failed to save template '{0}'.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        form.TemplateName);
+                }
+            }
+        }
+        public void OnConfigurationLoaded()
+        {
+            _currentTemplateName = ReportConfig?.Title;
+            _undoRedoManager.MarkSaved();  // Mark this as the saved state
+            SetUnsavedChanges(false);
+            RefreshCanvas();
+        }
+
+        /// <summary>
+        /// Clears the current template if it matches the given template name.
+        /// This is used when a template is deleted to ensure the designer doesn't keep a deleted template loaded.
+        /// </summary>
+        public void ClearIfTemplateDeleted(string deletedTemplateName)
+        {
+            if (_currentTemplateName == deletedTemplateName)
+            {
+                _currentTemplateName = null;
+                SetUnsavedChanges(false);
+                _undoRedoManager.Clear();
+
+                // Clear all elements from the configuration
+                if (ReportConfig != null)
+                {
+                    // Dispose elements
+                    foreach (BaseElement element in ReportConfig.Elements.ToList())
+                    {
+                        if (element is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+
+                    ReportConfig.Elements.Clear();
+
+                    ClearAllSelections();
+                    RefreshCanvas();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prompts the user to save unsaved changes.
+        /// </summary>
+        /// <returns>True if the operation should continue, false if cancelled</returns>
+        public bool PromptToSaveChanges()
+        {
+            if (!HasUnsavedChanges) { return true; }
+
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Unsaved Changes",
+                "You have unsaved changes to your custom template.\nDo you want to save your changes?",
+                CustomMessageBoxIcon.Question,
+                CustomMessageBoxButtons.YesNoCancel);
+
+            if (result == CustomMessageBoxResult.Yes)
+            {
+                // Save the template
+                SaveTemplate_Button.PerformClick();
+                return true;
+            }
+            if (result == CustomMessageBoxResult.No)
+            {
+                // User chose not to save
+                DisposeCachedImages();
+                CustomTemplateStorage.CleanupUnusedImages();
+                SetUnsavedChanges(false);
+                return true;
+            }
+
+            // The user clicked Cancel or closed the message dialog, so do not continue the operation
+            return false;
+        }
+
+        /// <summary>
+        /// Disposes all cached images in ImageElements to release file locks.
+        /// </summary>
+        public static void DisposeCachedImages()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                if (element is ImageElement imageElement)
+                {
+                    imageElement.Dispose();
+                }
+            }
+        }
+
+        private void SetUnsavedChanges(bool hasChanges)
+        {
+            string title = LanguageManager.TranslateString("Report Layout Designer");
+
+            HasUnsavedChanges = hasChanges;
+            UnsavedChanges_Label.Visible = hasChanges;
+
+            // Update form title with asterisk if there are unsaved changes
+            if (hasChanges)
+            {
+                ReportGenerator_Form.Instance.Text = title + " *";
+            }
+            else
+            {
+                ReportGenerator_Form.Instance.Text = title;
+            }
+        }
+        private void MarkAsChanged()
+        {
+            if (!HasUnsavedChanges)
+            {
+                SetUnsavedChanges(true);
+            }
+        }
+
+        /// <summary>
+        /// Called when the undo/redo state changes. Updates the unsaved changes indicator
+        /// based on whether we're at the saved state.
+        /// </summary>
+        private void OnUndoRedoStateChanged(object sender, EventArgs e)
+        {
+            // If we're at the saved state, clear the unsaved changes indicator
+            if (_undoRedoManager.IsAtSavedState)
+            {
+                SetUnsavedChanges(false);
+            }
+            // If we're not at the saved state and indicator is not showing, mark as changed
+            else if (!HasUnsavedChanges)
+            {
+                SetUnsavedChanges(true);
+            }
         }
     }
 }

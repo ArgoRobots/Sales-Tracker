@@ -37,7 +37,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
     public class TableElement : BaseElement
     {
         // Data selection properties (General tab)
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
         public bool IncludeReturns { get; set; } = true;
         public bool IncludeLosses { get; set; } = true;
         public TableDataSelection DataSelection { get; set; } = TableDataSelection.All;
@@ -95,6 +95,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 80;
         public override string DisplayName => LanguageManager.TranslateString("transaction table");
         public override ReportElementType GetElementType() => ReportElementType.TransactionTable;
         public override BaseElement Clone()
@@ -104,10 +105,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 TransactionType = TransactionType,
                 IncludeReturns = IncludeReturns,
                 IncludeLosses = IncludeLosses,
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 DataSelection = DataSelection,
                 SortOrder = SortOrder,
@@ -154,9 +154,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 RenderTable(graphics, transactions);
             }
-            catch (Exception ex)
+            catch
             {
-                RenderErrorMessage(graphics, $"Error: {ex.Message}");
+                RenderError(graphics);
             }
         }
         private List<TransactionData> GetFilteredTransactions(ReportConfiguration config)
@@ -168,17 +168,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
             DateTime endDate = config?.Filters?.EndDate ?? DateTime.MaxValue;
 
             // Load sales transactions if needed
-            if (TransactionType == TransactionType.Sales || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Revenue)
             {
                 DataGridView salesGrid = MainMenu_Form.Instance.Sale_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Sales, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(salesGrid, startDate, endDate, TransactionType.Revenue, IncludeReturns, IncludeLosses));
             }
 
             // Load purchase transactions if needed  
-            if (TransactionType == TransactionType.Purchases || TransactionType == TransactionType.Both)
+            if (TransactionType == TransactionType.Expenses)
             {
                 DataGridView purchaseGrid = MainMenu_Form.Instance.Purchase_DataGridView;
-                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Purchases, IncludeReturns, IncludeLosses));
+                allTransactions.AddRange(ExtractTransactionsFromGrid(purchaseGrid, startDate, endDate, TransactionType.Expenses, IncludeReturns, IncludeLosses));
             }
 
             // Sort transactions
@@ -589,13 +589,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
         private void RenderNoDataMessage(Graphics graphics)
         {
             // Draw background
-            using (SolidBrush baseBgBrush = new(BaseRowColor))
-            {
-                graphics.FillRectangle(baseBgBrush, Bounds);
-            }
+            using SolidBrush baseBgBrush = new(Color.FromArgb(240, 240, 240));
+            graphics.FillRectangle(baseBgBrush, Bounds);
 
             using Font font = new("Segoe UI", 10);
-            using SolidBrush brush = new(Color.Gray);
+            using SolidBrush textBrush = new(Color.Gray);
 
             StringFormat format = new()
             {
@@ -604,29 +602,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             };
 
             string text = LanguageManager.TranslateString("No transactions to display");
-            graphics.DrawString(text, font, brush, Bounds, format);
+            graphics.DrawString(text, font, textBrush, Bounds, format);
 
             // Draw border
             using Pen borderPen = new(Color.Black, 1);
             graphics.DrawRectangle(borderPen, Bounds);
-        }
-        private void RenderErrorMessage(Graphics graphics, string message)
-        {
-            using SolidBrush bgBrush = new(Color.FromArgb(255, 240, 240));
-            using Pen borderPen = new(Color.Red, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.DarkRed);
-
-            graphics.FillRectangle(bgBrush, Bounds);
-            graphics.DrawRectangle(borderPen, Bounds);
-
-            StringFormat format = new()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            graphics.DrawString(message, font, textBrush, Bounds, format);
         }
 
         // Override the property to indicate this element handles its own common controls
@@ -662,6 +642,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 stylePanel.Visible = false;
                 columnsPanel.Visible = false;
 
+                ThemeManager.RemoveCustomScrollBar(generalPanel);
+                ThemeManager.RemoveCustomScrollBar(stylePanel);
+                ThemeManager.RemoveCustomScrollBar(columnsPanel);
+
                 if (tabIndex == 0)
                 {
                     generalPanel.Visible = true;
@@ -678,6 +662,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                     ThemeManager.CustomizeScrollBar(columnsPanel);
                 }
 
+                UpdateAllControlValues();
                 LoadingPanel.HideBlankLoadingPanel(CachedPropertyPanel);
             }
 
@@ -751,7 +736,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
             text = LanguageManager.TranslateString("Type") + ":";
             AddPropertyLabel(panel, text, yPosition);
             Guna2ComboBox typeCombo = AddPropertyComboBox(panel, TransactionType.ToString(), yPosition,
-                ["Sales", "Purchases", "Both"],
+                Enum.GetNames<TransactionType>(),
                 value =>
                 {
                     TransactionType newType = Enum.Parse<TransactionType>(value);
@@ -835,7 +820,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Max rows
             text = LanguageManager.TranslateString("Max Rows") + ":";
-            AddPropertyLabel(panel, text, yPosition);
+            AddPropertyLabel(panel, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown numericUpDown = AddPropertyNumericUpDown(panel, MaxRows, yPosition,
                 value =>
                 {
@@ -852,7 +837,6 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 1, 100);
-            numericUpDown.Left = 110;
             CacheControl("MaxRows", numericUpDown, () => numericUpDown.Value = MaxRows);
             yPosition += ControlRowHeight;
 
@@ -883,11 +867,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
             UndoRedoManager? undoRedoManager = ReportLayoutDesigner_Form.Instance?.GetUndoRedoManager();
             string text;
 
-            // Font family
-            AddPropertyLabel(panel, "Font:", yPosition);
-            string[] fontFamilies = ["Segoe UI", "Arial", "Times New Roman", "Calibri", "Verdana",
-                             "Tahoma", "Georgia", "Courier New", "Consolas"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(panel, FontFamily, yPosition, fontFamilies,
+            // Font Family
+            text = LanguageManager.TranslateString("Font") + ":";
+            Label fontLabel = AddPropertyLabel(panel, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                panel,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -901,13 +889,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font size
             text = LanguageManager.TranslateString("Font Size") + ":";
-            AddPropertyLabel(panel, text, yPosition);
+            AddPropertyLabel(panel, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(panel, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -924,13 +914,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 6, 14);
-            fontSizeNumeric.Left = 150;
             CacheControl("FontSize", fontSizeNumeric, () => fontSizeNumeric.Value = (decimal)FontSize);
             yPosition += ControlRowHeight;
 
             // Row Height
             text = LanguageManager.TranslateString("Row Height") + ":";
-            AddPropertyLabel(panel, text, yPosition);
+            AddPropertyLabel(panel, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown rowHeightNumeric = AddPropertyNumericUpDown(panel, DataRowHeight, yPosition,
                 value =>
                 {
@@ -947,13 +936,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 15, 50);
-            rowHeightNumeric.Left = 150;
             CacheControl("DataRowHeight", rowHeightNumeric, () => rowHeightNumeric.Value = DataRowHeight);
             yPosition += ControlRowHeight;
 
             // Header Row Height
             text = LanguageManager.TranslateString("Header Height") + ":";
-            AddPropertyLabel(panel, text, yPosition);
+            AddPropertyLabel(panel, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown headerHeightNumeric = AddPropertyNumericUpDown(panel, HeaderRowHeight, yPosition,
                 value =>
                 {
@@ -970,13 +958,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 20, 60);
-            headerHeightNumeric.Left = 150;
             CacheControl("HeaderRowHeight", headerHeightNumeric, () => headerHeightNumeric.Value = HeaderRowHeight);
             yPosition += ControlRowHeight;
 
             // Cell Padding
             text = LanguageManager.TranslateString("Cell Padding") + ":";
-            AddPropertyLabel(panel, text, yPosition);
+            AddPropertyLabel(panel, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown cellPaddingNumeric = AddPropertyNumericUpDown(panel, CellPadding, yPosition,
                 value =>
                 {
@@ -993,38 +980,37 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            cellPaddingNumeric.Left = 150;
             CacheControl("CellPadding", cellPaddingNumeric, () => cellPaddingNumeric.Value = CellPadding);
             yPosition += ControlRowHeight;
 
             // Header Background Color
             text = LanguageManager.TranslateString("Header Background") + ":";
-            AddPropertyLabel(panel, text, yPosition);
-            Panel headerBgPicker = AddColorPicker(panel, yPosition, 190, HeaderBackgroundColor,
-                color =>
+            AddPropertyLabel(panel, text, yPosition, false, ColorPickerWidth);
+            Panel headerBgPicker = AddColorPicker(panel, yPosition, HeaderBackgroundColor,
+                newColor =>
                 {
-                    if (HeaderBackgroundColor.ToArgb() != color.ToArgb())
+                    if (HeaderBackgroundColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(HeaderBackgroundColor),
                             HeaderBackgroundColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        HeaderBackgroundColor = color;
+                        HeaderBackgroundColor = newColor;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("HeaderBackgroundColor", headerBgPicker, () => headerBgPicker.BackColor = HeaderBackgroundColor);
             yPosition += ControlRowHeight;
 
             // Header Text Color
             text = LanguageManager.TranslateString("Header Text") + ":";
-            AddPropertyLabel(panel, text, yPosition);
-            Panel headerTextPicker = AddColorPicker(panel, yPosition, 150, HeaderTextColor,
+            AddPropertyLabel(panel, text, yPosition, false, ColorPickerWidth);
+            Panel headerTextPicker = AddColorPicker(panel, yPosition, HeaderTextColor,
                 color =>
                 {
-                    if (HeaderTextColor.ToArgb() != color.ToArgb())
+                    if (HeaderTextColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1035,17 +1021,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         HeaderTextColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("HeaderTextColor", headerTextPicker, () => headerTextPicker.BackColor = HeaderTextColor);
             yPosition += ControlRowHeight;
 
             // Data Row Text Color
             text = LanguageManager.TranslateString("Row Text") + ":";
-            AddPropertyLabel(panel, text, yPosition);
-            Panel rowTextPicker = AddColorPicker(panel, yPosition, 150, DataRowTextColor,
+            AddPropertyLabel(panel, text, yPosition, false, ColorPickerWidth);
+            Panel rowTextPicker = AddColorPicker(panel, yPosition, DataRowTextColor,
                 color =>
                 {
-                    if (DataRowTextColor.ToArgb() != color.ToArgb())
+                    if (DataRowTextColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1056,17 +1042,17 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         DataRowTextColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("DataRowTextColor", rowTextPicker, () => rowTextPicker.BackColor = DataRowTextColor);
             yPosition += ControlRowHeight;
 
             // Grid Line Color
             text = LanguageManager.TranslateString("Grid Lines") + ":";
-            AddPropertyLabel(panel, text, yPosition);
-            Panel gridLinePicker = AddColorPicker(panel, yPosition, 150, GridLineColor,
+            AddPropertyLabel(panel, text, yPosition, false, ColorPickerWidth);
+            Panel gridLinePicker = AddColorPicker(panel, yPosition, GridLineColor,
                 color =>
                 {
-                    if (GridLineColor.ToArgb() != color.ToArgb())
+                    if (GridLineColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -1077,7 +1063,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         GridLineColor = color;
                         onPropertyChanged();
                     }
-                }, false);
+                });
             CacheControl("GridLineColor", gridLinePicker, () => gridLinePicker.BackColor = GridLineColor);
             yPosition += ControlRowHeight;
 

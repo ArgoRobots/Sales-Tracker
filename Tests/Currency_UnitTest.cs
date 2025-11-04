@@ -33,8 +33,10 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestGetExchangeRateRealAPI()
+        public void TestGetExchangeRate()
         {
+            Directories.SetUniversalDirectories();
+            EncryptionManager.Initialize();
             DotEnv.Load();
             decimal rate = Currency.GetExchangeRate("USD", "EUR", "2025-01-10", false);
 

@@ -5,6 +5,8 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 
@@ -304,15 +306,10 @@ namespace Sales_Tracker.Theme
                 button.BorderColor = CustomColors.ControlBorder;
             }
         }
+        private static readonly Dictionary<Control, Guna2VScrollBar> _scrollBars = [];
         public static void CustomizeScrollBar(Control control)
         {
-            // Remove any existing Guna2VScrollBar
-            Guna2VScrollBar existingScrollBar = control.Controls.OfType<Guna2VScrollBar>().FirstOrDefault();
-            if (existingScrollBar != null)
-            {
-                control.Controls.Remove(existingScrollBar);
-                existingScrollBar.Dispose();
-            }
+            RemoveCustomScrollBar(control);
 
             // Add new scrollbar
             Guna2VScrollBar vScrollBar = new()
@@ -326,6 +323,24 @@ namespace Sales_Tracker.Theme
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();
             vScrollBar.BindingContainer = control;
+
+            _scrollBars[control] = vScrollBar;
+        }
+        public static void UpdateScrollBarForControl(ScrollableControl control)
+        {
+            if (_scrollBars.TryGetValue(control, out Guna2VScrollBar scrollBar))
+            {
+                scrollBar.Value = control.VerticalScroll.Value;
+            }
+        }
+        public static void RemoveCustomScrollBar(Control control)
+        {
+            if (_scrollBars.TryGetValue(control, out Guna2VScrollBar? scrollBar))
+            {
+                scrollBar.Parent?.Controls.Remove(scrollBar);
+                scrollBar.Dispose();
+                _scrollBars.Remove(control);
+            }
         }
         public static void SetThemeForForm(Form form)
         {
@@ -408,6 +423,12 @@ namespace Sales_Tracker.Theme
 
             CustomizeScrollBar(SearchBox.SearchResultBox);
             LoadingPanel.UpdateTheme();
+
+            if (Tools.IsFormOpen<ReportGenerator_Form>())
+            {
+                ReportDataSelection_Form.Instance.UpdateScrollBarTheme();
+                ReportLayoutDesigner_Form.Instance.UpdateTheme();
+            }
         }
 
         // Make button blue

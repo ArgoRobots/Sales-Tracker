@@ -178,6 +178,7 @@ namespace Sales_Tracker
                 if (!hasRegistered)
                 {
                     ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
+                    ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoTemplateFileExtension, Properties.Resources.ArgoColor, 0);
 
                     using RegistryKey writeKey = Registry.CurrentUser.CreateSubKey(subKey);
                     writeKey?.SetValue("AssociationsRegistered", true);
@@ -264,6 +265,10 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+
+                // Delete the language files cache to force re-download
+                Directories.DeleteFile(Directories.English_file);
+                Directories.DeleteFile(Directories.Translations_file);
 
                 // Get the most recent company
                 List<string> recentCompanies = ArgoCompany.GetValidRecentCompanyPaths(excludeCurrentCompany: false);

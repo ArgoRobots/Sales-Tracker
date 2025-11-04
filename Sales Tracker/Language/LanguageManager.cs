@@ -274,7 +274,7 @@ namespace Sales_Tracker.Language
             await Task.WhenAll(updateTasks);
 
             // Final UI updates
-            if (Tools.IsFormOpen<ReportDataSelection_Form>())
+            if (Tools.IsFormOpen<ReportGenerator_Form>())
             {
                 ReportDataSelection_Form.Instance.BeginInvoke(new Action(ReportDataSelection_Form.Instance.UpdateLanguageForChartSelectionControl));
                 ReportGenerator_Form.Instance.BeginInvoke(new Action(ReportGenerator_Form.AlignControlsAfterLanguageChange));
@@ -325,6 +325,8 @@ namespace Sales_Tracker.Language
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
+
+            DateRange_Form.Instance?.BeginInvoke(new Action(DateRange_Form.Instance.AdjustLabels));
 
             // Update all custom tooltips with the new language
             CustomTooltip.UpdateAllToolTipTranslations(targetLanguageAbbreviation);
@@ -915,6 +917,9 @@ namespace Sales_Tracker.Language
             {
                 key += $"_{section}";
             }
+
+            // Handle DateRangePanel special case - Main_Panel is moved from DateRange_Form to MainMenu_Form
+            key = key.Replace("MainMenu_Form.Main_Panel", "DateRange_Form.Main_Panel");
 
             return key;
         }

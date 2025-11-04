@@ -6,6 +6,10 @@
     /// </summary>
     public static class AlignmentHelper
     {
+        // Arrays for ComboBoxes
+        public static readonly string[] HorizontalOptions = ["Left", "Center", "Right"];
+        public static readonly string[] VerticalOptions = ["Top", "Middle", "Bottom"];
+
         /// <summary>
         /// Converts a StringAlignment enum value to display-friendly text.
         /// </summary>

@@ -15,59 +15,66 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public float FontSize { get; set; } = 10f;
         public FontStyle FontStyle { get; set; } = FontStyle.Italic;
         public string FontFamily { get; set; } = "Segoe UI";
-        public StringAlignment Alignment { get; set; } = StringAlignment.Near;
-        public StringAlignment VerticalAlignment { get; set; } = StringAlignment.Center;
+        public StringAlignment HAlignment { get; set; } = StringAlignment.Center;
+        public StringAlignment VAlignment { get; set; } = StringAlignment.Center;
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("date range");
         public override ReportElementType GetElementType() => ReportElementType.DateRange;
         public override BaseElement Clone()
         {
             return new DateRangeElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 DateFormat = DateFormat,
                 TextColor = TextColor,
                 FontSize = FontSize,
                 FontStyle = FontStyle,
                 FontFamily = FontFamily,
-                Alignment = Alignment,
-                VerticalAlignment = VerticalAlignment
+                HAlignment = HAlignment,
+                VAlignment = VAlignment
             };
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            if (config?.Filters == null) { return; }
-
-            DateTime? startDate = config.Filters.StartDate;
-            DateTime? endDate = config.Filters.EndDate;
-
-            string dateText = LanguageManager.TranslateString("Period") + ": ";
-            if (startDate.HasValue && endDate.HasValue)
+            try
             {
-                dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                if (config?.Filters == null) { return; }
+
+                DateTime? startDate = config.Filters.StartDate;
+                DateTime? endDate = config.Filters.EndDate;
+
+                string dateText = LanguageManager.TranslateString("Period") + ": ";
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    dateText += $"{startDate.Value.ToString(DateFormat)} to {endDate.Value.ToString(DateFormat)}";
+                }
+                else
+                {
+                    dateText += LanguageManager.TranslateString("Not specified");
+                }
+
+                using Font font = new(FontFamily, FontSize, FontStyle);
+                using SolidBrush brush = new(TextColor);
+
+                StringFormat format = new()
+                {
+                    Alignment = HAlignment,
+                    LineAlignment = VAlignment,
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+
+                graphics.DrawString(dateText, font, brush, Bounds, format);
             }
-            else
+            catch
             {
-                dateText += LanguageManager.TranslateString("Not specified");
+                RenderError(graphics);
             }
-
-            using Font font = new(FontFamily, FontSize, FontStyle);
-            using SolidBrush brush = new(TextColor);
-
-            StringFormat format = new()
-            {
-                Alignment = Alignment,
-                LineAlignment = VerticalAlignment,
-                FormatFlags = StringFormatFlags.NoWrap,
-                Trimming = StringTrimming.EllipsisCharacter
-            };
-
-            graphics.DrawString(dateText, font, brush, Bounds, format);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -100,11 +107,13 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Font Family
             text = LanguageManager.TranslateString("Font") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] fontFamilies = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
-                             "Courier New", "Georgia", "Impact", "Segoe UI", "Tahoma",
-                             "Times New Roman", "Trebuchet MS", "Verdana"];
-            Guna2ComboBox fontCombo = AddPropertyComboBox(container, FontFamily, yPosition, fontFamilies,
+            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+
+            Guna2TextBox fontTextBox = AddPropertySearchBox(
+                container,
+                FontFamily,
+                yPosition,
+                GetFontSearchResults,
                 value =>
                 {
                     if (FontFamily != value)
@@ -118,13 +127,15 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         FontFamily = value;
                         onPropertyChanged();
                     }
-                });
-            CacheControl("FontFamily", fontCombo, () => fontCombo.SelectedItem = FontFamily);
+                },
+                fontLabel);
+
+            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
             yPosition += ControlRowHeight;
 
             // Font Size
             text = LanguageManager.TranslateString("Size") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown fontSizeNumeric = AddPropertyNumericUpDown(container, (decimal)FontSize, yPosition,
                 value =>
                 {
@@ -149,10 +160,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
             AddPropertyLabel(container, text, yPosition);
 
             // Create the font style buttons
-            int xPosition = 85;
             const int buttonWidth = 35;
             const int buttonHeight = 30;
             const int spacing = 5;
+            const int totalButtonWidth = (buttonWidth * 3) + (spacing * 2);  // 3 buttons + 2 gaps
+            int xPosition = container.ClientSize.Width - RightMargin - totalButtonWidth;
             int buttonY = yPosition + 2;
 
             // Bold button
@@ -263,85 +275,78 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             yPosition += ControlRowHeight;
 
-            // Horizontal Alignment
-            text = LanguageManager.TranslateString("H-Align") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] hAlignmentOptions = ["Near", "Center", "Far"];
-            Guna2ComboBox hAlignCombo = AddPropertyComboBox(container, Alignment.ToString(), yPosition, hAlignmentOptions,
-                value =>
-                {
-                    StringAlignment newAlignment = Enum.Parse<StringAlignment>(value);
-                    if (Alignment != newAlignment)
-                    {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(Alignment),
-                            Alignment,
-                            newAlignment,
-                            onPropertyChanged));
-                        Alignment = newAlignment;
-                        onPropertyChanged();
-                    }
-                });
-            hAlignCombo.Left += 10;  // Adjust for label width
-            CacheControl("Alignment", hAlignCombo, () => hAlignCombo.SelectedItem = Alignment.ToString());
-            yPosition += ControlRowHeight;
-
-            // Vertical Alignment
-            text = LanguageManager.TranslateString("V-Align") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            string[] vAlignmentOptions = ["Near", "Center", "Far"];
-            Guna2ComboBox vAlignCombo = AddPropertyComboBox(container, VerticalAlignment.ToString(), yPosition, vAlignmentOptions,
-                value =>
-                {
-                    StringAlignment newVAlignment = Enum.Parse<StringAlignment>(value);
-                    if (VerticalAlignment != newVAlignment)
-                    {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(VerticalAlignment),
-                            VerticalAlignment,
-                            newVAlignment,
-                            onPropertyChanged));
-                        VerticalAlignment = newVAlignment;
-                        onPropertyChanged();
-                    }
-                });
-            vAlignCombo.Left += 10;  // Adjust for label width
-            CacheControl("VerticalAlignment", vAlignCombo, () => vAlignCombo.SelectedItem = VerticalAlignment.ToString());
-            yPosition += ControlRowHeight;
-
             // Text Color
-            text = LanguageManager.TranslateString("Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel colorPanel = AddColorPicker(container, yPosition, 85, TextColor,
-                color =>
+            text = LanguageManager.TranslateString("Text Color") + ":";
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel colorPanel = AddColorPicker(container, yPosition, TextColor,
+                newColor =>
                 {
-                    if (TextColor.ToArgb() != color.ToArgb())
+                    if (TextColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(TextColor),
                             TextColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        TextColor = color;
+                        TextColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
-
-            // Add label next to color picker
-            Label colorLabel = new()
-            {
-                Text = LanguageManager.TranslateString("Click to change"),
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Gray,
-                Location = new Point(140, yPosition + 11),
-                AutoSize = true
-            };
-            container.Controls.Add(colorLabel);
-
+                });
             CacheControl("TextColor", colorPanel, () => colorPanel.BackColor = TextColor);
+            yPosition += ControlRowHeight;
+
+            // Horizontal Alignment
+            text = LanguageManager.TranslateString("H-Align");
+            AddPropertyLabel(container, text, yPosition);
+            Guna2ComboBox hAlignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(HAlignment),
+                yPosition,
+                AlignmentHelper.HorizontalOptions,
+                value =>
+                {
+                    StringAlignment newAlignment = AlignmentHelper.FromDisplayText(value);
+                    if (HAlignment != newAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(HAlignment),
+                            HAlignment,
+                            newAlignment,
+                            onPropertyChanged));
+                        HAlignment = newAlignment;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("HAlignment", hAlignCombo, () => hAlignCombo.SelectedItem = HAlignment.ToString());
+            yPosition += ControlRowHeight;
+
+            // Vertical Alignment
+            text = LanguageManager.TranslateString("V-Align") + ":";
+            AddPropertyLabel(container, text, yPosition);
+            Guna2ComboBox vAlignCombo = AddPropertyComboBox(
+                container,
+                AlignmentHelper.ToDisplayText(VAlignment, isVertical: true),
+                yPosition,
+                AlignmentHelper.VerticalOptions,
+                value =>
+                {
+                    StringAlignment newAlignment = AlignmentHelper.FromDisplayText(value);
+                    if (VAlignment != newAlignment)
+                    {
+                        undoRedoManager?.RecordAction(new PropertyChangeAction(
+                            this,
+                            nameof(VAlignment),
+                            VAlignment,
+                            newAlignment,
+                            onPropertyChanged));
+                        VAlignment = newAlignment;
+                        onPropertyChanged();
+                    }
+                });
+            CacheControl("VAlignment", vAlignCombo,
+                () => vAlignCombo.SelectedItem = AlignmentHelper.ToDisplayText(VAlignment, isVertical: true));
             yPosition += ControlRowHeight;
 
             return yPosition;

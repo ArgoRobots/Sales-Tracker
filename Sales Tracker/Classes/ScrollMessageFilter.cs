@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Classes
+﻿using Guna.UI2.WinForms;
+
+namespace Sales_Tracker.Classes
 {
     /// <summary>
     /// Message filter that intercepts mouse wheel events over a control and forwards them to the parent scrollable panel.
@@ -35,6 +37,21 @@
                             panel.VerticalScroll.Maximum);
                         panel.PerformLayout();
 
+                        // Find the Guna2VScrollBar in the panel and update it
+                        if (panel.Parent != null)
+                        {
+                            foreach (Control ctrl in panel.Parent.Controls)
+                            {
+                                if (ctrl is Guna2VScrollBar scrollBar)
+                                {
+                                    scrollBar.Value = Math.Clamp(newValue,
+                                        scrollBar.Minimum,
+                                        scrollBar.Maximum - scrollBar.LargeChange + 1);
+                                    break;
+                                }
+                            }
+                        }
+
                         return true;  // Block the message
                     }
                 }
@@ -53,7 +70,9 @@
             foreach (Control child in control.Controls)
             {
                 if (IsMouseOverControl(child, screenPoint))
+                {
                     return true;
+                }
             }
 
             return false;

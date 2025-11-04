@@ -45,7 +45,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Data filtering configuration.
         /// </summary>
-        public ReportFilters Filters { get; set; } = new ReportFilters();
+        public ReportFilters Filters { get; set; } = new();
 
         /// <summary>
         /// Report title.
@@ -159,7 +159,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Transaction types to include.
         /// </summary>
-        public TransactionType TransactionType { get; set; } = TransactionType.Both;
+        public TransactionType TransactionType { get; set; } = TransactionType.Revenue;
 
         /// <summary>
         /// Selected chart types to include.
@@ -188,9 +188,8 @@ namespace Sales_Tracker.ReportGenerator
     /// </summary>
     public enum TransactionType
     {
-        Sales,
-        Purchases,
-        Both
+        Expenses,
+        Revenue
     }
 
     /// <summary>

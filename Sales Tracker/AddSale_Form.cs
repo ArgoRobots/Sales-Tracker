@@ -117,6 +117,10 @@ namespace Sales_Tracker
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void AddSale_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
         private void AddSale_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();
@@ -358,6 +362,10 @@ namespace Sales_Tracker
             if (newFilePath != "")
             {
                 MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, saleData);
+            }
+            else
+            {
+                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = saleData;
             }
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));

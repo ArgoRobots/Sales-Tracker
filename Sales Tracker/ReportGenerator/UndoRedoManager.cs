@@ -15,6 +15,7 @@ namespace Sales_Tracker.ReportGenerator
         private readonly Stack<IUndoableAction> _redoStack = new();
         private readonly int _maxStackSize = maxStackSize;
         private bool _isExecutingUndoRedo = false;
+        private int? _savedStateUndoCount = 0;  // Track undo count at save point (null if saved state was lost)
 
         public event EventHandler StateChanged;
 
@@ -49,6 +50,20 @@ namespace Sales_Tracker.ReportGenerator
         public string RedoDescription => CanRedo ? _redoStack.Peek().Description : "";
 
         /// <summary>
+        /// Gets whether the current state matches the last saved state.
+        /// </summary>
+        public bool IsAtSavedState => _savedStateUndoCount.HasValue && _undoStack.Count == _savedStateUndoCount.Value;
+
+        /// <summary>
+        /// Marks the current state as saved. This should be called after successfully saving.
+        /// </summary>
+        public void MarkSaved()
+        {
+            _savedStateUndoCount = _undoStack.Count;
+            OnStateChanged();
+        }
+
+        /// <summary>
         /// Records an action for undo/redo.
         /// </summary>
         public void RecordAction(IUndoableAction action)
@@ -58,6 +73,13 @@ namespace Sales_Tracker.ReportGenerator
             _undoStack.Push(action);
             _redoStack.Clear();
 
+            // If we're recording a new action after undoing past the saved state,
+            // the saved state becomes unreachable
+            if (_savedStateUndoCount.HasValue && _undoStack.Count - 1 < _savedStateUndoCount.Value)
+            {
+                _savedStateUndoCount = null;
+            }
+
             // Limit stack size
             while (_undoStack.Count > _maxStackSize)
             {
@@ -66,6 +88,16 @@ namespace Sales_Tracker.ReportGenerator
                 for (int i = 1; i < oldestActions.Length; i++)
                 {
                     _undoStack.Push(oldestActions[i]);
+                }
+
+                // If the saved state was in the removed action, mark it as lost
+                if (_savedStateUndoCount.HasValue)
+                {
+                    _savedStateUndoCount--;
+                    if (_savedStateUndoCount < 0)
+                    {
+                        _savedStateUndoCount = null;
+                    }
                 }
             }
 
@@ -127,6 +159,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             _undoStack.Clear();
             _redoStack.Clear();
+            _savedStateUndoCount = 0;  // Reset to initial saved state
             OnStateChanged();
         }
 
@@ -562,6 +595,63 @@ namespace Sales_Tracker.ReportGenerator
                 Rectangle bounds = _elements[i].Bounds;
                 bounds.Size = _newSizes[i];
                 _elements[i].Bounds = bounds;
+            }
+            _refreshCanvas();
+        }
+    }
+
+    /// <summary>
+    /// Action for changing element layer order (bring to front / send to back).
+    /// </summary>
+    public class LayerOrderAction : IUndoableAction
+    {
+        private readonly Dictionary<BaseElement, int> _oldZOrders;
+        private readonly Dictionary<BaseElement, int> _newZOrders;
+        private readonly string _description;
+        private readonly Action _refreshCanvas;
+
+        public LayerOrderAction(List<BaseElement> allElements, string description, Action refreshCanvas)
+        {
+            _oldZOrders = [];
+            _newZOrders = [];
+            _description = description;
+            _refreshCanvas = refreshCanvas;
+
+            // Store old Z-orders for all elements
+            foreach (BaseElement element in allElements)
+            {
+                _oldZOrders[element] = element.ZOrder;
+            }
+        }
+
+        /// <summary>
+        /// Captures the new Z-orders after the operation has been performed.
+        /// This should be called after the layer order change is applied.
+        /// </summary>
+        public void CaptureNewState(List<BaseElement> allElements)
+        {
+            foreach (BaseElement element in allElements)
+            {
+                _newZOrders[element] = element.ZOrder;
+            }
+        }
+
+        public string Description => _description;
+
+        public void Undo()
+        {
+            foreach (KeyValuePair<BaseElement, int> kvp in _oldZOrders)
+            {
+                kvp.Key.ZOrder = kvp.Value;
+            }
+            _refreshCanvas();
+        }
+
+        public void Redo()
+        {
+            foreach (KeyValuePair<BaseElement, int> kvp in _newZOrders)
+            {
+                kvp.Key.ZOrder = kvp.Value;
             }
             _refreshCanvas();
         }

@@ -52,18 +52,18 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Right_Panel = new Guna.UI2.WinForms.Guna2Panel();
             DateRange_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             StartDate_Label = new Label();
@@ -104,6 +104,7 @@
             Template_GroupBox = new Guna.UI2.WinForms.Guna2GroupBox();
             Template_Label = new Label();
             Template_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            OpenTemplates_Button = new Guna.UI2.WinForms.Guna2Button();
             Right_Panel.SuspendLayout();
             DateRange_GroupBox.SuspendLayout();
             ReportSettings_GroupBox.SuspendLayout();
@@ -686,13 +687,13 @@
             Left_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             Left_Panel.Controls.Add(ChartSelection_GroupBox);
             Left_Panel.Controls.Add(Template_GroupBox);
-            Left_Panel.CustomizableEdges = customizableEdges35;
+            Left_Panel.CustomizableEdges = customizableEdges33;
             Left_Panel.FillColor = Color.Transparent;
             Left_Panel.Location = new Point(0, 0);
             Left_Panel.Margin = new Padding(4, 5, 4, 5);
             Left_Panel.Name = "Left_Panel";
             Left_Panel.Padding = new Padding(28, 14, 7, 0);
-            Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            Left_Panel.ShadowDecoration.CustomizableEdges = customizableEdges34;
             Left_Panel.Size = new Size(900, 900);
             Left_Panel.TabIndex = 0;
             // 
@@ -765,15 +766,16 @@
             Template_GroupBox.BorderThickness = 0;
             Template_GroupBox.Controls.Add(Template_Label);
             Template_GroupBox.Controls.Add(Template_ComboBox);
+            Template_GroupBox.Controls.Add(OpenTemplates_Button);
             Template_GroupBox.CustomBorderColor = Color.FromArgb(94, 148, 255);
-            Template_GroupBox.CustomizableEdges = customizableEdges33;
+            Template_GroupBox.CustomizableEdges = customizableEdges35;
             Template_GroupBox.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             Template_GroupBox.ForeColor = Color.White;
             Template_GroupBox.Location = new Point(28, 748);
             Template_GroupBox.Margin = new Padding(4, 5, 4, 5);
             Template_GroupBox.Name = "Template_GroupBox";
             Template_GroupBox.Padding = new Padding(14, 17, 14, 17);
-            Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            Template_GroupBox.ShadowDecoration.CustomizableEdges = customizableEdges36;
             Template_GroupBox.Size = new Size(865, 150);
             Template_GroupBox.TabIndex = 1;
             Template_GroupBox.Text = "Report Templates";
@@ -809,6 +811,27 @@
             Template_ComboBox.Size = new Size(280, 50);
             Template_ComboBox.TabIndex = 1;
             Template_ComboBox.SelectedIndexChanged += Template_ComboBox_SelectedIndexChanged;
+            // 
+            // OpenTemplates_Button
+            // 
+            OpenTemplates_Button.BorderColor = Color.LightGray;
+            OpenTemplates_Button.BorderRadius = 4;
+            OpenTemplates_Button.BorderThickness = 1;
+            OpenTemplates_Button.CustomizableEdges = customizableEdges33;
+            OpenTemplates_Button.DisabledState.BorderColor = Color.DarkGray;
+            OpenTemplates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            OpenTemplates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            OpenTemplates_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            OpenTemplates_Button.FillColor = Color.White;
+            OpenTemplates_Button.Font = new Font("Segoe UI", 9F);
+            OpenTemplates_Button.ForeColor = Color.Black;
+            OpenTemplates_Button.Image = Properties.Resources.OpenFolderGray;
+            OpenTemplates_Button.Location = new Point(415, 70);
+            OpenTemplates_Button.Name = "OpenTemplates_Button";
+            OpenTemplates_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            OpenTemplates_Button.Size = new Size(50, 50);
+            OpenTemplates_Button.TabIndex = 2;
+            OpenTemplates_Button.Click += OpenTemplates_Button_Click;
             // 
             // ReportDataSelection_Form
             // 
@@ -876,5 +899,6 @@
         private Label EndDate_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker EndDate_DateTimePicker;
         public Guna.UI2.WinForms.Guna2TextBox ReportTitle_TextBox;
+        public Guna.UI2.WinForms.Guna2Button OpenTemplates_Button;
     }
 }

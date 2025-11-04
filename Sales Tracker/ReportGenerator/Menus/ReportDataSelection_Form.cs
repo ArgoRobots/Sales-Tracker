@@ -21,6 +21,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private CustomCheckListBox ChartSelection_CheckedListBox;
         private readonly List<MainMenu_Form.ChartDataType> _chartTypeOrder = [];
         private bool _isUpdating;
+        private int _previousTemplateIndex = 0;
         private static ReportConfiguration? ReportConfig => ReportGenerator_Form.Instance.CurrentReportConfiguration;
 
         // Getters
@@ -49,7 +50,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             ChartSelection_CheckedListBox = new()
             {
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Padding = new Padding(10)
             };
 
             ChartSelection_CheckedListBox.SetBounds(
@@ -72,8 +74,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Overview Section
             title = LanguageManager.TranslateString("Overview");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalExpensesVsSales, TranslatedChartTitles.SalesVsExpenses);
-            AddChartItem(MainMenu_Form.ChartDataType.Profits, TranslatedChartTitles.TotalProfits);
+            AddChartItem(MainMenu_Form.ChartDataType.SalesVsExpenses, TranslatedChartTitles.SalesVsExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalProfits, TranslatedChartTitles.TotalProfits);
             AddChartItem(MainMenu_Form.ChartDataType.TotalTransactions, TranslatedChartTitles.TotalTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageTransactionValue, TranslatedChartTitles.AverageTransactionValue);
 
@@ -81,10 +83,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ChartSelection_CheckedListBox.AddSpacer(10);
             title = LanguageManager.TranslateString("Financial");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalSales, TranslatedChartTitles.TotalRevenue);
-            AddChartItem(MainMenu_Form.ChartDataType.TotalPurchases, TranslatedChartTitles.TotalExpenses);
-            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfSales, TranslatedChartTitles.RevenueDistribution);
-            AddChartItem(MainMenu_Form.ChartDataType.DistributionOfPurchases, TranslatedChartTitles.ExpensesDistribution);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalRevenue, TranslatedChartTitles.TotalRevenue);
+            AddChartItem(MainMenu_Form.ChartDataType.TotalExpenses, TranslatedChartTitles.TotalExpenses);
+            AddChartItem(MainMenu_Form.ChartDataType.RevenueDistribution, TranslatedChartTitles.RevenueDistribution);
+            AddChartItem(MainMenu_Form.ChartDataType.ExpensesDistribution, TranslatedChartTitles.ExpensesDistribution);
 
             // Geographic Section
             ChartSelection_CheckedListBox.AddSpacer(10);
@@ -105,7 +107,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             ChartSelection_CheckedListBox.AddSpacer(10);
             title = LanguageManager.TranslateString("Operational");
             ChartSelection_CheckedListBox.AddSection(title);
-            AddChartItem(MainMenu_Form.ChartDataType.Accountants, TranslatedChartTitles.AccountantsTransactions);
+            AddChartItem(MainMenu_Form.ChartDataType.AccountantsTransactions, TranslatedChartTitles.AccountantsTransactions);
             AddChartItem(MainMenu_Form.ChartDataType.AverageShippingCosts, TranslatedChartTitles.AverageShippingCosts);
 
             // Returns Section
@@ -129,6 +131,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             AddChartItem(MainMenu_Form.ChartDataType.LossesByCategory, TranslatedChartTitles.LossesByCategory);
             AddChartItem(MainMenu_Form.ChartDataType.LossesByProduct, TranslatedChartTitles.LossesByProduct);
             AddChartItem(MainMenu_Form.ChartDataType.PurchaseVsSaleLosses, TranslatedChartTitles.PurchaseVsSaleLosses);
+
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox.ContainerPanel);
         }
         private void AddChartItem(MainMenu_Form.ChartDataType chartType, string displayName)
         {
@@ -165,7 +169,51 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Select "Custom Report" by default
-            Template_ComboBox.SelectedIndex = 0;
+            PerformUpdate(() =>
+            {
+                Template_ComboBox.SelectedIndex = 0;
+                ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                _previousTemplateIndex = 0;
+            });
+        }
+        public void RefreshTemplates(string selectTemplateName = null)
+        {
+            int previousIndex = Template_ComboBox.SelectedIndex;
+            SetupTemplates();
+
+            // If a specific template name is provided, select it
+            if (!string.IsNullOrEmpty(selectTemplateName))
+            {
+                int newIndex = -1;
+                for (int i = 0; i < Template_ComboBox.Items.Count; i++)
+                {
+                    if (Template_ComboBox.Items[i].ToString() == selectTemplateName)
+                    {
+                        newIndex = i;
+                        break;
+                    }
+                }
+
+                if (newIndex >= 0)
+                {
+                    // Update previous index BEFORE setting selected index to prevent reload
+                    _previousTemplateIndex = newIndex;
+                    Template_ComboBox.SelectedIndex = newIndex;
+                    return;
+                }
+            }
+
+            // Otherwise, try to restore previous selection if still valid
+            if (previousIndex >= 0 && previousIndex < Template_ComboBox.Items.Count)
+            {
+                Template_ComboBox.SelectedIndex = previousIndex;
+                _previousTemplateIndex = previousIndex;
+            }
+            else
+            {
+                Template_ComboBox.SelectedIndex = 0;
+                _previousTemplateIndex = 0;
+            }
         }
         private void StoreInitialSizes()
         {
@@ -304,6 +352,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 }
             ];
         }
+        public void UpdateScrollBarTheme()
+        {
+            ThemeManager.CustomizeScrollBar(ChartSelection_CheckedListBox.ContainerPanel);
+        }
 
         // Helper methods
         private MainMenu_Form.ChartDataType GetChartTypeFromIndex(int index)
@@ -312,7 +364,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 return _chartTypeOrder[index];
             }
-            return MainMenu_Form.ChartDataType.TotalSales;
+            return MainMenu_Form.ChartDataType.TotalRevenue;
         }
         private List<MainMenu_Form.ChartDataType> GetSelectedChartTypes()
         {
@@ -333,6 +385,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 PerformUpdate(() =>
                 {
                     Template_ComboBox.SelectedIndex = 0;
+                    _previousTemplateIndex = 0;
                     if (ReportConfig != null)
                     {
                         ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
@@ -421,72 +474,197 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 NotifyParentValidationChanged();
             });
         }
-        private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void OpenTemplates_Button_Click(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            using CustomTemplateManager_Form form = new();
+
+            if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.SelectedTemplateName))
             {
-                // If a non-custom template is selected and user makes changes, switch to custom
-                if (Template_ComboBox.SelectedIndex > 0)
+                // Load the selected template
+                LoadCustomTemplate(form.SelectedTemplateName);
+
+                // Show ReportDataSelection_Form
+                ReportGenerator_Form.Instance.Next_Button.PerformClick();
+            }
+        }
+        private void LoadCustomTemplate(string templateName)
+        {
+            ReportConfiguration config = CustomTemplateStorage.LoadTemplate(templateName);
+
+            if (config == null)
+            {
+                CustomMessageBox.ShowWithFormat(
+                    "Load Failed",
+                    "Failed to load template '{0}'.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    templateName);
+                return;
+            }
+
+            // Apply the loaded configuration
+            if (ReportConfig != null)
+            {
+                ApplyLoadedConfiguration(config);
+
+                // Update the template combo box to show the loaded template name
+                int templateIndex = GetTemplateIndex(templateName);
+                if (templateIndex >= 0)
                 {
                     PerformUpdate(() =>
                     {
-                        Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
-                        if (ReportConfig != null)
-                        {
-                            ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
-                        }
+                        Template_ComboBox.SelectedIndex = templateIndex;
+                        _previousTemplateIndex = templateIndex;
                     });
                 }
-
-                // Update the report configuration with current selections
-                if (ReportConfig != null)
-                {
-                    // Update the selected chart types in filters
-                    ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
-
-                    UpdateElementsFromChartSelection();
-                }
-
-                NotifyParentValidationChanged();
             }
         }
-        private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private int GetTemplateIndex(string templateName)
         {
-            if (!_isUpdating)
+            for (int i = 0; i < Template_ComboBox.Items.Count; i++)
             {
-                int templateIndex = Template_ComboBox.SelectedIndex;
-
-                if (templateIndex == 0)
+                if (Template_ComboBox.Items[i].ToString() == templateName)
                 {
-                    // Custom Report selected - don't apply any template
+                    return i;
+                }
+            }
+            return -1;
+        }
+        private void ApplyLoadedConfiguration(ReportConfiguration config)
+        {
+            PerformUpdate(() =>
+            {
+                // Update title
+                ReportTitle_TextBox.Text = config.Title;
+                ReportConfig.Title = config.Title;
+
+                // Update page settings
+                ReportConfig.PageSize = config.PageSize;
+                ReportConfig.PageOrientation = config.PageOrientation;
+                ReportConfig.ShowHeader = config.ShowHeader;
+                ReportConfig.ShowFooter = config.ShowFooter;
+                ReportConfig.ShowPageNumbers = config.ShowPageNumbers;
+                ReportConfig.BackgroundColor = config.BackgroundColor;
+                ReportConfig.PageMargins = config.PageMargins;
+
+                // Update filters
+                ReportConfig.Filters.TransactionType = config.Filters.TransactionType;
+                ReportConfig.Filters.IncludeReturns = config.Filters.IncludeReturns;
+                ReportConfig.Filters.IncludeLosses = config.Filters.IncludeLosses;
+                ReportConfig.Filters.DatePresetName = config.Filters.DatePresetName;
+                ReportConfig.Filters.StartDate = config.Filters.StartDate;
+                ReportConfig.Filters.EndDate = config.Filters.EndDate;
+                ReportConfig.Filters.SelectedChartTypes = [.. config.Filters.SelectedChartTypes];
+
+                // Update date preset selection
+                ApplyDatePresetByName(config.Filters.DatePresetName);
+
+                // Copy elements
+                ReportConfig.Elements.Clear();
+                foreach (BaseElement element in config.Elements)
+                {
+                    ReportConfig.Elements.Add(element);
+                }
+            });
+
+            // Notify changes
+            NotifyParentValidationChanged();
+            ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
+        }
+        private void ChartSelection_CheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (_isUpdating) { return; }
+
+            // If a non-custom template is selected and user makes changes, switch to custom
+            if (Template_ComboBox.SelectedIndex > 0)
+            {
+                PerformUpdate(() =>
+                {
+                    Template_ComboBox.SelectedIndex = 0;  // Switch to Custom Report
+                    _previousTemplateIndex = 0;
                     if (ReportConfig != null)
                     {
                         ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
                     }
-                }
-                else
+                });
+            }
+
+            // Update the report configuration with current selections
+            if (ReportConfig != null)
+            {
+                // Update the selected chart types in filters
+                ReportConfig.Filters.SelectedChartTypes = GetSelectedChartTypes();
+
+                UpdateElementsFromChartSelection();
+            }
+
+            NotifyParentValidationChanged();
+        }
+        private void Template_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdating) { return; }
+
+            int templateIndex = Template_ComboBox.SelectedIndex;
+
+            // Check if template is actually changing
+            if (templateIndex == _previousTemplateIndex)
+            {
+                return;
+            }
+
+            // Check for unsaved changes before switching templates
+            if (ReportLayoutDesigner_Form.Instance != null && ReportLayoutDesigner_Form.HasUnsavedChanges)
+            {
+                bool shouldContinue = ReportLayoutDesigner_Form.Instance.PromptToSaveChanges();
+
+                if (!shouldContinue)
                 {
-                    ApplyTemplateByIndex(templateIndex);
+                    // User cancelled, revert to previous selection
+                    PerformUpdate(() =>
+                    {
+                        Template_ComboBox.SelectedIndex = _previousTemplateIndex;
+                    });
+                    return;
                 }
             }
+
+            // Apply the new template
+            if (templateIndex == 0)
+            {
+                // Custom Report selected - don't apply any template
+                if (ReportConfig != null)
+                {
+                    PerformUpdate(() =>
+                    {
+                        ReportTitle_TextBox.Text = ReportTemplates.TemplateNames.Custom;
+                        ReportConfig.Title = ReportTemplates.TemplateNames.Custom;
+                    });
+                }
+            }
+            else
+            {
+                ApplyTemplateByIndex(templateIndex);
+            }
+
+            // Update the previous template index
+            _previousTemplateIndex = templateIndex;
         }
         private void DateRange_ValueChanged(object sender, EventArgs e)
         {
-            if (!_isUpdating)
+            if (_isUpdating) { return; }
+
+            ValidateDateRange();
+
+            // When user manually changes dates, set to Custom preset
+            if (ReportConfig != null)
             {
-                ValidateDateRange();
-
-                // When user manually changes dates, set to Custom preset
-                if (ReportConfig != null)
-                {
-                    ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
-                    ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
-                    ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
-                }
-
-                SwitchToCustomTemplate();
-                NotifyParentValidationChanged();
+                ReportConfig.Filters.DatePresetName = ReportTemplates.DatePresetNames.Custom;
+                ReportConfig.Filters.StartDate = StartDate_DateTimePicker.Value;
+                ReportConfig.Filters.EndDate = EndDate_DateTimePicker.Value;
             }
+
+            SwitchToCustomTemplate();
+            NotifyParentValidationChanged();
         }
         private void ReportTitle_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -531,7 +709,6 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     }
                 }
 
-                SwitchToCustomTemplate();
                 NotifyParentValidationChanged();
             });
         }
@@ -696,6 +873,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 });
 
                 NotifyParentValidationChanged();
+
+                // Notify layout designer that configuration has been loaded
+                ReportLayoutDesigner_Form.Instance?.OnConfigurationLoaded();
             }
             finally
             {

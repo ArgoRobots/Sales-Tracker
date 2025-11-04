@@ -22,12 +22,12 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for sales data
-            config.Filters.TransactionType = TransactionType.Sales;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisMonth;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.DistributionOfSales,
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.RevenueDistribution,
                 MainMenu_Form.ChartDataType.GrowthRates,
                 MainMenu_Form.ChartDataType.AverageTransactionValue
             ]);
@@ -49,14 +49,14 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for financial data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.ThisQuarter;
             config.Filters.SelectedChartTypes.AddRange(
             [
-                MainMenu_Form.ChartDataType.TotalSales,
-                MainMenu_Form.ChartDataType.TotalPurchases,
-                MainMenu_Form.ChartDataType.TotalExpensesVsSales,
-                MainMenu_Form.ChartDataType.Profits
+                MainMenu_Form.ChartDataType.TotalRevenue,
+                MainMenu_Form.ChartDataType.TotalExpenses,
+                MainMenu_Form.ChartDataType.SalesVsExpenses,
+                MainMenu_Form.ChartDataType.TotalProfits
             ]);
 
             AddFinancialOverviewElements(config);
@@ -76,7 +76,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for performance data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -103,7 +103,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for returns data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = true;
             config.Filters.IncludeLosses = false;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -133,7 +133,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for losses data only
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.IncludeReturns = false;
             config.Filters.IncludeLosses = true;
             config.Filters.DatePresetName = DatePresetNames.YearToDate;
@@ -163,7 +163,7 @@ namespace Sales_Tracker.ReportGenerator
             };
 
             // Configure filters for geographic data
-            config.Filters.TransactionType = TransactionType.Both;
+            config.Filters.TransactionType = TransactionType.Revenue;
             config.Filters.DatePresetName = DatePresetNames.Last30Days;
             config.Filters.SelectedChartTypes.AddRange(
             [
@@ -198,14 +198,14 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.DistributionOfSales,
+                ChartType = MainMenu_Form.ChartDataType.RevenueDistribution,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
@@ -243,28 +243,28 @@ namespace Sales_Tracker.ReportGenerator
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalExpensesVsSales,
+                ChartType = MainMenu_Form.ChartDataType.SalesVsExpenses,
                 Bounds = grid[0, 0],
                 ZOrder = 1
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.Profits,
+                ChartType = MainMenu_Form.ChartDataType.TotalProfits,
                 Bounds = grid[0, 1],
                 ZOrder = 2
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalSales,
+                ChartType = MainMenu_Form.ChartDataType.TotalRevenue,
                 Bounds = grid[1, 0],
                 ZOrder = 3
             });
 
             config.AddElement(new ChartElement
             {
-                ChartType = MainMenu_Form.ChartDataType.TotalPurchases,
+                ChartType = MainMenu_Form.ChartDataType.TotalExpenses,
                 Bounds = grid[1, 1],
                 ZOrder = 4
             });
@@ -500,7 +500,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         public static List<string> GetAvailableTemplates()
         {
-            return
+            List<string> templates =
             [
                 TemplateNames.Custom,
                 TemplateNames.MonthlySales,
@@ -510,20 +510,54 @@ namespace Sales_Tracker.ReportGenerator
                 TemplateNames.LossesAnalysis,
                 TemplateNames.GeographicAnalysis
             ];
+
+            // Add custom templates
+            List<string> customTemplates = CustomTemplateStorage.GetCustomTemplateNames();
+            templates.AddRange(customTemplates);
+
+            return templates;
+        }
+
+        /// <summary>
+        /// Checks if the given template name is a built-in template.
+        /// </summary>
+        public static bool IsBuiltInTemplate(string templateName)
+        {
+            if (string.IsNullOrWhiteSpace(templateName))
+            {
+                return false;
+            }
+
+            return templateName == TemplateNames.Custom ||
+                   templateName == TemplateNames.MonthlySales ||
+                   templateName == TemplateNames.FinancialOverview ||
+                   templateName == TemplateNames.PerformanceAnalysis ||
+                   templateName == TemplateNames.ReturnsAnalysis ||
+                   templateName == TemplateNames.LossesAnalysis ||
+                   templateName == TemplateNames.GeographicAnalysis;
         }
         public static ReportConfiguration CreateFromTemplateIndex(int index)
         {
-            return index switch
+            // First 7 templates are built-in
+            if (index == 0) { return new ReportConfiguration(); }  // Custom report
+            if (index == 1) { return CreateMonthlySalesTemplate(); }
+            if (index == 2) { return CreateFinancialOverviewTemplate(); }
+            if (index == 3) { return CreatePerformanceAnalysisTemplate(); }
+            if (index == 4) { return CreateReturnsAnalysisTemplate(); }
+            if (index == 5) { return CreateLossesAnalysisTemplate(); }
+            if (index == 6) { return CreateGeographicAnalysisTemplate(); }
+
+            // Custom templates start at index 7
+            List<string> customTemplates = CustomTemplateStorage.GetCustomTemplateNames();
+            int customIndex = index - 7;
+
+            if (customIndex >= 0 && customIndex < customTemplates.Count)
             {
-                0 => new ReportConfiguration(),  // Custom report
-                1 => CreateMonthlySalesTemplate(),
-                2 => CreateFinancialOverviewTemplate(),
-                3 => CreatePerformanceAnalysisTemplate(),
-                4 => CreateReturnsAnalysisTemplate(),
-                5 => CreateLossesAnalysisTemplate(),
-                6 => CreateGeographicAnalysisTemplate(),
-                _ => new ReportConfiguration()
-            };
+                ReportConfiguration config = CustomTemplateStorage.LoadTemplate(customTemplates[customIndex]);
+                return config ?? new ReportConfiguration();
+            }
+
+            return new ReportConfiguration();
         }
     }
 }

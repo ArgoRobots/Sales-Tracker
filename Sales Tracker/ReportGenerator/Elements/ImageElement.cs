@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Language;
 using Sales_Tracker.ReportGenerator.Menus;
 using SkiaSharp;
@@ -29,7 +30,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public ImageScaleMode ScaleMode { get; set; } = ImageScaleMode.Fit;
         public Color BackgroundColor { get; set; } = Color.Transparent;
         public Color BorderColor { get; set; } = Color.Transparent;
-        public int BorderThickness { get; set; } = 0;
+        public int BorderThickness { get; set; } = 1;
         public int CornerRadius_Percent { get; set; } = 0;
         public byte Opacity { get; set; } = 255;
 
@@ -52,16 +53,16 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 40;
         public override string DisplayName => LanguageManager.TranslateString("image");
         public override ReportElementType GetElementType() => ReportElementType.Image;
         public override BaseElement Clone()
         {
             return new ImageElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
-                IsSelected = false,
                 IsVisible = IsVisible,
                 ImagePath = ImagePath,
                 ScaleMode = ScaleMode,
@@ -74,66 +75,82 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         public override void RenderElement(Graphics graphics, ReportConfiguration config, float renderScale)
         {
-            int actualRadius = GetActualCornerRadius();
-
-            // Draw background if not transparent
-            if (BackgroundColor != Color.Transparent)
+            try
             {
-                using SolidBrush bgBrush = new(BackgroundColor);
-                if (actualRadius > 0)
+                int actualRadius = GetActualCornerRadius();
+
+                // Draw background if not transparent
+                if (BackgroundColor != Color.Transparent)
                 {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                    graphics.FillPath(bgBrush, path);
+                    using SolidBrush bgBrush = new(BackgroundColor);
+                    if (actualRadius > 0)
+                    {
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                        graphics.FillPath(bgBrush, path);
+                    }
+                    else
+                    {
+                        graphics.FillRectangle(bgBrush, Bounds);
+                    }
+                }
+
+                // Load and render image
+                if (!string.IsNullOrEmpty(ImagePath))
+                {
+                    string resolvedPath = ResolveImagePath(ImagePath);
+
+                    if (File.Exists(resolvedPath))
+                    {
+                        string extension = Path.GetExtension(resolvedPath).ToLowerInvariant();
+
+                        if (extension == ".svg")
+                        {
+                            RenderSvgImage(graphics, resolvedPath);
+                        }
+                        else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                        {
+                            RenderBitmapImage(graphics, resolvedPath);
+                        }
+                    }
+                    else
+                    {
+                        RenderPlaceholder(graphics);
+                    }
                 }
                 else
                 {
-                    graphics.FillRectangle(bgBrush, Bounds);
+                    RenderPlaceholder(graphics);
+                }
+
+                // Draw border if specified
+                if (BorderColor != Color.Transparent && BorderThickness > 0)
+                {
+                    using Pen borderPen = new(BorderColor, BorderThickness);
+                    if (actualRadius > 0)
+                    {
+                        using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
+                        graphics.DrawPath(borderPen, path);
+                    }
+                    else
+                    {
+                        graphics.DrawRectangle(borderPen, Bounds);
+                    }
                 }
             }
-
-            // Load and render image
-            if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
+            catch
             {
-                string extension = Path.GetExtension(ImagePath).ToLowerInvariant();
-
-                if (extension == ".svg")
-                {
-                    RenderSvgImage(graphics);
-                }
-                else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
-                {
-                    RenderBitmapImage(graphics);
-                }
-            }
-            else
-            {
-                RenderPlaceholder(graphics);
-            }
-
-            // Draw border if specified
-            if (BorderColor != Color.Transparent && BorderThickness > 0)
-            {
-                using Pen borderPen = new(BorderColor, BorderThickness);
-                if (actualRadius > 0)
-                {
-                    using GraphicsPath path = GetRoundedRectanglePath(Bounds, actualRadius);
-                    graphics.DrawPath(borderPen, path);
-                }
-                else
-                {
-                    graphics.DrawRectangle(borderPen, Bounds);
-                }
+                RenderError(graphics);
             }
         }
 
-        private void RenderBitmapImage(Graphics graphics)
+        private void RenderBitmapImage(Graphics graphics, string resolvedPath)
         {
             // Load image if not cached or path changed
-            if (_cachedImage == null || _cachedImagePath != ImagePath)
+            if (_cachedImage == null || _cachedImagePath != resolvedPath)
             {
                 _cachedImage?.Dispose();
-                _cachedImage = Image.FromFile(ImagePath);
-                _cachedImagePath = ImagePath;
+                _cachedImage = Image.FromFile(resolvedPath);
+                _cachedImagePath = resolvedPath;
             }
 
             if (_cachedImage == null) { return; }
@@ -176,14 +193,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 graphics.Restore(state);
             }
         }
-        private void RenderSvgImage(Graphics graphics)
+        private void RenderSvgImage(Graphics graphics, string resolvedPath)
         {
             // Load SVG if not cached or path changed
-            if (_cachedSvg == null || _cachedImagePath != ImagePath)
+            if (_cachedSvg == null || _cachedImagePath != resolvedPath)
             {
                 _cachedSvg = new SKSvg();
-                _cachedSvg.Load(ImagePath);
-                _cachedImagePath = ImagePath;
+                _cachedSvg.Load(resolvedPath);
+                _cachedImagePath = resolvedPath;
             }
 
             if (_cachedSvg?.Picture == null) { return; }
@@ -368,13 +385,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private void RenderPlaceholder(Graphics graphics)
         {
-            using SolidBrush brush = new(Color.FromArgb(240, 240, 240));
-            using Pen pen = new(Color.Gray, 1);
-            using Font font = new("Segoe UI", 9);
-            using SolidBrush textBrush = new(Color.Gray);
+            // Draw background
+            using SolidBrush baseBgBrush = new(Color.FromArgb(240, 240, 240));
+            graphics.FillRectangle(baseBgBrush, Bounds);
 
-            graphics.FillRectangle(brush, Bounds);
-            graphics.DrawRectangle(pen, Bounds);
+            using Font font = new("Segoe UI", 10);
+            using SolidBrush textBrush = new(Color.Gray);
 
             StringFormat format = new()
             {
@@ -387,6 +403,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 : LanguageManager.TranslateString("Image not found");
 
             graphics.DrawString(message, font, textBrush, Bounds, format);
+
+            // Draw border
+            using Pen borderPen = new(Color.Black, 1);
+            graphics.DrawRectangle(borderPen, Bounds);
         }
         protected override int CreateElementSpecificControls(Panel container, int yPosition, Action onPropertyChanged)
         {
@@ -420,7 +440,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Font = new Font("Segoe UI", 8),
                 ForeColor = Color.Gray,
                 Location = new Point(85, yPosition + ControlHeight + 2),
-                AutoSize = true
+                AutoSize = false,
+                Width = container.Width - 95,  // Match button width
+                Height = 25,
+                AutoEllipsis = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             container.Controls.Add(pathLabel);
             CacheControl("PathLabel", pathLabel, () =>
@@ -442,7 +466,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
                 if (openDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string newPath = openDialog.FileName;
+                    string selectedPath = openDialog.FileName;
+
+                    // Copy the image to the template images directory
+                    string newPath = CopyImageToTemplateDirectory(selectedPath);
+
                     if (ImagePath != newPath)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
@@ -501,7 +529,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
 
             // Opacity
             text = LanguageManager.TranslateString("Opacity") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown opacityNumeric = AddPropertyNumericUpDown(container, Opacity, yPosition,
                 value =>
                 {
@@ -518,13 +546,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 255);
-            opacityNumeric.Left = 170;
             CacheControl("Opacity", opacityNumeric, () => opacityNumeric.Value = Opacity);
             yPosition += ControlRowHeight;
 
             // Corner radius
             text = LanguageManager.TranslateString("Border radius");
-            AddPropertyLabel(container, text + " %:", yPosition);
+            AddPropertyLabel(container, text + " %:", yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown radiusNumeric = AddPropertyNumericUpDown(container, CornerRadius_Percent, yPosition,
                 value =>
                 {
@@ -541,13 +568,12 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 100);
-            radiusNumeric.Left = 170;
             CacheControl("CornerRadius_Percent", radiusNumeric, () => radiusNumeric.Value = CornerRadius_Percent);
             yPosition += ControlRowHeight;
 
             // Border thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
-            AddPropertyLabel(container, text, yPosition);
+            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
             Guna2NumericUpDown thicknessNumeric = AddPropertyNumericUpDown(container, BorderThickness, yPosition,
                 value =>
                 {
@@ -564,38 +590,37 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         onPropertyChanged();
                     }
                 }, 0, 20);
-            thicknessNumeric.Left = 170;
             CacheControl("BorderThickness", thicknessNumeric, () => thicknessNumeric.Value = BorderThickness);
             yPosition += ControlRowHeight;
 
             // Border color
             text = LanguageManager.TranslateString("Border Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel borderColorPanel = AddColorPicker(container, yPosition, 170, BorderColor,
-                color =>
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel borderColorPanel = AddColorPicker(container, yPosition, BorderColor,
+                newColor =>
                 {
-                    if (BorderColor.ToArgb() != color.ToArgb())
+                    if (BorderColor != newColor)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
                             nameof(BorderColor),
                             BorderColor,
-                            color,
+                            newColor,
                             onPropertyChanged));
-                        BorderColor = color;
+                        BorderColor = newColor;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BorderColor", borderColorPanel, () => borderColorPanel.BackColor = BorderColor);
             yPosition += ControlRowHeight;
 
             // Background color
             text = LanguageManager.TranslateString("Background Color") + ":";
-            AddPropertyLabel(container, text, yPosition);
-            Panel bgColorPanel = AddColorPicker(container, yPosition, 170, BackgroundColor,
+            AddPropertyLabel(container, text, yPosition, false, ColorPickerWidth);
+            Panel bgColorPanel = AddColorPicker(container, yPosition, BackgroundColor,
                 color =>
                 {
-                    if (BackgroundColor.ToArgb() != color.ToArgb())
+                    if (BackgroundColor != color)
                     {
                         undoRedoManager?.RecordAction(new PropertyChangeAction(
                             this,
@@ -606,11 +631,94 @@ namespace Sales_Tracker.ReportGenerator.Elements
                         BackgroundColor = color;
                         onPropertyChanged();
                     }
-                }, showLabel: false);
+                });
             CacheControl("BackgroundColor", bgColorPanel, () => bgColorPanel.BackColor = BackgroundColor);
             yPosition += ControlRowHeight;
 
             return yPosition;
+        }
+
+        /// <summary>
+        /// Gets the directory where template images are stored.
+        /// </summary>
+        private static string GetImagesDirectory()
+        {
+            if (!Directory.Exists(Directories.ReportTemplateImages_dir))
+            {
+                Directory.CreateDirectory(Directories.ReportTemplateImages_dir);
+            }
+            return Directories.ReportTemplateImages_dir;
+        }
+
+        /// <summary>
+        /// Copies an image file to the template images directory and returns the new path.
+        /// </summary>
+        private static string CopyImageToTemplateDirectory(string sourcePath)
+        {
+            if (string.IsNullOrEmpty(sourcePath) || !File.Exists(sourcePath))
+            {
+                return sourcePath;
+            }
+
+            try
+            {
+                string imagesDir = GetImagesDirectory();
+                string fileName = Path.GetFileName(sourcePath);
+
+                // Generate unique filename if file already exists
+                string destPath = Path.Combine(imagesDir, fileName);
+                int counter = 1;
+                string nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                string extension = Path.GetExtension(fileName);
+
+                while (File.Exists(destPath))
+                {
+                    fileName = $"{nameWithoutExt}_{counter}{extension}";
+                    destPath = Path.Combine(imagesDir, fileName);
+                    counter++;
+                }
+
+                // Copy the file
+                File.Copy(sourcePath, destPath, false);
+
+                // Return just the filename (relative path)
+                return fileName;
+            }
+            catch
+            {
+                // If copy fails, return the original path
+                return sourcePath;
+            }
+        }
+
+        /// <summary>
+        /// Resolves an image path. If it's a relative path (just filename),
+        /// looks for it in the template images directory.
+        /// </summary>
+        private static string ResolveImagePath(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                return imagePath;
+            }
+
+            // If it's already an absolute path and exists, use it
+            if (Path.IsPathRooted(imagePath) && File.Exists(imagePath))
+            {
+                return imagePath;
+            }
+
+            // Try to find it in the template images directory
+            string imagesDir = GetImagesDirectory();
+            string possiblePath = Path.Combine(imagesDir, imagePath);
+
+            if (File.Exists(possiblePath))
+            {
+                return possiblePath;
+            }
+
+            // Return original path if not found
+            return imagePath;
         }
 
         // Dispose
