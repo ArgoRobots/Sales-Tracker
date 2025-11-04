@@ -102,7 +102,7 @@ namespace Sales_Tracker.Startup.Menus
             OpenCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             OpenCompany_Button.Font = new Font("Segoe UI", 12F);
             OpenCompany_Button.ForeColor = Color.Black;
-            OpenCompany_Button.Image = Properties.Resources.OpenFolderBlack;
+            OpenCompany_Button.Image = Properties.Resources.OpenFolderGray;
             OpenCompany_Button.ImageAlign = HorizontalAlignment.Left;
             OpenCompany_Button.ImageOffset = new Point(5, 0);
             OpenCompany_Button.ImageSize = new Size(30, 30);

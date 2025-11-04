@@ -344,7 +344,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(722, 684);
+            ClientSize = new Size(723, 684);
             Controls.Add(SpecialChar_Checkmark);
             Controls.Add(Uppercase_Checkmark);
             Controls.Add(Number_Checkmark);
@@ -363,7 +363,7 @@
             Controls.Add(AddPassword_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 5, 4, 5);
-            MinimumSize = new Size(700, 690);
+            MinimumSize = new Size(745, 740);
             Name = "AddPassword_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

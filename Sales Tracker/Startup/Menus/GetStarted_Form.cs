@@ -60,7 +60,7 @@ namespace Sales_Tracker.Startup.Menus
             else
             {
                 CreateCompany_Button.Image = Resources.CreateFileBlack;
-                OpenCompany_Button.Image = Resources.OpenFolderBlack;
+                OpenCompany_Button.Image = Resources.OpenFolderGray;
             }
         }
 

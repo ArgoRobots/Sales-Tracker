@@ -145,6 +145,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DpiHelper.ScaleGroupBox(Elements_GroupBox);
             DpiHelper.ScaleGroupBox(Properties_GroupBox);
         }
+        public void UpdateTheme()
+        {
+            ThemeManager.CustomizeScrollBar(_selectedElement?.CachedPropertyPanel);
+            UpdatePropertyContainerTheme();
+        }
 
         // Form event handlers
         private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
