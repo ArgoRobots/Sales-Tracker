@@ -32,6 +32,7 @@ namespace Sales_Tracker.Classes
         public static string Desktop_dir { get; private set; }
         public static string Cache_dir { get; set; }
         public static string ReportTemplates_dir { get; private set; }
+        public static string ReportTemplateImages_dir { get; private set; }
         public static string Translations_file { get; set; }
         public static string GlobalAppDataSettings_file { get; private set; }
         public static string AnonymousUserData_file { get; private set; }
@@ -88,10 +89,11 @@ namespace Sales_Tracker.Classes
             // Cache
             Cache_dir = AppData_dir + @"cache\";
             Logs_dir = Cache_dir + @"logs\";
-            ReportTemplates_dir = Cache_dir + @"ReportTemplates\";
             AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
+            ReportTemplates_dir = AppData_dir + @"ReportTemplates\";
+            ReportTemplateImages_dir = ReportTemplates_dir + @"Images\";
             ExchangeRates_file = AppData_dir + "exchangeRates" + ArgoFiles.JsonFileExtension;
             Translations_file = AppData_dir + "translations" + ArgoFiles.JsonFileExtension;
             GlobalAppDataSettings_file = AppData_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
@@ -457,7 +459,6 @@ namespace Sales_Tracker.Classes
 
         /// <summary>
         /// Simplified Imports an Argo Tar file into a directory.
-        /// Uses a simpler approach that avoids DecryptFileToMemoryStream.
         /// </summary>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {

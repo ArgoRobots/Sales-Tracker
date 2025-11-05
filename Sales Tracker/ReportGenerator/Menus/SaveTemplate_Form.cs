@@ -115,6 +115,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     return;
                 }
 
+                // Check if trying to use a built-in template name
+                if (ReportTemplates.IsBuiltInTemplate(templateName))
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "Reserved Template Name",
+                        "The template name '{0}' is reserved for a built-in template.\nPlease choose a different name.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        templateName);
+                    return;
+                }
+
                 TemplateName = templateName;
                 DialogResult = DialogResult.OK;
                 Close();
@@ -140,6 +152,18 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     "Please enter a name for the template.",
                     CustomMessageBoxIcon.Exclamation,
                     CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            // Check if trying to use a built-in template name
+            if (ReportTemplates.IsBuiltInTemplate(newTemplateName))
+            {
+                CustomMessageBox.ShowWithFormat(
+                    "Reserved Template Name",
+                    "The template name '{0}' is reserved for a built-in template.\nPlease choose a different name.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    newTemplateName);
                 return;
             }
 

@@ -178,6 +178,7 @@ namespace Sales_Tracker
                 if (!hasRegistered)
                 {
                     ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
+                    ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoTemplateFileExtension, Properties.Resources.ArgoColor, 0);
 
                     using RegistryKey writeKey = Registry.CurrentUser.CreateSubKey(subKey);
                     writeKey?.SetValue("AssociationsRegistered", true);

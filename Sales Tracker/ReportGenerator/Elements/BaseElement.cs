@@ -19,6 +19,10 @@ namespace Sales_Tracker.ReportGenerator.Elements
         public static byte RightMargin { get; } = 40;
         public static byte NumericUpDownWidth { get; } = 100;
         public static byte ColorPickerWidth { get; } = 50;
+        public abstract byte MinimumSize { get; }
+
+        // Debounce timers for text input controls
+        private static readonly Dictionary<Control, (System.Windows.Forms.Timer timer, string lastValue)> _textInputDebouncers = [];
 
         /// <summary>
         /// Gets the user-friendly display name for this element type.
@@ -50,8 +54,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         /// </summary>
         public static byte ControlRowHeight { get; } = 55;
         public static byte CheckBoxRowHeight { get; } = 40;
-
-        public const int ControlHeight = 45;
+        public static byte ControlHeight { get; } = 45;
 
         // Abstract methods
         /// <summary>
@@ -251,11 +254,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["X"] = xNumeric;
@@ -286,11 +289,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 0, 9999);
             controls["Y"] = yNumeric;
@@ -322,11 +325,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Width"] = widthNumeric;
@@ -358,11 +361,11 @@ namespace Sales_Tracker.ReportGenerator.Elements
                                     container.Invalidate();
                                     onPropertyChanged();
                                 }));
-                        }
 
-                        element.Bounds = newBounds;
-                        container.Invalidate();
-                        onPropertyChanged();
+                            element.Bounds = newBounds;
+                            container.Invalidate();
+                            onPropertyChanged();
+                        }
                     }
                 }, 10, 9999);
             controls["Height"] = heightNumeric;
@@ -432,7 +435,9 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
-            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            // Set up debounced text change handling
+            SetupDebouncedTextChanged(textBox, value, onChange);
+
             container.Controls.Add(textBox);
             return textBox;
         }
@@ -614,7 +619,20 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            textBox.TextChanged += (s, e) => onChange(textBox.Text);
+            // Only trigger onChange when the value is valid (matches a search result)
+            textBox.TextChanged += (s, e) =>
+            {
+                string currentValue = textBox.Text;
+                List<SearchResult> validResults = getSearchResults();
+                bool isValid = validResults.Any(r => r.Name.Equals(currentValue, StringComparison.OrdinalIgnoreCase));
+
+                // Only call onChange if the value is valid
+                if (isValid)
+                {
+                    onChange(currentValue);
+                }
+            };
+
             textBox.DisableScrollAndForwardToPanel();
 
             // Attach SearchBox functionality
@@ -625,6 +643,74 @@ namespace Sales_Tracker.ReportGenerator.Elements
             container.Controls.Add(textBox);
             return textBox;
         }
+        /// <summary>
+        /// Sets up debounced text change handling for a textbox to prevent recording undo on every keystroke.
+        /// This is used for regular text boxes (not searchboxes).
+        /// </summary>
+        private static void SetupDebouncedTextChanged(Guna2TextBox textBox, string initialValue, Action<string> onChange)
+        {
+            string lastCommittedValue = initialValue;
+
+            // Create debounce timer for this control
+            System.Windows.Forms.Timer debounceTimer = new()
+            {
+                Interval = 500  // 500ms delay - same as PropertyChangeDebouncer
+            };
+
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                // Call onChange if value changed
+                if (currentValue != lastCommittedValue)
+                {
+                    lastCommittedValue = currentValue;
+                    onChange(currentValue);
+                }
+            };
+
+            // Store the timer and last value
+            _textInputDebouncers[textBox] = (debounceTimer, lastCommittedValue);
+
+            // Handle text changes
+            textBox.TextChanged += (s, e) =>
+            {
+                debounceTimer.Stop();
+                debounceTimer.Start();
+            };
+
+            // Handle focus loss - commit changes immediately when user leaves the field
+            textBox.LostFocus += (s, e) =>
+            {
+                debounceTimer.Stop();
+                string currentValue = textBox.Text;
+
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    string lastValue = debouncer.lastValue;
+
+                    // Call onChange if value changed
+                    if (currentValue != lastValue)
+                    {
+                        _textInputDebouncers[textBox] = (debouncer.timer, currentValue);
+                        onChange(currentValue);
+                    }
+                }
+            };
+
+            // Clean up timer when control is disposed
+            textBox.Disposed += (s, e) =>
+            {
+                if (_textInputDebouncers.TryGetValue(textBox, out var debouncer))
+                {
+                    debouncer.timer.Stop();
+                    debouncer.timer.Dispose();
+                    _textInputDebouncers.Remove(textBox);
+                }
+            };
+        }
+
         public static List<SearchResult> GetFontSearchResults()
         {
             string[] fonts = ["Arial", "Calibri", "Cambria", "Comic Sans MS", "Consolas",
@@ -675,6 +761,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
                             {
                                 btn.FillColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBack;
                                 btn.BorderColor = tagValue == tabIndex ? CustomColors.AccentBlue : CustomColors.ControlBorder;
+                                btn.ForeColor = tagValue == tabIndex ? Color.White : CustomColors.Text;
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.ReportGenerator.Elements;
+using Sales_Tracker.ReportGenerator.Menus;
+using System.Formats.Tar;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -20,6 +22,7 @@ namespace Sales_Tracker.ReportGenerator
                 new MarginsConverter()
             }
         };
+        private static readonly string[] sourceArray = [".png", ".jpg", ".jpeg", ".svg"];
 
         static CustomTemplateStorage()
         {
@@ -66,6 +69,8 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = config.Filters.IncludeReturns,
                         IncludeLosses = config.Filters.IncludeLosses,
                         DatePresetName = config.Filters.DatePresetName,
+                        StartDate = config.Filters.StartDate,
+                        EndDate = config.Filters.EndDate,
                         SelectedChartTypes = [.. config.Filters.SelectedChartTypes]
                     },
                     Elements = config.Elements.Select(e => SerializeElement(e)).ToList()
@@ -76,6 +81,8 @@ namespace Sales_Tracker.ReportGenerator
 
                 string json = JsonSerializer.Serialize(template, _jsonOptions);
                 File.WriteAllText(filePath, json);
+
+                CleanupUnusedImages();
 
                 return true;
             }
@@ -130,6 +137,8 @@ namespace Sales_Tracker.ReportGenerator
                         IncludeReturns = template.Filters.IncludeReturns,
                         IncludeLosses = template.Filters.IncludeLosses,
                         DatePresetName = template.Filters.DatePresetName,
+                        StartDate = template.Filters.StartDate,
+                        EndDate = template.Filters.EndDate,
                         SelectedChartTypes = [.. template.Filters.SelectedChartTypes]
                     }
                 };
@@ -189,6 +198,8 @@ namespace Sales_Tracker.ReportGenerator
                 if (File.Exists(filePath))
                 {
                     Directories.DeleteFile(filePath);
+                    CleanupUnusedImages();
+
                     return true;
                 }
 
@@ -258,10 +269,275 @@ namespace Sales_Tracker.ReportGenerator
             string filePath = Path.Combine(Directories.ReportTemplates_dir, fileName);
             return File.Exists(filePath);
         }
-        private static string SanitizeFileName(string fileName)
+        public static string SanitizeFileName(string fileName)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
             return string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+        }
+
+        /// <summary>
+        /// Exports a template with its images to a .ArgoSalesTemplate file (TAR archive).
+        /// </summary>
+        public static bool ExportTemplateWithImages(string templateName, string destinationPath)
+        {
+            try
+            {
+                // Load the template
+                string sourceFileName = SanitizeFileName(templateName) + ArgoFiles.JsonFileExtension;
+                string sourceFilePath = Path.Combine(Directories.ReportTemplates_dir, sourceFileName);
+
+                if (!File.Exists(sourceFilePath))
+                {
+                    return false;
+                }
+
+                // Read the template JSON
+                string templateJson = File.ReadAllText(sourceFilePath);
+                CustomTemplate template = JsonSerializer.Deserialize<CustomTemplate>(templateJson, _jsonOptions);
+
+                if (template == null)
+                {
+                    return false;
+                }
+
+                // Create a temporary directory to build the archive
+                string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempDir);
+
+                try
+                {
+                    // Save the template JSON
+                    string templateJsonPath = Path.Combine(tempDir, "template.json");
+                    File.WriteAllText(templateJsonPath, templateJson);
+
+                    // Collect and copy all images
+                    string imagesDir = Path.Combine(tempDir, "images");
+                    Directory.CreateDirectory(imagesDir);
+
+                    HashSet<string> copiedImages = [];
+                    foreach (SerializedElement element in template.Elements)
+                    {
+                        if (element.ElementType == nameof(ImageElement))
+                        {
+                            if (element.Properties.TryGetValue("ImagePath", out object imagePathObj))
+                            {
+                                string imagePath = GetStringValue(imagePathObj, "");
+                                if (!string.IsNullOrEmpty(imagePath))
+                                {
+                                    // Resolve the image path (handle both absolute and relative paths)
+                                    string resolvedPath = imagePath;
+                                    if (!Path.IsPathRooted(imagePath))
+                                    {
+                                        // If it's a relative path, look in the template images directory
+                                        resolvedPath = Path.Combine(Directories.ReportTemplateImages_dir, imagePath);
+                                    }
+
+                                    if (File.Exists(resolvedPath))
+                                    {
+                                        string fileName = Path.GetFileName(imagePath);
+                                        string destPath = Path.Combine(imagesDir, fileName);
+
+                                        // Handle duplicate filenames
+                                        int counter = 1;
+                                        while (copiedImages.Contains(fileName))
+                                        {
+                                            string nameWithoutExt = Path.GetFileNameWithoutExtension(imagePath);
+                                            string ext = Path.GetExtension(imagePath);
+                                            fileName = $"{nameWithoutExt}_{counter}{ext}";
+                                            destPath = Path.Combine(imagesDir, fileName);
+                                            counter++;
+                                        }
+
+                                        File.Copy(resolvedPath, destPath, true);
+                                        copiedImages.Add(fileName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Create TAR archive
+                    using FileStream tarStream = new(destinationPath, FileMode.Create, FileAccess.Write);
+                    TarFile.CreateFromDirectory(tempDir, tarStream, includeBaseDirectory: false);
+
+                    return true;
+                }
+                finally
+                {
+                    // Clean up temp directory
+                    if (Directory.Exists(tempDir))
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Imports a template from a .ArgoSalesTemplate file (TAR archive) and restores images.
+        /// Returns the template name if successful, null otherwise.
+        /// </summary>
+        public static string? ImportTemplateWithImages(string sourceFilePath, bool overwriteExisting = true, string newTemplateName = null)
+        {
+            try
+            {
+                // Create a temporary directory to extract the archive
+                string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempDir);
+
+                try
+                {
+                    // Extract TAR archive
+                    using FileStream tarStream = new(sourceFilePath, FileMode.Open, FileAccess.Read);
+                    TarFile.ExtractToDirectory(tarStream, tempDir, overwriteFiles: true);
+
+                    // Read the template JSON
+                    string templateJsonPath = Path.Combine(tempDir, "template.json");
+                    if (!File.Exists(templateJsonPath))
+                    {
+                        return null;
+                    }
+
+                    string templateJson = File.ReadAllText(templateJsonPath);
+                    CustomTemplate template = JsonSerializer.Deserialize<CustomTemplate>(templateJson, _jsonOptions);
+
+                    if (template == null || string.IsNullOrWhiteSpace(template.Name))
+                    {
+                        return null;
+                    }
+
+                    // Use the new template name if provided
+                    if (!string.IsNullOrWhiteSpace(newTemplateName))
+                    {
+                        template.Name = newTemplateName;
+                    }
+
+                    // Check if template already exists
+                    string destinationFileName = SanitizeFileName(template.Name) + ArgoFiles.JsonFileExtension;
+                    string destinationFilePath = Path.Combine(Directories.ReportTemplates_dir, destinationFileName);
+
+                    if (File.Exists(destinationFilePath) && !overwriteExisting)
+                    {
+                        return null;
+                    }
+
+                    // Create images directory for templates
+                    string templateImagesDir = Directories.ReportTemplateImages_dir;
+                    Directory.CreateDirectory(templateImagesDir);
+
+                    // Copy images and update paths
+                    string extractedImagesDir = Path.Combine(tempDir, "images");
+                    if (Directory.Exists(extractedImagesDir))
+                    {
+                        foreach (SerializedElement element in template.Elements)
+                        {
+                            if (element.ElementType == nameof(ImageElement))
+                            {
+                                if (element.Properties.TryGetValue("ImagePath", out object imagePathObj))
+                                {
+                                    string originalImagePath = GetStringValue(imagePathObj, "");
+                                    if (!string.IsNullOrEmpty(originalImagePath))
+                                    {
+                                        string fileName = Path.GetFileName(originalImagePath);
+                                        string extractedImagePath = Path.Combine(extractedImagesDir, fileName);
+
+                                        if (File.Exists(extractedImagePath))
+                                        {
+                                            // Copy to permanent storage
+                                            string newImagePath = Path.Combine(templateImagesDir, fileName);
+
+                                            // Handle duplicate filenames
+                                            if (File.Exists(newImagePath))
+                                            {
+                                                string nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                                                string ext = Path.GetExtension(fileName);
+                                                int counter = 1;
+                                                do
+                                                {
+                                                    fileName = $"{nameWithoutExt}_{counter}{ext}";
+                                                    newImagePath = Path.Combine(templateImagesDir, fileName);
+                                                    counter++;
+                                                } while (File.Exists(newImagePath));
+                                            }
+
+                                            File.Copy(extractedImagePath, newImagePath, true);
+
+                                            // Update the image path in the template (store as relative path - just filename)
+                                            element.Properties["ImagePath"] = fileName;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Save the template with updated image paths
+                    string updatedJson = JsonSerializer.Serialize(template, _jsonOptions);
+                    File.WriteAllText(destinationFilePath, updatedJson);
+
+                    return template.Name;
+                }
+                finally
+                {
+                    // Clean up temp directory
+                    if (Directory.Exists(tempDir))
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the template name from a .ArgoSalesTemplate file without importing it.
+        /// </summary>
+        public static string? GetTemplateNameFromFile(string sourceFilePath)
+        {
+            try
+            {
+                // Create a temporary directory to extract the archive
+                string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempDir);
+
+                try
+                {
+                    // Extract TAR archive
+                    using FileStream tarStream = new(sourceFilePath, FileMode.Open, FileAccess.Read);
+                    TarFile.ExtractToDirectory(tarStream, tempDir, overwriteFiles: true);
+
+                    // Read the template JSON
+                    string templateJsonPath = Path.Combine(tempDir, "template.json");
+                    if (!File.Exists(templateJsonPath))
+                    {
+                        return null;
+                    }
+
+                    string templateJson = File.ReadAllText(templateJsonPath);
+                    CustomTemplate template = JsonSerializer.Deserialize<CustomTemplate>(templateJson, _jsonOptions);
+
+                    return template?.Name;
+                }
+                finally
+                {
+                    // Clean up temp directory
+                    if (Directory.Exists(tempDir))
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
         private static SerializedElement SerializeElement(BaseElement element)
         {
@@ -510,7 +786,7 @@ namespace Sales_Tracker.ReportGenerator
         /// </summary>
         private static string GetStringValue(object value, string defaultValue = "")
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -523,7 +799,7 @@ namespace Sales_Tracker.ReportGenerator
         }
         private static bool GetBoolValue(object value, bool defaultValue = false)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -532,13 +808,13 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is bool boolValue) return boolValue;
+            if (value is bool boolValue) { return boolValue; }
 
             return bool.TryParse(value.ToString(), out bool result) ? result : defaultValue;
         }
         private static float GetFloatValue(object value, float defaultValue = 0f)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -547,15 +823,15 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is float floatValue) return floatValue;
-            if (value is double doubleValue) return (float)doubleValue;
-            if (value is int intValue) return intValue;
+            if (value is float floatValue) { return floatValue; }
+            if (value is double doubleValue) { return (float)doubleValue; }
+            if (value is int intValue) { return intValue; }
 
             return float.TryParse(value.ToString(), out float result) ? result : defaultValue;
         }
         private static int GetIntValue(object value, int defaultValue = 0)
         {
-            if (value == null) return defaultValue;
+            if (value == null) { return defaultValue; }
 
             if (value is JsonElement jsonElement)
             {
@@ -564,10 +840,10 @@ namespace Sales_Tracker.ReportGenerator
                     : defaultValue;
             }
 
-            if (value is int intValue) return intValue;
-            if (value is long longValue) return (int)longValue;
-            if (value is double doubleValue) return (int)doubleValue;
-            if (value is float floatValue) return (int)floatValue;
+            if (value is int intValue) { return intValue; }
+            if (value is long longValue) { return (int)longValue; }
+            if (value is double doubleValue) { return (int)doubleValue; }
+            if (value is float floatValue) { return (int)floatValue; }
 
             return int.TryParse(value.ToString(), out int result) ? result : defaultValue;
         }
@@ -605,6 +881,91 @@ namespace Sales_Tracker.ReportGenerator
             }
 
             return Color.Black;  // Fallback
+        }
+
+        /// <summary>
+        /// Gets all image paths currently used across all templates.
+        /// </summary>
+        private static HashSet<string> GetAllUsedImagePaths()
+        {
+            HashSet<string> usedPaths = [];
+
+            try
+            {
+                List<string> templateNames = ReportTemplates.GetAvailableTemplates();
+
+                foreach (string templateName in templateNames)
+                {
+                    ReportConfiguration config = LoadTemplate(templateName);
+                    if (config?.Elements != null)
+                    {
+                        foreach (BaseElement element in config.Elements)
+                        {
+                            if (element is ImageElement imageElement && !string.IsNullOrEmpty(imageElement.ImagePath))
+                            {
+                                // Store just the filename for comparison
+                                string fileName = Path.GetFileName(imageElement.ImagePath);
+                                if (!string.IsNullOrEmpty(fileName))
+                                {
+                                    usedPaths.Add(fileName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors during scanning
+            }
+
+            return usedPaths;
+        }
+
+        /// <summary>
+        /// Cleans up unused image files from the Images directory.
+        /// Only deletes images that are not referenced by any template.
+        /// </summary>
+        public static void CleanupUnusedImages()
+        {
+            try
+            {
+                if (!Directory.Exists(Directories.ReportTemplateImages_dir))
+                {
+                    return;
+                }
+
+                ReportLayoutDesigner_Form.DisposeCachedImages();
+
+                // Get all currently used image paths
+                HashSet<string> usedPaths = GetAllUsedImagePaths();
+
+                // Get all image files in the directory
+                string[] imageFiles = Directory.GetFiles(Directories.ReportTemplateImages_dir, "*.*")
+                    .Where(f => sourceArray.Contains(Path.GetExtension(f).ToLowerInvariant()))
+                    .ToArray();
+
+                // Delete unused images
+                foreach (string imageFile in imageFiles)
+                {
+                    string fileName = Path.GetFileName(imageFile);
+                    if (!usedPaths.Contains(fileName))
+                    {
+                        try
+                        {
+                            File.Delete(imageFile);
+                        }
+                        catch
+                        {
+                            // Ignore errors deleting individual files
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors during cleanup
+            }
         }
 
         // Custom JSON converter for Color

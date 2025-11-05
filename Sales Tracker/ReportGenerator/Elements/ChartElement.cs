@@ -139,13 +139,14 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
 
         // Overrides
+        public override byte MinimumSize => 80;
         public override string DisplayName => LanguageManager.TranslateString("chart");
         public override ReportElementType GetElementType() => ReportElementType.Chart;
         public override BaseElement Clone()
         {
             return new ChartElement
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 Bounds = Bounds,
                 ZOrder = ZOrder,
                 IsVisible = IsVisible,

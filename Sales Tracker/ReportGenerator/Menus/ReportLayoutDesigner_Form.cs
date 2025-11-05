@@ -63,6 +63,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             _instance = this;
 
             _undoRedoManager = new UndoRedoManager();
+            _undoRedoManager.StateChanged += OnUndoRedoStateChanged;
 
             SetupCanvas();
             StoreInitialSizes();
@@ -144,6 +145,11 @@ namespace Sales_Tracker.ReportGenerator.Menus
             DpiHelper.ScaleGroupBox(Elements_GroupBox);
             DpiHelper.ScaleGroupBox(Properties_GroupBox);
         }
+        public void UpdateTheme()
+        {
+            ThemeManager.CustomizeScrollBar(_selectedElement?.CachedPropertyPanel);
+            UpdatePropertyContainerTheme();
+        }
 
         // Form event handlers
         private void ReportLayoutDesigner_Form_VisibleChanged(object sender, EventArgs e)
@@ -221,61 +227,61 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Duplicate shortcut
             if (keyData == (Keys.Control | Keys.D))
             {
-                DuplicateSelectedWithUndo();
+                DuplicateSelected();
                 return true;
             }
 
             // Delete shortcut
             if (keyData == Keys.Delete)
             {
-                DeleteSelectedWithUndo();
+                DeleteSelected();
                 return true;
             }
 
             // Arrow key movement shortcuts (1 pixel)
             if (keyData == Keys.Left)
             {
-                MoveSelectedElementsWithUndo(-1, 0);
+                MoveSelectedElements(-1, 0);
                 return true;
             }
 
             if (keyData == Keys.Right)
             {
-                MoveSelectedElementsWithUndo(1, 0);
+                MoveSelectedElements(1, 0);
                 return true;
             }
 
             if (keyData == Keys.Up)
             {
-                MoveSelectedElementsWithUndo(0, -1);
+                MoveSelectedElements(0, -1);
                 return true;
             }
 
             if (keyData == Keys.Down)
             {
-                MoveSelectedElementsWithUndo(0, 1);
+                MoveSelectedElements(0, 1);
                 return true;
             }
 
             // Shift+Arrow or Ctrl+Arrow for larger movements (10 pixels)
             if (keyData == (Keys.Shift | Keys.Left) || keyData == (Keys.Control | Keys.Left))
             {
-                MoveSelectedElementsWithUndo(-10, 0);
+                MoveSelectedElements(-10, 0);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Right) || keyData == (Keys.Control | Keys.Right))
             {
-                MoveSelectedElementsWithUndo(10, 0);
+                MoveSelectedElements(10, 0);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Up) || keyData == (Keys.Control | Keys.Up))
             {
-                MoveSelectedElementsWithUndo(0, -10);
+                MoveSelectedElements(0, -10);
                 return true;
             }
             if (keyData == (Keys.Shift | Keys.Down) || keyData == (Keys.Control | Keys.Down))
             {
-                MoveSelectedElementsWithUndo(0, 10);
+                MoveSelectedElements(0, 10);
                 return true;
             }
 
@@ -1045,7 +1051,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         /// <summary>
         /// Moves all selected elements by the specified delta.
         /// </summary>
-        private void MoveSelectedElements(int deltaX, int deltaY)
+        private void MoveSelectedElementsHelper(int deltaX, int deltaY)
         {
             if (_selectedElements.Count == 0 && _selectedElement == null)
             {
@@ -1096,12 +1102,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             UpdatePropertyValues();
             NotifyParentValidationChanged();
         }
-        private void MoveSelectedElementsWithUndo(int deltaX, int deltaY)
+        private void MoveSelectedElements(int deltaX, int deltaY)
         {
             if (_selectedElements.Count > 0)
             {
                 List<Rectangle> oldBounds = _selectedElements.Select(e => e.Bounds).ToList();
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
                 List<Rectangle> newBounds = _selectedElements.Select(e => e.Bounds).ToList();
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
@@ -1115,7 +1121,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else if (_selectedElement != null)
             {
                 Rectangle oldBounds = _selectedElement.Bounds;
-                MoveSelectedElements(deltaX, deltaY);
+                MoveSelectedElementsHelper(deltaX, deltaY);
 
                 _undoRedoManager.RecordAction(new MoveElementsAction(
                     [_selectedElement],
@@ -1447,12 +1453,22 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Bring to front")
+                : LanguageManager.TranslateString("Bring") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to front");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
+
             int maxZOrder = ReportConfig.Elements.Max(e => e.ZOrder);
 
             foreach (BaseElement element in elementsToMove.OrderBy(e => e.ZOrder))
             {
                 element.ZOrder = ++maxZOrder;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
@@ -1467,6 +1483,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             if (elementsToMove.Count == 0) { return; }
 
+            // Create undo action before making changes
+            string description = elementsToMove.Count == 1
+                ? LanguageManager.TranslateString("Send to back")
+                : LanguageManager.TranslateString("Send") + " " + elementsToMove.Count + " " + LanguageManager.TranslateString("elements to back");
+            LayerOrderAction action = new(ReportConfig.Elements.ToList(), description, RefreshCanvas);
+
             // Shift all non-selected elements up
             int shiftAmount = elementsToMove.Count;
             foreach (BaseElement element in ReportConfig.Elements.Where(e => !elementsToMove.Contains(e)))
@@ -1480,6 +1502,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 element.ZOrder = zOrder++;
             }
+
+            // Capture the new state and record the action
+            action.CaptureNewState(ReportConfig.Elements.ToList());
+            _undoRedoManager.RecordAction(action);
 
             Canvas_Panel.Invalidate();
         }
@@ -1641,7 +1667,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             else
             {
                 // Show multi-selection info
-                ElementProperties_Label.Text = $"Selected: {_selectedElements.Count} elements";
+                ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + _selectedElements.Count + LanguageManager.TranslateString("elements");
 
                 PropertiesContainer_Panel.Controls.Clear();
             }
@@ -1743,7 +1769,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Capitalize first letter of element name for display
             string elementName = char.ToUpper(_selectedElement.DisplayName[0]) + _selectedElement.DisplayName[1..];
-            ElementProperties_Label.Text = $"Selected: {elementName}";
+            ElementProperties_Label.Text = LanguageManager.TranslateString("Selected") + ": " + elementName;
 
             // Only recreate if different element selected
             if (_currentPropertyElement != _selectedElement)
@@ -1902,7 +1928,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             // Convert page bounds to scaled canvas coordinates for invalidation
             Rectangle scaledBounds = PageToScaledRectangle(bounds);
-            scaledBounds.Inflate(10, 10);
+            // Inflate by 50 pixels to ensure complex elements (like tables with multiple rows)
+            // are fully repainted without leaving artifacts
+            scaledBounds.Inflate(50, 50);
             Canvas_Panel.Invalidate(scaledBounds);
         }
         private Rectangle PageToScaledRectangle(Rectangle pageRect)
@@ -1983,21 +2011,21 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Enforce minimum size
-            if (newBounds.Width < 20)
+            if (newBounds.Width < _selectedElement.MinimumSize)
             {
-                newBounds.Width = 20;
+                newBounds.Width = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Left || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.BottomLeft)
                 {
-                    newBounds.X = _originalBounds.Right - 20;
+                    newBounds.X = _originalBounds.Right - _selectedElement.MinimumSize;
                 }
             }
 
-            if (newBounds.Height < 20)
+            if (newBounds.Height < _selectedElement.MinimumSize)
             {
-                newBounds.Height = 20;
+                newBounds.Height = _selectedElement.MinimumSize;
                 if (_activeResizeHandle == ResizeHandle.Top || _activeResizeHandle == ResizeHandle.TopLeft || _activeResizeHandle == ResizeHandle.TopRight)
                 {
-                    newBounds.Y = _originalBounds.Bottom - 20;
+                    newBounds.Y = _originalBounds.Bottom - _selectedElement.MinimumSize;
                 }
             }
 
@@ -2021,9 +2049,12 @@ namespace Sales_Tracker.ReportGenerator.Menus
             }
 
             // Update element bounds and invalidate
-            InvalidateElementRegion(_lastElementBounds);
+            // Invalidate the union of old and new bounds to ensure no rendering artifacts remain
+            // This is especially important for complex elements like tables that render multiple rows
+            Rectangle invalidationRect = Rectangle.Union(_lastElementBounds, newBounds);
+            InvalidateElementRegion(invalidationRect);
+
             _selectedElement.Bounds = newBounds;
-            InvalidateElementRegion(newBounds);
             _lastElementBounds = newBounds;
 
             // Defer property panel update
@@ -2105,6 +2136,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 ReportConfig?.AddElement(element);
                 SelectElement(element);
                 Canvas_Panel.Invalidate();
+                Canvas_Panel.Focus();
                 NotifyParentValidationChanged();
                 MarkAsChanged();
             }
@@ -2141,7 +2173,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 _ => null
             };
         }
-        public void DuplicateSelectedWithUndo()
+        public void DuplicateSelected()
         {
             if (_selectedElements.Count == 0 && _selectedElement == null) { return; }
             if (ReportConfig == null) { return; }
@@ -2149,8 +2181,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
             List<BaseElement> duplicates = [];
 
             string description = _selectedElements.Count > 1
-                ? $"duplicate {_selectedElements.Count} elements"
-                : "duplicate element";
+                ? LanguageManager.TranslateString("Duplicate") + " " + _selectedElements.Count + " " + LanguageManager.TranslateString("elements")
+                : LanguageManager.TranslateString("Duplicate element");
             CompositeAction composite = new(description);
 
             if (_selectedElements.Count > 0)
@@ -2198,7 +2230,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             // Focus canvas to ensure the duplicated element remains selected
             Canvas_Panel.Focus();
         }
-        public void DeleteSelectedWithUndo()
+        public void DeleteSelected()
         {
             // Handle both old single-selection and multi-selection
             if (_selectedElements.Count == 0 && _selectedElement == null)
@@ -2225,8 +2257,8 @@ namespace Sales_Tracker.ReportGenerator.Menus
 
             // Create undo actions
             string description = elementsToDelete.Count == 1
-                ? "Delete element"
-                : $"Delete {elementsToDelete.Count} elements";
+                ? LanguageManager.TranslateString("Delete element")
+                : LanguageManager.TranslateString("Delete") + " " + elementsToDelete.Count + " " + LanguageManager.TranslateString("elements");
             CompositeAction composite = new(description);
 
             // Delete all selected elements
@@ -2284,9 +2316,16 @@ namespace Sales_Tracker.ReportGenerator.Menus
         // Template save/load functionality
         private void SaveTemplate_Button_Click(object sender, EventArgs e)
         {
+            // For built-in templates, don't allow updating - only save as new
+            string currentTemplateForSave = _currentTemplateName;
+            if (!string.IsNullOrEmpty(_currentTemplateName) && ReportTemplates.IsBuiltInTemplate(_currentTemplateName))
+            {
+                currentTemplateForSave = null;
+            }
+
             using SaveTemplate_Form form = new()
             {
-                CurrentTemplateName = _currentTemplateName
+                CurrentTemplateName = currentTemplateForSave
             };
 
             if (form.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(form.TemplateName))
@@ -2294,26 +2333,61 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (CustomTemplateStorage.SaveTemplate(form.TemplateName, ReportConfig))
                 {
                     _currentTemplateName = form.TemplateName;
+                    _undoRedoManager.MarkSaved();  // Mark this as the saved state
                     SetUnsavedChanges(false);
 
-                    // Refresh the template list in the data selection form
-                    ReportDataSelection_Form.Instance?.RefreshTemplates();
+                    // Refresh the template list and select the newly saved template
+                    ReportDataSelection_Form.Instance?.RefreshTemplates(form.TemplateName);
                 }
                 else
                 {
-                    CustomMessageBox.Show(
+                    CustomMessageBox.ShowWithFormat(
                         "Save Failed",
-                        $"Failed to save template '{form.TemplateName}'.",
+                        "Failed to save template '{0}'.",
                         CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.Ok);
+                        CustomMessageBoxButtons.Ok,
+                        form.TemplateName);
                 }
             }
         }
         public void OnConfigurationLoaded()
         {
             _currentTemplateName = ReportConfig?.Title;
+            _undoRedoManager.MarkSaved();  // Mark this as the saved state
             SetUnsavedChanges(false);
             RefreshCanvas();
+        }
+
+        /// <summary>
+        /// Clears the current template if it matches the given template name.
+        /// This is used when a template is deleted to ensure the designer doesn't keep a deleted template loaded.
+        /// </summary>
+        public void ClearIfTemplateDeleted(string deletedTemplateName)
+        {
+            if (_currentTemplateName == deletedTemplateName)
+            {
+                _currentTemplateName = null;
+                SetUnsavedChanges(false);
+                _undoRedoManager.Clear();
+
+                // Clear all elements from the configuration
+                if (ReportConfig != null)
+                {
+                    // Dispose elements
+                    foreach (BaseElement element in ReportConfig.Elements.ToList())
+                    {
+                        if (element is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+
+                    ReportConfig.Elements.Clear();
+
+                    ClearAllSelections();
+                    RefreshCanvas();
+                }
+            }
         }
 
         /// <summary>
@@ -2339,12 +2413,30 @@ namespace Sales_Tracker.ReportGenerator.Menus
             if (result == CustomMessageBoxResult.No)
             {
                 // User chose not to save
+                DisposeCachedImages();
+                CustomTemplateStorage.CleanupUnusedImages();
                 SetUnsavedChanges(false);
                 return true;
             }
 
             // The user clicked Cancel or closed the message dialog, so do not continue the operation
             return false;
+        }
+
+        /// <summary>
+        /// Disposes all cached images in ImageElements to release file locks.
+        /// </summary>
+        public static void DisposeCachedImages()
+        {
+            if (ReportConfig?.Elements == null) { return; }
+
+            foreach (BaseElement element in ReportConfig.Elements)
+            {
+                if (element is ImageElement imageElement)
+                {
+                    imageElement.Dispose();
+                }
+            }
         }
 
         private void SetUnsavedChanges(bool hasChanges)
@@ -2367,6 +2459,24 @@ namespace Sales_Tracker.ReportGenerator.Menus
         private void MarkAsChanged()
         {
             if (!HasUnsavedChanges)
+            {
+                SetUnsavedChanges(true);
+            }
+        }
+
+        /// <summary>
+        /// Called when the undo/redo state changes. Updates the unsaved changes indicator
+        /// based on whether we're at the saved state.
+        /// </summary>
+        private void OnUndoRedoStateChanged(object sender, EventArgs e)
+        {
+            // If we're at the saved state, clear the unsaved changes indicator
+            if (_undoRedoManager.IsAtSavedState)
+            {
+                SetUnsavedChanges(false);
+            }
+            // If we're not at the saved state and indicator is not showing, mark as changed
+            else if (!HasUnsavedChanges)
             {
                 SetUnsavedChanges(true);
             }

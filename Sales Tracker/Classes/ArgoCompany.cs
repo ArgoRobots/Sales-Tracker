@@ -115,8 +115,7 @@ namespace Sales_Tracker.Classes
                 Companies_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Products_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 AddSale_Form.ThingsThatHaveChangedInFile.Count > 0 ||
-                AddPurchase_Form.ThingsThatHaveChangedInFile.Count > 0 ||
-                Customers_Form.ThingsThatHaveChangedInFile.Count > 0)
+                AddPurchase_Form.ThingsThatHaveChangedInFile.Count > 0)
             {
                 return true;
             }
@@ -136,7 +135,7 @@ namespace Sales_Tracker.Classes
             Products_Form.ThingsThatHaveChangedInFile.Clear();
             AddSale_Form.ThingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.ThingsThatHaveChangedInFile.Clear();
-            Customers_Form.ThingsThatHaveChangedInFile.Clear();
+            DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
         }
 
         /// <summary>

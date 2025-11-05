@@ -1,3 +1,4 @@
+using Sales_Tracker.Classes;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -54,9 +55,10 @@ namespace Sales_Tracker.ReportGenerator.Menus
         {
             int selectedCount = Templates_DataGridView.SelectedRows.Count;
 
-            // Load and Rename only work with a single selection
+            // Load, Rename, and Export only work with a single selection
             Load_Button.Enabled = selectedCount == 1;
             Rename_Button.Enabled = selectedCount == 1;
+            Export_Button.Enabled = selectedCount == 1;
 
             // Delete works with one or more selections
             Delete_Button.Enabled = selectedCount > 0;
@@ -144,6 +146,9 @@ namespace Sales_Tracker.ReportGenerator.Menus
                 if (CustomTemplateStorage.DeleteTemplate(templateName))
                 {
                     successCount++;
+
+                    // Clear the designer if this template was loaded
+                    ReportLayoutDesigner_Form.Instance?.ClearIfTemplateDeleted(templateName);
                 }
                 else
                 {
@@ -224,7 +229,7 @@ namespace Sales_Tracker.ReportGenerator.Menus
             {
                 LoadTemplates();
                 UpdateButtonStates();
-                ReportDataSelection_Form.Instance.RefreshTemplates();
+                ReportDataSelection_Form.Instance.RefreshTemplates(newTemplateName);
 
                 // Select the renamed template
                 int index = _templateNames.IndexOf(newTemplateName);
@@ -243,6 +248,184 @@ namespace Sales_Tracker.ReportGenerator.Menus
                     CustomMessageBoxButtons.Ok,
                     oldTemplateName,
                     newTemplateName);
+            }
+        }
+        private void Export_Button_Click(object sender, EventArgs e)
+        {
+            if (Templates_DataGridView.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            int selectedIndex = Templates_DataGridView.SelectedRows[0].Index;
+            string templateName = _templateNames[selectedIndex];
+
+            // Show save file dialog
+            using SaveFileDialog saveDialog = new()
+            {
+                Filter = $"Argo Sales Template (*{ArgoFiles.ArgoTemplateFileExtension})|*{ArgoFiles.ArgoTemplateFileExtension}",
+                DefaultExt = ArgoFiles.ArgoTemplateFileExtension,
+                FileName = templateName,
+                Title = "Export Template",
+                InitialDirectory = Directories.Desktop_dir
+            };
+
+            if (saveDialog.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                // Export template with images using TAR archive
+                bool success = CustomTemplateStorage.ExportTemplateWithImages(templateName, saveDialog.FileName);
+
+                if (!success)
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "Export Failed",
+                        "Could not export template '{0}'.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        templateName);
+                    return;
+                }
+
+                CustomMessageBox.ShowWithFormat(
+                    "Export Successful",
+                    "Template '{0}' has been exported successfully.",
+                    CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.Ok,
+                    templateName);
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.ShowWithFormat(
+                    "Export Failed",
+                    "Failed to export template: {0}",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    ex.Message);
+            }
+        }
+        private void Import_Button_Click(object sender, EventArgs e)
+        {
+            // Show open file dialog
+            using OpenFileDialog openDialog = new()
+            {
+                Filter = $"Argo Sales Template (*{ArgoFiles.ArgoTemplateFileExtension})|*{ArgoFiles.ArgoTemplateFileExtension}",
+                DefaultExt = ArgoFiles.ArgoTemplateFileExtension,
+                Title = "Import Template",
+                InitialDirectory = Directories.Desktop_dir,
+                Multiselect = false
+            };
+
+            if (openDialog.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                // Get template name without importing
+                string templateName = CustomTemplateStorage.GetTemplateNameFromFile(openDialog.FileName);
+
+                if (string.IsNullOrEmpty(templateName))
+                {
+                    CustomMessageBox.Show(
+                        "Import Failed",
+                        "The selected file is not a valid Argo Sales Template.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok);
+                    return;
+                }
+
+                // Check if trying to import a template with a built-in template name
+                string finalTemplateName = templateName;
+                if (ReportTemplates.IsBuiltInTemplate(templateName))
+                {
+                    // Generate a unique name
+                    List<string> allTemplateNames = ReportTemplates.GetAvailableTemplates();
+                    string suggestedName = Tools.AddNumberForAStringThatAlreadyExists(templateName, allTemplateNames);
+
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                        "Reserved Template Name",
+                        "The template '{0}' uses a name reserved for a built-in template.\nWould you like to import it as '{1}' instead?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNo,
+                        templateName,
+                        suggestedName);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+
+                    finalTemplateName = suggestedName;
+                }
+
+                // Check if a template with this name already exists
+                bool templateExists = _templateNames.Contains(finalTemplateName);
+                bool shouldOverwrite = true;
+
+                if (templateExists)
+                {
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                        "Template Exists",
+                        "A template named '{0}' already exists. Do you want to overwrite it?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNo,
+                        finalTemplateName);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        shouldOverwrite = false;
+                        return;
+                    }
+                }
+
+                // Import template with images from TAR archive
+                string newTemplateName = (finalTemplateName != templateName) ? finalTemplateName : null;
+                string importedTemplateName = CustomTemplateStorage.ImportTemplateWithImages(openDialog.FileName, shouldOverwrite, newTemplateName);
+
+                if (string.IsNullOrEmpty(importedTemplateName))
+                {
+                    CustomMessageBox.Show(
+                        "Import Failed",
+                        "Failed to import the template.",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok);
+                    return;
+                }
+
+                // Reload templates and refresh UI
+                LoadTemplates();
+                UpdateButtonStates();
+                ReportDataSelection_Form.Instance.RefreshTemplates(importedTemplateName);
+
+                // Select the imported template
+                int index = _templateNames.IndexOf(importedTemplateName);
+                if (index >= 0)
+                {
+                    Templates_DataGridView.ClearSelection();
+                    Templates_DataGridView.Rows[index].Selected = true;
+                }
+
+                CustomMessageBox.ShowWithFormat(
+                    "Import Successful",
+                    "Template '{0}' has been imported successfully.",
+                    CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.Ok,
+                    importedTemplateName);
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.ShowWithFormat(
+                    "Import Failed",
+                    "Failed to import template: {0}",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    ex.Message);
             }
         }
         private void Close_Button_Click(object sender, EventArgs e)

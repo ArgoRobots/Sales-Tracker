@@ -5,6 +5,8 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.GridView;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ReportGenerator;
+using Sales_Tracker.ReportGenerator.Menus;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 
@@ -421,6 +423,12 @@ namespace Sales_Tracker.Theme
 
             CustomizeScrollBar(SearchBox.SearchResultBox);
             LoadingPanel.UpdateTheme();
+
+            if (Tools.IsFormOpen<ReportGenerator_Form>())
+            {
+                ReportDataSelection_Form.Instance.UpdateScrollBarTheme();
+                ReportLayoutDesigner_Form.Instance.UpdateTheme();
+            }
         }
 
         // Make button blue

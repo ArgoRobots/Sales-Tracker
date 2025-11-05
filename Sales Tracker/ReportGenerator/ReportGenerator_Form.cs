@@ -130,7 +130,7 @@ namespace Sales_Tracker.ReportGenerator
             }
             else
             {
-                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderBlack;
+                ReportDataSelection_Form.Instance.OpenTemplates_Button.Image = Resources.OpenFolderGray;
 
                 designer.Undo_Button.Image = Resources.UndoBlack;
                 designer.UndoDropdown_Button.Image = Resources.DropDownBlack;
@@ -252,10 +252,11 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (!AskUserToSaveChanges())
             {
-                ReportLayoutDesigner_Form.HasUnsavedChanges = false;
                 e.Cancel = true;
                 return;
             }
+
+            CustomTemplateStorage.CleanupUnusedImages();
 
             // Clean up child forms
             _dataSelectionForm?.Dispose();
@@ -286,6 +287,7 @@ namespace Sales_Tracker.ReportGenerator
         {
             if (AskUserToSaveChanges())
             {
+                CustomTemplateStorage.CleanupUnusedImages();
                 ReportLayoutDesigner_Form.HasUnsavedChanges = false;
                 Close();
             }
@@ -324,7 +326,7 @@ namespace Sales_Tracker.ReportGenerator
         /// <summary>
         /// Asks the user to confirm closing the report generation process if there are unsaved changes.
         /// </summary>
-        /// <returns>True if the user selects yes, otherwise False.</returns>
+        /// <returns>True if the user selects yes or there are no unsaved changes, otherwise False.</returns>
         private static bool AskUserToSaveChanges()
         {
             if (ReportLayoutDesigner_Form.HasUnsavedChanges)
