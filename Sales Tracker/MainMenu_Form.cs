@@ -107,14 +107,19 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart = ConstructMainChart("purchaseDistribution_Chart", false) as PieChart;
             TotalSales_Chart = ConstructMainChart("saleTotals_Chart", true) as CartesianChart;
             DistributionOfSales_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
+            TotalRentals_Chart = ConstructMainChart("rentalTotals_Chart", true) as CartesianChart;
+            DistributionOfRentals_Chart = ConstructMainChart("rentalDistribution_Chart", false) as PieChart;
             Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
             LoadChart.ConfigurePieChart(DistributionOfPurchases_Chart);
             LoadChart.ConfigurePieChart(DistributionOfSales_Chart);
+            LoadChart.ConfigurePieChart(DistributionOfRentals_Chart);
 
             MouseClickChartManager.InitCharts([
                 TotalPurchases_Chart, DistributionOfPurchases_Chart,
-                TotalSales_Chart, DistributionOfSales_Chart, Profits_Chart
+                TotalSales_Chart, DistributionOfSales_Chart,
+                TotalRentals_Chart, DistributionOfRentals_Chart,
+                Profits_Chart
             ]);
         }
         private Control ConstructMainChart(string name, bool isCartesian)
@@ -280,6 +285,21 @@ namespace Sales_Tracker
                 }
             }
 
+            // Load rental charts
+            if (Selected == SelectedOption.Rentals || Rental_DataGridView.Visible)
+            {
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Rental_DataGridView, TotalRentals_Chart, isLine);
+                string translatedRentalRevenue = LanguageManager.TranslateString("Total rental revenue");
+                SetChartTitle(TotalRentals_Chart, $"{translatedRentalRevenue}: {CurrencySymbol}{totalsData.Total:N2}");
+
+                if (!onlyLoadForLineCharts)
+                {
+                    LoadChart.LoadDistributionIntoChart(Rental_DataGridView, DistributionOfRentals_Chart, PieChartGrouping.Top12);
+                    string translatedDistribution = LanguageManager.TranslateString("Distribution of rental revenue");
+                    SetChartTitle(DistributionOfRentals_Chart, translatedDistribution);
+                }
+            }
+
             // Always load profits chart
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
             SetProfitsChartTitle(profitsData.Total);
@@ -391,6 +411,8 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             DistributionOfSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            TotalRentals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            DistributionOfRentals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
             // Geographic Analysis Charts
@@ -910,8 +932,10 @@ namespace Sales_Tracker
                 int rightX = middleX + chartWidth + spaceBetweenCharts;
 
                 // Position the currently visible charts
-                Control totalsChart = Sale_DataGridView.Visible ? TotalSales_Chart : TotalPurchases_Chart;
-                Control distributionChart = Sale_DataGridView.Visible ? DistributionOfSales_Chart : DistributionOfPurchases_Chart;
+                Control totalsChart = Rental_DataGridView.Visible ? TotalRentals_Chart :
+                                      Sale_DataGridView.Visible ? TotalSales_Chart : TotalPurchases_Chart;
+                Control distributionChart = Rental_DataGridView.Visible ? DistributionOfRentals_Chart :
+                                            Sale_DataGridView.Visible ? DistributionOfSales_Chart : DistributionOfPurchases_Chart;
 
                 SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, _chartTop);
                 SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, _chartTop);
@@ -1125,6 +1149,8 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart.Height = height;
             TotalSales_Chart.Height = height;
             DistributionOfSales_Chart.Height = height;
+            TotalRentals_Chart.Height = height;
+            DistributionOfRentals_Chart.Height = height;
             Profits_Chart.Height = height;
         }
         private static void SetChartPosition(Control chart, Size size, int left, int top)
@@ -1172,7 +1198,8 @@ namespace Sales_Tracker
         {
             return [
                 Accountants_Button, Categories_Button, Companies_Button,
-                Products_Button, AddSale_Button, AddPurchase_Button, Customers_Button];
+                Products_Button, Customers_Button, ManageRentals_Button,
+                AddSale_Button, AddPurchase_Button];
         }
 
         // Event handlers - top bar
@@ -1234,58 +1261,65 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-        private void Purchases_Button_Click(object sender, EventArgs e)
-        {
-            if (Selected == SelectedOption.Purchases) { return; }
+private void Purchases_Button_Click(object sender, EventArgs e)
+{
+    if (Selected == SelectedOption.Purchases) { return; }
 
-            Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+    Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            ShowMainControls();
-            SelectedDataGridView = Purchase_DataGridView;
-            Purchase_DataGridView.Visible = true;
-            Sale_DataGridView.Visible = false;
+    ShowMainControls();
+    SelectedDataGridView = Purchase_DataGridView;
+    Purchase_DataGridView.Visible = true;
+    Sale_DataGridView.Visible = false;
+    Rental_DataGridView.Visible = false;
 
-            // Show purchase charts, hide sale charts
-            TotalPurchases_Chart.Visible = true;
-            DistributionOfPurchases_Chart.Visible = true;
-            TotalSales_Chart.Visible = false;
-            DistributionOfSales_Chart.Visible = false;
+    // Show purchase charts, hide sale and rental charts
+    TotalPurchases_Chart.Visible = true;
+    DistributionOfPurchases_Chart.Visible = true;
+    TotalSales_Chart.Visible = false;
+    DistributionOfSales_Chart.Visible = false;
+    TotalRentals_Chart.Visible = false;
+    DistributionOfRentals_Chart.Visible = false;
 
-            SelectButton(Purchases_Button);
-            CenterAndResizeControls();
-            RefreshDataGridViewAndCharts();
+    SelectButton(Purchases_Button);
+    CenterAndResizeControls();
+    RefreshDataGridViewAndCharts();
 
-            Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-            AlignTotalLabels();
-            UpdateTotalLabels();
-            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
-        }
-        private void Sales_Button_Click(object sender, EventArgs e)
-        {
-            if (Selected == SelectedOption.Sales) { return; }
+    Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+    AlignTotalLabels();
+    UpdateTotalLabels();
+    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
+}
 
-            Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+private void Sales_Button_Click(object sender, EventArgs e)
+{
+    if (Selected == SelectedOption.Sales) { return; }
 
-            ShowMainControls();
-            SelectedDataGridView = Sale_DataGridView;
-            Sale_DataGridView.Visible = true;
-            Purchase_DataGridView.Visible = false;
+    Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            // Show sale charts, hide purchase charts
-            TotalSales_Chart.Visible = true;
-            DistributionOfSales_Chart.Visible = true;
-            TotalPurchases_Chart.Visible = false;
-            DistributionOfPurchases_Chart.Visible = false;
+    ShowMainControls();
+    SelectedDataGridView = Sale_DataGridView;
+    Sale_DataGridView.Visible = true;
+    Purchase_DataGridView.Visible = false;
+    Rental_DataGridView.Visible = false;
 
-            SelectButton(Sales_Button);
-            CenterAndResizeControls();
-            RefreshDataGridViewAndCharts();
+    // Show sale charts, hide purchase and rental charts
+    TotalSales_Chart.Visible = true;
+    DistributionOfSales_Chart.Visible = true;
+    TotalPurchases_Chart.Visible = false;
+    DistributionOfPurchases_Chart.Visible = false;
+    TotalRentals_Chart.Visible = false;
+    DistributionOfRentals_Chart.Visible = false;
 
-            Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-            AlignTotalLabels();
-            UpdateTotalLabels();
-            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
-        }
+    SelectButton(Sales_Button);
+    CenterAndResizeControls();
+    RefreshDataGridViewAndCharts();
+
+    Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+    AlignTotalLabels();
+    UpdateTotalLabels();
+    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
+}
         private void Rentals_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Rentals) { return; }
@@ -1298,7 +1332,9 @@ namespace Sales_Tracker
             Purchase_DataGridView.Visible = false;
             Sale_DataGridView.Visible = false;
 
-            // Hide all other charts for now (you can create rental-specific charts later)
+            // Show rental charts, hide other charts
+            TotalRentals_Chart.Visible = true;
+            DistributionOfRentals_Chart.Visible = true;
             TotalSales_Chart.Visible = false;
             DistributionOfSales_Chart.Visible = false;
             TotalPurchases_Chart.Visible = false;
@@ -1306,7 +1342,7 @@ namespace Sales_Tracker
 
             SelectButton(Rentals_Button);
             CenterAndResizeControls();
-            RefreshDataGridViewAndCharts();
+            RefreshDataGridViewAndCharts();  
 
             Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
@@ -1917,6 +1953,26 @@ namespace Sales_Tracker
         public List<string> GetProductPurchaseNames() => GetFormattedProductNames(CategoryPurchaseList);
 
         /// <summary>
+        /// Gets a list of formatted product names for rentable items.
+        /// Format: "CompanyOfOrigin > CategoryName > ProductName"
+        /// </summary>
+        public List<string> GetRentableProductPurchaseNames()
+        {
+            List<string> names = [];
+            foreach (Category category in CategoryPurchaseList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.IsRentable)
+                    {
+                        names.Add($"{product.CompanyOfOrigin} > {category.Name} > {product.Name}");
+                    }
+                }
+            }
+            return names;
+        }
+
+        /// <summary>
         /// Helper method to format product names from a category list.
         /// </summary>
         private static List<string> GetFormattedProductNames(List<Category> categories)
@@ -1952,7 +2008,10 @@ namespace Sales_Tracker
         {
             if (IsButtonSelected(Purchases_Button)) { return SelectedOption.Purchases; }
             if (IsButtonSelected(Sales_Button)) { return SelectedOption.Sales; }
-            return SelectedOption.Analytics;
+            if (IsButtonSelected(Rentals_Button)) { return SelectedOption.Rentals; }  
+            if (IsButtonSelected(Analytics_Button)) { return SelectedOption.Analytics; }
+
+            return SelectedOption.Analytics;  // Default fallback
         }
 
         // DataGridView getters
@@ -1961,6 +2020,8 @@ namespace Sales_Tracker
         public Guna2DataGridView Rental_DataGridView { get; private set; } = new();
         public Guna2DataGridView SelectedDataGridView { get; private set; }
         public CartesianChart Profits_Chart { get; private set; }
+        public CartesianChart TotalRentals_Chart { get; private set; }
+        public PieChart DistributionOfRentals_Chart { get; private set; }
 
         // DataGridView enums
         public enum SelectedOption
@@ -2421,6 +2482,8 @@ namespace Sales_Tracker
                 DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
+                TotalRentals_Chart,
+                DistributionOfRentals_Chart,
                 Rental_DataGridView,
                 Profits_Chart,
                 Total_Panel
@@ -2465,11 +2528,42 @@ namespace Sales_Tracker
             }
 
             // Reset chart positions in case returning from analytics
-            TotalPurchases_Chart.Top = _analyticChartTop;
-            DistributionOfPurchases_Chart.Top = _analyticChartTop;
-            TotalSales_Chart.Top = _analyticChartTop;
-            DistributionOfSales_Chart.Top = _analyticChartTop;
-            Profits_Chart.Top = _analyticChartTop;
+            TotalPurchases_Chart.Top = _chartTop;
+            DistributionOfPurchases_Chart.Top = _chartTop;
+            TotalSales_Chart.Top = _chartTop;
+            DistributionOfSales_Chart.Top = _chartTop;
+            TotalRentals_Chart.Top = _chartTop;
+            DistributionOfRentals_Chart.Top = _chartTop;
+            Profits_Chart.Top = _chartTop;
+
+            // Set which charts should actually be visible based on current view
+            if (Selected == SelectedOption.Purchases)
+            {
+                TotalPurchases_Chart.Visible = true;
+                DistributionOfPurchases_Chart.Visible = true;
+                TotalSales_Chart.Visible = false;
+                DistributionOfSales_Chart.Visible = false;
+                TotalRentals_Chart.Visible = false;
+                DistributionOfRentals_Chart.Visible = false;
+            }
+            else if (Selected == SelectedOption.Sales)
+            {
+                TotalPurchases_Chart.Visible = false;
+                DistributionOfPurchases_Chart.Visible = false;
+                TotalSales_Chart.Visible = true;
+                DistributionOfSales_Chart.Visible = true;
+                TotalRentals_Chart.Visible = false;
+                DistributionOfRentals_Chart.Visible = false;
+            }
+            else if (Selected == SelectedOption.Rentals)
+            {
+                TotalPurchases_Chart.Visible = false;
+                DistributionOfPurchases_Chart.Visible = false;
+                TotalSales_Chart.Visible = false;
+                DistributionOfSales_Chart.Visible = false;
+                TotalRentals_Chart.Visible = true;
+                DistributionOfRentals_Chart.Visible = true;
+            }
         }
         private void ConstructControlsForAnalytics()
         {

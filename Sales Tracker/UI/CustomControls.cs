@@ -546,61 +546,87 @@ namespace Sales_Tracker.UI
             int btnWidth = (int)(290 * scale);
             int btnHeight = (int)(50 * scale);
 
-            // Calculate proper height using scaled values
-            int calculatedHeight = btnHeight * 6 + (int)(15 * scale) + (int)(_spaceForSeparator * scale) * 5;
+            // Calculate proper height using scaled values - now 8 buttons + 7 separators
+            int calculatedHeight = btnHeight * 8 + (int)(15 * scale) + (int)(_spaceForSeparator * scale) * 7;
 
             ControlDropDown_Panel = ConstructPanelForMenu(new Size((int)(300 * scale), calculatedHeight), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Accountants_Button.Text, btnWidth, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Accountants", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new Accountants_Form());
             };
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Companies_Button.Text, btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu("Companies", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new Companies_Form());
             };
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Categories_Button.Text, btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu("Categories", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new Categories_Form(true));
             };
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Products_Button.Text, btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu("Products", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new Products_Form(true));
             };
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddSale_Button.Text, btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu("Customers", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
+                Tools.OpenForm(new Customers_Form());
+            };
+
+            ConstructSeparator(btnWidth, flowPanel);
+
+            menuBtn = ConstructBtnForMenu("Manage rentals", btnWidth, flowPanel);
+            menuBtn.Height = btnHeight;
+            menuBtn.Click += (_, _) =>
+            {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
+                Tools.OpenForm(new ManageRentals_Form());
+            };
+
+            ConstructSeparator(btnWidth, flowPanel);
+
+            menuBtn = ConstructBtnForMenu("Add sale", btnWidth, flowPanel);
+            menuBtn.Height = btnHeight;
+            menuBtn.Click += (_, _) =>
+            {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new AddSale_Form());
             };
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddPurchase_Button.Text, btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu("Add purchase", btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new AddPurchase_Form());
             };
         }

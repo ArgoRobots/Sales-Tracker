@@ -96,13 +96,14 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void OnlyAllowPhoneCharactersInTextBox(object sender, KeyPressEventArgs e)
         {
-            // Allow digits, parentheses, dashes, spaces, and letters (for "ext")
+            // Allow digits, parentheses, dashes, spaces, plus sign, and letters (for "ext")
             if (!char.IsControl(e.KeyChar) && 
                 !char.IsDigit(e.KeyChar) && 
                 e.KeyChar != '(' && 
                 e.KeyChar != ')' && 
                 e.KeyChar != '-' && 
                 e.KeyChar != ' ' &&
+                e.KeyChar != '+' &&
                 !char.IsLetter(e.KeyChar))
             {
                 e.Handled = true;
@@ -140,8 +141,8 @@ namespace Sales_Tracker.UI
             {
                 char c = input[i];
                 
-                // Allow digits, parentheses, dashes, and spaces
-                if (char.IsDigit(c) || c == '(' || c == ')' || c == '-' || c == ' ')
+                // Allow digits, parentheses, dashes, spaces, and plus sign
+                if (char.IsDigit(c) || c == '(' || c == ')' || c == '-' || c == ' ' || c == '+')
                 {
                     result.Append(c);
                 }

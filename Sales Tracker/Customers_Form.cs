@@ -14,6 +14,7 @@ namespace Sales_Tracker
         private static bool _isProgramLoading;
         private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly int _topForDataGridView;
+        private Label _emailError_Label;
 
         // Getters
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
@@ -42,6 +43,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_customers_DataGridView);
             AddEventHandlersToTextBoxes();
+            ConstructEmailErrorLabel();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
                 TextBoxManager.RightClickTextBox_Panel,
@@ -51,6 +53,21 @@ namespace Sales_Tracker
             Application.AddMessageFilter(panelCloseFilter);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+
+        private void ConstructEmailErrorLabel()
+        {
+            _emailError_Label = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9f),
+                ForeColor = CustomColors.AccentRed,
+                Text = "Please enter a valid email address",
+                Visible = false,
+                Location = new Point(Email_TextBox.Left, Email_TextBox.Bottom + 3),
+                Name = "EmailError_Label"
+            };
+            Controls.Add(_emailError_Label);
         }
 
         private void AddEventHandlersToTextBoxes()
@@ -68,6 +85,7 @@ namespace Sales_Tracker
             TextBoxValidation.ValidateEmail(Email_TextBox);
             Email_TextBox.TextChanged += ValidateInputs;
             Email_TextBox.Leave += Email_TextBox_Leave;
+            Email_TextBox.Enter += Email_TextBox_Enter;
             TextBoxManager.Attach(Email_TextBox);
             
             TextBoxValidation.ValidatePhoneNumber(PhoneNumber_TextBox);
@@ -130,23 +148,24 @@ namespace Sales_Tracker
         }
 
         // Event handlers
+        private void Email_TextBox_Enter(object sender, EventArgs e)
+        {
+            // Hide error label when user enters the text box to start editing
+            _emailError_Label.Visible = false;
+        }
+
         private void Email_TextBox_Leave(object sender, EventArgs e)
         {
             string email = Email_TextBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(email))
+            // Only show error if field has content and is invalid
+            if (!string.IsNullOrWhiteSpace(email) && !email.Contains('@'))
             {
-                return;
+                _emailError_Label.Visible = true;
             }
-            
-            // Check if email is valid
-            if (!email.Contains('@'))
+            else
             {
-                CustomMessageBox.Show("Invalid email",
-                    "Please enter a valid email address.",
-                    CustomMessageBoxIcon.Warning,
-                    CustomMessageBoxButtons.OK);
-                Email_TextBox.Focus();
+                _emailError_Label.Visible = false;
             }
         }
 
@@ -162,10 +181,7 @@ namespace Sales_Tracker
             string email = Email_TextBox.Text.Trim();
             if (!email.Contains('@'))
             {
-                CustomMessageBox.Show("Invalid email",
-                    "Please enter a valid email address.",
-                    CustomMessageBoxIcon.Warning,
-                    CustomMessageBoxButtons.OK);
+                _emailError_Label.Visible = true;
                 Email_TextBox.Focus();
                 return;
             }
@@ -228,7 +244,7 @@ namespace Sales_Tracker
                 customer.CurrentPaymentStatus.ToString(),
                 customer.OutstandingBalance,
                 customer.IsBanned,  
-                customer.RentalHistory.Count,
+                customer.RentalRecords.Count,
                 customer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
 
             _customers_DataGridView.Rows[newRowIndex].Tag = customer;
@@ -357,7 +373,7 @@ namespace Sales_Tracker
                     customer.CurrentPaymentStatus.ToString(),
                     customer.OutstandingBalance,
                     customer.IsBanned,  
-                    customer.RentalHistory.Count,
+                    customer.RentalRecords.Count,
                     customer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
 
                 _customers_DataGridView.Rows[rowIndex].Tag = customer;

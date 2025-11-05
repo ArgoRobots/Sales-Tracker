@@ -654,6 +654,13 @@ namespace Sales_Tracker.GridView
             { 
                 if(isSingleRowSelected)
                 {
+                    // Check if item has available quantity  
+                    if (grid.SelectedRows[0].Tag is RentalItem rentalItem && rentalItem.QuantityAvailable > 0)
+                    {
+                        RightClickDataGridViewRowMenu.RentOut_Button.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.RentOut_Button, currentIndex++);
+                    }
+
                     RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
                     flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
                 }

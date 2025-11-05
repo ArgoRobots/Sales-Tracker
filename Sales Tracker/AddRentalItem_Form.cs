@@ -71,7 +71,7 @@ namespace Sales_Tracker
 
         private List<SearchResult> GetSearchResultsForProducts()
         {
-            return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
+            return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetRentableProductPurchaseNames());
         }
 
         private void UpdateTheme()

@@ -15,7 +15,7 @@ namespace Sales_Tracker.DataClasses
         public string BanReason { get; set; } = "";
         public DateTime? BanDate { get; set; } = null;
         public string Notes { get; set; } = "";
-        public List<RentalRecord> RentalHistory { get; set; } = [];
+        public List<RentalRecord> RentalRecords { get; set; } = [];
         public PaymentStatus CurrentPaymentStatus { get; set; } = PaymentStatus.Current;
         public decimal OutstandingBalance { get; set; } = 0m;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
@@ -41,12 +41,13 @@ namespace Sales_Tracker.DataClasses
         }
 
         /// <summary>
-        /// Adds a rental record to the customer's history.
+        /// Adds a rental record to the customer's rental history.
         /// </summary>
         public void AddRentalRecord(RentalRecord record)
         {
-            RentalHistory.Add(record);
-            LastRentalDate = record.RentalDate;
+            RentalRecords.Add(record);
+            LastRentalDate = record.StartDate;
+            UpdateOutstandingBalance();
         }
 
         /// <summary>
@@ -70,51 +71,127 @@ namespace Sales_Tracker.DataClasses
         }
 
         /// <summary>
-        /// Updates the customer's payment status based on outstanding balance and overdue dates.
+        /// Updates the customer's payment status based on outstanding balance and overdue rentals.
         /// </summary>
         public void UpdatePaymentStatus()
         {
+            // Update overdue status for all active rentals
+            foreach (RentalRecord record in RentalRecords.Where(r => r.IsActive))
+            {
+                record.CheckOverdueStatus();
+            }
+
+            UpdateOutstandingBalance();
+
             if (OutstandingBalance <= 0)
             {
                 CurrentPaymentStatus = PaymentStatus.Current;
             }
-            else if (OutstandingBalance > 0)
+            else
             {
                 // Check if any rental is overdue
-                bool hasOverdueRentals = RentalHistory.Any(r => 
-                    r.DueDate.HasValue && 
-                    r.DueDate.Value < DateTime.Now && 
-                    !r.IsReturned);
+                bool hasOverdueRentals = RentalRecords.Any(r => r.IsOverdue);
 
-                CurrentPaymentStatus = hasOverdueRentals ? PaymentStatus.Overdue : PaymentStatus.Current;
+                // Check if severely overdue (more than 30 days)
+                bool hasSeverelyOverdueRentals = RentalRecords.Any(r =>
+                    r.IsOverdue &&
+                    r.DueDate.HasValue &&
+                    (DateTime.Now - r.DueDate.Value).TotalDays > 30);
+
+                if (hasSeverelyOverdueRentals)
+                {
+                    CurrentPaymentStatus = PaymentStatus.Delinquent;
+                }
+                else if (hasOverdueRentals)
+                {
+                    CurrentPaymentStatus = PaymentStatus.Overdue;
+                }
+                else
+                {
+                    CurrentPaymentStatus = PaymentStatus.Current;
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// Represents a single rental transaction for a customer.
-    /// </summary>
-    public class RentalRecord
-    {
-        public string RentalID { get; set; }
-        public string ProductName { get; set; }
-        public DateTime RentalDate { get; set; }
-        public DateTime? DueDate { get; set; }
-        public DateTime? ReturnDate { get; set; }
-        public bool IsReturned { get; set; } = false;
-        public decimal RentalAmount { get; set; }
-        public decimal AmountPaid { get; set; }
-        public string Notes { get; set; } = "";
-
-        public RentalRecord() { }
-
-        public RentalRecord(string rentalID, string productName, DateTime rentalDate, DateTime? dueDate, decimal rentalAmount)
+        /// <summary>
+        /// Updates the outstanding balance based on active rental records.
+        /// </summary>
+        private void UpdateOutstandingBalance()
         {
-            RentalID = rentalID;
-            ProductName = productName;
-            RentalDate = rentalDate;
-            DueDate = dueDate;
-            RentalAmount = rentalAmount;
+            OutstandingBalance = RentalRecords
+                .Where(r => r.IsActive)
+                .Sum(r => r.RemainingBalance);
+        }
+
+        /// <summary>
+        /// Gets the total outstanding rental balance across all active rentals.
+        /// </summary>
+        public decimal GetTotalOutstandingRentalBalance()
+        {
+            return RentalRecords.Where(r => r.IsActive).Sum(r => r.RemainingBalance);
+        }
+
+        /// <summary>
+        /// Gets all active rental records for this customer.
+        /// </summary>
+        public List<RentalRecord> GetActiveRentals()
+        {
+            return RentalRecords.Where(r => r.IsActive).ToList();
+        }
+
+        /// <summary>
+        /// Gets all overdue rental records for this customer.
+        /// </summary>
+        public List<RentalRecord> GetOverdueRentals()
+        {
+            return RentalRecords.Where(r => r.IsOverdue).ToList();
+        }
+
+        /// <summary>
+        /// Gets all completed (returned) rental records for this customer.
+        /// </summary>
+        public List<RentalRecord> GetCompletedRentals()
+        {
+            return RentalRecords.Where(r => !r.IsActive && r.ReturnDate.HasValue).ToList();
+        }
+
+        /// <summary>
+        /// Records a payment for a specific rental.
+        /// </summary>
+        public void RecordPayment(string rentalRecordID, decimal amount)
+        {
+            RentalRecord record = RentalRecords.FirstOrDefault(r => r.RentalRecordID == rentalRecordID);
+            if (record != null)
+            {
+                record.RecordPayment(amount);
+                UpdatePaymentStatus();
+            }
+        }
+
+        /// <summary>
+        /// Marks a specific rental as returned.
+        /// </summary>
+        public void ReturnRental(string rentalRecordID)
+        {
+            RentalRecord record = RentalRecords.FirstOrDefault(r => r.RentalRecordID == rentalRecordID);
+            if (record != null)
+            {
+                record.MarkAsReturned();
+                UpdatePaymentStatus();
+            }
+        }
+
+        /// <summary>
+        /// Gets a summary of the customer's rental statistics.
+        /// </summary>
+        public string GetRentalSummary()
+        {
+            int totalRentals = RentalRecords.Count;
+            int activeRentals = GetActiveRentals().Count;
+            int overdueRentals = GetOverdueRentals().Count;
+            int completedRentals = GetCompletedRentals().Count;
+
+            return $"Total: {totalRentals} | Active: {activeRentals} | Overdue: {overdueRentals} | Completed: {completedRentals}";
         }
     }
 }

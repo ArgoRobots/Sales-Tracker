@@ -31,7 +31,7 @@ namespace Sales_Tracker.DataClasses
         public DateTime? LastStatusUpdate { get; set; }
         public DateTime? LastRentalDate { get; set; }
         public string CurrentRenterID { get; set; } = "";
-        public List<RentalRecord> RentalHistory { get; set; } = [];
+        public List<RentalRecord> RentalRecords { get; set; } = [];
 
         /// Number of units currently available for rent.
         public int QuantityAvailable => TotalQuantity - QuantityRented - QuantityInMaintenance;

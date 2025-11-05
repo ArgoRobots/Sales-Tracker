@@ -43,5 +43,10 @@
         public string LostBy { get; set; }
         public List<int> LostItems { get; set; }
         public string LostItemsText { get; set; }
+
+        // Rental related properties
+        public string CustomerID { get; set; }
+        public string CustomerName { get; set; }
+        public string RentalRecordID { get; set; }
     }
 }
