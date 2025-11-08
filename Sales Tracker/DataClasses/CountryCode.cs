@@ -117,8 +117,8 @@ namespace Sales_Tracker.DataClasses
                 }
                 else
                 {
-                    // Only add formatting character if we have digits to format
-                    if (digitIndex > 0 && digitIndex < digitsOnly.Length)
+                    // Add formatting character if there are still digits to be formatted
+                    if (digitIndex < digitsOnly.Length)
                     {
                         formatted.Append(c);
                     }
