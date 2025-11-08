@@ -150,22 +150,25 @@ namespace Sales_Tracker
         // Event handlers
         private void Email_TextBox_Enter(object sender, EventArgs e)
         {
-            // Hide error label when user enters the text box to start editing
+            // Hide error label and reset border when user enters the text box to start editing
             _emailError_Label.Visible = false;
+            Email_TextBox.BorderColor = CustomColors.ControlBorder;
         }
 
         private void Email_TextBox_Leave(object sender, EventArgs e)
         {
             string email = Email_TextBox.Text.Trim();
 
-            // Only show error if field has content and is invalid
-            if (!string.IsNullOrWhiteSpace(email) && !email.Contains('@'))
+            // Only show error and red border if field has content and is invalid
+            if (!string.IsNullOrWhiteSpace(email) && !TextBoxValidation.IsValidEmail(email))
             {
                 _emailError_Label.Visible = true;
+                Email_TextBox.BorderColor = CustomColors.AccentRed;
             }
             else
             {
                 _emailError_Label.Visible = false;
+                Email_TextBox.BorderColor = CustomColors.ControlBorder;
             }
         }
 
@@ -177,11 +180,12 @@ namespace Sales_Tracker
                 customerID = ReadOnlyVariables.EmptyCell;
             }
 
-            // Validate email before proceeding
+            // Validate email before proceeding (requires @ and . with text on both sides)
             string email = Email_TextBox.Text.Trim();
-            if (!email.Contains('@'))
+            if (!TextBoxValidation.IsValidEmail(email))
             {
                 _emailError_Label.Visible = true;
+                Email_TextBox.BorderColor = CustomColors.AccentRed;
                 Email_TextBox.Focus();
                 return;
             }
@@ -395,8 +399,8 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Email_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PhoneNumber_TextBox.Text);
 
-            // Check if email is valid 
-            bool emailValid = Email_TextBox.Text.Trim().Contains('@');
+            // Check if email is valid (contains @ and . with text on both sides)
+            bool emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
             AddCustomer_Button.Enabled = allFieldsFilled && emailValid;
         }
 

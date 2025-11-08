@@ -64,7 +64,38 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Checks if email contains @ sign and sets border color accordingly.
+        /// Checks if an email is valid (contains @ and . with text on both sides).
+        /// </summary>
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            string trimmed = email.Trim();
+
+            // Must contain exactly one @
+            int atIndex = trimmed.IndexOf('@');
+            if (atIndex <= 0 || atIndex == trimmed.Length - 1)
+                return false; // @ must not be at start or end, and must exist
+
+            // Check for multiple @ symbols
+            if (trimmed.IndexOf('@', atIndex + 1) != -1)
+                return false;
+
+            // Get the part after @
+            string afterAt = trimmed.Substring(atIndex + 1);
+
+            // Must contain at least one . after @
+            int dotIndex = afterAt.IndexOf('.');
+            if (dotIndex <= 0 || dotIndex == afterAt.Length - 1)
+                return false; // . must not be at start or end of domain part
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if email contains @ and . with text on both sides, and sets tag accordingly.
+        /// Does not change border color - that's handled on Leave event.
         /// </summary>
         private static void ValidateEmailFormat(object sender, EventArgs e)
         {
@@ -77,17 +108,17 @@ namespace Sales_Tracker.UI
                 textBox.BorderColor = CustomColors.ControlBorder;
                 textBox.Tag = "valid";
             }
-            else if (!text.Contains('@'))
+            else if (IsValidEmail(text))
             {
-                // Invalid - missing @ sign
-                textBox.BorderColor = CustomColors.AccentRed;
-                textBox.Tag = "invalid";
+                // Valid - keep border normal
+                textBox.BorderColor = CustomColors.ControlBorder;
+                textBox.Tag = "valid";
             }
             else
             {
-                // Valid
-                textBox.BorderColor = CustomColors.AccentGreen;
-                textBox.Tag = "valid";
+                // Invalid - tag as invalid but don't change border yet
+                // Border will be changed on Leave event
+                textBox.Tag = "invalid";
             }
         }
 
