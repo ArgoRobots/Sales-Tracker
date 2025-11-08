@@ -136,6 +136,22 @@ namespace Sales_Tracker.GridView
                 return;  // Don't add any more buttons
             }
 
+            // Add buttons for Customer
+            bool isCustomer = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.Customer.ToString();
+            if (isCustomer)
+            {
+                if (isSingleRowSelected)
+                {
+                    Modify_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(Modify_Button, currentIndex++);
+                }
+
+                Delete_Button.Visible = true;
+                flowPanel.Controls.SetChildIndex(Delete_Button, currentIndex++);
+
+                return;  // Don't add any more buttons
+            }
+
             // Add Modify_Button
             if (isSingleRowSelected)
             {
@@ -823,6 +839,11 @@ namespace Sales_Tracker.GridView
                         identifier = grid.SelectedRows[0].Cells[Products_Form.Column.ProductName.ToString()].Value?.ToString() ?? "Unknown";
                         break;
 
+                    case MainMenu_Form.SelectedOption.Customers:
+                        itemType = "the customer";
+                        identifier = grid.SelectedRows[0].Cells[Customers_Form.Column.CustomerName.ToString()].Value?.ToString() ?? "Unknown";
+                        break;
+
                     case MainMenu_Form.SelectedOption.Purchases:
                     case MainMenu_Form.SelectedOption.Sales:
                     case MainMenu_Form.SelectedOption.ItemsInPurchase:
@@ -851,6 +872,7 @@ namespace Sales_Tracker.GridView
                     MainMenu_Form.SelectedOption.Companies => "companies",
                     MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales => "categories",
                     MainMenu_Form.SelectedOption.ProductPurchases or MainMenu_Form.SelectedOption.ProductSales => "products",
+                    MainMenu_Form.SelectedOption.Customers => "customers",
                     MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales => "transactions",
                     _ => "rows"
                 };

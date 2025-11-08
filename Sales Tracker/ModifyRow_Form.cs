@@ -186,6 +186,10 @@ namespace Sales_Tracker
             {
                 left = ConstructControlsForItemsInTransaction();
             }
+            else if (_selectedTag == MainMenu_Form.DataGridViewTag.Customer.ToString())
+            {
+                left = ConstructControlsForCustomer();
+            }
 
             SizeControls(left, secondLeft);
         }
@@ -684,6 +688,192 @@ namespace Sales_Tracker
             }
             return left;
         }
+
+        private List<CountryCode> _countryCodes;
+        private CountryCode _selectedCountryCode;
+        private Guna2ComboBox _countryCodeComboBox;
+        private Guna2TextBox _phoneNumberTextBox;
+
+        private int ConstructControlsForCustomer()
+        {
+            int left = 0;
+
+            foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
+                _listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Customers_Form.Column.CustomerID):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.CustomerID], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel, "standard");
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.CustomerName):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.CustomerName], left, Panel);
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "large");
+                        left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.Email):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Email], left, Panel);
+                        Guna2TextBox emailTextBox = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.None, false, Panel, "large");
+                        TextBoxValidation.ValidateEmail(emailTextBox);
+                        emailTextBox.TextChanged += ValidateInputs;
+                        left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.PhoneNumber):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.PhoneNumber], left, Panel);
+
+                        // Parse phone number to extract country code and number
+                        (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
+
+                        // Country code combo box
+                        _countryCodes = CountryCode.GetCountryCodes();
+                        _countryCodeComboBox = ConstructCountryCodeComboBox(left, _countryCodes, countryCode);
+
+                        // Phone number text box
+                        int phoneLeft = left + 100 + CustomControls.SpaceBetweenControls;
+                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel, "large");
+                        _phoneNumberTextBox.TextChanged -= ValidateInputs; // Remove default validation
+                        _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+                        _phoneNumberTextBox.TextChanged += ValidateInputs;
+
+                        left = phoneLeft + ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.Address):
+                        _secondRow = true;
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Address], 0, _secondPanel ?? CreateSecondPanel());
+                        ConstructTextBox(0, columnName, cellValue, 200, CustomControls.KeyPressValidation.None, false, _secondPanel, "large");
+                        break;
+
+                    case nameof(Customers_Form.Column.PaymentStatus):
+                    case nameof(Customers_Form.Column.OutstandingBalance):
+                    case nameof(Customers_Form.Column.IsBanned):
+                    case nameof(Customers_Form.Column.TotalRentals):
+                    case nameof(Customers_Form.Column.LastRentalDate):
+                        // These are read-only calculated fields, don't create controls for them
+                        break;
+                }
+            }
+            return left - CustomControls.SpaceBetweenControls;
+        }
+
+        private Panel CreateSecondPanel()
+        {
+            ConstructPanel();
+            return _secondPanel;
+        }
+
+        private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(fullPhoneNumber) || fullPhoneNumber == ReadOnlyVariables.EmptyCell)
+            {
+                return ("+1", "");
+            }
+
+            // Try to extract country code (starts with +)
+            if (fullPhoneNumber.StartsWith("+"))
+            {
+                int spaceIndex = fullPhoneNumber.IndexOf(' ');
+                if (spaceIndex > 0)
+                {
+                    string code = fullPhoneNumber.Substring(0, spaceIndex);
+                    string number = fullPhoneNumber.Substring(spaceIndex + 1);
+                    return (code, number);
+                }
+            }
+
+            return ("+1", fullPhoneNumber);
+        }
+
+        private Guna2ComboBox ConstructCountryCodeComboBox(int left, List<CountryCode> countryCodes, string selectedCode)
+        {
+            Guna2ComboBox comboBox = new()
+            {
+                Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
+                Height = ScaledControlHeight,
+                Width = 100,
+                Name = "CountryCode_ComboBox",
+                ForeColor = CustomColors.Text,
+                BackColor = CustomColors.ControlBack,
+                Font = new Font("Segoe UI", 9),
+                FillColor = CustomColors.ControlBack,
+                BorderColor = CustomColors.ControlBorder,
+                BorderRadius = 3,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                DrawMode = DrawMode.OwnerDrawFixed,
+                ItemHeight = 24,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
+                FocusedState = { BorderColor = CustomColors.AccentBlue },
+                HoverState = { BorderColor = CustomColors.AccentBlue }
+            };
+
+            foreach (CountryCode country in countryCodes)
+            {
+                comboBox.Items.Add(country);
+            }
+
+            // Set selected country
+            _selectedCountryCode = countryCodes.FirstOrDefault(c => c.Code == selectedCode) ?? countryCodes.FirstOrDefault(c => c.Code == "+1");
+            if (_selectedCountryCode != null)
+            {
+                comboBox.SelectedItem = _selectedCountryCode;
+            }
+
+            comboBox.SelectedIndexChanged += CountryCode_ComboBox_SelectedIndexChanged;
+            Panel.Controls.Add(comboBox);
+
+            return comboBox;
+        }
+
+        private void CountryCode_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_countryCodeComboBox.SelectedItem is CountryCode selectedCountry)
+            {
+                _selectedCountryCode = selectedCountry;
+
+                // Reformat the existing phone number with the new country format
+                if (_phoneNumberTextBox != null && !string.IsNullOrWhiteSpace(_phoneNumberTextBox.Text))
+                {
+                    FormatPhoneNumberInModifyForm();
+                }
+            }
+        }
+
+        private void PhoneNumber_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            FormatPhoneNumberInModifyForm();
+        }
+
+        private void FormatPhoneNumberInModifyForm()
+        {
+            if (_selectedCountryCode == null || _phoneNumberTextBox == null) return;
+
+            int cursorPosition = _phoneNumberTextBox.SelectionStart;
+            string currentText = _phoneNumberTextBox.Text;
+
+            // Format the phone number
+            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(currentText);
+
+            if (currentText != formattedNumber)
+            {
+                _phoneNumberTextBox.TextChanged -= PhoneNumber_TextBox_TextChanged;
+                _phoneNumberTextBox.Text = formattedNumber;
+
+                // Adjust cursor position
+                int newCursorPosition = Math.Min(cursorPosition + (formattedNumber.Length - currentText.Length), formattedNumber.Length);
+                _phoneNumberTextBox.SelectionStart = Math.Max(0, newCursorPosition);
+
+                _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+            }
+        }
+
         private static List<SearchResult> GetProductListForSearchBox()
         {
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInSale or MainMenu_Form.SelectedOption.Sales)
@@ -817,6 +1007,19 @@ namespace Sales_Tracker
                     {
                         ProcessNoteColumn(textBox);
                     }
+                    else if (column == nameof(Customers_Form.Column.PhoneNumber) && _selectedCountryCode != null)
+                    {
+                        // Save phone number with country code
+                        string phoneNumber = textBox.Text.Trim();
+                        if (!string.IsNullOrWhiteSpace(phoneNumber))
+                        {
+                            _selectedRow.Cells[column].Value = $"{_selectedCountryCode.Code} {phoneNumber}";
+                        }
+                        else
+                        {
+                            _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
+                        }
+                    }
                     else
                     {
                         _selectedRow.Cells[column].Value = textBox.Text.Trim();
@@ -825,7 +1028,11 @@ namespace Sales_Tracker
                 else if (control is Guna2ComboBox comboBox)
                 {
                     string columnName = comboBox.Name;
-                    _selectedRow.Cells[columnName].Value = comboBox.SelectedItem.ToString().Trim();
+                    // Don't save country code combo box, it's handled with phone number
+                    if (columnName != "CountryCode_ComboBox")
+                    {
+                        _selectedRow.Cells[columnName].Value = comboBox.SelectedItem.ToString().Trim();
+                    }
                 }
                 else if (control is Guna2DateTimePicker datePicker)
                 {
@@ -1187,6 +1394,9 @@ namespace Sales_Tracker
                 case nameof(MainMenu_Form.DataGridViewTag.Accountant):
                     UpdateAccountant();
                     break;
+                case nameof(MainMenu_Form.DataGridViewTag.Customer):
+                    UpdateCustomer();
+                    break;
             }
 
             if (_hasChanges && _selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
@@ -1373,6 +1583,64 @@ namespace Sales_Tracker
             }
 
             UpdateAllDataGridViewRows(ReadOnlyVariables.Accountant_column, oldAccountant, newAccountant, false);
+        }
+        private void UpdateCustomer()
+        {
+            // Get the customer object from the row tag
+            if (_selectedRow.Tag is not Customer customer)
+            {
+                return;
+            }
+
+            // Update customer object with new values from controls
+            foreach (Control control in Panel.Controls)
+            {
+                if (control is Guna2TextBox textBox)
+                {
+                    switch (textBox.Name)
+                    {
+                        case nameof(Customers_Form.Column.CustomerID):
+                            customer.CustomerID = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.CustomerName):
+                            customer.Name = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.Email):
+                            customer.Email = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.PhoneNumber):
+                            string phoneNumber = textBox.Text.Trim();
+                            if (_selectedCountryCode != null && !string.IsNullOrWhiteSpace(phoneNumber))
+                            {
+                                customer.PhoneNumber = $"{_selectedCountryCode.Code} {phoneNumber}";
+                            }
+                            else
+                            {
+                                customer.PhoneNumber = ReadOnlyVariables.EmptyCell;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            // Update address from second panel if it exists
+            if (_secondPanel != null)
+            {
+                foreach (Control control in _secondPanel.Controls)
+                {
+                    if (control is Guna2TextBox textBox && textBox.Name == nameof(Customers_Form.Column.Address))
+                    {
+                        customer.Address = textBox.Text.Trim();
+                        break;
+                    }
+                }
+            }
+
+            // Save customers to file
+            if (Customers_Form.Instance != null)
+            {
+                MainMenu_Form.Instance.SaveCustomersToFile();
+            }
         }
 
         // Validate TextBoxes in other forms
