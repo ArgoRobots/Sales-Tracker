@@ -69,26 +69,34 @@ namespace Sales_Tracker.UI
         public static bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
+            {
                 return false;
+            }
 
             string trimmed = email.Trim();
 
-            // Must contain exactly one @
+            // Must contain exactly one @ and cannot be at start or end
             int atIndex = trimmed.IndexOf('@');
             if (atIndex <= 0 || atIndex == trimmed.Length - 1)
-                return false; // @ must not be at start or end, and must exist
+            {
+                return false;
+            }
 
             // Check for multiple @ symbols
             if (trimmed.IndexOf('@', atIndex + 1) != -1)
+            {
                 return false;
+            }
 
             // Get the part after @
             string afterAt = trimmed.Substring(atIndex + 1);
 
-            // Must contain at least one . after @
+            // Must contain at least one . after @ and cannot be end
             int dotIndex = afterAt.IndexOf('.');
             if (dotIndex <= 0 || dotIndex == afterAt.Length - 1)
-                return false; // . must not be at start or end of domain part
+            {
+                return false;
+            }
 
             return true;
         }
@@ -128,11 +136,11 @@ namespace Sales_Tracker.UI
         private static void OnlyAllowPhoneCharactersInTextBox(object sender, KeyPressEventArgs e)
         {
             // Allow digits, parentheses, dashes, spaces, plus sign, and letters (for "ext")
-            if (!char.IsControl(e.KeyChar) && 
-                !char.IsDigit(e.KeyChar) && 
-                e.KeyChar != '(' && 
-                e.KeyChar != ')' && 
-                e.KeyChar != '-' && 
+            if (!char.IsControl(e.KeyChar) &&
+                !char.IsDigit(e.KeyChar) &&
+                e.KeyChar != '(' &&
+                e.KeyChar != ')' &&
+                e.KeyChar != '-' &&
                 e.KeyChar != ' ' &&
                 e.KeyChar != '+' &&
                 !char.IsLetter(e.KeyChar))
@@ -167,11 +175,11 @@ namespace Sales_Tracker.UI
 
             StringBuilder result = new();
             string lowerInput = input.ToLower();
-            
+
             for (int i = 0; i < input.Length; i++)
             {
                 char c = input[i];
-                
+
                 // Allow digits, parentheses, dashes, spaces, and plus sign
                 if (char.IsDigit(c) || c == '(' || c == ')' || c == '-' || c == ' ' || c == '+')
                 {
@@ -186,8 +194,8 @@ namespace Sales_Tracker.UI
                         string sequence = lowerInput.Substring(i, 3);
                         if (sequence == "ext")
                         {
-                            result.Append(input.Substring(i, 3));
-                            i += 2; 
+                            result.Append(input.AsSpan(i, 3));
+                            i += 2;
                         }
                     }
                     else if (i + 1 < input.Length)
@@ -195,7 +203,7 @@ namespace Sales_Tracker.UI
                         string sequence = lowerInput.Substring(i, 2);
                         if ("ext".StartsWith(sequence))
                         {
-                            result.Append(input.Substring(i, 2));
+                            result.Append(input.AsSpan(i, 2));
                             i += 1;
                         }
                     }

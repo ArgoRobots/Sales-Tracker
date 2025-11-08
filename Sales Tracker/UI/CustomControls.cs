@@ -552,7 +552,7 @@ namespace Sales_Tracker.UI
             ControlDropDown_Panel = ConstructPanelForMenu(new Size((int)(300 * scale), calculatedHeight), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Accountants", btnWidth, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Accountants_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -562,7 +562,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Companies", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Companies_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -572,7 +572,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Categories", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Categories_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -582,7 +582,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Products", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Products_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -592,7 +592,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Customers", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Customers_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -602,7 +602,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Manage rentals", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageRentals_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -612,7 +612,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Add sale", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddSale_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -622,7 +622,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Add purchase", btnWidth, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddPurchase_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
