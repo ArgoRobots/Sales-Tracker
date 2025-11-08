@@ -2749,5 +2749,496 @@ namespace Sales_Tracker.Charts
             geoMap.Series = [heatSeries];
             _geoMapOverlay.Visible = false;
         }
+
+        // Customer Analytics Charts
+        public static ChartData LoadTopCustomersByRevenueChart(
+            CartesianChart chart,
+            int topCount = 10,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            // Calculate total revenue for each customer
+            Dictionary<string, double> customerRevenue = [];
+            foreach (Customer customer in customers)
+            {
+                double totalRevenue = customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0;
+                if (totalRevenue > 0)
+                {
+                    customerRevenue[customer.Name] = totalRevenue;
+                }
+            }
+
+            // Sort by revenue and take top N
+            List<KeyValuePair<string, double>> topCustomers = customerRevenue
+                .OrderByDescending(kvp => kvp.Value)
+                .Take(topCount)
+                .ToList();
+
+            List<ISeries> series =
+            [
+                new ColumnSeries<double>
+                {
+                    Name = "Revenue",
+                    Values = topCustomers.Select(kvp => kvp.Value).ToArray(),
+                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 16,
+                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                    DataLabelsFormatter = point => CurrencyFormatter.Format(point.PrimaryValue)
+                }
+            ];
+
+            chart.Series = series;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    Labels = topCustomers.Select(kvp => kvp.Key).ToArray(),
+                    TextSize = 16,
+                    LabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    LabelsRotation = 45
+                }
+            ];
+
+            return new ChartData(topCustomers.Sum(kvp => kvp.Value), customerRevenue);
+        }
+
+        public static ChartData LoadCustomerPaymentStatusChart(
+            PieChart chart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            // Count customers by payment status
+            Dictionary<string, int> statusCounts = [];
+            foreach (Customer customer in customers)
+            {
+                string status = customer.CurrentPaymentStatus.ToString();
+                if (statusCounts.ContainsKey(status))
+                {
+                    statusCounts[status]++;
+                }
+                else
+                {
+                    statusCounts[status] = 1;
+                }
+            }
+
+            List<ISeries> series = [];
+            foreach (KeyValuePair<string, int> kvp in statusCounts)
+            {
+                series.Add(new PieSeries<int>
+                {
+                    Name = kvp.Key,
+                    Values = [kvp.Value],
+                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 16,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsFormatter = point => $"{kvp.Key}: {kvp.Value}"
+                });
+            }
+
+            chart.Series = series;
+
+            return new ChartData(statusCounts.Values.Sum(), statusCounts.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
+        }
+
+        public static ChartData LoadCustomerGrowthChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            // Group customers by month of creation
+            Dictionary<string, int> monthlyGrowth = [];
+            foreach (Customer customer in customers)
+            {
+                if (customer.CreatedDate != default && customer.CreatedDate != DateTime.MinValue)
+                {
+                    string monthKey = customer.CreatedDate.ToString("yyyy-MM");
+                    if (monthlyGrowth.ContainsKey(monthKey))
+                    {
+                        monthlyGrowth[monthKey]++;
+                    }
+                    else
+                    {
+                        monthlyGrowth[monthKey] = 1;
+                    }
+                }
+            }
+
+            // Sort by month
+            List<KeyValuePair<string, int>> sortedData = monthlyGrowth.OrderBy(kvp => kvp.Key).ToList();
+
+            // Calculate cumulative total
+            List<int> cumulativeCustomers = [];
+            int runningTotal = 0;
+            foreach (KeyValuePair<string, int> kvp in sortedData)
+            {
+                runningTotal += kvp.Value;
+                cumulativeCustomers.Add(runningTotal);
+            }
+
+            List<ISeries> series;
+            if (isLineChart)
+            {
+                series =
+                [
+                    new LineSeries<int>
+                    {
+                        Name = "Total Customers",
+                        Values = cumulativeCustomers.ToArray(),
+                        Fill = new SolidColorPaint(ChartColors.GetRandomColor().WithAlpha(50)),
+                        Stroke = new SolidColorPaint(ChartColors.GetRandomColor()) { StrokeThickness = 3 },
+                        DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                        DataLabelsSize = 14,
+                        GeometrySize = 8
+                    }
+                ];
+            }
+            else
+            {
+                series =
+                [
+                    new ColumnSeries<int>
+                    {
+                        Name = "Total Customers",
+                        Values = cumulativeCustomers.ToArray(),
+                        Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                        DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                        DataLabelsSize = 14
+                    }
+                ];
+            }
+
+            chart.Series = series;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    Labels = sortedData.Select(kvp => DateTime.Parse(kvp.Key + "-01").ToString("MMM yyyy")).ToArray(),
+                    TextSize = 16,
+                    LabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    LabelsRotation = 45
+                }
+            ];
+
+            return new ChartData(cumulativeCustomers.LastOrDefault(), monthlyGrowth.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
+        }
+
+        public static ChartData LoadActiveVsInactiveCustomersChart(
+            PieChart chart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigurePieChart(chart);
+            }
+
+            // Consider active if they have rentals in last 90 days or have active rentals
+            DateTime cutoffDate = DateTime.Now.AddDays(-90);
+            int activeCount = 0;
+            int inactiveCount = 0;
+            int bannedCount = 0;
+
+            foreach (Customer customer in customers)
+            {
+                if (customer.IsBanned)
+                {
+                    bannedCount++;
+                }
+                else if (customer.GetActiveRentals()?.Count > 0 ||
+                         (customer.LastRentalDate != default && customer.LastRentalDate >= cutoffDate))
+                {
+                    activeCount++;
+                }
+                else
+                {
+                    inactiveCount++;
+                }
+            }
+
+            List<ISeries> series =
+            [
+                new PieSeries<int>
+                {
+                    Name = "Active",
+                    Values = [activeCount],
+                    Fill = new SolidColorPaint(SKColors.Green),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 16,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsFormatter = point => $"Active: {activeCount}"
+                },
+                new PieSeries<int>
+                {
+                    Name = "Inactive",
+                    Values = [inactiveCount],
+                    Fill = new SolidColorPaint(SKColors.Orange),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 16,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsFormatter = point => $"Inactive: {inactiveCount}"
+                },
+                new PieSeries<int>
+                {
+                    Name = "Banned",
+                    Values = [bannedCount],
+                    Fill = new SolidColorPaint(SKColors.Red),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 16,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsFormatter = point => $"Banned: {bannedCount}"
+                }
+            ];
+
+            chart.Series = series;
+
+            Dictionary<string, double> data = new()
+            {
+                { "Active", activeCount },
+                { "Inactive", inactiveCount },
+                { "Banned", bannedCount }
+            };
+
+            return new ChartData(activeCount + inactiveCount + bannedCount, data);
+        }
+
+        public static ChartData LoadCustomerLifetimeValueChart(
+            CartesianChart chart,
+            int topCount = 15,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            // Calculate lifetime value (total amount paid) for each customer
+            Dictionary<string, double> customerLTV = [];
+            foreach (Customer customer in customers)
+            {
+                double ltv = customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0;
+                if (ltv > 0)
+                {
+                    customerLTV[customer.Name] = ltv;
+                }
+            }
+
+            // Sort by LTV and take top N
+            List<KeyValuePair<string, double>> topByLTV = customerLTV
+                .OrderByDescending(kvp => kvp.Value)
+                .Take(topCount)
+                .ToList();
+
+            List<ISeries> series =
+            [
+                new ColumnSeries<double>
+                {
+                    Name = "Lifetime Value",
+                    Values = topByLTV.Select(kvp => kvp.Value).ToArray(),
+                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    DataLabelsSize = 14,
+                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                    DataLabelsFormatter = point => CurrencyFormatter.Format(point.PrimaryValue)
+                }
+            ];
+
+            chart.Series = series;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    Labels = topByLTV.Select(kvp => kvp.Key).ToArray(),
+                    TextSize = 14,
+                    LabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    LabelsRotation = 45
+                }
+            ];
+
+            return new ChartData(topByLTV.Sum(kvp => kvp.Value), customerLTV);
+        }
+
+        public static ChartData LoadAverageRentalsPerCustomerChart(
+            CartesianChart chart,
+            bool isLineChart,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            List<Customer> customers = MainMenu_Form.Instance.CustomerList;
+
+            bool hasData = customers != null && customers.Count > 0;
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureCartesianChart(chart);
+            }
+
+            // Group customers by number of rentals
+            Dictionary<string, int> rentalRanges = new()
+            {
+                { "0", 0 },
+                { "1", 0 },
+                { "2-5", 0 },
+                { "6-10", 0 },
+                { "11-20", 0 },
+                { "21+", 0 }
+            };
+
+            foreach (Customer customer in customers)
+            {
+                int rentalCount = customer.RentalRecords?.Count ?? 0;
+
+                if (rentalCount == 0)
+                    rentalRanges["0"]++;
+                else if (rentalCount == 1)
+                    rentalRanges["1"]++;
+                else if (rentalCount <= 5)
+                    rentalRanges["2-5"]++;
+                else if (rentalCount <= 10)
+                    rentalRanges["6-10"]++;
+                else if (rentalCount <= 20)
+                    rentalRanges["11-20"]++;
+                else
+                    rentalRanges["21+"]++;
+            }
+
+            List<ISeries> series;
+            if (isLineChart)
+            {
+                series =
+                [
+                    new LineSeries<int>
+                    {
+                        Name = "Customers",
+                        Values = rentalRanges.Values.ToArray(),
+                        Fill = new SolidColorPaint(ChartColors.GetRandomColor().WithAlpha(50)),
+                        Stroke = new SolidColorPaint(ChartColors.GetRandomColor()) { StrokeThickness = 3 },
+                        DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                        DataLabelsSize = 14,
+                        GeometrySize = 10
+                    }
+                ];
+            }
+            else
+            {
+                series =
+                [
+                    new ColumnSeries<int>
+                    {
+                        Name = "Customers",
+                        Values = rentalRanges.Values.ToArray(),
+                        Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                        DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                        DataLabelsSize = 14
+                    }
+                ];
+            }
+
+            chart.Series = series;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    Labels = rentalRanges.Keys.ToArray(),
+                    Name = "Number of Rentals",
+                    TextSize = 16,
+                    LabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text))
+                }
+            ];
+
+            chart.YAxes =
+            [
+                new Axis
+                {
+                    Name = "Number of Customers",
+                    TextSize = 16,
+                    LabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
+                    SeparatorsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)) { StrokeThickness = 1f }
+                }
+            ];
+
+            return new ChartData(customers.Count, rentalRanges.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
+        }
     }
 }

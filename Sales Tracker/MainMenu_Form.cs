@@ -2396,7 +2396,8 @@ private void Sales_Button_Click(object sender, EventArgs e)
             Performance,
             Operational,
             Returns,
-            LostProducts
+            LostProducts,
+            Customers
         }
         public enum ChartDataType
         {
@@ -2460,6 +2461,12 @@ private void Sales_Button_Click(object sender, EventArgs e)
         public PieChart LossesByCategory_Chart { get; private set; }
         public PieChart LossesByProduct_Chart { get; private set; }
         public PieChart PurchaseVsSaleLosses_Chart { get; private set; }
+        public CartesianChart TopCustomersByRevenue_Chart { get; private set; }
+        public PieChart CustomerPaymentStatus_Chart { get; private set; }
+        public CartesianChart CustomerGrowth_Chart { get; private set; }
+        public PieChart ActiveVsInactiveCustomers_Chart { get; private set; }
+        public CartesianChart CustomerLifetimeValue_Chart { get; private set; }
+        public CartesianChart AverageRentalsPerCustomer_Chart { get; private set; }
         public GeoMap WorldMap_GeoMap { get; private set; }
 
         // GeoMap properties
@@ -2588,6 +2595,12 @@ private void Sales_Button_Click(object sender, EventArgs e)
             LossesByCategory_Chart = ConstructAnalyticsChart("lossesByCategory_Chart", false) as PieChart;
             LossesByProduct_Chart = ConstructAnalyticsChart("lossesByProduct_Chart", false) as PieChart;
             PurchaseVsSaleLosses_Chart = ConstructAnalyticsChart("purchaseVsSaleLosses_Chart", false) as PieChart;
+            TopCustomersByRevenue_Chart = ConstructAnalyticsChart("topCustomersByRevenue_Chart", true) as CartesianChart;
+            CustomerPaymentStatus_Chart = ConstructAnalyticsChart("customerPaymentStatus_Chart", false) as PieChart;
+            CustomerGrowth_Chart = ConstructAnalyticsChart("customerGrowth_Chart", true) as CartesianChart;
+            ActiveVsInactiveCustomers_Chart = ConstructAnalyticsChart("activeVsInactiveCustomers_Chart", false) as PieChart;
+            CustomerLifetimeValue_Chart = ConstructAnalyticsChart("customerLifetimeValue_Chart", true) as CartesianChart;
+            AverageRentalsPerCustomer_Chart = ConstructAnalyticsChart("averageRentalsPerCustomer_Chart", true) as CartesianChart;
 
             WorldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
@@ -2665,6 +2678,9 @@ private void Sales_Button_Click(object sender, EventArgs e)
 
             Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
             tabButtons.Add(lostProductsButton);
+
+            Guna2Button customersButton = CreateTabButton("Customers", AnalyticsTab.Customers, Resources.Customers);
+            tabButtons.Add(customersButton);
 
             _tabButtons = tabButtons;
 
@@ -2797,6 +2813,16 @@ private void Sales_Button_Click(object sender, EventArgs e)
                 PurchaseVsSaleLosses_Chart
             ]);
 
+            _tabControls[AnalyticsTab.Customers].AddRange(
+            [
+                TopCustomersByRevenue_Chart,
+                CustomerPaymentStatus_Chart,
+                CustomerGrowth_Chart,
+                ActiveVsInactiveCustomers_Chart,
+                CustomerLifetimeValue_Chart,
+                AverageRentalsPerCustomer_Chart
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
@@ -2825,6 +2851,12 @@ private void Sales_Button_Click(object sender, EventArgs e)
                 LossesByCategory_Chart,
                 LossesByProduct_Chart,
                 PurchaseVsSaleLosses_Chart,
+                TopCustomersByRevenue_Chart,
+                CustomerPaymentStatus_Chart,
+                CustomerGrowth_Chart,
+                ActiveVsInactiveCustomers_Chart,
+                CustomerLifetimeValue_Chart,
+                AverageRentalsPerCustomer_Chart
             ];
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
@@ -2927,6 +2959,26 @@ private void Sales_Button_Click(object sender, EventArgs e)
 
                     LoadChart.LoadPurchaseVsSaleLossesChart(PurchaseVsSaleLosses_Chart);
                     SetChartTitle(PurchaseVsSaleLosses_Chart, TranslatedChartTitles.PurchaseVsSaleLosses);
+                    break;
+
+                case AnalyticsTab.Customers:
+                    LoadChart.LoadTopCustomersByRevenueChart(TopCustomersByRevenue_Chart);
+                    SetChartTitle(TopCustomersByRevenue_Chart, "Top Customers by Revenue");
+
+                    LoadChart.LoadCustomerPaymentStatusChart(CustomerPaymentStatus_Chart);
+                    SetChartTitle(CustomerPaymentStatus_Chart, "Customer Payment Status");
+
+                    LoadChart.LoadCustomerGrowthChart(CustomerGrowth_Chart, isLine);
+                    SetChartTitle(CustomerGrowth_Chart, "Customer Growth Over Time");
+
+                    LoadChart.LoadActiveVsInactiveCustomersChart(ActiveVsInactiveCustomers_Chart);
+                    SetChartTitle(ActiveVsInactiveCustomers_Chart, "Active vs Inactive Customers");
+
+                    LoadChart.LoadCustomerLifetimeValueChart(CustomerLifetimeValue_Chart);
+                    SetChartTitle(CustomerLifetimeValue_Chart, "Customer Lifetime Value");
+
+                    LoadChart.LoadAverageRentalsPerCustomerChart(AverageRentalsPerCustomer_Chart, isLine);
+                    SetChartTitle(AverageRentalsPerCustomer_Chart, "Average Rentals per Customer");
                     break;
             }
         }
