@@ -689,9 +689,8 @@ namespace Sales_Tracker
             return left;
         }
 
-        private List<CountryCode> _countryCodes;
         private CountryCode _selectedCountryCode;
-        private Guna2ComboBox _countryCodeComboBox;
+        private Guna2TextBox _countryCodeTextBox;
         private Guna2TextBox _phoneNumberTextBox;
 
         private int ConstructControlsForCustomer()
@@ -732,9 +731,8 @@ namespace Sales_Tracker
                         // Parse phone number to extract country code and number
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
 
-                        // Country code combo box
-                        _countryCodes = CountryCode.GetCountryCodes();
-                        _countryCodeComboBox = ConstructCountryCodeComboBox(left, _countryCodes, countryCode);
+                        // Country code search box
+                        _countryCodeTextBox = ConstructCountryCodeSearchBox(left, countryCode);
 
                         // Phone number text box
                         int phoneLeft = left + 100 + CustomControls.SpaceBetweenControls;
@@ -792,49 +790,48 @@ namespace Sales_Tracker
             return ("+1", fullPhoneNumber);
         }
 
-        private Guna2ComboBox ConstructCountryCodeComboBox(int left, List<CountryCode> countryCodes, string selectedCode)
+        private Guna2TextBox ConstructCountryCodeSearchBox(int left, string selectedCode)
         {
-            Guna2ComboBox comboBox = new()
+            Guna2TextBox textBox = new()
             {
                 Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
                 Height = ScaledControlHeight,
                 Width = 100,
-                Name = "CountryCode_ComboBox",
+                Name = "CountryCode_TextBox",
                 ForeColor = CustomColors.Text,
                 BackColor = CustomColors.ControlBack,
                 Font = new Font("Segoe UI", 9),
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 3,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                DrawMode = DrawMode.OwnerDrawFixed,
-                ItemHeight = 24,
+                MaxLength = 50,
                 AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                 FocusedState = { BorderColor = CustomColors.AccentBlue },
                 HoverState = { BorderColor = CustomColors.AccentBlue }
             };
 
-            foreach (CountryCode country in countryCodes)
-            {
-                comboBox.Items.Add(country);
-            }
-
             // Set selected country
+            List<CountryCode> countryCodes = CountryCode.GetCountryCodes();
             _selectedCountryCode = countryCodes.FirstOrDefault(c => c.Code == selectedCode) ?? countryCodes.FirstOrDefault(c => c.Code == "+1");
             if (_selectedCountryCode != null)
             {
-                comboBox.SelectedItem = _selectedCountryCode;
+                textBox.Text = _selectedCountryCode.ToSearchResultText();
             }
 
-            comboBox.SelectedIndexChanged += CountryCode_ComboBox_SelectedIndexChanged;
-            Panel.Controls.Add(comboBox);
+            Panel.Controls.Add(textBox);
 
-            return comboBox;
+            // Attach SearchBox with country codes and flags
+            SearchBox.Attach(textBox, this, () => CountryCode.GetCountryCodeSearchResults(), 150, false, true, true, false);
+
+            textBox.TextChanged += CountryCode_TextBox_TextChanged;
+            return textBox;
         }
 
-        private void CountryCode_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (_countryCodeComboBox.SelectedItem is CountryCode selectedCountry)
+            // Parse the country code from the search result text
+            CountryCode? selectedCountry = CountryCode.GetCountryCodeFromText(_countryCodeTextBox.Text);
+            if (selectedCountry != null)
             {
                 _selectedCountryCode = selectedCountry;
 
@@ -1028,8 +1025,8 @@ namespace Sales_Tracker
                 else if (control is Guna2ComboBox comboBox)
                 {
                     string columnName = comboBox.Name;
-                    // Don't save country code combo box, it's handled with phone number
-                    if (columnName != "CountryCode_ComboBox")
+                    // Don't save country code textbox, it's handled with phone number
+                    if (columnName != "CountryCode_TextBox")
                     {
                         _selectedRow.Cells[columnName].Value = comboBox.SelectedItem.ToString().Trim();
                     }

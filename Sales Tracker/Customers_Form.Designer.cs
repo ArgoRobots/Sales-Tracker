@@ -58,7 +58,7 @@ namespace Sales_Tracker
             Email_Label = new Label();
             Email_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             PhoneNumber_Label = new Label();
-            CountryCode_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            CountryCode_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             PhoneNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Address_Label = new Label();
             Address_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -238,23 +238,28 @@ namespace Sales_Tracker
             PhoneNumber_Label.TabIndex = 0;
             PhoneNumber_Label.Text = "Phone number";
             //
-            // CountryCode_ComboBox
+            // CountryCode_TextBox
             //
-            CountryCode_ComboBox.Anchor = AnchorStyles.Top;
-            CountryCode_ComboBox.BackColor = Color.Transparent;
-            CountryCode_ComboBox.CustomizableEdges = customizableEdges9;
-            CountryCode_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            CountryCode_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            CountryCode_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            CountryCode_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            CountryCode_ComboBox.Font = new Font("Segoe UI", 9F);
-            CountryCode_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
-            CountryCode_ComboBox.ItemHeight = 24;
-            CountryCode_ComboBox.Location = new Point(591, 92);
-            CountryCode_ComboBox.Name = "CountryCode_ComboBox";
-            CountryCode_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            CountryCode_ComboBox.Size = new Size(90, 30);
-            CountryCode_ComboBox.TabIndex = 5;
+            CountryCode_TextBox.Anchor = AnchorStyles.Top;
+            CountryCode_TextBox.CustomizableEdges = customizableEdges9;
+            CountryCode_TextBox.DefaultText = "";
+            CountryCode_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            CountryCode_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            CountryCode_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            CountryCode_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            CountryCode_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            CountryCode_TextBox.Font = new Font("Segoe UI", 9F);
+            CountryCode_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            CountryCode_TextBox.Location = new Point(591, 92);
+            CountryCode_TextBox.MaxLength = 50;
+            CountryCode_TextBox.Name = "CountryCode_TextBox";
+            CountryCode_TextBox.PlaceholderText = "";
+            CountryCode_TextBox.SelectedText = "";
+            CountryCode_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            CountryCode_TextBox.ShortcutsEnabled = false;
+            CountryCode_TextBox.Size = new Size(90, 30);
+            CountryCode_TextBox.TabIndex = 5;
+            CountryCode_TextBox.Tag = "1";
             //
             // PhoneNumber_TextBox
             //
@@ -469,7 +474,7 @@ namespace Sales_Tracker
             Controls.Add(Address_TextBox);
             Controls.Add(Address_Label);
             Controls.Add(PhoneNumber_TextBox);
-            Controls.Add(CountryCode_ComboBox);
+            Controls.Add(CountryCode_TextBox);
             Controls.Add(PhoneNumber_Label);
             Controls.Add(Email_TextBox);
             Controls.Add(Email_Label);
@@ -506,7 +511,7 @@ namespace Sales_Tracker
         private Label Email_Label;
         private Guna.UI2.WinForms.Guna2TextBox Email_TextBox;
         private Label PhoneNumber_Label;
-        private Guna.UI2.WinForms.Guna2ComboBox CountryCode_ComboBox;
+        private Guna.UI2.WinForms.Guna2TextBox CountryCode_TextBox;
         private Guna.UI2.WinForms.Guna2TextBox PhoneNumber_TextBox;
         private Label Address_Label;
         private Guna.UI2.WinForms.Guna2TextBox Address_TextBox;

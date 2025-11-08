@@ -15,7 +15,6 @@ namespace Sales_Tracker
         private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly int _topForDataGridView;
         private Label _emailError_Label;
-        private List<CountryCode> _countryCodes;
         private CountryCode _selectedCountryCode;
 
         // Getters
@@ -45,7 +44,7 @@ namespace Sales_Tracker
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_customers_DataGridView);
             AddEventHandlersToTextBoxes();
             ConstructEmailErrorLabel();
-            InitializeCountryCodeComboBox();
+            InitializeCountryCodeSearchBox();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
                 TextBoxManager.RightClickTextBox_Panel,
@@ -70,26 +69,24 @@ namespace Sales_Tracker
             };
             Controls.Add(_emailError_Label);
         }
-        private void InitializeCountryCodeComboBox()
-        {
-            _countryCodes = CountryCode.GetCountryCodes();
 
-            // Populate the ComboBox
-            CountryCode_ComboBox.Items.Clear();
-            foreach (CountryCode country in _countryCodes)
-            {
-                CountryCode_ComboBox.Items.Add(country);
-            }
+        private void InitializeCountryCodeSearchBox()
+        {
+            // Attach SearchBox with country codes and flags
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int searchBoxMaxHeight = (int)(150 * scale);
+            SearchBox.Attach(CountryCode_TextBox, this, () => CountryCode.GetCountryCodeSearchResults(), searchBoxMaxHeight, false, true, true, false);
 
             // Set default to United States (+1)
-            _selectedCountryCode = _countryCodes.FirstOrDefault(c => c.Code == "+1");
+            _selectedCountryCode = CountryCode.GetCountryCodes().FirstOrDefault(c => c.Code == "+1");
             if (_selectedCountryCode != null)
             {
-                CountryCode_ComboBox.SelectedItem = _selectedCountryCode;
+                CountryCode_TextBox.Text = _selectedCountryCode.ToSearchResultText();
             }
 
-            // Wire up event handler
-            CountryCode_ComboBox.SelectedIndexChanged += CountryCode_ComboBox_SelectedIndexChanged;
+            // Wire up event handler for text changes
+            CountryCode_TextBox.TextChanged += CountryCode_TextBox_TextChanged;
+            TextBoxManager.Attach(CountryCode_TextBox);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -189,9 +186,12 @@ namespace Sales_Tracker
                 Email_TextBox.BorderColor = CustomColors.ControlBorder;
             }
         }
-        private void CountryCode_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (CountryCode_ComboBox.SelectedItem is CountryCode selectedCountry)
+            // Parse the country code from the search result text
+            CountryCode? selectedCountry = CountryCode.GetCountryCodeFromText(CountryCode_TextBox.Text);
+            if (selectedCountry != null)
             {
                 _selectedCountryCode = selectedCountry;
 

@@ -1,3 +1,4 @@
+using Sales_Tracker.UI;
 using System.Text;
 
 namespace Sales_Tracker.DataClasses
@@ -21,6 +22,14 @@ namespace Sales_Tracker.DataClasses
         public override string ToString()
         {
             return $"{CountryName} ({Code})";
+        }
+
+        /// <summary>
+        /// Gets the search result display text with country code.
+        /// </summary>
+        public string ToSearchResultText()
+        {
+            return $"{Code} - {CountryName}";
         }
 
         /// <summary>
@@ -123,6 +132,82 @@ namespace Sales_Tracker.DataClasses
             }
 
             return formatted.ToString();
+        }
+
+        /// <summary>
+        /// Gets SearchResults for country codes with flags for use in SearchBox.
+        /// </summary>
+        public static List<SearchResult> GetCountryCodeSearchResults()
+        {
+            List<SearchResult> results = new();
+            List<CountryCode> countryCodes = GetCountryCodes();
+
+            // Create a dictionary to map country names to their flags from the Country class
+            Dictionary<string, Image?> countryFlags = Country.CountrySearchResults
+                .Where(sr => sr.Name != SearchBox.AddLine && !string.IsNullOrEmpty(sr.Name))
+                .ToDictionary(sr => sr.Name, sr => sr.Image, StringComparer.OrdinalIgnoreCase);
+
+            // Add popular countries first
+            string[] popularCountries = { "United States", "Canada", "United Kingdom" };
+            foreach (string popularCountry in popularCountries)
+            {
+                CountryCode? country = countryCodes.FirstOrDefault(c => c.CountryName == popularCountry);
+                if (country != null)
+                {
+                    countryFlags.TryGetValue(country.CountryName, out Image? flag);
+                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0) { Tag = country });
+                }
+            }
+
+            // Add separator line
+            results.Add(new SearchResult(SearchBox.AddLine, null, 0));
+
+            // Add all other countries
+            foreach (CountryCode country in countryCodes)
+            {
+                if (!popularCountries.Contains(country.CountryName))
+                {
+                    countryFlags.TryGetValue(country.CountryName, out Image? flag);
+                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0) { Tag = country });
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Parses a search result text to extract the country code.
+        /// </summary>
+        public static string ParseCountryCodeFromSearchResult(string searchResultText)
+        {
+            if (string.IsNullOrWhiteSpace(searchResultText))
+                return "+1";
+
+            // Format is "+X - CountryName" or "+XX - CountryName"
+            int dashIndex = searchResultText.IndexOf(" - ");
+            if (dashIndex > 0)
+            {
+                return searchResultText.Substring(0, dashIndex).Trim();
+            }
+
+            return searchResultText;
+        }
+
+        /// <summary>
+        /// Gets a CountryCode object from a search result text or country code string.
+        /// </summary>
+        public static CountryCode? GetCountryCodeFromText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return GetCountryCodes().FirstOrDefault(c => c.Code == "+1");
+
+            List<CountryCode> codes = GetCountryCodes();
+
+            // Try to parse as search result text ("+X - CountryName")
+            string code = ParseCountryCodeFromSearchResult(text);
+
+            // Find by code
+            return codes.FirstOrDefault(c => c.Code == code) ?? codes.FirstOrDefault(c => c.Code == "+1");
         }
     }
 }
