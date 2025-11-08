@@ -12,11 +12,6 @@ namespace Sales_Tracker.DataClasses
         public string Code { get; set; } = code;
         public string Format { get; set; } = format;
 
-        public override string ToString()
-        {
-            return $"{CountryName} ({Code})";
-        }
-
         /// <summary>
         /// Gets the search result display text with country code.
         /// </summary>

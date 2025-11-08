@@ -13,7 +13,6 @@ namespace Sales_Tracker
         private static Customers_Form _instance;
         private static bool _isProgramLoading;
         private readonly MainMenu_Form.SelectedOption _oldOption;
-        private readonly int _topForDataGridView;
         private Label _emailError_Label;
         private CountryCode _selectedCountryCode;
 
@@ -27,7 +26,6 @@ namespace Sales_Tracker
             _instance = this;
 
             _oldOption = MainMenu_Form.Instance.Selected;
-            _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             AddSearchBoxEvents();
 
             _isProgramLoading = true;
@@ -69,20 +67,12 @@ namespace Sales_Tracker
             };
             Controls.Add(_emailError_Label);
         }
-
         private void InitializeCountryCodeSearchBox()
         {
             // Attach SearchBox with country codes and flags
             float scale = DpiHelper.GetRelativeDpiScale();
-            int searchBoxMaxHeight = (int)(150 * scale);
-            SearchBox.Attach(CountryCode_TextBox, this, () => CountryCode.GetCountryCodeSearchResults(), searchBoxMaxHeight, false, true, true, false);
-
-            // Set default to United States (+1)
-            _selectedCountryCode = CountryCode.GetCountryCodes().FirstOrDefault(c => c.Code == "+1");
-            if (_selectedCountryCode != null)
-            {
-                CountryCode_TextBox.Text = _selectedCountryCode.ToSearchResultText();
-            }
+            int searchBoxMaxHeight = (int)(255 * scale);
+            SearchBox.Attach(CountryCode_TextBox, this, CountryCode.GetCountryCodeSearchResults, searchBoxMaxHeight, false, true, true, false);
 
             // Wire up event handler for text changes
             CountryCode_TextBox.TextChanged += CountryCode_TextBox_TextChanged;
@@ -214,7 +204,7 @@ namespace Sales_Tracker
                 customerID = ReadOnlyVariables.EmptyCell;
             }
 
-            // Validate email before proceeding (requires @ and . with text on both sides)
+            // Validate email
             string email = Email_TextBox.Text.Trim();
             if (!TextBoxValidation.IsValidEmail(email))
             {
@@ -228,7 +218,7 @@ namespace Sales_Tracker
             if (IsEmailDuplicate(email))
             {
                 CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Duplicate email",
-                    "Email '{0}' already exists. Add customer anyway?",
+                    "Email '{0}' already exists. Would you like to add the customer anyway?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
                     email);
@@ -295,7 +285,7 @@ namespace Sales_Tracker
             DataGridViewManager.DataGridViewRowsAdded(_customers_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             // Save
-            SaveCustomersToFile();
+            MainMenu_Form.Instance.SaveCustomersToFile();
 
             string message = $"Added customer '{customer.Name}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 4, message);
@@ -348,17 +338,15 @@ namespace Sales_Tracker
         // DataGridView methods
         private void ConstructDataGridView()
         {
+            int topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
+
             _customers_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(_customers_DataGridView, "customers_DataGridView", ColumnHeaders, null, this);
-            _customers_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
-            _customers_DataGridView.Location = new Point((ClientSize.Width - _customers_DataGridView.Width) / 2, _topForDataGridView);
+            _customers_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            _customers_DataGridView.Location = new Point((ClientSize.Width - _customers_DataGridView.Width) / 2, topForDataGridView);
             _customers_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _customers_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Customer;
             _customers_DataGridView.CellFormatting += DataGridView_CellFormatting;
-            _customers_DataGridView.CellDoubleClick += DataGridView_CellDoubleClick;
-
-            _customers_DataGridView.Columns[Column.IsBanned.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            _customers_DataGridView.Columns[Column.IsBanned.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -399,15 +387,6 @@ namespace Sales_Tracker
                     e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     e.FormattingApplied = true;
                 }
-            }
-        }
-
-        private void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow selectedRow = _customers_DataGridView.Rows[e.RowIndex];
-                Tools.OpenForm(new ModifyRow_Form(selectedRow));
             }
         }
         private void LoadCustomers()
@@ -469,10 +448,6 @@ namespace Sales_Tracker
             // Check if email is valid (contains @ and . with text on both sides)
             bool emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
             AddCustomer_Button.Enabled = allFieldsFilled && emailValid;
-        }
-        private static void SaveCustomersToFile()
-        {
-            MainMenu_Form.Instance.SaveCustomersToFile();
         }
         private void ClosePanels()
         {
