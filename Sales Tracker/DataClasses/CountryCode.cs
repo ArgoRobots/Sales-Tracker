@@ -145,7 +145,7 @@ namespace Sales_Tracker.DataClasses
             // Create a dictionary to map country names to their flags from the Country class
             Dictionary<string, Image?> countryFlags = Country.CountrySearchResults
                 .Where(sr => sr.Name != SearchBox.AddLine && !string.IsNullOrEmpty(sr.Name))
-                .ToDictionary(sr => sr.Name, sr => sr.Image, StringComparer.OrdinalIgnoreCase);
+                .ToDictionary(sr => sr.Name, sr => sr.Flag, StringComparer.OrdinalIgnoreCase);
 
             // Add popular countries first
             string[] popularCountries = { "United States", "Canada", "United Kingdom" };
@@ -155,7 +155,7 @@ namespace Sales_Tracker.DataClasses
                 if (country != null)
                 {
                     countryFlags.TryGetValue(country.CountryName, out Image? flag);
-                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0) { Tag = country });
+                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0));
                 }
             }
 
@@ -168,7 +168,7 @@ namespace Sales_Tracker.DataClasses
                 if (!popularCountries.Contains(country.CountryName))
                 {
                     countryFlags.TryGetValue(country.CountryName, out Image? flag);
-                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0) { Tag = country });
+                    results.Add(new SearchResult(country.ToSearchResultText(), flag, 0));
                 }
             }
 

@@ -355,7 +355,6 @@ namespace Sales_Tracker
             _customers_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _customers_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Customer;
             _customers_DataGridView.CellFormatting += DataGridView_CellFormatting;
-            _customers_DataGridView.CellMouseClick += DataGridView_CellMouseClick;
             _customers_DataGridView.CellDoubleClick += DataGridView_CellDoubleClick;
 
             _customers_DataGridView.Columns[Column.IsBanned.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -402,13 +401,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void DataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
-            {
-                DataGridViewManager.RightClickDataGridView(_customers_DataGridView, e);
-            }
-        }
+
         private void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
