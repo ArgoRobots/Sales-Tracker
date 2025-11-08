@@ -15,6 +15,8 @@ namespace Sales_Tracker
         private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly int _topForDataGridView;
         private Label _emailError_Label;
+        private List<CountryCode> _countryCodes;
+        private CountryCode _selectedCountryCode;
 
         // Getters
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
@@ -44,6 +46,7 @@ namespace Sales_Tracker
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_customers_DataGridView);
             AddEventHandlersToTextBoxes();
             ConstructEmailErrorLabel();
+            InitializeCountryCodeComboBox();
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
                 TextBoxManager.RightClickTextBox_Panel,
@@ -70,6 +73,28 @@ namespace Sales_Tracker
             Controls.Add(_emailError_Label);
         }
 
+        private void InitializeCountryCodeComboBox()
+        {
+            _countryCodes = CountryCode.GetCountryCodes();
+
+            // Populate the ComboBox
+            CountryCode_ComboBox.Items.Clear();
+            foreach (CountryCode country in _countryCodes)
+            {
+                CountryCode_ComboBox.Items.Add(country);
+            }
+
+            // Set default to United States (+1)
+            _selectedCountryCode = _countryCodes.FirstOrDefault(c => c.Code == "+1");
+            if (_selectedCountryCode != null)
+            {
+                CountryCode_ComboBox.SelectedItem = _selectedCountryCode;
+            }
+
+            // Wire up event handler
+            CountryCode_ComboBox.SelectedIndexChanged += CountryCode_ComboBox_SelectedIndexChanged;
+        }
+
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(CustomerID_TextBox);
@@ -88,7 +113,7 @@ namespace Sales_Tracker
             Email_TextBox.Enter += Email_TextBox_Enter;
             TextBoxManager.Attach(Email_TextBox);
             
-            TextBoxValidation.ValidatePhoneNumber(PhoneNumber_TextBox);
+            PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             PhoneNumber_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(PhoneNumber_TextBox);
             
@@ -172,6 +197,48 @@ namespace Sales_Tracker
             }
         }
 
+        private void CountryCode_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CountryCode_ComboBox.SelectedItem is CountryCode selectedCountry)
+            {
+                _selectedCountryCode = selectedCountry;
+
+                // Reformat the existing phone number with the new country format
+                if (!string.IsNullOrWhiteSpace(PhoneNumber_TextBox.Text))
+                {
+                    FormatPhoneNumber();
+                }
+            }
+        }
+
+        private void PhoneNumber_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            FormatPhoneNumber();
+        }
+
+        private void FormatPhoneNumber()
+        {
+            if (_selectedCountryCode == null) return;
+
+            int cursorPosition = PhoneNumber_TextBox.SelectionStart;
+            string currentText = PhoneNumber_TextBox.Text;
+
+            // Format the phone number
+            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(currentText);
+
+            if (currentText != formattedNumber)
+            {
+                PhoneNumber_TextBox.TextChanged -= PhoneNumber_TextBox_TextChanged;
+                PhoneNumber_TextBox.Text = formattedNumber;
+
+                // Adjust cursor position
+                int newCursorPosition = Math.Min(cursorPosition + (formattedNumber.Length - currentText.Length), formattedNumber.Length);
+                PhoneNumber_TextBox.SelectionStart = Math.Max(0, newCursorPosition);
+
+                PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+            }
+        }
+
         private void AddCustomer_Button_Click(object sender, EventArgs e)
         {
             string customerID = CustomerID_TextBox.Text.Trim();
@@ -225,11 +292,17 @@ namespace Sales_Tracker
             string fullName = $"{firstName} {lastName}".Trim();
 
             // Create new customer
+            string phoneNumber = PhoneNumber_TextBox.Text.Trim();
+            if (_selectedCountryCode != null && !string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                phoneNumber = $"{_selectedCountryCode.Code} {phoneNumber}";
+            }
+
             Customer customer = new(
                 customerID,
                 fullName,
                 email,
-                PhoneNumber_TextBox.Text.Trim(),
+                phoneNumber,
                 Address_TextBox.Text.Trim())
             {
                 Notes = Notes_TextBox.Text.Trim()

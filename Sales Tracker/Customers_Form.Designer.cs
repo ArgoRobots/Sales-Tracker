@@ -46,6 +46,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             AddCustomer_Label = new Label();
             CustomerID_Label = new Label();
             CustomerID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -56,6 +58,7 @@ namespace Sales_Tracker
             Email_Label = new Label();
             Email_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             PhoneNumber_Label = new Label();
+            CountryCode_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             PhoneNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Address_Label = new Label();
             Address_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -224,7 +227,7 @@ namespace Sales_Tracker
             Email_TextBox.TextChanged += ValidateInputs;
             // 
             // PhoneNumber_Label
-            // 
+            //
             PhoneNumber_Label.Anchor = AnchorStyles.Top;
             PhoneNumber_Label.AutoSize = true;
             PhoneNumber_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -234,11 +237,29 @@ namespace Sales_Tracker
             PhoneNumber_Label.Size = new Size(105, 20);
             PhoneNumber_Label.TabIndex = 0;
             PhoneNumber_Label.Text = "Phone number";
-            // 
+            //
+            // CountryCode_ComboBox
+            //
+            CountryCode_ComboBox.Anchor = AnchorStyles.Top;
+            CountryCode_ComboBox.BackColor = Color.Transparent;
+            CountryCode_ComboBox.CustomizableEdges = customizableEdges9;
+            CountryCode_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            CountryCode_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            CountryCode_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
+            CountryCode_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            CountryCode_ComboBox.Font = new Font("Segoe UI", 9F);
+            CountryCode_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
+            CountryCode_ComboBox.ItemHeight = 24;
+            CountryCode_ComboBox.Location = new Point(591, 92);
+            CountryCode_ComboBox.Name = "CountryCode_ComboBox";
+            CountryCode_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            CountryCode_ComboBox.Size = new Size(90, 30);
+            CountryCode_ComboBox.TabIndex = 5;
+            //
             // PhoneNumber_TextBox
-            // 
+            //
             PhoneNumber_TextBox.Anchor = AnchorStyles.Top;
-            PhoneNumber_TextBox.CustomizableEdges = customizableEdges9;
+            PhoneNumber_TextBox.CustomizableEdges = customizableEdges11;
             PhoneNumber_TextBox.DefaultText = "";
             PhoneNumber_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             PhoneNumber_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -247,15 +268,15 @@ namespace Sales_Tracker
             PhoneNumber_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PhoneNumber_TextBox.Font = new Font("Segoe UI", 9F);
             PhoneNumber_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PhoneNumber_TextBox.Location = new Point(591, 92);
-            PhoneNumber_TextBox.MaxLength = 20;
+            PhoneNumber_TextBox.Location = new Point(686, 92);
+            PhoneNumber_TextBox.MaxLength = 30;
             PhoneNumber_TextBox.Name = "PhoneNumber_TextBox";
             PhoneNumber_TextBox.PlaceholderText = "";
             PhoneNumber_TextBox.SelectedText = "";
-            PhoneNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            PhoneNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             PhoneNumber_TextBox.ShortcutsEnabled = false;
-            PhoneNumber_TextBox.Size = new Size(140, 30);
-            PhoneNumber_TextBox.TabIndex = 5;
+            PhoneNumber_TextBox.Size = new Size(200, 30);
+            PhoneNumber_TextBox.TabIndex = 6;
             PhoneNumber_TextBox.Tag = "1";
             PhoneNumber_TextBox.TextChanged += ValidateInputs;
             // 
@@ -272,9 +293,9 @@ namespace Sales_Tracker
             Address_Label.Text = "Address";
             // 
             // Address_TextBox
-            // 
+            //
             Address_TextBox.Anchor = AnchorStyles.Top;
-            Address_TextBox.CustomizableEdges = customizableEdges11;
+            Address_TextBox.CustomizableEdges = customizableEdges13;
             Address_TextBox.DefaultText = "";
             Address_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Address_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -288,10 +309,10 @@ namespace Sales_Tracker
             Address_TextBox.Name = "Address_TextBox";
             Address_TextBox.PlaceholderText = "";
             Address_TextBox.SelectedText = "";
-            Address_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Address_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Address_TextBox.ShortcutsEnabled = false;
             Address_TextBox.Size = new Size(342, 30);
-            Address_TextBox.TabIndex = 6;
+            Address_TextBox.TabIndex = 7;
             Address_TextBox.Tag = "1";
             // 
             // Notes_Label
@@ -307,9 +328,9 @@ namespace Sales_Tracker
             Notes_Label.Text = "Notes";
             // 
             // Notes_TextBox
-            // 
+            //
             Notes_TextBox.Anchor = AnchorStyles.Top;
-            Notes_TextBox.CustomizableEdges = customizableEdges13;
+            Notes_TextBox.CustomizableEdges = customizableEdges15;
             Notes_TextBox.DefaultText = "";
             Notes_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Notes_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -324,20 +345,20 @@ namespace Sales_Tracker
             Notes_TextBox.Name = "Notes_TextBox";
             Notes_TextBox.PlaceholderText = "";
             Notes_TextBox.SelectedText = "";
-            Notes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Notes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Notes_TextBox.ShortcutsEnabled = false;
             Notes_TextBox.Size = new Size(269, 30);
-            Notes_TextBox.TabIndex = 7;
+            Notes_TextBox.TabIndex = 8;
             Notes_TextBox.Tag = "1";
             // 
             // AddCustomer_Button
-            // 
+            //
             AddCustomer_Button.Anchor = AnchorStyles.Top;
             AddCustomer_Button.BackColor = Color.Transparent;
             AddCustomer_Button.BorderColor = Color.LightGray;
             AddCustomer_Button.BorderRadius = 2;
             AddCustomer_Button.BorderThickness = 1;
-            AddCustomer_Button.CustomizableEdges = customizableEdges15;
+            AddCustomer_Button.CustomizableEdges = customizableEdges17;
             AddCustomer_Button.DisabledState.BorderColor = Color.DarkGray;
             AddCustomer_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddCustomer_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -349,9 +370,9 @@ namespace Sales_Tracker
             AddCustomer_Button.Location = new Point(737, 92);
             AddCustomer_Button.Margin = new Padding(2, 2, 2, 2);
             AddCustomer_Button.Name = "AddCustomer_Button";
-            AddCustomer_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AddCustomer_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             AddCustomer_Button.Size = new Size(150, 30);
-            AddCustomer_Button.TabIndex = 8;
+            AddCustomer_Button.TabIndex = 9;
             AddCustomer_Button.Tag = "0";
             AddCustomer_Button.Text = "Add customer";
             AddCustomer_Button.Click += AddCustomer_Button_Click;
@@ -383,9 +404,9 @@ namespace Sales_Tracker
             WarningCustomerName_Label.Visible = false;
             // 
             // Search_TextBox
-            // 
+            //
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges17;
+            Search_TextBox.CustomizableEdges = customizableEdges19;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -402,10 +423,10 @@ namespace Sales_Tracker
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search for customers";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(210, 30);
-            Search_TextBox.TabIndex = 9;
+            Search_TextBox.TabIndex = 10;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             // 
             // ShowingResultsFor_Label
@@ -448,6 +469,7 @@ namespace Sales_Tracker
             Controls.Add(Address_TextBox);
             Controls.Add(Address_Label);
             Controls.Add(PhoneNumber_TextBox);
+            Controls.Add(CountryCode_ComboBox);
             Controls.Add(PhoneNumber_Label);
             Controls.Add(Email_TextBox);
             Controls.Add(Email_Label);
@@ -484,6 +506,7 @@ namespace Sales_Tracker
         private Label Email_Label;
         private Guna.UI2.WinForms.Guna2TextBox Email_TextBox;
         private Label PhoneNumber_Label;
+        private Guna.UI2.WinForms.Guna2ComboBox CountryCode_ComboBox;
         private Guna.UI2.WinForms.Guna2TextBox PhoneNumber_TextBox;
         private Label Address_Label;
         private Guna.UI2.WinForms.Guna2TextBox Address_TextBox;
