@@ -22,8 +22,7 @@ namespace Sales_Tracker
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
         public static Customers_Form Instance => _instance;
 
-        public Customers_Form() : this(false) { }
-        public Customers_Form(bool loadExisting)
+        public Customers_Form()
         {
             InitializeComponent();
             _instance = this;
@@ -57,7 +56,6 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-
         private void ConstructEmailErrorLabel()
         {
             _emailError_Label = new Label
@@ -72,7 +70,6 @@ namespace Sales_Tracker
             };
             Controls.Add(_emailError_Label);
         }
-
         private void InitializeCountryCodeComboBox()
         {
             _countryCodes = CountryCode.GetCountryCodes();
@@ -94,29 +91,28 @@ namespace Sales_Tracker
             // Wire up event handler
             CountryCode_ComboBox.SelectedIndexChanged += CountryCode_ComboBox_SelectedIndexChanged;
         }
-
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(CustomerID_TextBox);
-            
+
             TextBoxValidation.OnlyAllowLetters(FirstName_TextBox);
             FirstName_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(FirstName_TextBox);
-            
+
             TextBoxValidation.OnlyAllowLetters(LastName_TextBox);
             LastName_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(LastName_TextBox);
-            
+
             TextBoxValidation.ValidateEmail(Email_TextBox);
             Email_TextBox.TextChanged += ValidateInputs;
             Email_TextBox.Leave += Email_TextBox_Leave;
             Email_TextBox.Enter += Email_TextBox_Enter;
             TextBoxManager.Attach(Email_TextBox);
-            
+
             PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             PhoneNumber_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(PhoneNumber_TextBox);
-            
+
             TextBoxManager.Attach(Address_TextBox);
             TextBoxManager.Attach(Notes_TextBox);
             TextBoxManager.Attach(Search_TextBox);
@@ -124,7 +120,6 @@ namespace Sales_Tracker
             _customers_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
             _customers_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
         }
-
         private void AddSearchBoxEvents()
         {
             Search_TextBox.TextChanged += (_, _) =>
@@ -151,7 +146,6 @@ namespace Sales_Tracker
                 LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
             };
         }
-
         private void SetAccessibleDescriptions()
         {
             CustomerID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
@@ -179,7 +173,6 @@ namespace Sales_Tracker
             _emailError_Label.Visible = false;
             Email_TextBox.BorderColor = CustomColors.ControlBorder;
         }
-
         private void Email_TextBox_Leave(object sender, EventArgs e)
         {
             string email = Email_TextBox.Text.Trim();
@@ -196,7 +189,6 @@ namespace Sales_Tracker
                 Email_TextBox.BorderColor = CustomColors.ControlBorder;
             }
         }
-
         private void CountryCode_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (CountryCode_ComboBox.SelectedItem is CountryCode selectedCountry)
@@ -210,35 +202,10 @@ namespace Sales_Tracker
                 }
             }
         }
-
         private void PhoneNumber_TextBox_TextChanged(object sender, EventArgs e)
         {
             FormatPhoneNumber();
         }
-
-        private void FormatPhoneNumber()
-        {
-            if (_selectedCountryCode == null) return;
-
-            int cursorPosition = PhoneNumber_TextBox.SelectionStart;
-            string currentText = PhoneNumber_TextBox.Text;
-
-            // Format the phone number
-            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(currentText);
-
-            if (currentText != formattedNumber)
-            {
-                PhoneNumber_TextBox.TextChanged -= PhoneNumber_TextBox_TextChanged;
-                PhoneNumber_TextBox.Text = formattedNumber;
-
-                // Adjust cursor position
-                int newCursorPosition = Math.Min(cursorPosition + (formattedNumber.Length - currentText.Length), formattedNumber.Length);
-                PhoneNumber_TextBox.SelectionStart = Math.Max(0, newCursorPosition);
-
-                PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
-            }
-        }
-
         private void AddCustomer_Button_Click(object sender, EventArgs e)
         {
             string customerID = CustomerID_TextBox.Text.Trim();
@@ -265,7 +232,7 @@ namespace Sales_Tracker
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
                     email);
-        
+
                 if (result != CustomMessageBoxResult.Yes)
                 {
                     Email_TextBox.Focus();
@@ -320,7 +287,7 @@ namespace Sales_Tracker
                 customer.Address,
                 customer.CurrentPaymentStatus.ToString(),
                 customer.OutstandingBalance,
-                customer.IsBanned,  
+                customer.IsBanned,
                 customer.RentalRecords.Count,
                 customer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
 
@@ -342,7 +309,6 @@ namespace Sales_Tracker
             Address_TextBox.Clear();
             Notes_TextBox.Clear();
         }
-
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {
             Search_TextBox.Clear();
@@ -362,7 +328,6 @@ namespace Sales_Tracker
             TotalRentals,
             LastRentalDate
         }
-
         public static readonly Dictionary<Column, string> ColumnHeaders = new()
         {
             { Column.CustomerID, "Customer ID" },
@@ -396,7 +361,6 @@ namespace Sales_Tracker
             _customers_DataGridView.Columns[Column.IsBanned.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             _customers_DataGridView.Columns[Column.IsBanned.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
-
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             DataGridView grid = (DataGridView)sender;
@@ -432,13 +396,12 @@ namespace Sales_Tracker
                         e.Value = "✗";
                         e.CellStyle.ForeColor = CustomColors.AccentRed;
                     }
-                    
+
                     e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     e.FormattingApplied = true;
                 }
             }
         }
-
         private void DataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
@@ -446,7 +409,6 @@ namespace Sales_Tracker
                 DataGridViewManager.RightClickDataGridView(_customers_DataGridView, e);
             }
         }
-
         private void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -455,7 +417,6 @@ namespace Sales_Tracker
                 Tools.OpenForm(new ModifyRow_Form(selectedRow));
             }
         }
-
         private void LoadCustomers()
         {
             foreach (Customer customer in MainMenu_Form.Instance.CustomerList)
@@ -468,7 +429,7 @@ namespace Sales_Tracker
                     customer.Address,
                     customer.CurrentPaymentStatus.ToString(),
                     customer.OutstandingBalance,
-                    customer.IsBanned,  
+                    customer.IsBanned,
                     customer.RentalRecords.Count,
                     customer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
 
@@ -478,12 +439,33 @@ namespace Sales_Tracker
         }
 
         // Methods
-        private bool IsEmailDuplicate(string email)
+        private void FormatPhoneNumber()
         {
-            return MainMenu_Form.Instance.CustomerList.Any(c => 
+            if (_selectedCountryCode == null) { return; }
+
+            int cursorPosition = PhoneNumber_TextBox.SelectionStart;
+            string currentText = PhoneNumber_TextBox.Text;
+
+            // Format the phone number
+            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(currentText);
+
+            if (currentText != formattedNumber)
+            {
+                PhoneNumber_TextBox.TextChanged -= PhoneNumber_TextBox_TextChanged;
+                PhoneNumber_TextBox.Text = formattedNumber;
+
+                // Adjust cursor position
+                int newCursorPosition = Math.Min(cursorPosition + (formattedNumber.Length - currentText.Length), formattedNumber.Length);
+                PhoneNumber_TextBox.SelectionStart = Math.Max(0, newCursorPosition);
+
+                PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+            }
+        }
+        private static bool IsEmailDuplicate(string email)
+        {
+            return MainMenu_Form.Instance.CustomerList.Any(c =>
                 c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
-
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(FirstName_TextBox.Text) &&
@@ -495,12 +477,10 @@ namespace Sales_Tracker
             bool emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
             AddCustomer_Button.Enabled = allFieldsFilled && emailValid;
         }
-
         private static void SaveCustomersToFile()
         {
             MainMenu_Form.Instance.SaveCustomersToFile();
         }
-
         private void ClosePanels()
         {
             SearchBox.Close();
