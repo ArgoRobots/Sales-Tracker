@@ -205,32 +205,6 @@ namespace Sales_Tracker
                 customerID = ReadOnlyVariables.EmptyCell;
             }
 
-            // Validate email
-            string email = Email_TextBox.Text.Trim();
-            if (!TextBoxValidation.IsValidEmail(email))
-            {
-                _emailError_Label.Visible = true;
-                Email_TextBox.BorderColor = CustomColors.AccentRed;
-                Email_TextBox.Focus();
-                return;
-            }
-
-            // Check for duplicate email
-            if (IsEmailDuplicate(email))
-            {
-                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Duplicate email",
-                    "Email '{0}' already exists. Would you like to add the customer anyway?",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo,
-                    email);
-
-                if (result != CustomMessageBoxResult.Yes)
-                {
-                    Email_TextBox.Focus();
-                    return;
-                }
-            }
-
             // Check if customer ID already exists
             if (customerID != ReadOnlyVariables.EmptyCell &&
                 DataGridViewManager.DoesValueExistInDataGridView(_customers_DataGridView, Column.CustomerID.ToString(), customerID))
@@ -259,7 +233,7 @@ namespace Sales_Tracker
                 customerID,
                 firstName,
                 lastName,
-                email,
+                Email_TextBox.Text,
                 phoneNumber,
                 Address_TextBox.Text.Trim())
             {

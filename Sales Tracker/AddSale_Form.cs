@@ -280,7 +280,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.SaveCustomersToFile();
 
                 // If Customers_Form is open, add to DataGridView
-                if (Customers_Form.Instance != null)
+                if (Tools.IsFormOpen<Customers_Form>())
                 {
                     int newRowIndex = Customers_Form.Instance.Customers_DataGridView.Rows.Add(
                         newCustomer.CustomerID,
