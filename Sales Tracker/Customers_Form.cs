@@ -215,7 +215,7 @@ namespace Sales_Tracker
                     CustomMessageBoxButtons.YesNo,
                     customerID);
 
-                if (result != CustomMessageBoxResult.Yes) return;
+                if (result != CustomMessageBoxResult.Yes) { return; }
             }
 
             // Get first and last name

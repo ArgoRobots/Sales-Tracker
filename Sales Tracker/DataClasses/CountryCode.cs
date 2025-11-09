@@ -257,7 +257,7 @@ namespace Sales_Tracker.DataClasses
                     }
                     else
                     {
-                        break; // No more digits to format
+                        break;  // No more digits to format
                     }
                 }
                 else

@@ -180,7 +180,7 @@ namespace Sales_Tracker
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
-                (left, secondLeft) = ConstructControlsForSaleOrPurchase();
+                (left, secondLeft) = ConstructControlsForPurchaseOrSale();
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.ItemsInPurchase.ToString())
             {
@@ -431,11 +431,12 @@ namespace Sales_Tracker
             return SearchBox.ConvertToSearchResults(categoryNames);
         }
 
+        // Construct controls for purchase or sale
         private Label _selectedReceipt_Label;
         private Guna2ImageButton _removeReceipt_ImageButton;
         private Guna2Button _receipt_Button;
         private bool _containsReceipt, _removedReceipt, _addedReceipt;
-        private (int, int) ConstructControlsForSaleOrPurchase()
+        private (int, int) ConstructControlsForPurchaseOrSale()
         {
             ConstructPanel();
             int left = 0, secondLeft = 0;
@@ -689,10 +690,10 @@ namespace Sales_Tracker
             return left;
         }
 
+        // Construct controls for customer
         private CountryCode _selectedCountryCode;
         private Guna2TextBox _countryCodeTextBox;
         private Guna2TextBox _phoneNumberTextBox;
-
         private int ConstructControlsForCustomer()
         {
             int left = 0;
@@ -743,7 +744,6 @@ namespace Sales_Tracker
                         int phoneLeft = left + 180 + CustomControls.SpaceBetweenControls;
                         ConstructLabel("phone number", phoneLeft, Panel);
                         _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel, "large");
-                        _phoneNumberTextBox.TextChanged -= ValidateInputs; // Remove default validation
                         _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
                         _phoneNumberTextBox.TextChanged += ValidateInputs;
 
@@ -754,14 +754,6 @@ namespace Sales_Tracker
                         _secondRow = true;
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Address], 0, _secondPanel ?? CreateSecondPanel());
                         ConstructTextBox(0, columnName, cellValue, 200, CustomControls.KeyPressValidation.None, false, _secondPanel, "large");
-                        break;
-
-                    case nameof(Customers_Form.Column.PaymentStatus):
-                    case nameof(Customers_Form.Column.OutstandingBalance):
-                    case nameof(Customers_Form.Column.IsBanned):
-                    case nameof(Customers_Form.Column.TotalRentals):
-                    case nameof(Customers_Form.Column.LastRentalDate):
-                        // These are read-only calculated fields, don't create controls for them
                         break;
                 }
             }
@@ -787,35 +779,11 @@ namespace Sales_Tracker
 
             return left - CustomControls.SpaceBetweenControls;
         }
-
         private Panel CreateSecondPanel()
         {
             ConstructPanel();
             return _secondPanel;
         }
-
-        private static (string firstName, string lastName) ParseCustomerName(string fullName)
-        {
-            if (string.IsNullOrWhiteSpace(fullName) || fullName == ReadOnlyVariables.EmptyCell)
-            {
-                return ("", "");
-            }
-
-            // Split by space - first word is first name, rest is last name
-            string trimmedName = fullName.Trim();
-            int spaceIndex = trimmedName.IndexOf(' ');
-
-            if (spaceIndex > 0)
-            {
-                string firstName = trimmedName.Substring(0, spaceIndex);
-                string lastName = trimmedName.Substring(spaceIndex + 1).Trim();
-                return (firstName, lastName);
-            }
-
-            // If no space, treat entire string as first name
-            return (trimmedName, "");
-        }
-
         private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
         {
             if (string.IsNullOrWhiteSpace(fullPhoneNumber) || fullPhoneNumber == ReadOnlyVariables.EmptyCell)
@@ -824,7 +792,7 @@ namespace Sales_Tracker
             }
 
             // Try to extract country code (starts with +)
-            if (fullPhoneNumber.StartsWith("+"))
+            if (fullPhoneNumber.StartsWith('+'))
             {
                 int spaceIndex = fullPhoneNumber.IndexOf(' ');
                 if (spaceIndex > 0)
@@ -837,7 +805,6 @@ namespace Sales_Tracker
 
             return ("+1", fullPhoneNumber);
         }
-
         private Guna2TextBox ConstructCountryCodeSearchBox(int left, string selectedCode)
         {
             Guna2TextBox textBox = new()
@@ -874,7 +841,6 @@ namespace Sales_Tracker
             textBox.TextChanged += CountryCode_TextBox_TextChanged;
             return textBox;
         }
-
         private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
         {
             // Parse the country code from the search result text
@@ -890,12 +856,10 @@ namespace Sales_Tracker
                 }
             }
         }
-
         private void PhoneNumber_TextBox_TextChanged(object sender, EventArgs e)
         {
             FormatPhoneNumberInModifyForm();
         }
-
         private void FormatPhoneNumberInModifyForm()
         {
             if (_selectedCountryCode == null || _phoneNumberTextBox == null)
@@ -933,7 +897,6 @@ namespace Sales_Tracker
                 _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             }
         }
-
         private static List<SearchResult> GetProductListForSearchBox()
         {
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInSale or MainMenu_Form.SelectedOption.Sales)

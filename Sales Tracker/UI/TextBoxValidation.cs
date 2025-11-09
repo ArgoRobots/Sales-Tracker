@@ -153,7 +153,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static string CleanPhoneNumber(string input)
         {
-            if (string.IsNullOrEmpty(input)) return "";
+            if (string.IsNullOrEmpty(input)) { return ""; }
 
             StringBuilder result = new();
             string lowerInput = input.ToLower();

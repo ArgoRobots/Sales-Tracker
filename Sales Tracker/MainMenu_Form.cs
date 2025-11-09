@@ -2308,7 +2308,7 @@ namespace Sales_Tracker
                 totalItems--;  // Don't count receipt
             }
 
-            if (totalItems == 0) return 0m;
+            if (totalItems == 0) { return 0m; }
 
             int affectedItems = 0;
 

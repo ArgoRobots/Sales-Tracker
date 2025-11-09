@@ -248,7 +248,7 @@ namespace Sales_Tracker.Classes
         }
         private static string StripQuotes(string input)
         {
-            if (string.IsNullOrEmpty(input)) return input;
+            if (string.IsNullOrEmpty(input)) { return input; }
 
             // Remove leading and trailing " or ' if present
             if ((input.StartsWith('\"') && input.EndsWith('\"')) ||
