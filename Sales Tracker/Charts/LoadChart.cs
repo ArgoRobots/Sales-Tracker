@@ -2777,7 +2777,7 @@ namespace Sales_Tracker.Charts
             Dictionary<string, double> customerRevenue = [];
             foreach (Customer customer in customers)
             {
-                double totalRevenue = customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0;
+                double totalRevenue = (double)(customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0);
                 if (totalRevenue > 0)
                 {
                     customerRevenue[customer.Name] = totalRevenue;
@@ -2790,17 +2790,18 @@ namespace Sales_Tracker.Charts
                 .Take(topCount)
                 .ToList();
 
+            string currencySymbol = MainMenu_Form.CurrencySymbol;
             List<ISeries> series =
             [
                 new ColumnSeries<double>
                 {
                     Name = "Revenue",
                     Values = topCustomers.Select(kvp => kvp.Value).ToArray(),
-                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    Fill = new SolidColorPaint(GetColorForIndex(0)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
                     DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
-                    DataLabelsFormatter = point => CurrencyFormatter.Format(point.PrimaryValue)
+                    DataLabelsFormatter = point => $"{currencySymbol}{point.Model:N0}"
                 }
             ];
 
@@ -2856,13 +2857,14 @@ namespace Sales_Tracker.Charts
             }
 
             List<ISeries> series = [];
+            int colorIndex = 0;
             foreach (KeyValuePair<string, int> kvp in statusCounts)
             {
                 series.Add(new PieSeries<int>
                 {
                     Name = kvp.Key,
                     Values = [kvp.Value],
-                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    Fill = new SolidColorPaint(GetColorForIndex(colorIndex++)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
                     DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
@@ -2936,8 +2938,8 @@ namespace Sales_Tracker.Charts
                     {
                         Name = "Total Customers",
                         Values = cumulativeCustomers.ToArray(),
-                        Fill = new SolidColorPaint(ChartColors.GetRandomColor().WithAlpha(50)),
-                        Stroke = new SolidColorPaint(ChartColors.GetRandomColor()) { StrokeThickness = 3 },
+                        Fill = new SolidColorPaint(GetColorForIndex(0).WithAlpha(50)),
+                        Stroke = new SolidColorPaint(GetColorForIndex(0)) { StrokeThickness = 3 },
                         DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                         DataLabelsSize = 14,
                         GeometrySize = 8
@@ -2952,7 +2954,7 @@ namespace Sales_Tracker.Charts
                     {
                         Name = "Total Customers",
                         Values = cumulativeCustomers.ToArray(),
-                        Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                        Fill = new SolidColorPaint(GetColorForIndex(0)),
                         DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                         DataLabelsSize = 14
                     }
@@ -3090,7 +3092,7 @@ namespace Sales_Tracker.Charts
             Dictionary<string, double> customerLTV = [];
             foreach (Customer customer in customers)
             {
-                double ltv = customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0;
+                double ltv = (double)(customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0);
                 if (ltv > 0)
                 {
                     customerLTV[customer.Name] = ltv;
@@ -3103,17 +3105,18 @@ namespace Sales_Tracker.Charts
                 .Take(topCount)
                 .ToList();
 
+            string currencySymbol = MainMenu_Form.CurrencySymbol;
             List<ISeries> series =
             [
                 new ColumnSeries<double>
                 {
                     Name = "Lifetime Value",
                     Values = topByLTV.Select(kvp => kvp.Value).ToArray(),
-                    Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                    Fill = new SolidColorPaint(GetColorForIndex(0)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 14,
                     DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
-                    DataLabelsFormatter = point => CurrencyFormatter.Format(point.PrimaryValue)
+                    DataLabelsFormatter = point => $"{currencySymbol}{point.Model:N0}"
                 }
             ];
 
@@ -3170,17 +3173,29 @@ namespace Sales_Tracker.Charts
                 int rentalCount = customer.RentalRecords?.Count ?? 0;
 
                 if (rentalCount == 0)
+                {
                     rentalRanges["0"]++;
+                }
                 else if (rentalCount == 1)
+                {
                     rentalRanges["1"]++;
+                }
                 else if (rentalCount <= 5)
+                {
                     rentalRanges["2-5"]++;
+                }
                 else if (rentalCount <= 10)
+                {
                     rentalRanges["6-10"]++;
+                }
                 else if (rentalCount <= 20)
+                {
                     rentalRanges["11-20"]++;
+                }
                 else
+                {
                     rentalRanges["21+"]++;
+                }
             }
 
             List<ISeries> series;
@@ -3192,8 +3207,8 @@ namespace Sales_Tracker.Charts
                     {
                         Name = "Customers",
                         Values = rentalRanges.Values.ToArray(),
-                        Fill = new SolidColorPaint(ChartColors.GetRandomColor().WithAlpha(50)),
-                        Stroke = new SolidColorPaint(ChartColors.GetRandomColor()) { StrokeThickness = 3 },
+                        Fill = new SolidColorPaint(GetColorForIndex(0).WithAlpha(50)),
+                        Stroke = new SolidColorPaint(GetColorForIndex(0)) { StrokeThickness = 3 },
                         DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                         DataLabelsSize = 14,
                         GeometrySize = 10
@@ -3208,7 +3223,7 @@ namespace Sales_Tracker.Charts
                     {
                         Name = "Customers",
                         Values = rentalRanges.Values.ToArray(),
-                        Fill = new SolidColorPaint(ChartColors.GetRandomColor()),
+                        Fill = new SolidColorPaint(GetColorForIndex(0)),
                         DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                         DataLabelsSize = 14
                     }
