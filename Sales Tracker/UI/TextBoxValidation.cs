@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Theme;
 using System.Text;
 
 namespace Sales_Tracker.UI
@@ -70,7 +69,7 @@ namespace Sales_Tracker.UI
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                return false;
+                return true;
             }
 
             string trimmed = email.Trim();
@@ -110,24 +109,7 @@ namespace Sales_Tracker.UI
             Guna2TextBox textBox = (Guna2TextBox)sender;
             string text = textBox.Text.Trim();
 
-            if (string.IsNullOrEmpty(text))
-            {
-                // Reset to default when empty
-                textBox.BorderColor = CustomColors.ControlBorder;
-                textBox.Tag = "valid";
-            }
-            else if (IsValidEmail(text))
-            {
-                // Valid - keep border normal
-                textBox.BorderColor = CustomColors.ControlBorder;
-                textBox.Tag = "valid";
-            }
-            else
-            {
-                // Invalid - tag as invalid but don't change border yet
-                // Border will be changed on Leave event
-                textBox.Tag = "invalid";
-            }
+            textBox.Tag = IsValidEmail(text) ? "valid" : "invalid";
         }
 
         /// <summary>
