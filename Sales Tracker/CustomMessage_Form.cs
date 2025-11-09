@@ -273,6 +273,7 @@ namespace Sales_Tracker
             top = AddListForThingsChanged("Purchases", AddPurchase_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Sales", AddSale_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Products", Products_Form.ThingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Rentals", AddRentalItem_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Customers", Customers_Form.ThingsThatHaveChangedInFile, top);
 
             // This is a dummy control to add extra space at the end, even when the panel is scrollable

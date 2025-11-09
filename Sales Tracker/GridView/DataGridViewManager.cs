@@ -140,9 +140,9 @@ namespace Sales_Tracker.GridView
             DataGridViewRowChanged((Guna2DataGridView)sender, MainMenu_Form.Instance.Selected);
 
             // Remove receipt from file
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases 
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases
                 or MainMenu_Form.SelectedOption.Sales
-                or MainMenu_Form.SelectedOption.Rentals 
+                or MainMenu_Form.SelectedOption.Rentals
                 && _removedRow?.Tag != null)
 
             {
@@ -167,7 +167,7 @@ namespace Sales_Tracker.GridView
         }
         public static void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
         {
-            if (selected is MainMenu_Form.SelectedOption.Purchases 
+            if (selected is MainMenu_Form.SelectedOption.Purchases
                 or MainMenu_Form.SelectedOption.Sales
                 or MainMenu_Form.SelectedOption.Rentals)
 
@@ -353,13 +353,12 @@ namespace Sales_Tracker.GridView
             string message = $"Deleted {type} '{name}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
-
         private static void HandleRentalsDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "rental";
             string columnName = ReadOnlyVariables.ID_column;
             string name = e.Row.Cells[columnName].Value?.ToString();
-            
+
             string message = $"Deleted {type} '{name}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
@@ -651,8 +650,8 @@ namespace Sales_Tracker.GridView
 
             // Add buttons for Rental Inventory
             if (isRentalInventory)
-            { 
-                if(isSingleRowSelected)
+            {
+                if (isSingleRowSelected)
                 {
                     // Check if item has available quantity  
                     if (grid.SelectedRows[0].Tag is RentalItem rentalItem && rentalItem.QuantityAvailable > 0)
@@ -669,7 +668,7 @@ namespace Sales_Tracker.GridView
                 flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex++);
 
                 return;  // Don't add any more buttons
-            }    
+            }
             // Add buttons for Receipts_Form
             if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
             {
