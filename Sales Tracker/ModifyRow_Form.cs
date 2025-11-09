@@ -711,18 +711,15 @@ namespace Sales_Tracker
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
-                    case nameof(Customers_Form.Column.CustomerName):
-                        // Split name into first and last name
-                        (string firstName, string lastName) = ParseCustomerName(cellValue);
-
-                        // First name
-                        ConstructLabel("First name", left, Panel);
-                        _controlToFocus = ConstructTextBox(left, "FirstName_TextBox", firstName, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                    case nameof(Customers_Form.Column.FirstName):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.FirstName], left, Panel);
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
 
-                        // Last name
-                        ConstructLabel("Last name", left, Panel);
-                        ConstructTextBox(left, "LastName_TextBox", lastName, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                    case nameof(Customers_Form.Column.LastName):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.LastName], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
@@ -1043,9 +1040,6 @@ namespace Sales_Tracker
                 allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
             }
 
-            string firstName = "";
-            string lastName = "";
-
             foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox textBox)
@@ -1086,16 +1080,6 @@ namespace Sales_Tracker
                             _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
                         }
                     }
-                    else if (column == "FirstName_TextBox")
-                    {
-                        // Store first name to combine with last name later
-                        firstName = textBox.Text.Trim();
-                    }
-                    else if (column == "LastName_TextBox")
-                    {
-                        // Store last name to combine with first name later
-                        lastName = textBox.Text.Trim();
-                    }
                     else if (column != "CountryCode_TextBox" && column != "Notes_TextBox")
                     {
                         _selectedRow.Cells[column].Value = textBox.Text.Trim();
@@ -1115,13 +1099,6 @@ namespace Sales_Tracker
                     string columnName = datePicker.Name;
                     _selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
                 }
-            }
-
-            // Combine first and last name into CustomerName column
-            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
-            {
-                string fullName = $"{firstName} {lastName}".Trim();
-                _selectedRow.Cells[nameof(Customers_Form.Column.CustomerName)].Value = fullName;
             }
 
             Close();
@@ -1676,9 +1653,6 @@ namespace Sales_Tracker
                 return;
             }
 
-            string firstName = "";
-            string lastName = "";
-
             // Update customer object with new values from controls
             foreach (Control control in Panel.Controls)
             {
@@ -1689,14 +1663,11 @@ namespace Sales_Tracker
                         case nameof(Customers_Form.Column.CustomerID):
                             customer.CustomerID = textBox.Text.Trim();
                             break;
-                        case "FirstName_TextBox":
-                            firstName = textBox.Text.Trim();
+                        case nameof(Customers_Form.Column.FirstName):
+                            customer.FirstName = textBox.Text.Trim();
                             break;
-                        case "LastName_TextBox":
-                            lastName = textBox.Text.Trim();
-                            break;
-                        case nameof(Customers_Form.Column.CustomerName):
-                            customer.Name = textBox.Text.Trim();
+                        case nameof(Customers_Form.Column.LastName):
+                            customer.LastName = textBox.Text.Trim();
                             break;
                         case nameof(Customers_Form.Column.Email):
                             customer.Email = textBox.Text.Trim();
@@ -1714,12 +1685,6 @@ namespace Sales_Tracker
                             break;
                     }
                 }
-            }
-
-            // Combine first and last name
-            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
-            {
-                customer.Name = $"{firstName} {lastName}".Trim();
             }
 
             // Update address from second panel if it exists

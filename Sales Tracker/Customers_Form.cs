@@ -244,10 +244,9 @@ namespace Sales_Tracker
                 if (result != CustomMessageBoxResult.Yes) return;
             }
 
-            // Combine first and last name
+            // Get first and last name
             string firstName = FirstName_TextBox.Text.Trim();
             string lastName = LastName_TextBox.Text.Trim();
-            string fullName = $"{firstName} {lastName}".Trim();
 
             // Create new customer
             string phoneNumber = PhoneNumber_TextBox.Text.Trim();
@@ -258,7 +257,8 @@ namespace Sales_Tracker
 
             Customer customer = new(
                 customerID,
-                fullName,
+                firstName,
+                lastName,
                 email,
                 phoneNumber,
                 Address_TextBox.Text.Trim())
@@ -272,7 +272,8 @@ namespace Sales_Tracker
             // Add to DataGridView
             int newRowIndex = _customers_DataGridView.Rows.Add(
                 customer.CustomerID,
-                customer.Name,
+                customer.FirstName,
+                customer.LastName,
                 customer.Email,
                 customer.PhoneNumber,
                 customer.Address,
@@ -309,7 +310,8 @@ namespace Sales_Tracker
         public enum Column
         {
             CustomerID,
-            CustomerName,
+            FirstName,
+            LastName,
             Email,
             PhoneNumber,
             Address,
@@ -322,7 +324,8 @@ namespace Sales_Tracker
         public static readonly Dictionary<Column, string> ColumnHeaders = new()
         {
             { Column.CustomerID, "Customer ID" },
-            { Column.CustomerName, "Customer name" },
+            { Column.FirstName, "First name" },
+            { Column.LastName, "Last name" },
             { Column.Email, "Email" },
             { Column.PhoneNumber, "Phone number" },
             { Column.Address, "Address" },
@@ -396,7 +399,8 @@ namespace Sales_Tracker
             {
                 int rowIndex = _customers_DataGridView.Rows.Add(
                     customer.CustomerID,
-                    customer.Name,
+                    customer.FirstName,
+                    customer.LastName,
                     customer.Email,
                     customer.PhoneNumber,
                     customer.Address,
