@@ -619,7 +619,7 @@ namespace Sales_Tracker
         }
         private static void ProcessRow(Guna2DataGridView dataGridView, Dictionary<string, object> rowData)
         {
-            string?[] cellValues = ExtractCellValues(rowData);
+            string?[] cellValues = ExtractCellValues(rowData, dataGridView);
             // Cast to object[] to match the expected parameter type
             int rowIndex = dataGridView.Rows.Add(cellValues.Cast<object>().ToArray());
 
@@ -627,12 +627,36 @@ namespace Sales_Tracker
             ProcessNoteText(dataGridView, rowData, rowIndex);
             ProcessHasReceipt(dataGridView, rowIndex);
         }
-        private static string?[] ExtractCellValues(Dictionary<string, object> rowData)
+        private static string?[] ExtractCellValues(Dictionary<string, object> rowData, Guna2DataGridView dataGridView)
         {
-            return rowData
-                .Where(kv => kv.Key != _rowTagKey && kv.Key != _noteTextKey)
-                .Select(kv => kv.Value?.ToString())
-                .ToArray();
+            // Get column names from the DataGridView
+            List<string> columnNames = dataGridView.Columns.Cast<DataGridViewColumn>()
+                .Select(col => col.Name)
+                .ToList();
+
+            // Build cell values array in the correct column order
+            List<string?> cellValues = [];
+            foreach (string columnName in columnNames)
+            {
+                // Skip special columns
+                if (columnName == Column.HasReceipt.ToString())
+                {
+                    continue;
+                }
+
+                // Get value from rowData, or use empty cell if missing (for migration)
+                if (rowData.TryGetValue(columnName, out object? value))
+                {
+                    cellValues.Add(value?.ToString());
+                }
+                else
+                {
+                    // Column doesn't exist in saved data (e.g., Customer column for old data)
+                    cellValues.Add(ReadOnlyVariables.EmptyCell);
+                }
+            }
+
+            return [.. cellValues];
         }
         private static void ProcessRowTag(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
         {
