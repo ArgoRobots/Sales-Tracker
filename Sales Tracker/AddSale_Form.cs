@@ -230,6 +230,82 @@ namespace Sales_Tracker
             Credited_TextBox.Clear();
             Notes_TextBox.Clear();
         }
+        private bool CheckAndPromptForNewCustomer()
+        {
+            string customerName = Customer_TextBox.Text.Trim();
+
+            // If customer field is empty, allow the sale to proceed
+            if (string.IsNullOrWhiteSpace(customerName))
+            {
+                return true;
+            }
+
+            // Check if customer exists in the customer list
+            bool customerExists = MainMenu_Form.Instance.CustomerList.Any(c =>
+                c.Name.Equals(customerName, StringComparison.OrdinalIgnoreCase));
+
+            if (!customerExists)
+            {
+                // Ask user if they want to add the new customer
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Customer not found",
+                    "The customer '{0}' does not exist. Would you like to add this customer?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    customerName);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return false;
+                }
+
+                // Parse customer name into first and last name
+                string[] nameParts = customerName.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                string firstName = nameParts.Length > 0 ? nameParts[0] : customerName;
+                string lastName = nameParts.Length > 1 ? nameParts[1] : "";
+
+                // Create new customer with minimal information
+                Customer newCustomer = new(
+                    ReadOnlyVariables.EmptyCell,  // customerID
+                    firstName,
+                    lastName,
+                    "",  // email
+                    "",  // phoneNumber
+                    ""); // address
+
+                // Add to customer list
+                MainMenu_Form.Instance.CustomerList.Add(newCustomer);
+
+                // Save to file
+                MainMenu_Form.Instance.SaveCustomersToFile();
+
+                // If Customers_Form is open, add to DataGridView
+                if (Customers_Form.Instance != null)
+                {
+                    int newRowIndex = Customers_Form.Instance.Customers_DataGridView.Rows.Add(
+                        newCustomer.CustomerID,
+                        newCustomer.FirstName,
+                        newCustomer.LastName,
+                        newCustomer.Email,
+                        newCustomer.PhoneNumber,
+                        newCustomer.Address,
+                        newCustomer.CurrentPaymentStatus.ToString(),
+                        newCustomer.OutstandingBalance,
+                        newCustomer.IsBanned,
+                        newCustomer.RentalRecords.Count,
+                        newCustomer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
+
+                    Customers_Form.Instance.Customers_DataGridView.Rows[newRowIndex].Tag = newCustomer;
+                    DataGridViewManager.DataGridViewRowsAdded(Customers_Form.Instance.Customers_DataGridView,
+                        new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                }
+
+                string logMessage = $"Added customer '{newCustomer.Name}'";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, logMessage);
+            }
+
+            return true;
+        }
         private bool AddSale()
         {
             string saleNumber = SaleNumber_TextBox.Text.Trim();
@@ -248,6 +324,12 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+
+            // Check if customer exists, and prompt to add if not
+            if (!CheckAndPromptForNewCustomer())
+            {
+                return false;
             }
 
             // Get values from TextBoxes
@@ -406,6 +488,12 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+
+            // Check if customer exists, and prompt to add if not
+            if (!CheckAndPromptForNewCustomer())
+            {
+                return false;
             }
 
             // Get values from TextBoxes
@@ -1025,8 +1113,7 @@ namespace Sales_Tracker
         }
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleNumber_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
                 !string.IsNullOrWhiteSpace(Credited_TextBox.Text);
 
             if (Properties.Settings.Default.SaleReceipts)
