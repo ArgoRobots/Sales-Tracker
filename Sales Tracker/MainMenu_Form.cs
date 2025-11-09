@@ -1141,6 +1141,27 @@ namespace Sales_Tracker
                         SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
                     }
                     break;
+
+                case AnalyticsTab.Customers:
+                    // 2x3 grid layout
+                    if (charts.Count >= 6)
+                    {
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
+
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
+
+                        // Top row - 3 charts
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY);
+
+                        // Bottom row - 3 charts
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[4], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
+                        SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
+                    }
+                    break;
             }
         }
         private void SetMainChartsHeight(int height)

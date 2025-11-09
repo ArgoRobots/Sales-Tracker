@@ -98,6 +98,7 @@ namespace Sales_Tracker
 
             PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             PhoneNumber_TextBox.TextChanged += ValidateInputs;
+            TextBoxValidation.ValidatePhoneNumber(PhoneNumber_TextBox);
             TextBoxManager.Attach(PhoneNumber_TextBox);
 
             TextBoxManager.Attach(Address_TextBox);
