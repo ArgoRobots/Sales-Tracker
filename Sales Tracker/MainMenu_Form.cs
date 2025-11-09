@@ -892,8 +892,12 @@ namespace Sales_Tracker
 
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
-            // Handle dropdown menu for narrow windows
-            if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
+            // Handle dropdown menu for narrow windows - check if buttons would overlap with Edit_Button
+            Control[] topButtons = GetMainTopButtons();
+            int rightmostButtonRight = topButtons.Max(b => b.Right);
+            const int minSpacingBetweenButtons = 20;
+
+            if (rightmostButtonRight + minSpacingBetweenButtons > Edit_Button.Left)
             {
                 AddControlsDropDown();
             }
