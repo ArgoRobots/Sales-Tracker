@@ -309,6 +309,10 @@ namespace Sales_Tracker
         private bool AddSale()
         {
             string saleNumber = SaleNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(saleNumber))
+            {
+                saleNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
@@ -473,6 +477,10 @@ namespace Sales_Tracker
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
             string saleNumber = SaleNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(saleNumber))
+            {
+                saleNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
