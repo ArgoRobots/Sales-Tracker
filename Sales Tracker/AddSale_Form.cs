@@ -260,7 +260,7 @@ namespace Sales_Tracker
                 }
 
                 // Parse customer name into first and last name
-                string[] nameParts = customerName.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                string[] nameParts = customerName.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries);
                 string firstName = nameParts.Length > 0 ? nameParts[0] : customerName;
                 string lastName = nameParts.Length > 1 ? nameParts[1] : "";
 
