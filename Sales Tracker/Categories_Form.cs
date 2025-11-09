@@ -13,7 +13,6 @@ namespace Sales_Tracker
     {
         // Properties
         private static Categories_Form _instance;
-        private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly int _topForDataGridView;
 
         // Getters
@@ -27,7 +26,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            _oldOption = MainMenu_Form.Instance.Selected;
             _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             ConstructDataGridViews();
             LoadCategories();

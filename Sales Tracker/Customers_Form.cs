@@ -11,8 +11,6 @@ namespace Sales_Tracker
     public partial class Customers_Form : BaseForm
     {
         private static Customers_Form _instance;
-        private static bool _isProgramLoading;
-        private readonly MainMenu_Form.SelectedOption _oldOption;
         private Label _emailError_Label;
         private CountryCode _selectedCountryCode;
 
@@ -25,12 +23,8 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            _oldOption = MainMenu_Form.Instance.Selected;
-
-            _isProgramLoading = true;
             ConstructDataGridView();
             LoadCustomers();
-            _isProgramLoading = false;
 
             ValidateInputs(null, null);
             ThemeManager.SetThemeForForm(this);

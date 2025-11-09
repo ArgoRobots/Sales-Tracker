@@ -12,7 +12,6 @@ namespace Sales_Tracker
     {
         private static Products_Form _instance;
         private static bool _isProgramLoading;
-        private readonly MainMenu_Form.SelectedOption _oldOption;
         private readonly int _topForDataGridView;
 
         // Getters
@@ -26,7 +25,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            _oldOption = MainMenu_Form.Instance.Selected;
             _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             AddSearchBoxEvents();
 
@@ -216,7 +214,7 @@ namespace Sales_Tracker
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategorySaleList, category, product);
                 int newRowIndex = _sale_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType, product.IsRentable);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
-                
+
                 // Save the categories to file
                 MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
             }
@@ -225,7 +223,7 @@ namespace Sales_Tracker
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.CategoryPurchaseList, category, product);
                 int newRowIndex = _purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin, product.ItemType, product.IsRentable);
                 DataGridViewManager.DataGridViewRowsAdded(_selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
-                
+
                 // Save the categories to file
                 MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
             }
@@ -482,7 +480,7 @@ namespace Sales_Tracker
             _purchase_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             _purchase_DataGridView.CellFormatting += DataGridView_CellFormatting;
-            
+
             // Center the Rentable column header and content
             _purchase_DataGridView.Columns[Column.Rentable.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             _purchase_DataGridView.Columns[Column.Rentable.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -496,11 +494,11 @@ namespace Sales_Tracker
             _sale_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             _sale_DataGridView.CellFormatting += DataGridView_CellFormatting;
-            
+
             // Center the Rentable column header and content
             _sale_DataGridView.Columns[Column.Rentable.ToString()].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             _sale_DataGridView.Columns[Column.Rentable.ToString()].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            
+
             ThemeManager.CustomizeScrollBar(_sale_DataGridView);
         }
         private void DataGridView_RowsChanged(object sender, EventArgs e)
@@ -512,7 +510,7 @@ namespace Sales_Tracker
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             DataGridView grid = (DataGridView)sender;
-            
+
             if (grid.Columns[e.ColumnIndex].Name == Column.Rentable.ToString())
             {
                 if (e.Value is bool isRentable)
@@ -527,7 +525,7 @@ namespace Sales_Tracker
                         e.Value = "✗";
                         e.CellStyle.ForeColor = CustomColors.AccentRed;
                     }
-                    
+
                     e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     e.CellStyle.Padding = new Padding(0, 0, 5, 0);
                     e.FormattingApplied = true;
@@ -580,14 +578,14 @@ namespace Sales_Tracker
                 Name = "Rentable_Label",
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.Text, 
+                ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
             Rentable_Label.Click += Rentable_Label_Click;
             Controls.Add(Rentable_Label);
 
-            ThemeManager.SetThemeForControls([Rentable_CheckBox, Rentable_Label]);  
-            
+            ThemeManager.SetThemeForControls([Rentable_CheckBox, Rentable_Label]);
+
             // Position the controls
             PositionRentableControls();
         }
@@ -596,10 +594,10 @@ namespace Sales_Tracker
         {
             int leftMargin = ProductID_TextBox.Left;
             int topMargin = ProductID_TextBox.Bottom + 15;
-            
+
             Rentable_CheckBox.Location = new Point(leftMargin, topMargin);
             Rentable_Label.Location = new Point(Rentable_CheckBox.Right + 5, topMargin);
-            
+
             // Adjust vertical alignment so checkbox and label are centered together
             int labelY = Rentable_CheckBox.Top + (Rentable_CheckBox.Height / 2) - (Rentable_Label.Height / 2);
             Rentable_Label.Top = labelY;
