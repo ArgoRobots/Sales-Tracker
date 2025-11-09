@@ -421,6 +421,7 @@ namespace Sales_Tracker
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 10;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
+            Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             // 
             // ShowingResultsFor_Label
             // 
@@ -500,7 +501,6 @@ namespace Sales_Tracker
             Name = "Customers_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Customer Management";
             Shown += Customers_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningCustomerName_PictureBox).EndInit();
             ResumeLayout(false);

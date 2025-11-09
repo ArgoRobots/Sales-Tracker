@@ -26,7 +26,6 @@ namespace Sales_Tracker
             _instance = this;
 
             _oldOption = MainMenu_Form.Instance.Selected;
-            AddSearchBoxEvents();
 
             _isProgramLoading = true;
             ConstructDataGridView();
@@ -108,32 +107,6 @@ namespace Sales_Tracker
             _customers_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
             _customers_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
         }
-        private void AddSearchBoxEvents()
-        {
-            Search_TextBox.TextChanged += (_, _) =>
-            {
-                string searchText = Search_TextBox.Text.Trim();
-                bool hasVisibleRows = false;
-
-                foreach (DataGridViewRow row in _customers_DataGridView.Rows)
-                {
-                    row.Visible = SearchDataGridView.FilterRowByAdvancedSearch(row, searchText);
-                    if (row.Visible) hasVisibleRows = true;
-                }
-
-                if (hasVisibleRows && !string.IsNullOrEmpty(searchText))
-                {
-                    LabelManager.ShowLabelWithBaseText(ShowingResultsFor_Label, searchText);
-                }
-                else
-                {
-                    ShowingResultsFor_Label.Visible = false;
-                }
-
-                DataGridViewManager.UpdateRowColors(_customers_DataGridView);
-                LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
-            };
-        }
         private void SetAccessibleDescriptions()
         {
             CustomerID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
@@ -178,7 +151,6 @@ namespace Sales_Tracker
                 Email_TextBox.BorderColor = CustomColors.ControlBorder;
             }
         }
-
         private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
         {
             // Parse the country code from the search result text
@@ -275,6 +247,18 @@ namespace Sales_Tracker
             PhoneNumber_TextBox.Clear();
             Address_TextBox.Clear();
             Notes_TextBox.Clear();
+        }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(_customers_DataGridView, Search_TextBox))
+            {
+                LabelManager.ShowLabelWithBaseText(ShowingResultsFor_Label, Search_TextBox.Text.Trim());
+            }
+            else
+            {
+                ShowingResultsFor_Label.Visible = false;
+            }
+            LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {
