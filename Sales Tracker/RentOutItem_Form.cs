@@ -155,10 +155,7 @@ namespace Sales_Tracker
         // Event handlers
         private void RentOut_Button_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs())
-            {
-                return;
-            }
+            if (!ValidateInputs()) { return; }
 
             // Get selected customer
             string selectedCustomerText = Customer_ComboBox.SelectedItem.ToString();
@@ -179,7 +176,7 @@ namespace Sales_Tracker
             decimal totalCost = (rate * quantity) + deposit;
 
             // Create rental record
-            RentalRecord record = new RentalRecord(
+            RentalRecord record = new(
                 rentalItemID: _rentalItem.RentalItemID,
                 productName: _rentalItem.ProductName,
                 quantity: quantity,
@@ -219,10 +216,7 @@ namespace Sales_Tracker
             _inventoryRow.Cells[ManageRentals_Form.Column.LastRentalDate.ToString()].Value = _rentalItem.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-";
 
             // Refresh the form if it's open
-            if (ManageRentals_Form.Instance != null)
-            {
-                ManageRentals_Form.Instance.RefreshDataGridView();
-            }
+            ManageRentals_Form.Instance?.RefreshDataGridView();
 
             string message = $"Rented out {quantity} unit(s) of '{_rentalItem.ProductName}' to {customer.FullName}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(
@@ -256,26 +250,26 @@ namespace Sales_Tracker
             string rentalID = GenerateNextRentalID();
 
             // Prepare the row values
-            object[] rowValues = new object[]
-            {
-                rentalID,                                          // Rental #
-                MainMenu_Form.SelectedAccountant,                  // Accountant
-                _rentalItem.ProductName,                           // Product / Service
-                categoryName,                                      // Category
-                product.CountryOfOrigin ?? "-",                    // Country of destination (using origin for rental)
-                _rentalItem.CompanyName,                           // Company of origin
-                record.StartDate.ToString("yyyy-MM-dd"),          // Date
-                quantity,                                          // Total items
-                rate.ToString("N2"),                              // Price per unit (rental rate)
-                "0.00",                                           // Shipping (not applicable for rentals)
-                "0.00",                                           // Tax
-                "0.00",                                           // Fee
-                "0.00",                                           // Discount
-                "0.00",                                           // Charged difference
-                totalCost.ToString("N2"),                         // Total rental revenue
-                "-",                                              // Notes
-                ReadOnlyVariables.EmptyCell                       // Has receipt
-            };
+            object[] rowValues =
+            [
+                rentalID,                                 // Rental #
+                MainMenu_Form.SelectedAccountant,         // Accountant
+                _rentalItem.ProductName,                  // Product / Service
+                categoryName,                             // Category
+                product.CountryOfOrigin ?? "-",           // Country of destination (using origin for rental)
+                _rentalItem.CompanyName,                  // Company of origin
+                record.StartDate.ToString("yyyy-MM-dd"),  // Date
+                quantity,                                 // Total items
+                rate.ToString("N2"),                      // Price per unit (rental rate)
+                "0.00",                                   // Shipping (not applicable for rentals)
+                "0.00",                                   // Tax
+                "0.00",                                   // Fee
+                "0.00",                                   // Discount
+                "0.00",                                   // Charged difference
+                totalCost.ToString("N2"),                 // Total rental revenue
+                "-",                                      // Notes
+                ReadOnlyVariables.EmptyCell               // Has receipt
+            ];
 
             // Add the row to the DataGridView
             int rowIndex = MainMenu_Form.Instance.Rental_DataGridView.Rows.Add(rowValues);
@@ -287,7 +281,7 @@ namespace Sales_Tracker
             }
 
             // Create and attach TagData
-            TagData tagData = new TagData
+            TagData tagData = new()
             {
                 CustomerID = customer.CustomerID,
                 CustomerName = customer.FullName,
@@ -300,7 +294,7 @@ namespace Sales_Tracker
             MainMenu_Form.SetReceiptCellToX(MainMenu_Form.Instance.Rental_DataGridView.Rows[rowIndex].Cells[MainMenu_Form.Column.HasReceipt.ToString()]);
 
             // Trigger the RowsAdded event to save and refresh
-            DataGridViewRowsAddedEventArgs args = new DataGridViewRowsAddedEventArgs(rowIndex, 1);
+            DataGridViewRowsAddedEventArgs args = new(rowIndex, 1);
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Rental_DataGridView, args);
         }
         private static string GenerateNextRentalID()
