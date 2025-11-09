@@ -144,6 +144,7 @@ namespace Sales_Tracker
             Address_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Notes_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             WarningCustomerName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
