@@ -88,9 +88,8 @@ namespace Sales_Tracker
         }
         private List<SearchResult> GetSearchResultsForCustomers()
         {
-            return MainMenu_Form.Instance.CustomerList
-                .Select(c => new SearchResult { Text = c.Name, Icon = null })
-                .ToList();
+            return SearchBox.ConvertToSearchResults(
+                MainMenu_Form.Instance.CustomerList.Select(c => c.Name).ToList());
         }
         private void SetAccessibleDescriptions()
         {
