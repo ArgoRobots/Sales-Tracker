@@ -1030,49 +1030,55 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 chartTypeTextBox.Left = fontTextBox.Left;
             }
 
-            // Title font size
-            text = LanguageManager.TranslateString("Title Size") + ":";
-            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
-            Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
-                value =>
-                {
-                    float newTitleSize = (float)value;
-                    if (Math.Abs(TitleFontSize - newTitleSize) > 0.01f)
+            // Title font size (only for non-geomap charts)
+            if (!IsGeoMapType(ChartType))
+            {
+                text = LanguageManager.TranslateString("Title Size") + ":";
+                AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
+                Guna2NumericUpDown titleNumericUpDown = AddPropertyNumericUpDown(container, (decimal)TitleFontSize, yPosition,
+                    value =>
                     {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(TitleFontSize),
-                            TitleFontSize,
-                            newTitleSize,
-                            onPropertyChanged));
-                        TitleFontSize = newTitleSize;
-                        onPropertyChanged();
-                    }
-                }, 8, 20);
-            CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
-            yPosition += ControlRowHeight;
+                        float newTitleSize = (float)value;
+                        if (Math.Abs(TitleFontSize - newTitleSize) > 0.01f)
+                        {
+                            undoRedoManager?.RecordAction(new PropertyChangeAction(
+                                this,
+                                nameof(TitleFontSize),
+                                TitleFontSize,
+                                newTitleSize,
+                                onPropertyChanged));
+                            TitleFontSize = newTitleSize;
+                            onPropertyChanged();
+                        }
+                    }, 8, 20);
+                CacheControl("TitleFontSize", titleNumericUpDown, () => titleNumericUpDown.Value = (decimal)TitleFontSize);
+                yPosition += ControlRowHeight;
+            }
 
-            // Legend font size
-            text = LanguageManager.TranslateString("Legend Size") + ":";
-            AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
-            Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
-                value =>
-                {
-                    float newLegendSize = (float)value;
-                    if (Math.Abs(LegendFontSize - newLegendSize) > 0.01f)
+            // Legend font size (only for non-geomap charts)
+            if (!IsGeoMapType(ChartType))
+            {
+                text = LanguageManager.TranslateString("Legend Size") + ":";
+                AddPropertyLabel(container, text, yPosition, false, NumericUpDownWidth);
+                Guna2NumericUpDown legendNumericUpDown = AddPropertyNumericUpDown(container, (decimal)LegendFontSize, yPosition,
+                    value =>
                     {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(LegendFontSize),
-                            LegendFontSize,
-                            newLegendSize,
-                            onPropertyChanged));
-                        LegendFontSize = newLegendSize;
-                        onPropertyChanged();
-                    }
-                }, 8, 20);
-            CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
-            yPosition += ControlRowHeight;
+                        float newLegendSize = (float)value;
+                        if (Math.Abs(LegendFontSize - newLegendSize) > 0.01f)
+                        {
+                            undoRedoManager?.RecordAction(new PropertyChangeAction(
+                                this,
+                                nameof(LegendFontSize),
+                                LegendFontSize,
+                                newLegendSize,
+                                onPropertyChanged));
+                            LegendFontSize = newLegendSize;
+                            onPropertyChanged();
+                        }
+                    }, 8, 20);
+                CacheControl("LegendFontSize", legendNumericUpDown, () => legendNumericUpDown.Value = (decimal)LegendFontSize);
+                yPosition += ControlRowHeight;
+            }
 
             // Border thickness
             text = LanguageManager.TranslateString("Border thickness") + ":";
@@ -1118,45 +1124,51 @@ namespace Sales_Tracker.ReportGenerator.Elements
             CacheControl("_borderColor", _borderColorPanel, () => _borderColorPanel.BackColor = _borderColor);
             yPosition += ControlRowHeight;
 
-            // Show legend checkbox
-            text = LanguageManager.TranslateString("Show Legend");
-            Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, text, ShowLegend, yPosition,
-                value =>
-                {
-                    if (ShowLegend != value)
+            // Show legend checkbox (only for non-geomap charts)
+            if (!IsGeoMapType(ChartType))
+            {
+                text = LanguageManager.TranslateString("Show Legend");
+                Guna2CustomCheckBox legendCheck = AddPropertyCheckBoxWithLabel(container, text, ShowLegend, yPosition,
+                    value =>
                     {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(ShowLegend),
-                            ShowLegend,
-                            value,
-                            onPropertyChanged));
-                        ShowLegend = value;
-                        onPropertyChanged();
-                    }
-                });
-            CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
-            yPosition += CheckBoxRowHeight;
+                        if (ShowLegend != value)
+                        {
+                            undoRedoManager?.RecordAction(new PropertyChangeAction(
+                                this,
+                                nameof(ShowLegend),
+                                ShowLegend,
+                                value,
+                                onPropertyChanged));
+                            ShowLegend = value;
+                            onPropertyChanged();
+                        }
+                    });
+                CacheControl("ShowLegend", legendCheck, () => legendCheck.Checked = ShowLegend);
+                yPosition += CheckBoxRowHeight;
+            }
 
-            // Show title checkbox
-            text = LanguageManager.TranslateString("Show Title");
-            Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTitle, yPosition,
-                value =>
-                {
-                    if (ShowTitle != value)
+            // Show title checkbox (only for non-geomap charts)
+            if (!IsGeoMapType(ChartType))
+            {
+                text = LanguageManager.TranslateString("Show Title");
+                Guna2CustomCheckBox titleCheck = AddPropertyCheckBoxWithLabel(container, text, ShowTitle, yPosition,
+                    value =>
                     {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(ShowTitle),
-                            ShowTitle,
-                            value,
-                            onPropertyChanged));
-                        ShowTitle = value;
-                        onPropertyChanged();
-                    }
-                });
-            CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
-            yPosition += CheckBoxRowHeight;
+                        if (ShowTitle != value)
+                        {
+                            undoRedoManager?.RecordAction(new PropertyChangeAction(
+                                this,
+                                nameof(ShowTitle),
+                                ShowTitle,
+                                value,
+                                onPropertyChanged));
+                            ShowTitle = value;
+                            onPropertyChanged();
+                        }
+                    });
+                CacheControl("ShowTitle", titleCheck, () => titleCheck.Checked = ShowTitle);
+                yPosition += CheckBoxRowHeight;
+            }
 
             return yPosition;
         }
