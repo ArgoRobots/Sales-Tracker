@@ -841,7 +841,13 @@ namespace Sales_Tracker.GridView
 
                     case MainMenu_Form.SelectedOption.Customers:
                         itemType = "the customer";
-                        identifier = grid.SelectedRows[0].Cells[Customers_Form.Column.CustomerName.ToString()].Value?.ToString() ?? "Unknown";
+                        string firstName = grid.SelectedRows[0].Cells[Customers_Form.Column.FirstName.ToString()].Value?.ToString() ?? "";
+                        string lastName = grid.SelectedRows[0].Cells[Customers_Form.Column.LastName.ToString()].Value?.ToString() ?? "";
+                        identifier = $"{firstName} {lastName}".Trim();
+                        if (string.IsNullOrEmpty(identifier))
+                        {
+                            identifier = "Unknown";
+                        }
                         break;
 
                     case MainMenu_Form.SelectedOption.Purchases:
