@@ -440,14 +440,18 @@ namespace Sales_Tracker
         }
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(FirstName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(LastName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Email_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(PhoneNumber_TextBox.Text);
+            // Only require first and last name
+            bool requiredFieldsFilled = !string.IsNullOrWhiteSpace(FirstName_TextBox.Text) &&
+                                        !string.IsNullOrWhiteSpace(LastName_TextBox.Text);
 
-            // Check if email is valid (contains @ and . with text on both sides)
-            bool emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
-            AddCustomer_Button.Enabled = allFieldsFilled && emailValid;
+            // If email is provided, it must be valid
+            bool emailValid = true;
+            if (!string.IsNullOrWhiteSpace(Email_TextBox.Text))
+            {
+                emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
+            }
+
+            AddCustomer_Button.Enabled = requiredFieldsFilled && emailValid;
         }
         private void ClosePanels()
         {

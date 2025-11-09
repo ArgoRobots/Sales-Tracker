@@ -3099,6 +3099,11 @@ namespace Sales_Tracker
                         LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
                         LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
                         break;
+
+                    case AnalyticsTab.Customers:
+                        LoadChart.LoadCustomerGrowthChart(CustomerGrowth_Chart, isLine);
+                        LoadChart.LoadAverageRentalsPerCustomerChart(AverageRentalsPerCustomer_Chart, isLine);
+                        break;
                 }
             }
             else
