@@ -344,6 +344,7 @@ namespace Sales_Tracker
             // Add the row with the default values
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
+                MainMenu_Form.SelectedAccountant,
                 Customer_TextBox.Text.Trim(),
                 productName,
                 categoryName,
@@ -532,6 +533,7 @@ namespace Sales_Tracker
 
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
+                MainMenu_Form.SelectedAccountant,
                 Customer_TextBox.Text.Trim(),
                 ReadOnlyVariables.MultipleItems_text,
                 finalCategoryName,

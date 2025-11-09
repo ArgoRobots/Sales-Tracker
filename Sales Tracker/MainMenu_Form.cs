@@ -2066,6 +2066,7 @@ namespace Sales_Tracker
         {
             ID,
             Accountant,
+            Customer,
             Product,
             Category,
             Country,
@@ -2118,7 +2119,8 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
             { Column.ID, "Sale #" },
-            { Column.Accountant, "Customer" },
+            { Column.Accountant, "Accountant" },
+            { Column.Customer, "Customer" },
             { Column.Product, "Product / Service" },
             { Column.Category, "Category" },
             { Column.Country, "Country of destination" },
