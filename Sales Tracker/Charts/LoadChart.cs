@@ -2780,7 +2780,7 @@ namespace Sales_Tracker.Charts
                 double totalRevenue = (double)(customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0);
                 if (totalRevenue > 0)
                 {
-                    customerRevenue[customer.Name] = totalRevenue;
+                    customerRevenue[customer.FullName] = totalRevenue;
                 }
             }
 
@@ -3095,7 +3095,7 @@ namespace Sales_Tracker.Charts
                 double ltv = (double)(customer.RentalRecords?.Sum(r => r.AmountPaid) ?? 0);
                 if (ltv > 0)
                 {
-                    customerLTV[customer.Name] = ltv;
+                    customerLTV[customer.FullName] = ltv;
                 }
             }
 

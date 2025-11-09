@@ -81,7 +81,7 @@ namespace Sales_Tracker
             
             foreach (Customer customer in MainMenu_Form.Instance.CustomerList)
             {
-                Customer_ComboBox.Items.Add($"{customer.Name} ({customer.CustomerID})");
+                Customer_ComboBox.Items.Add($"{customer.FullName} ({customer.CustomerID})");
             }
 
             if (Customer_ComboBox.Items.Count > 0)
@@ -230,7 +230,7 @@ namespace Sales_Tracker
                 ManageRentals_Form.Instance.RefreshDataGridView();
             }
 
-            string message = $"Rented out {quantity} unit(s) of '{_rentalItem.ProductName}' to {customer.Name}";
+            string message = $"Rented out {quantity} unit(s) of '{_rentalItem.ProductName}' to {customer.FullName}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(
                 ManageRentals_Form.ThingsThatHaveChangedInFile, 
                 2, 
@@ -297,7 +297,7 @@ namespace Sales_Tracker
             TagData tagData = new TagData
             {
                 CustomerID = customer.CustomerID,
-                CustomerName = customer.Name,
+                CustomerName = customer.FullName,
                 RentalRecordID = record.RentalRecordID
             };
 

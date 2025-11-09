@@ -89,7 +89,7 @@ namespace Sales_Tracker
         private List<SearchResult> GetSearchResultsForCustomers()
         {
             return SearchBox.ConvertToSearchResults(
-                MainMenu_Form.Instance.CustomerList.Select(c => c.Name).ToList());
+                MainMenu_Form.Instance.CustomerList.Select(c => c.FullName).ToList());
         }
         private void SetAccessibleDescriptions()
         {
@@ -242,7 +242,7 @@ namespace Sales_Tracker
 
             // Check if customer exists in the customer list
             bool customerExists = MainMenu_Form.Instance.CustomerList.Any(c =>
-                c.Name.Equals(customerName, StringComparison.OrdinalIgnoreCase));
+                c.FullName.Equals(customerName, StringComparison.OrdinalIgnoreCase));
 
             if (!customerExists)
             {
@@ -300,7 +300,7 @@ namespace Sales_Tracker
                         new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
                 }
 
-                string logMessage = $"Added customer '{newCustomer.Name}'";
+                string logMessage = $"Added customer '{newCustomer.FullName}'";
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, logMessage);
             }
 

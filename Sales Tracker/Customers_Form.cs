@@ -263,7 +263,7 @@ namespace Sales_Tracker
             // Save
             MainMenu_Form.Instance.SaveCustomersToFile();
 
-            string message = $"Added customer '{customer.Name}'";
+            string message = $"Added customer '{customer.FullName}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 4, message);
 
             // Clear inputs
