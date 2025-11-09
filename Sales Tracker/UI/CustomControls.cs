@@ -572,6 +572,16 @@ namespace Sales_Tracker.UI
 
             ConstructSeparator(btnWidth, flowPanel);
 
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Customers_Button.Text, btnWidth, flowPanel);
+            menuBtn.Height = btnHeight;
+            menuBtn.Click += (_, _) =>
+            {
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
+                Tools.OpenForm(new Customers_Form());
+            };
+
+            ConstructSeparator(btnWidth, flowPanel);
+
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Categories_Button.Text, btnWidth, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
@@ -588,16 +598,6 @@ namespace Sales_Tracker.UI
             {
                 MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 Tools.OpenForm(new Products_Form(true));
-            };
-
-            ConstructSeparator(btnWidth, flowPanel);
-
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Customers_Button.Text, btnWidth, flowPanel);
-            menuBtn.Height = btnHeight;
-            menuBtn.Click += (_, _) =>
-            {
-                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
-                Tools.OpenForm(new Customers_Form());
             };
 
             ConstructSeparator(btnWidth, flowPanel);
