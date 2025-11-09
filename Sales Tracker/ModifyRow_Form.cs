@@ -712,9 +712,18 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(Customers_Form.Column.CustomerName):
-                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.CustomerName], left, Panel);
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "large");
-                        left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        // Split name into first and last name
+                        (string firstName, string lastName) = ParseCustomerName(cellValue);
+
+                        // First name
+                        ConstructLabel("First name", left, Panel);
+                        _controlToFocus = ConstructTextBox(left, "FirstName_TextBox", firstName, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+
+                        // Last name
+                        ConstructLabel("Last name", left, Panel);
+                        ConstructTextBox(left, "LastName_TextBox", lastName, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Customers_Form.Column.Email):
@@ -726,16 +735,16 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(Customers_Form.Column.PhoneNumber):
-                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.PhoneNumber], left, Panel);
-
                         // Parse phone number to extract country code and number
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
 
-                        // Country code search box
+                        // Country code search box with label "phone number ext."
+                        ConstructLabel("phone number ext.", left, Panel);
                         _countryCodeTextBox = ConstructCountryCodeSearchBox(left, countryCode);
 
-                        // Phone number text box
-                        int phoneLeft = left + 100 + CustomControls.SpaceBetweenControls;
+                        // Phone number text box with label "phone number"
+                        int phoneLeft = left + 180 + CustomControls.SpaceBetweenControls;
+                        ConstructLabel("phone number", phoneLeft, Panel);
                         _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel, "large");
                         _phoneNumberTextBox.TextChanged -= ValidateInputs; // Remove default validation
                         _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
@@ -759,6 +768,26 @@ namespace Sales_Tracker
                         break;
                 }
             }
+
+            // Add notes textbox at the bottom
+            _notes = true;
+            Customer customer = _selectedRow.Tag as Customer;
+            string notes = customer?.Notes ?? "";
+
+            Label notesLabel = ConstructLabel("Notes", 0, this);
+            Guna2TextBox notesTextBox = ConstructTextBox(0, "Notes_TextBox", notes, 10, CustomControls.KeyPressValidation.None, false, this);
+
+            notesLabel.Location = new Point((ClientSize.Width - notesLabel.Width) / 2, _secondPanel.Bottom);
+            notesLabel.Anchor = AnchorStyles.Top;
+
+            int notesWidth = (int)(525 * DpiHelper.GetRelativeDpiScale());
+            notesTextBox.Location = new Point((ClientSize.Width - notesWidth) / 2, notesLabel.Bottom + 5);
+            notesTextBox.Multiline = true;
+            notesTextBox.Height = 125;
+            notesTextBox.Width = notesWidth;
+            notesTextBox.Anchor = AnchorStyles.Top;
+            TextBoxManager.Attach(notesTextBox);
+
             return left - CustomControls.SpaceBetweenControls;
         }
 
@@ -766,6 +795,28 @@ namespace Sales_Tracker
         {
             ConstructPanel();
             return _secondPanel;
+        }
+
+        private static (string firstName, string lastName) ParseCustomerName(string fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName) || fullName == ReadOnlyVariables.EmptyCell)
+            {
+                return ("", "");
+            }
+
+            // Split by space - first word is first name, rest is last name
+            string trimmedName = fullName.Trim();
+            int spaceIndex = trimmedName.IndexOf(' ');
+
+            if (spaceIndex > 0)
+            {
+                string firstName = trimmedName.Substring(0, spaceIndex);
+                string lastName = trimmedName.Substring(spaceIndex + 1).Trim();
+                return (firstName, lastName);
+            }
+
+            // If no space, treat entire string as first name
+            return (trimmedName, "");
         }
 
         private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
@@ -796,7 +847,7 @@ namespace Sales_Tracker
             {
                 Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
                 Height = ScaledControlHeight,
-                Width = 100,
+                Width = 180,
                 Name = "CountryCode_TextBox",
                 ForeColor = CustomColors.Text,
                 BackColor = CustomColors.ControlBack,
@@ -992,6 +1043,9 @@ namespace Sales_Tracker
                 allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
             }
 
+            string firstName = "";
+            string lastName = "";
+
             foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox textBox)
@@ -1015,7 +1069,7 @@ namespace Sales_Tracker
                     {
                         ProcessProductCategoryColumn(textBox, allControls);
                     }
-                    else if (column == ReadOnlyVariables.Note_column)
+                    else if (column == ReadOnlyVariables.Note_column || column == "Notes_TextBox")
                     {
                         ProcessNoteColumn(textBox);
                     }
@@ -1032,7 +1086,17 @@ namespace Sales_Tracker
                             _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
                         }
                     }
-                    else
+                    else if (column == "FirstName_TextBox")
+                    {
+                        // Store first name to combine with last name later
+                        firstName = textBox.Text.Trim();
+                    }
+                    else if (column == "LastName_TextBox")
+                    {
+                        // Store last name to combine with first name later
+                        lastName = textBox.Text.Trim();
+                    }
+                    else if (column != "CountryCode_TextBox" && column != "Notes_TextBox")
                     {
                         _selectedRow.Cells[column].Value = textBox.Text.Trim();
                     }
@@ -1052,6 +1116,14 @@ namespace Sales_Tracker
                     _selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
                 }
             }
+
+            // Combine first and last name into CustomerName column
+            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            {
+                string fullName = $"{firstName} {lastName}".Trim();
+                _selectedRow.Cells[nameof(Customers_Form.Column.CustomerName)].Value = fullName;
+            }
+
             Close();
         }
         private void ProcessNumericColumn(Guna2TextBox textBox, string column)
@@ -1604,6 +1676,9 @@ namespace Sales_Tracker
                 return;
             }
 
+            string firstName = "";
+            string lastName = "";
+
             // Update customer object with new values from controls
             foreach (Control control in Panel.Controls)
             {
@@ -1613,6 +1688,12 @@ namespace Sales_Tracker
                     {
                         case nameof(Customers_Form.Column.CustomerID):
                             customer.CustomerID = textBox.Text.Trim();
+                            break;
+                        case "FirstName_TextBox":
+                            firstName = textBox.Text.Trim();
+                            break;
+                        case "LastName_TextBox":
+                            lastName = textBox.Text.Trim();
                             break;
                         case nameof(Customers_Form.Column.CustomerName):
                             customer.Name = textBox.Text.Trim();
@@ -1635,6 +1716,12 @@ namespace Sales_Tracker
                 }
             }
 
+            // Combine first and last name
+            if (!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName))
+            {
+                customer.Name = $"{firstName} {lastName}".Trim();
+            }
+
             // Update address from second panel if it exists
             if (_secondPanel != null)
             {
@@ -1643,6 +1730,19 @@ namespace Sales_Tracker
                     if (control is Guna2TextBox textBox && textBox.Name == nameof(Customers_Form.Column.Address))
                     {
                         customer.Address = textBox.Text.Trim();
+                        break;
+                    }
+                }
+            }
+
+            // Update notes from main form controls
+            if (_notes)
+            {
+                foreach (Control control in Controls)
+                {
+                    if (control is Guna2TextBox textBox && textBox.Name == "Notes_TextBox")
+                    {
+                        customer.Notes = textBox.Text.Trim();
                         break;
                     }
                 }
