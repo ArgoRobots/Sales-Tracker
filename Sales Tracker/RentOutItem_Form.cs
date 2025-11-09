@@ -10,9 +10,11 @@ namespace Sales_Tracker
 {
     public partial class RentOutItem_Form : BaseForm
     {
+        // Properties
         private readonly RentalItem _rentalItem;
         private readonly DataGridViewRow _inventoryRow;
 
+        // Init.
         public RentOutItem_Form(RentalItem rentalItem, DataGridViewRow inventoryRow)
         {
             InitializeComponent();
@@ -27,24 +29,23 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-
         private void InitializeForm()
         {
             Text = $"Rent Out: {_rentalItem.ProductName}";
             ProductName_Label.Text = _rentalItem.ProductName;
             AvailableQuantity_Label.Text = $"Available: {_rentalItem.QuantityAvailable}";
-            
+
             // Set defaults
             Quantity_NumericUpDown.Maximum = _rentalItem.QuantityAvailable;
             Quantity_NumericUpDown.Value = 1;
             RentalStartDate_DateTimePicker.Value = DateTime.Today;
             SecurityDeposit_TextBox.Text = _rentalItem.SecurityDeposit.ToString("0.00");
-            
+
             // Enable/disable rate radio buttons based on what's configured
             DailyRate_RadioButton.Enabled = _rentalItem.DailyRate > 0;
             WeeklyRate_RadioButton.Enabled = _rentalItem.WeeklyRate.HasValue && _rentalItem.WeeklyRate.Value > 0;
             MonthlyRate_RadioButton.Enabled = _rentalItem.MonthlyRate.HasValue && _rentalItem.MonthlyRate.Value > 0;
-            
+
             // Select first available rate
             if (DailyRate_RadioButton.Enabled)
             {
@@ -61,12 +62,12 @@ namespace Sales_Tracker
                 MonthlyRate_RadioButton.Checked = true;
                 MonthlyRate_Label.Text = $"Monthly: {MainMenu_Form.CurrencySymbol}{_rentalItem.MonthlyRate:N2}";
             }
-            
+
             if (_rentalItem.WeeklyRate.HasValue)
             {
                 WeeklyRate_Label.Text = $"Weekly: {MainMenu_Form.CurrencySymbol}{_rentalItem.WeeklyRate.Value:N2}";
             }
-            
+
             if (_rentalItem.MonthlyRate.HasValue)
             {
                 MonthlyRate_Label.Text = $"Monthly: {MainMenu_Form.CurrencySymbol}{_rentalItem.MonthlyRate.Value:N2}";
@@ -74,11 +75,10 @@ namespace Sales_Tracker
 
             UpdateTotalCost();
         }
-
         private void PopulateCustomerList()
         {
             Customer_ComboBox.Items.Clear();
-            
+
             foreach (Customer customer in MainMenu_Form.Instance.CustomerList)
             {
                 Customer_ComboBox.Items.Add($"{customer.FullName} ({customer.CustomerID})");
@@ -94,18 +94,16 @@ namespace Sales_Tracker
                 RentOut_Button.Enabled = false;
             }
         }
-
-        private void PopulateRateTypes()
+        private static void PopulateRateTypes()
         {
             // This is handled in InitializeForm
         }
-
         private void UpdateTotalCost()
         {
             decimal rate = GetSelectedRate();
             int quantity = (int)Quantity_NumericUpDown.Value;
             decimal deposit = 0;
-            
+
             if (decimal.TryParse(SecurityDeposit_TextBox.Text, out decimal parsedDeposit))
             {
                 deposit = parsedDeposit;
@@ -114,7 +112,6 @@ namespace Sales_Tracker
             decimal totalCost = (rate * quantity) + deposit;
             TotalCost_Label.Text = $"Total: {MainMenu_Form.CurrencySymbol}{totalCost:N2}";
         }
-
         private decimal GetSelectedRate()
         {
             if (DailyRate_RadioButton.Checked)
@@ -123,10 +120,9 @@ namespace Sales_Tracker
                 return _rentalItem.WeeklyRate.Value;
             if (MonthlyRate_RadioButton.Checked && _rentalItem.MonthlyRate.HasValue)
                 return _rentalItem.MonthlyRate.Value;
-            
+
             return 0;
         }
-
         private RentalRateType GetSelectedRateType()
         {
             if (DailyRate_RadioButton.Checked)
@@ -135,16 +131,14 @@ namespace Sales_Tracker
                 return RentalRateType.Weekly;
             if (MonthlyRate_RadioButton.Checked)
                 return RentalRateType.Monthly;
-            
+
             return RentalRateType.Daily;
         }
-
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBluePrimary(RentOut_Button);
         }
-
         private void SetAccessibleDescriptions()
         {
             ProductName_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
@@ -173,7 +167,7 @@ namespace Sales_Tracker
 
             if (customer == null)
             {
-                CustomMessageBox.Show("Error", "Selected customer not found.", 
+                CustomMessageBox.Show("Error", "Selected customer not found.",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
@@ -183,7 +177,7 @@ namespace Sales_Tracker
             decimal deposit = decimal.Parse(SecurityDeposit_TextBox.Text);
             decimal rate = GetSelectedRate();
             decimal totalCost = (rate * quantity) + deposit;
-            
+
             // Create rental record
             RentalRecord record = new RentalRecord(
                 rentalItemID: _rentalItem.RentalItemID,
@@ -199,7 +193,7 @@ namespace Sales_Tracker
             // Use the RentOut method to update quantities properly
             if (!_rentalItem.RentOut(quantity, customer.CustomerID))
             {
-                CustomMessageBox.Show("Error", "Failed to rent out item. Please check availability.", 
+                CustomMessageBox.Show("Error", "Failed to rent out item. Please check availability.",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
@@ -232,20 +226,19 @@ namespace Sales_Tracker
 
             string message = $"Rented out {quantity} unit(s) of '{_rentalItem.ProductName}' to {customer.FullName}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(
-                ManageRentals_Form.ThingsThatHaveChangedInFile, 
-                2, 
+                ManageRentals_Form.ThingsThatHaveChangedInFile,
+                2,
                 message);
 
             DialogResult = DialogResult.OK;
             Close();
         }
-
         private void CreateRentalTransaction(Customer customer, RentalRecord record, int quantity, decimal rate, decimal totalCost)
         {
             // Get the product details from category lists
             Product product = MainMenu_Form.GetProductProductNameIsFrom(
-                MainMenu_Form.Instance.CategoryPurchaseList, 
-                _rentalItem.ProductName, 
+                MainMenu_Form.Instance.CategoryPurchaseList,
+                _rentalItem.ProductName,
                 _rentalItem.CompanyName);
 
             if (product == null)
@@ -310,15 +303,14 @@ namespace Sales_Tracker
             DataGridViewRowsAddedEventArgs args = new DataGridViewRowsAddedEventArgs(rowIndex, 1);
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Rental_DataGridView, args);
         }
-
-        private string GenerateNextRentalID()
+        private static string GenerateNextRentalID()
         {
             int highestID = 0;
 
             foreach (DataGridViewRow row in MainMenu_Form.Instance.Rental_DataGridView.Rows)
             {
                 string idValue = row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString();
-                
+
                 if (!string.IsNullOrEmpty(idValue) && idValue.StartsWith("R-"))
                 {
                     string numberPart = idValue.Substring(2);
@@ -331,54 +323,48 @@ namespace Sales_Tracker
 
             return $"R-{highestID + 1:D4}";
         }
-
         private bool ValidateInputs()
         {
             if (Customer_ComboBox.SelectedIndex == -1)
             {
-                CustomMessageBox.Show("No Customer Selected", "Please select a customer.", 
+                CustomMessageBox.Show("No Customer Selected", "Please select a customer.",
                     CustomMessageBoxIcon.Warning, CustomMessageBoxButtons.Ok);
                 return false;
             }
 
             if (Quantity_NumericUpDown.Value == 0)
             {
-                CustomMessageBox.Show("Invalid Quantity", "Quantity must be at least 1.", 
+                CustomMessageBox.Show("Invalid Quantity", "Quantity must be at least 1.",
                     CustomMessageBoxIcon.Warning, CustomMessageBoxButtons.Ok);
                 return false;
             }
 
             if (!decimal.TryParse(SecurityDeposit_TextBox.Text, out decimal deposit) || deposit < 0)
             {
-                CustomMessageBox.Show("Invalid Deposit", "Please enter a valid security deposit amount.", 
+                CustomMessageBox.Show("Invalid Deposit", "Please enter a valid security deposit amount.",
                     CustomMessageBoxIcon.Warning, CustomMessageBoxButtons.Ok);
                 return false;
             }
 
             return true;
         }
-
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
         private void Quantity_NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             UpdateTotalCost();
         }
-
         private void RateType_CheckedChanged(object sender, EventArgs e)
         {
             UpdateTotalCost();
         }
-
         private void SecurityDeposit_TextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateTotalCost();
         }
-
         private void SecurityDeposit_TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Only allow numbers, decimal point, and control keys

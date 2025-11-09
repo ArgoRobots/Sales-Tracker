@@ -475,7 +475,7 @@ namespace Sales_Tracker
             Controls.Add(RentalItemID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(1033, 644);
+            MinimumSize = new Size(1235, 695);
             Name = "AddRentalItem_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

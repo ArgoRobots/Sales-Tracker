@@ -92,15 +92,15 @@ namespace Sales_Tracker
             // 
             // Total_Label
             // 
-            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11F);
-            Total_Label.Location = new Point(57, 860);
+            Total_Label.Location = new Point(1244, 890);
             Total_Label.Margin = new Padding(4, 0, 4, 0);
             Total_Label.Name = "Total_Label";
-            Total_Label.Size = new Size(140, 30);
+            Total_Label.Size = new Size(122, 30);
             Total_Label.TabIndex = 4;
-            Total_Label.Text = "Total items: 0";
+            Total_Label.Text = "Total items:";
             // 
             // ManageRentals_Form
             // 
