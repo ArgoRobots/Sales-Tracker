@@ -61,6 +61,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddSale_Form));
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             Date_Label = new Label();
@@ -78,6 +80,8 @@ namespace Sales_Tracker
             AddSale_Label = new Label();
             SaleNumber_Label = new Label();
             SaleNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Customer_Label = new Label();
+            Customer_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             WarningProduct_LinkLabel = new LinkLabel();
             WarningProduct_PictureBox = new PictureBox();
             Fee_Label = new Label();
@@ -367,7 +371,41 @@ namespace Sales_Tracker
             SaleNumber_TextBox.Size = new Size(300, 50);
             SaleNumber_TextBox.TabIndex = 1;
             SaleNumber_TextBox.TextChanged += ValidateInputs;
-            // 
+            //
+            // Customer_Label
+            //
+            Customer_Label.Anchor = AnchorStyles.Top;
+            Customer_Label.AutoSize = true;
+            Customer_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Customer_Label.Location = new Point(511, 118);
+            Customer_Label.Name = "Customer_Label";
+            Customer_Label.Size = new Size(110, 31);
+            Customer_Label.TabIndex = 0;
+            Customer_Label.Text = "Customer";
+            //
+            // Customer_TextBox
+            //
+            Customer_TextBox.Anchor = AnchorStyles.Top;
+            Customer_TextBox.CustomizableEdges = customizableEdges32;
+            Customer_TextBox.DefaultText = "";
+            Customer_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Customer_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Customer_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Customer_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Customer_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Customer_TextBox.Font = new Font("Segoe UI", 9F);
+            Customer_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Customer_TextBox.Location = new Point(511, 154);
+            Customer_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Customer_TextBox.MaxLength = 100;
+            Customer_TextBox.Name = "Customer_TextBox";
+            Customer_TextBox.PlaceholderText = "";
+            Customer_TextBox.SelectedText = "";
+            Customer_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges33;
+            Customer_TextBox.ShortcutsEnabled = false;
+            Customer_TextBox.Size = new Size(300, 50);
+            Customer_TextBox.TabIndex = 2;
+            //
             // WarningProduct_LinkLabel
             // 
             WarningProduct_LinkLabel.Anchor = AnchorStyles.Top;
@@ -726,6 +764,8 @@ namespace Sales_Tracker
         private Label AddSale_Label;
         private Label SaleNumber_Label;
         private Guna.UI2.WinForms.Guna2TextBox SaleNumber_TextBox;
+        private Label Customer_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Customer_TextBox;
         private LinkLabel WarningProduct_LinkLabel;
         private PictureBox WarningProduct_PictureBox;
         private Label Fee_Label;

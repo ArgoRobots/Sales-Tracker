@@ -48,6 +48,9 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(SaleNumber_TextBox);
 
+            TextBoxManager.Attach(Customer_TextBox);
+            SearchBox.Attach(Customer_TextBox, this, GetSearchResultsForCustomers, searchBoxMaxHeight, false, false, true, false);
+
             TextBoxManager.Attach(ProductName_TextBox);
             SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, true, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
@@ -83,12 +86,19 @@ namespace Sales_Tracker
         {
             return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames());
         }
+        private List<SearchResult> GetSearchResultsForCustomers()
+        {
+            return MainMenu_Form.Instance.CustomerList
+                .Select(c => new SearchResult { Text = c.Name, Icon = null })
+                .ToList();
+        }
         private void SetAccessibleDescriptions()
         {
             Label[] labelsToAlignLeftCenter =
             [
                MultipleItems_Label,
                SaleNumber_Label,
+               Customer_Label,
                ProductName_Label,
                Date_Label,
                Quantity_Label,
@@ -211,6 +221,7 @@ namespace Sales_Tracker
         {
             RemoveReceiptLabel();
             SaleNumber_TextBox.Clear();
+            Customer_TextBox.Clear();
             Quantity_TextBox.Clear();
             PricePerUnit_TextBox.Clear();
             Shipping_TextBox.Clear();
@@ -333,7 +344,7 @@ namespace Sales_Tracker
             // Add the row with the default values
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
-                MainMenu_Form.SelectedAccountant,
+                Customer_TextBox.Text.Trim(),
                 productName,
                 categoryName,
                 country,
@@ -521,7 +532,7 @@ namespace Sales_Tracker
 
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
-                MainMenu_Form.SelectedAccountant,
+                Customer_TextBox.Text.Trim(),
                 ReadOnlyVariables.MultipleItems_text,
                 finalCategoryName,
                 finalCountry,
@@ -648,12 +659,15 @@ namespace Sales_Tracker
             // Center controls
             SaleNumber_TextBox.Left = (ClientSize.Width -
                 SaleNumber_TextBox.Width - space -
+                Customer_TextBox.Width - space -
                 ProductName_TextBox.Width - space -
                 CountryOfDestinaion_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            ProductName_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_Label.Left = Customer_TextBox.Left;
+            ProductName_TextBox.Left = Customer_TextBox.Right + space;
             ProductName_Label.Left = ProductName_TextBox.Left;
             CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + space;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
@@ -715,11 +729,14 @@ namespace Sales_Tracker
             // Center controls
             SaleNumber_TextBox.Left = (ClientSize.Width -
                 SaleNumber_TextBox.Width - space -
+                Customer_TextBox.Width - space -
                 CountryOfDestinaion_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            CountryOfDestinaion_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_Label.Left = Customer_TextBox.Left;
+            CountryOfDestinaion_TextBox.Left = Customer_TextBox.Right + space;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
             Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + space;
 
