@@ -2800,7 +2800,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(GetColorForIndex(0)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
-                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                    DataLabelsPosition = DataLabelsPosition.Top,
                     DataLabelsFormatter = point => $"{currencySymbol}{point.Model:N0}"
                 }
             ];
@@ -2867,7 +2867,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(GetColorForIndex(colorIndex++)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsPosition = PolarLabelsPosition.Middle,
                     DataLabelsFormatter = point => $"{kvp.Key}: {kvp.Value}"
                 });
             }
@@ -3029,7 +3029,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(SKColors.Green),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsPosition = PolarLabelsPosition.Middle,
                     DataLabelsFormatter = point => $"Active: {activeCount}"
                 },
                 new PieSeries<int>
@@ -3039,7 +3039,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(SKColors.Orange),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsPosition = PolarLabelsPosition.Middle,
                     DataLabelsFormatter = point => $"Inactive: {inactiveCount}"
                 },
                 new PieSeries<int>
@@ -3049,7 +3049,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(SKColors.Red),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 16,
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsPosition = PolarLabelsPosition.Middle,
                     DataLabelsFormatter = point => $"Banned: {bannedCount}"
                 }
             ];
@@ -3115,7 +3115,7 @@ namespace Sales_Tracker.Charts
                     Fill = new SolidColorPaint(GetColorForIndex(0)),
                     DataLabelsPaint = new SolidColorPaint(ChartColors.ToSKColor(CustomColors.Text)),
                     DataLabelsSize = 14,
-                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                    DataLabelsPosition = DataLabelsPosition.Top,
                     DataLabelsFormatter = point => $"{currencySymbol}{point.Model:N0}"
                 }
             ];

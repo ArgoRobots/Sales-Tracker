@@ -87,14 +87,14 @@ namespace Sales_Tracker
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
-                CustomControls.ControlDropDown_Panel,  
+                CustomControls.ControlDropDown_Panel,
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 ColumnVisibilityPanel.Panel,
                 DateRangePanel,
                 File_Button,
                 Help_Button,
                 TimeRange_Button,
-                CustomControls.ControlsDropDown_Button);  
+                CustomControls.ControlsDropDown_Button);
 
             Application.AddMessageFilter(panelCloseFilter);
 
@@ -364,7 +364,7 @@ namespace Sales_Tracker
 
             MainTop_Panel.FillColor = CustomColors.ContentPanelBackground;
             Edit_Button.FillColor = CustomColors.ContentPanelBackground;
-            Top_Panel.BackColor = CustomColors.ToolbarBackground;          
+            Top_Panel.BackColor = CustomColors.ToolbarBackground;
             File_Button.FillColor = CustomColors.ToolbarBackground;
             Save_Button.FillColor = CustomColors.ToolbarBackground;
             if (_upgrade_Button != null)
@@ -1261,65 +1261,65 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-private void Purchases_Button_Click(object sender, EventArgs e)
-{
-    if (Selected == SelectedOption.Purchases) { return; }
+        private void Purchases_Button_Click(object sender, EventArgs e)
+        {
+            if (Selected == SelectedOption.Purchases) { return; }
 
-    Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-    ShowMainControls();
-    SelectedDataGridView = Purchase_DataGridView;
-    Purchase_DataGridView.Visible = true;
-    Sale_DataGridView.Visible = false;
-    Rental_DataGridView.Visible = false;
+            ShowMainControls();
+            SelectedDataGridView = Purchase_DataGridView;
+            Purchase_DataGridView.Visible = true;
+            Sale_DataGridView.Visible = false;
+            Rental_DataGridView.Visible = false;
 
-    // Show purchase charts, hide sale and rental charts
-    TotalPurchases_Chart.Visible = true;
-    DistributionOfPurchases_Chart.Visible = true;
-    TotalSales_Chart.Visible = false;
-    DistributionOfSales_Chart.Visible = false;
-    TotalRentals_Chart.Visible = false;
-    DistributionOfRentals_Chart.Visible = false;
+            // Show purchase charts, hide sale and rental charts
+            TotalPurchases_Chart.Visible = true;
+            DistributionOfPurchases_Chart.Visible = true;
+            TotalSales_Chart.Visible = false;
+            DistributionOfSales_Chart.Visible = false;
+            TotalRentals_Chart.Visible = false;
+            DistributionOfRentals_Chart.Visible = false;
 
-    SelectButton(Purchases_Button);
-    CenterAndResizeControls();
-    RefreshDataGridViewAndCharts();
+            SelectButton(Purchases_Button);
+            CenterAndResizeControls();
+            RefreshDataGridViewAndCharts();
 
-    Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-    AlignTotalLabels();
-    UpdateTotalLabels();
-    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
-}
+            Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
+        }
 
-private void Sales_Button_Click(object sender, EventArgs e)
-{
-    if (Selected == SelectedOption.Sales) { return; }
+        private void Sales_Button_Click(object sender, EventArgs e)
+        {
+            if (Selected == SelectedOption.Sales) { return; }
 
-    Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-    ShowMainControls();
-    SelectedDataGridView = Sale_DataGridView;
-    Sale_DataGridView.Visible = true;
-    Purchase_DataGridView.Visible = false;
-    Rental_DataGridView.Visible = false;
+            ShowMainControls();
+            SelectedDataGridView = Sale_DataGridView;
+            Sale_DataGridView.Visible = true;
+            Purchase_DataGridView.Visible = false;
+            Rental_DataGridView.Visible = false;
 
-    // Show sale charts, hide purchase and rental charts
-    TotalSales_Chart.Visible = true;
-    DistributionOfSales_Chart.Visible = true;
-    TotalPurchases_Chart.Visible = false;
-    DistributionOfPurchases_Chart.Visible = false;
-    TotalRentals_Chart.Visible = false;
-    DistributionOfRentals_Chart.Visible = false;
+            // Show sale charts, hide purchase and rental charts
+            TotalSales_Chart.Visible = true;
+            DistributionOfSales_Chart.Visible = true;
+            TotalPurchases_Chart.Visible = false;
+            DistributionOfPurchases_Chart.Visible = false;
+            TotalRentals_Chart.Visible = false;
+            DistributionOfRentals_Chart.Visible = false;
 
-    SelectButton(Sales_Button);
-    CenterAndResizeControls();
-    RefreshDataGridViewAndCharts();
+            SelectButton(Sales_Button);
+            CenterAndResizeControls();
+            RefreshDataGridViewAndCharts();
 
-    Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-    AlignTotalLabels();
-    UpdateTotalLabels();
-    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
-}
+            Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
+        }
         private void Rentals_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Rentals) { return; }
@@ -1342,7 +1342,7 @@ private void Sales_Button_Click(object sender, EventArgs e)
 
             SelectButton(Rentals_Button);
             CenterAndResizeControls();
-            RefreshDataGridViewAndCharts();  
+            RefreshDataGridViewAndCharts();
 
             Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
@@ -2008,7 +2008,7 @@ private void Sales_Button_Click(object sender, EventArgs e)
         {
             if (IsButtonSelected(Purchases_Button)) { return SelectedOption.Purchases; }
             if (IsButtonSelected(Sales_Button)) { return SelectedOption.Sales; }
-            if (IsButtonSelected(Rentals_Button)) { return SelectedOption.Rentals; }  
+            if (IsButtonSelected(Rentals_Button)) { return SelectedOption.Rentals; }
             if (IsButtonSelected(Analytics_Button)) { return SelectedOption.Analytics; }
 
             return SelectedOption.Analytics;  // Default fallback
@@ -2679,7 +2679,7 @@ private void Sales_Button_Click(object sender, EventArgs e)
             Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
             tabButtons.Add(lostProductsButton);
 
-            Guna2Button customersButton = CreateTabButton("Customers", AnalyticsTab.Customers, Resources.Customers);
+            Guna2Button customersButton = CreateTabButton("Customers", AnalyticsTab.Customers, Resources.User);
             tabButtons.Add(customersButton);
 
             _tabButtons = tabButtons;
