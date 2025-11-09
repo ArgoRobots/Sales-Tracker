@@ -850,13 +850,28 @@ namespace Sales_Tracker
 
         private void FormatPhoneNumberInModifyForm()
         {
-            if (_selectedCountryCode == null || _phoneNumberTextBox == null) return;
+            if (_selectedCountryCode == null || _phoneNumberTextBox == null)
+            {
+                return;
+            }
 
             int cursorPosition = _phoneNumberTextBox.SelectionStart;
             string currentText = _phoneNumberTextBox.Text;
 
+            // Extract only digits from current text
+            string digitsOnly = new(currentText.Where(char.IsDigit).ToArray());
+
+            // Count maximum allowed digits based on format (count 'X' characters)
+            int maxDigits = _selectedCountryCode.Format.Count(c => c == 'X');
+
+            // Limit digits to the format's maximum
+            if (digitsOnly.Length > maxDigits)
+            {
+                digitsOnly = digitsOnly.Substring(0, maxDigits);
+            }
+
             // Format the phone number
-            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(currentText);
+            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(digitsOnly);
 
             if (currentText != formattedNumber)
             {
