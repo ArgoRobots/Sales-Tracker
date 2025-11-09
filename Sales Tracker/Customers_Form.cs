@@ -32,6 +32,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
+            LabelManager.ShowTotalLabel(Total_Label, _customers_DataGridView);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_customers_DataGridView);
             AddEventHandlersToTextBoxes();
             ConstructEmailErrorLabel();

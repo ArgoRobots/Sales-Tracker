@@ -412,7 +412,7 @@ namespace Sales_Tracker
             Search_TextBox.IconRightSize = new Size(22, 22);
             Search_TextBox.Location = new Point(963, 357);
             Search_TextBox.Margin = new Padding(6, 8, 6, 8);
-            Search_TextBox.MaxLength = 100;
+            Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search for customers";
             Search_TextBox.SelectedText = "";
