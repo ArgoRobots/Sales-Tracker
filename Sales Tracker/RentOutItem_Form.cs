@@ -31,7 +31,7 @@ namespace Sales_Tracker
         }
         private void InitializeForm()
         {
-            Text = $"Rent Out: {_rentalItem.ProductName}";
+            Text = $"Rent out: {_rentalItem.ProductName}";
             ProductName_Label.Text = _rentalItem.ProductName;
             AvailableQuantity_Label.Text = $"Available: {_rentalItem.QuantityAvailable}";
 

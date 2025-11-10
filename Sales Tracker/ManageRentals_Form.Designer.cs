@@ -17,10 +17,10 @@ namespace Sales_Tracker
 
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             AddRentalItem_Button = new Guna.UI2.WinForms.Guna2Button();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -43,13 +43,13 @@ namespace Sales_Tracker
             // 
             AddRentalItem_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AddRentalItem_Button.BorderRadius = 4;
-            AddRentalItem_Button.CustomizableEdges = customizableEdges9;
+            AddRentalItem_Button.CustomizableEdges = customizableEdges1;
             AddRentalItem_Button.Font = new Font("Segoe UI", 10F);
             AddRentalItem_Button.ForeColor = Color.White;
             AddRentalItem_Button.Location = new Point(883, 33);
             AddRentalItem_Button.Margin = new Padding(4, 5, 4, 5);
             AddRentalItem_Button.Name = "AddRentalItem_Button";
-            AddRentalItem_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            AddRentalItem_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             AddRentalItem_Button.Size = new Size(220, 50);
             AddRentalItem_Button.TabIndex = 1;
             AddRentalItem_Button.Text = "Add Rental Item";
@@ -58,7 +58,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Search_TextBox.CustomizableEdges = customizableEdges11;
+            Search_TextBox.CustomizableEdges = customizableEdges3;
             Search_TextBox.DefaultText = "";
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.IconRight = Properties.Resources.CloseGray;
@@ -70,7 +70,7 @@ namespace Sales_Tracker
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search rental items";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Search_TextBox.Size = new Size(350, 50);
             Search_TextBox.TabIndex = 2;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
@@ -95,7 +95,7 @@ namespace Sales_Tracker
             Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11F);
-            Total_Label.Location = new Point(1244, 890);
+            Total_Label.Location = new Point(1278, 905);
             Total_Label.Margin = new Padding(4, 0, 4, 0);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(122, 30);

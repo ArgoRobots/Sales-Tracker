@@ -10,6 +10,7 @@ namespace Sales_Tracker
 {
     public partial class ManageRentals_Form : BaseForm
     {
+        // Properties
         private static ManageRentals_Form _instance;
         private readonly int _topForDataGridView;
 
@@ -17,6 +18,7 @@ namespace Sales_Tracker
         public static ManageRentals_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
+        // Init.
         public ManageRentals_Form()
         {
             InitializeComponent();
@@ -34,14 +36,13 @@ namespace Sales_Tracker
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(RentalInventory_DataGridView);
             AddEventHandlersToTextBoxes();
 
-            PanelCloseFilter panelCloseFilter = new(this, ClosePanels, 
-                TextBoxManager.RightClickTextBox_Panel, 
+            PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
+                TextBoxManager.RightClickTextBox_Panel,
                 RightClickDataGridViewRowMenu.Panel);
-            
+
             Application.AddMessageFilter(panelCloseFilter);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(Search_TextBox);
@@ -49,13 +50,11 @@ namespace Sales_Tracker
             RentalInventory_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, RentalInventory_DataGridView);
             RentalInventory_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, RentalInventory_DataGridView);
         }
-
         private void SetAccessibleDescriptions()
         {
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
-
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
@@ -80,7 +79,6 @@ namespace Sales_Tracker
             DateAdded,
             LastRentalDate
         }
-
         public static readonly Dictionary<Column, string> ColumnHeaders = new()
         {
             { Column.RentalItemID, "Item ID" },
@@ -98,7 +96,6 @@ namespace Sales_Tracker
             { Column.DateAdded, "Date Added" },
             { Column.LastRentalDate, "Last Rental" }
         };
-
         private Guna2DataGridView RentalInventory_DataGridView;
 
         // DataGridView methods
@@ -112,7 +109,6 @@ namespace Sales_Tracker
             RentalInventory_DataGridView.Tag = MainMenu_Form.DataGridViewTag.RentalInventory;
             RentalInventory_DataGridView.CellFormatting += DataGridView_CellFormatting;
         }
-
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             DataGridView grid = (DataGridView)sender;
@@ -160,7 +156,6 @@ namespace Sales_Tracker
                 }
             }
         }
-
         private void LoadRentalInventory()
         {
             foreach (RentalItem item in RentalInventoryManager.RentalInventory)
@@ -183,7 +178,7 @@ namespace Sales_Tracker
 
                 RentalInventory_DataGridView.Rows[rowIndex].Tag = item;
             }
-            
+
             DataGridViewManager.ScrollToTopOfDataGridView(RentalInventory_DataGridView);
         }
 
@@ -193,12 +188,10 @@ namespace Sales_Tracker
             RentalInventory_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-
         private void ManageRentals_Form_Resize(object sender, EventArgs e)
         {
             ClosePanels();
         }
-
         private void ManageRentals_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();
@@ -209,7 +202,6 @@ namespace Sales_Tracker
         {
             Tools.OpenForm(new AddRentalItem_Form());
         }
-
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
             if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(RentalInventory_DataGridView, Search_TextBox))
@@ -222,12 +214,12 @@ namespace Sales_Tracker
             }
             LabelManager.ShowTotalLabel(Total_Label, RentalInventory_DataGridView);
         }
-
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {
             Search_TextBox.Clear();
         }
 
+        // Methods
         public void RefreshDataGridView()
         {
             RentalInventory_DataGridView.Rows.Clear();
@@ -235,7 +227,6 @@ namespace Sales_Tracker
             DataGridViewManager.UpdateRowColors(RentalInventory_DataGridView);
             LabelManager.ShowTotalLabel(Total_Label, RentalInventory_DataGridView);
         }
-
         private void ClosePanels()
         {
             TextBoxManager.HideRightClickPanel();

@@ -439,7 +439,7 @@ namespace Sales_Tracker
             Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Total_Label.Location = new Point(1195, 800);
+            Total_Label.Location = new Point(1195, 824);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(68, 31);
             Total_Label.TabIndex = 56;
