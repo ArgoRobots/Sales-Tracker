@@ -186,7 +186,7 @@ namespace Sales_Tracker
             DailyRate_Label.Anchor = AnchorStyles.Top;
             DailyRate_Label.AutoSize = true;
             DailyRate_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            DailyRate_Label.Location = new Point(434, 291);
+            DailyRate_Label.Location = new Point(434, 256);
             DailyRate_Label.Name = "DailyRate_Label";
             DailyRate_Label.Size = new Size(111, 31);
             DailyRate_Label.TabIndex = 0;
@@ -204,7 +204,7 @@ namespace Sales_Tracker
             DailyRate_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             DailyRate_TextBox.Font = new Font("Segoe UI", 9F);
             DailyRate_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            DailyRate_TextBox.Location = new Point(434, 327);
+            DailyRate_TextBox.Location = new Point(434, 292);
             DailyRate_TextBox.Margin = new Padding(4, 5, 4, 5);
             DailyRate_TextBox.MaxLength = 10;
             DailyRate_TextBox.Name = "DailyRate_TextBox";
@@ -221,7 +221,7 @@ namespace Sales_Tracker
             WeeklyRate_Label.Anchor = AnchorStyles.Top;
             WeeklyRate_Label.AutoSize = true;
             WeeklyRate_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            WeeklyRate_Label.Location = new Point(592, 288);
+            WeeklyRate_Label.Location = new Point(592, 253);
             WeeklyRate_Label.Name = "WeeklyRate_Label";
             WeeklyRate_Label.Size = new Size(138, 31);
             WeeklyRate_Label.TabIndex = 0;
@@ -239,7 +239,7 @@ namespace Sales_Tracker
             WeeklyRate_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             WeeklyRate_TextBox.Font = new Font("Segoe UI", 9F);
             WeeklyRate_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            WeeklyRate_TextBox.Location = new Point(592, 327);
+            WeeklyRate_TextBox.Location = new Point(592, 292);
             WeeklyRate_TextBox.Margin = new Padding(4, 5, 4, 5);
             WeeklyRate_TextBox.MaxLength = 10;
             WeeklyRate_TextBox.Name = "WeeklyRate_TextBox";
@@ -256,7 +256,7 @@ namespace Sales_Tracker
             MonthlyRate_Label.Anchor = AnchorStyles.Top;
             MonthlyRate_Label.AutoSize = true;
             MonthlyRate_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            MonthlyRate_Label.Location = new Point(750, 290);
+            MonthlyRate_Label.Location = new Point(750, 255);
             MonthlyRate_Label.Name = "MonthlyRate_Label";
             MonthlyRate_Label.Size = new Size(151, 31);
             MonthlyRate_Label.TabIndex = 0;
@@ -274,7 +274,7 @@ namespace Sales_Tracker
             MonthlyRate_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             MonthlyRate_TextBox.Font = new Font("Segoe UI", 9F);
             MonthlyRate_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            MonthlyRate_TextBox.Location = new Point(750, 327);
+            MonthlyRate_TextBox.Location = new Point(750, 292);
             MonthlyRate_TextBox.Margin = new Padding(4, 5, 4, 5);
             MonthlyRate_TextBox.MaxLength = 10;
             MonthlyRate_TextBox.Name = "MonthlyRate_TextBox";
@@ -288,7 +288,7 @@ namespace Sales_Tracker
             // 
             // AddRentalItem_Button
             // 
-            AddRentalItem_Button.Anchor = AnchorStyles.Bottom;
+            AddRentalItem_Button.Anchor = AnchorStyles.Top;
             AddRentalItem_Button.BackColor = Color.Transparent;
             AddRentalItem_Button.BorderColor = Color.LightGray;
             AddRentalItem_Button.BorderRadius = 2;
@@ -298,7 +298,7 @@ namespace Sales_Tracker
             AddRentalItem_Button.FillColor = Color.White;
             AddRentalItem_Button.Font = new Font("Segoe UI", 10F);
             AddRentalItem_Button.ForeColor = Color.Black;
-            AddRentalItem_Button.Location = new Point(499, 573);
+            AddRentalItem_Button.Location = new Point(499, 543);
             AddRentalItem_Button.Name = "AddRentalItem_Button";
             AddRentalItem_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             AddRentalItem_Button.Size = new Size(214, 48);
@@ -312,7 +312,7 @@ namespace Sales_Tracker
             Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Date_Label.Location = new Point(126, 291);
+            Date_Label.Location = new Point(126, 256);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(134, 31);
             Date_Label.TabIndex = 0;
@@ -326,7 +326,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
-            Date_DateTimePicker.Location = new Point(126, 327);
+            Date_DateTimePicker.Location = new Point(126, 292);
             Date_DateTimePicker.Margin = new Padding(4, 5, 4, 5);
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
@@ -345,10 +345,10 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
             WarningProduct_LinkLabel.Location = new Point(573, 212);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
-            WarningProduct_LinkLabel.Size = new Size(181, 59);
+            WarningProduct_LinkLabel.Size = new Size(322, 33);
             WarningProduct_LinkLabel.TabIndex = 4;
             WarningProduct_LinkLabel.TabStop = true;
-            WarningProduct_LinkLabel.Text = "No products exist.\r\nCreate one here";
+            WarningProduct_LinkLabel.Text = "No products exist. Create one here";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
             WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
             // 
@@ -368,7 +368,7 @@ namespace Sales_Tracker
             SecurityDeposit_Label.Anchor = AnchorStyles.Top;
             SecurityDeposit_Label.AutoSize = true;
             SecurityDeposit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SecurityDeposit_Label.Location = new Point(908, 291);
+            SecurityDeposit_Label.Location = new Point(908, 256);
             SecurityDeposit_Label.Name = "SecurityDeposit_Label";
             SecurityDeposit_Label.Size = new Size(178, 31);
             SecurityDeposit_Label.TabIndex = 0;
@@ -386,7 +386,7 @@ namespace Sales_Tracker
             SecurityDeposit_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             SecurityDeposit_TextBox.Font = new Font("Segoe UI", 9F);
             SecurityDeposit_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            SecurityDeposit_TextBox.Location = new Point(908, 327);
+            SecurityDeposit_TextBox.Location = new Point(908, 292);
             SecurityDeposit_TextBox.Margin = new Padding(4, 5, 4, 5);
             SecurityDeposit_TextBox.MaxLength = 10;
             SecurityDeposit_TextBox.Name = "SecurityDeposit_TextBox";
@@ -403,7 +403,7 @@ namespace Sales_Tracker
             Notes_Label.Anchor = AnchorStyles.Top;
             Notes_Label.AutoSize = true;
             Notes_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Notes_Label.Location = new Point(517, 402);
+            Notes_Label.Location = new Point(517, 365);
             Notes_Label.Name = "Notes_Label";
             Notes_Label.Size = new Size(179, 31);
             Notes_Label.TabIndex = 0;
@@ -422,10 +422,9 @@ namespace Sales_Tracker
             Notes_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Notes_TextBox.Font = new Font("Segoe UI", 9F);
             Notes_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Notes_TextBox.Location = new Point(344, 440);
+            Notes_TextBox.Location = new Point(344, 403);
             Notes_TextBox.Margin = new Padding(6, 8, 6, 8);
             Notes_TextBox.MaxLength = 1000;
-            Notes_TextBox.MinimumSize = new Size(400, 75);
             Notes_TextBox.Multiline = true;
             Notes_TextBox.Name = "Notes_TextBox";
             Notes_TextBox.PlaceholderText = "";
@@ -450,7 +449,7 @@ namespace Sales_Tracker
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1213, 639);
+            ClientSize = new Size(1213, 634);
             Controls.Add(AddRentalItem_Label);
             Controls.Add(Notes_Label);
             Controls.Add(Notes_TextBox);
@@ -475,7 +474,7 @@ namespace Sales_Tracker
             Controls.Add(RentalItemID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(1235, 695);
+            MinimumSize = new Size(1235, 690);
             Name = "AddRentalItem_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

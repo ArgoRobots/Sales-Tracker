@@ -795,10 +795,9 @@ namespace Sales_Tracker
 
             IsProgramLoading = false;
 
-            SortTheDataGridViewByDate();
+            SortDataGridViewsByDate();
             CenterAndResizeControls();
 
-            // Total_Panel only needs to be set once
             Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
             Total_Panel.Width = SelectedDataGridView.Width;
         }
@@ -1839,7 +1838,7 @@ namespace Sales_Tracker
         {
             ShowingResultsFor_Label.Visible = false;
         }
-        private void SortTheDataGridViewByDate()
+        private void SortDataGridViewsByDate()
         {
             string dateColumnHeader = SalesColumnHeaders[Column.Date];
             Sale_DataGridView.Sort(Sale_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
