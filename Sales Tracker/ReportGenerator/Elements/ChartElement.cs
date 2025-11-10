@@ -990,44 +990,47 @@ namespace Sales_Tracker.ReportGenerator.Elements
                 () => chartTypeTextBox.Text = TranslatedChartTitles.GetChartDisplayName(ChartType));
             yPosition += ControlRowHeight;
 
-            // Font Family
-            text = LanguageManager.TranslateString("Font") + ":";
-            Label fontLabel = AddPropertyLabel(container, text, yPosition);
+            // Font Family (only for non-geomap charts)
+            if (!IsGeoMapType(ChartType))
+            {
+                text = LanguageManager.TranslateString("Font") + ":";
+                Label fontLabel = AddPropertyLabel(container, text, yPosition);
 
-            Guna2TextBox fontTextBox = AddPropertySearchBox(
-                container,
-                FontFamily,
-                yPosition,
-                GetFontSearchResults,
-                value =>
-                {
-                    if (FontFamily != value)
+                Guna2TextBox fontTextBox = AddPropertySearchBox(
+                    container,
+                    FontFamily,
+                    yPosition,
+                    GetFontSearchResults,
+                    value =>
                     {
-                        undoRedoManager?.RecordAction(new PropertyChangeAction(
-                            this,
-                            nameof(FontFamily),
-                            FontFamily,
-                            value,
-                            onPropertyChanged));
-                        FontFamily = value;
-                        onPropertyChanged();
-                    }
-                },
-                fontLabel);
+                        if (FontFamily != value)
+                        {
+                            undoRedoManager?.RecordAction(new PropertyChangeAction(
+                                this,
+                                nameof(FontFamily),
+                                FontFamily,
+                                value,
+                                onPropertyChanged));
+                            FontFamily = value;
+                            onPropertyChanged();
+                        }
+                    },
+                    fontLabel);
 
-            CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
-            yPosition += ControlRowHeight;
+                CacheControl("FontFamily", fontTextBox, () => fontTextBox.Text = FontFamily);
+                yPosition += ControlRowHeight;
 
-            // Make both TextBoxes the same size
-            if (chartTypeTextBox.Width < fontTextBox.Width)
-            {
-                fontTextBox.Width = chartTypeTextBox.Width;
-                fontTextBox.Left = chartTypeTextBox.Left;
-            }
-            else
-            {
-                chartTypeTextBox.Width = fontTextBox.Width;
-                chartTypeTextBox.Left = fontTextBox.Left;
+                // Make both TextBoxes the same size
+                if (chartTypeTextBox.Width < fontTextBox.Width)
+                {
+                    fontTextBox.Width = chartTypeTextBox.Width;
+                    fontTextBox.Left = chartTypeTextBox.Left;
+                }
+                else
+                {
+                    chartTypeTextBox.Width = fontTextBox.Width;
+                    chartTypeTextBox.Left = fontTextBox.Left;
+                }
             }
 
             // Title font size (only for non-geomap charts)
