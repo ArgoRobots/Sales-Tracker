@@ -210,25 +210,15 @@ namespace Sales_Tracker.AISearch
 
             try
             {
-                // Use local variables for out parameters, then assign to properties
-                decimal? highTotal, lowTotal;
-                decimal? highPrice, lowPrice;
-                decimal? highDiscount, lowDiscount;
-                decimal? highShipping, lowShipping;
-                decimal? highTax, lowTax;
-                decimal? highFee, lowFee;
-                decimal? highQuantity, lowQuantity;
-                decimal? highChargedDiff, lowChargedDiff;
-
                 // Calculate thresholds for each numerical field
-                CalculateColumnThresholds(dataGridView, "Total", out highTotal, out lowTotal);
-                CalculateColumnThresholds(dataGridView, "Price per unit", out highPrice, out lowPrice);
-                CalculateColumnThresholds(dataGridView, "Discount", out highDiscount, out lowDiscount);
-                CalculateColumnThresholds(dataGridView, "Shipping", out highShipping, out lowShipping);
-                CalculateColumnThresholds(dataGridView, "Tax", out highTax, out lowTax);
-                CalculateColumnThresholds(dataGridView, "Fee", out highFee, out lowFee);
-                CalculateColumnThresholds(dataGridView, "Total items", out highQuantity, out lowQuantity);
-                CalculateColumnThresholds(dataGridView, "Charged difference", out highChargedDiff, out lowChargedDiff);
+                CalculateColumnThresholds(dataGridView, "Total", out decimal? highTotal, out decimal? lowTotal);
+                CalculateColumnThresholds(dataGridView, "Price per unit", out decimal? highPrice, out decimal? lowPrice);
+                CalculateColumnThresholds(dataGridView, "Discount", out decimal? highDiscount, out decimal? lowDiscount);
+                CalculateColumnThresholds(dataGridView, "Shipping", out decimal? highShipping, out decimal? lowShipping);
+                CalculateColumnThresholds(dataGridView, "Tax", out decimal? highTax, out decimal? lowTax);
+                CalculateColumnThresholds(dataGridView, "Fee", out decimal? highFee, out decimal? lowFee);
+                CalculateColumnThresholds(dataGridView, "Total items", out decimal? highQuantity, out decimal? lowQuantity);
+                CalculateColumnThresholds(dataGridView, "Charged difference", out decimal? highChargedDiff, out decimal? lowChargedDiff);
 
                 // Assign to thresholds object
                 thresholds.HighTotal = highTotal;
