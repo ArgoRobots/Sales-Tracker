@@ -24,10 +24,10 @@ namespace Sales_Tracker.AISearch
             }
 
             // Sort the values
-            var sortedValues = values.OrderBy(v => v).ToList();
+            List<decimal> sortedValues = values.OrderBy(v => v).ToList();
 
             // Calculate the index using decimal arithmetic to avoid floating-point precision issues
-            decimal index = ((decimal)percentile / 100m) * (sortedValues.Count - 1);
+            decimal index = (decimal)percentile / 100m * (sortedValues.Count - 1);
             int lowerIndex = (int)Math.Floor(index);
             int upperIndex = (int)Math.Ceiling(index);
 
