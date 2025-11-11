@@ -171,8 +171,7 @@ namespace Sales_Tracker.GridView
 
             if (selected is MainMenu_Form.SelectedOption.Purchases
                 or MainMenu_Form.SelectedOption.Sales
-                or MainMenu_Form.SelectedOption.Rentals
-                or MainMenu_Form.SelectedOption.Customers)
+                or MainMenu_Form.SelectedOption.Rentals)
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
@@ -183,7 +182,9 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.Instance.SaveCategoriesToFile(selected);
             }
-            else if (selected is MainMenu_Form.SelectedOption.Accountants or MainMenu_Form.SelectedOption.Companies)
+            else if (selected is MainMenu_Form.SelectedOption.Accountants
+                or MainMenu_Form.SelectedOption.Companies
+                or MainMenu_Form.SelectedOption.Customers)
             {
                 MainMenu_Form.SaveDataGridViewToFile(dataGridView, selected);
             }

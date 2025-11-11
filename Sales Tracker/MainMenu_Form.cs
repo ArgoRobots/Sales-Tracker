@@ -2033,8 +2033,8 @@ namespace Sales_Tracker
             {
                 Accountants_Form => SelectedOption.Accountants,
                 Companies_Form => SelectedOption.Companies,
-                Categories_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.CategoryPurchases : SelectedOption.CategorySales,
-                Products_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
+                Categories_Form => Categories_Form.Instance.Purchase_RadioButton.Checked ? SelectedOption.CategoryPurchases : SelectedOption.CategorySales,
+                Products_Form => Products_Form.Instance.Purchase_RadioButton.Checked ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
                 Receipts_Form => SelectedOption.Receipts,
                 ItemsInTransaction_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ItemsInPurchase : SelectedOption.ItemsInSale,
                 Customers_Form => SelectedOption.Customers,

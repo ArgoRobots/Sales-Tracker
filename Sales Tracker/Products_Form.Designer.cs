@@ -600,11 +600,11 @@ namespace Sales_Tracker
         private Label ForSale_Label;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Sale_RadioButton;
         private Label ForPurchase_Label;
-        private Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
         public Label Total_Label;
         public Guna.UI2.WinForms.Guna2ComboBox Type_ComboBox;
         private Label Type_Label;
         private Guna.UI2.WinForms.Guna2CustomCheckBox Rentable_CheckBox;
         private Label Rentable_Label;
+        public Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
     }
 }
