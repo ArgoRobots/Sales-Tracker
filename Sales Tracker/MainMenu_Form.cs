@@ -3,6 +3,7 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Sales_Tracker.AISearch;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
@@ -87,14 +88,14 @@ namespace Sales_Tracker
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
-                CustomControls.ControlDropDown_Panel,  
+                CustomControls.ControlDropDown_Panel,
                 CompanyLogo.CompanyLogoRightClick_Panel,
                 ColumnVisibilityPanel.Panel,
                 DateRangePanel,
                 File_Button,
                 Help_Button,
                 TimeRange_Button,
-                CustomControls.ControlsDropDown_Button);  
+                CustomControls.ControlsDropDown_Button);
 
             Application.AddMessageFilter(panelCloseFilter);
 
