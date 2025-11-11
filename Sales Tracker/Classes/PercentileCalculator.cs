@@ -27,8 +27,8 @@ namespace Sales_Tracker.Classes
             // Sort the values
             var sortedValues = values.OrderBy(v => v).ToList();
 
-            // Calculate the index
-            double index = (percentile / 100.0) * (sortedValues.Count - 1);
+            // Calculate the index using decimal arithmetic to avoid floating-point precision issues
+            decimal index = ((decimal)percentile / 100m) * (sortedValues.Count - 1);
             int lowerIndex = (int)Math.Floor(index);
             int upperIndex = (int)Math.Ceiling(index);
 
@@ -39,7 +39,7 @@ namespace Sales_Tracker.Classes
             // Otherwise, interpolate between the two nearest values
             decimal lowerValue = sortedValues[lowerIndex];
             decimal upperValue = sortedValues[upperIndex];
-            decimal fraction = (decimal)(index - lowerIndex);
+            decimal fraction = index - lowerIndex;
 
             return lowerValue + (upperValue - lowerValue) * fraction;
         }
