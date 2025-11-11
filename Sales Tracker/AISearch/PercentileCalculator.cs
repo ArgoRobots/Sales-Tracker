@@ -1,3 +1,5 @@
+using Sales_Tracker.Classes;
+
 namespace Sales_Tracker.AISearch
 {
     /// <summary>
@@ -173,10 +175,12 @@ namespace Sales_Tracker.AISearch
             highThreshold = null;
             lowThreshold = null;
 
-            var values = GetColumnDecimalValues(dataGridView, columnName);
+            List<decimal> values = GetColumnDecimalValues(dataGridView, columnName);
 
             if (values.Count == 0)
+            {
                 return false;
+            }
 
             // Determine the appropriate percentile based on data size
             double highPercentile = GetDynamicPercentileThreshold(values.Count);
@@ -197,10 +201,12 @@ namespace Sales_Tracker.AISearch
         /// <returns>DynamicThresholds object containing all calculated thresholds</returns>
         public static DynamicThresholds CalculateAllThresholds(DataGridView dataGridView)
         {
-            var thresholds = new DynamicThresholds();
+            DynamicThresholds thresholds = new();
 
             if (dataGridView == null)
+            {
                 return DynamicThresholds.CreateDefault();
+            }
 
             try
             {
@@ -215,7 +221,7 @@ namespace Sales_Tracker.AISearch
                 CalculateColumnThresholds(dataGridView, "Charged difference", out thresholds.HighChargedDifference, out thresholds.LowChargedDifference);
 
                 // For any fields that don't have data, use defaults
-                var defaults = DynamicThresholds.CreateDefault();
+                DynamicThresholds defaults = DynamicThresholds.CreateDefault();
                 thresholds.HighTotal ??= defaults.HighTotal;
                 thresholds.LowTotal ??= defaults.LowTotal;
                 thresholds.HighPrice ??= defaults.HighPrice;

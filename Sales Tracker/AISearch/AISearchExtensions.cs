@@ -1,10 +1,9 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.AISearch;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.Classes;
 using System.Diagnostics;
 
-namespace Sales_Tracker.AI
+namespace Sales_Tracker.AISearch
 {
     /// <summary>
     /// Extension to the existing search functionality to add AI capabilities.

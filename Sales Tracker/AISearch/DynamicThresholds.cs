@@ -1,6 +1,4 @@
-using System;
-
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.AISearch
 {
     /// <summary>
     /// Holds dynamically calculated thresholds for various numerical fields.

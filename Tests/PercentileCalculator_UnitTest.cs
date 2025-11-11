@@ -242,10 +242,9 @@ namespace Tests
         public void CalculateAllThresholds_WithNullDataGridView_ReturnsDefaults()
         {
             // Act
-            var thresholds = PercentileCalculator.CalculateAllThresholds(null);
+            DynamicThresholds thresholds = PercentileCalculator.CalculateAllThresholds(null);
 
             // Assert
-            Assert.IsNotNull(thresholds);
             Assert.AreEqual(200, thresholds.HighTotal);
             Assert.AreEqual(50, thresholds.LowTotal);
             Assert.AreEqual(100, thresholds.HighPrice);
@@ -256,7 +255,7 @@ namespace Tests
         public void CalculateAllThresholds_WithValidData_CalculatesAllFields()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
             dataGridView.Columns.Add("Price per unit", "Price per unit");
             dataGridView.Columns.Add("Discount", "Discount");
@@ -273,10 +272,7 @@ namespace Tests
             }
 
             // Act
-            var thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
-
-            // Assert - With 100 items, we use 90th percentile for high, 10th for low
-            Assert.IsNotNull(thresholds);
+            DynamicThresholds thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
 
             // High thresholds should be around 90% of max
             Assert.IsTrue(thresholds.HighTotal > 800 && thresholds.HighTotal < 1000,
@@ -295,7 +291,7 @@ namespace Tests
         public void CalculateAllThresholds_WithMissingColumns_UsesFallbackDefaults()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
             // Only add Total column, other columns missing
 
@@ -306,10 +302,9 @@ namespace Tests
             }
 
             // Act
-            var thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
+            DynamicThresholds thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
 
             // Assert - Total should be calculated, others should use defaults
-            Assert.IsNotNull(thresholds);
             Assert.IsTrue(thresholds.HighTotal > 0); // Calculated from data
             Assert.AreEqual(100, thresholds.HighPrice); // Default value
             Assert.AreEqual(5, thresholds.HighDiscount); // Default value
@@ -319,7 +314,7 @@ namespace Tests
         public void DynamicThresholds_CreateDefault_ReturnsExpectedValues()
         {
             // Act
-            var defaults = DynamicThresholds.CreateDefault();
+            DynamicThresholds defaults = DynamicThresholds.CreateDefault();
 
             // Assert
             Assert.AreEqual(200, defaults.HighTotal);
@@ -336,7 +331,7 @@ namespace Tests
         public void DynamicThresholds_ToString_ReturnsFormattedString()
         {
             // Arrange
-            var thresholds = new DynamicThresholds
+            DynamicThresholds thresholds = new()
             {
                 HighTotal = 500,
                 LowTotal = 100,

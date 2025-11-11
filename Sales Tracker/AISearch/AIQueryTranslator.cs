@@ -3,7 +3,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using System.Text;
 
-namespace Sales_Tracker.AI
+namespace Sales_Tracker.AISearch
 {
     /// <summary>
     /// Translates natural language queries into structured search parameters for the SearchDataGridView functionality.

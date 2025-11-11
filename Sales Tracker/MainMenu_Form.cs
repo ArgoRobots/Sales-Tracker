@@ -3,7 +3,7 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Sales_Tracker.AI;
+using Sales_Tracker.AISearch;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
