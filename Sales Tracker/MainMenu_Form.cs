@@ -228,7 +228,6 @@ namespace Sales_Tracker
                 categoryList.AddRange(loadedCategories);
             }
         }
-
         private void LoadCustomersFromFile()
         {
             // Create the file if it doesn't exist
@@ -246,12 +245,6 @@ namespace Sales_Tracker
             {
                 CustomerList.AddRange(loadedCustomers);
             }
-        }
-
-        public void SaveCustomersToFile()
-        {
-            string json = JsonConvert.SerializeObject(CustomerList, Formatting.Indented);
-            Directories.WriteTextToFile(Directories.Customers_file, json);
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
@@ -2045,6 +2038,8 @@ namespace Sales_Tracker
                 Receipts_Form => SelectedOption.Receipts,
                 ItemsInTransaction_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ItemsInPurchase : SelectedOption.ItemsInSale,
                 Customers_Form => SelectedOption.Customers,
+                AddCustomer_Form => SelectedOption.Customers,
+                AddRentalItem_Form => SelectedOption.Rentals,
                 _ => GetButtonBasedOption()
             };
         }

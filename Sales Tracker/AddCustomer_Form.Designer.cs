@@ -439,7 +439,9 @@
             Name = "AddCustomer_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += AddCustomer_Form_FormClosed;
             Shown += AddCustomer_Form_Shown;
+            Resize += AddCustomer_Form_Resize;
             ResumeLayout(false);
             PerformLayout();
         }

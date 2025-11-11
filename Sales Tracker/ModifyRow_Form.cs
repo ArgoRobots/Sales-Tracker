@@ -147,7 +147,7 @@ namespace Sales_Tracker
             UpdateChargedDifferenceInMainMenuRow();
             HandleReceiptChanges();
 
-            DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);
+            DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView);
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -1674,12 +1674,6 @@ namespace Sales_Tracker
                         break;
                     }
                 }
-            }
-
-            // Save customers to file
-            if (Customers_Form.Instance != null)
-            {
-                MainMenu_Form.Instance.SaveCustomersToFile();
             }
         }
 

@@ -271,13 +271,11 @@ namespace Sales_Tracker
                     lastName,
                     "",  // email
                     "",  // phoneNumber
-                    ""); // address
+                    "",  // address
+                    ""); // notes
 
                 // Add to customer list
                 MainMenu_Form.Instance.CustomerList.Add(newCustomer);
-
-                // Save to file
-                MainMenu_Form.Instance.SaveCustomersToFile();
 
                 // If Customers_Form is open, add to DataGridView
                 if (Tools.IsFormOpen<Customers_Form>())

@@ -207,7 +207,6 @@ namespace Sales_Tracker
 
             // Save changes
             RentalInventoryManager.SaveInventory();
-            MainMenu_Form.Instance.SaveCustomersToFile();
 
             // Update the inventory row
             _inventoryRow.Cells[ManageRentals_Form.Column.Available.ToString()].Value = _rentalItem.QuantityAvailable;

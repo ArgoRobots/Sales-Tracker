@@ -33,7 +33,7 @@ namespace Sales_Tracker.DataClasses
         // Default constructor required for deserialization
         public Customer() { }
 
-        public Customer(string customerID, string firstName, string lastName, string email, string phoneNumber, string address)
+        public Customer(string customerID, string firstName, string lastName, string email, string phoneNumber, string address, string notes)
         {
             CustomerID = customerID;
             FirstName = firstName;
@@ -41,6 +41,7 @@ namespace Sales_Tracker.DataClasses
             Email = email;
             PhoneNumber = phoneNumber;
             Address = address;
+            Notes = notes;
         }
 
         /// <summary>

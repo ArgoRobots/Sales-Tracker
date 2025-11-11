@@ -89,6 +89,15 @@ namespace Sales_Tracker
         private void AddCustomer_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+            CustomerID_TextBox.Focus();
+        }
+        private void AddCustomer_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
+        private void AddCustomer_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ClosePanels();
         }
 
         // Event handlers
@@ -175,10 +184,8 @@ namespace Sales_Tracker
                 lastName,
                 Email_TextBox.Text,
                 phoneNumber,
-                Address_TextBox.Text.Trim())
-            {
-                Notes = Notes_TextBox.Text.Trim()
-            };
+                Address_TextBox.Text.Trim(),
+                Notes_TextBox.Text.Trim());
 
             // Add to list
             MainMenu_Form.Instance.CustomerList.Add(customer);
@@ -199,9 +206,6 @@ namespace Sales_Tracker
 
             Customers_Form.Instance.Customers_DataGridView.Rows[newRowIndex].Tag = customer;
             DataGridViewManager.DataGridViewRowsAdded(Customers_Form.Instance.Customers_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
-
-            // Save
-            MainMenu_Form.Instance.SaveCustomersToFile();
 
             string message = $"Added customer '{customer.FullName}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, message);

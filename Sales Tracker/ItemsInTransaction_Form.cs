@@ -71,7 +71,7 @@ namespace Sales_Tracker
                     DataGridViewManager.UpdateChargedDifferenceInRowWithMultipleItems(DataGridViewManager.SelectedRowInMainMenu);
                 }
 
-                DataGridViewManager.DataGridViewRowChanged(Items_DataGridView, MainMenu_Form.Instance.Selected);
+                DataGridViewManager.DataGridViewRowChanged(Items_DataGridView);
                 MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             MainMenu_Form.IsProgramLoading = false;
