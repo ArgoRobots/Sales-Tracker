@@ -237,5 +237,121 @@ namespace Tests
             Assert.IsTrue(threshold > 970 && threshold < 990,
                 $"Expected threshold around 980 for 98th percentile of values 1-1000, got {threshold}");
         }
+
+        [TestMethod]
+        public void CalculateAllThresholds_WithNullDataGridView_ReturnsDefaults()
+        {
+            // Act
+            var thresholds = PercentileCalculator.CalculateAllThresholds(null);
+
+            // Assert
+            Assert.IsNotNull(thresholds);
+            Assert.AreEqual(200, thresholds.HighTotal);
+            Assert.AreEqual(50, thresholds.LowTotal);
+            Assert.AreEqual(100, thresholds.HighPrice);
+            Assert.AreEqual(50, thresholds.LowPrice);
+        }
+
+        [TestMethod]
+        public void CalculateAllThresholds_WithValidData_CalculatesAllFields()
+        {
+            // Arrange
+            var dataGridView = new DataGridView();
+            dataGridView.Columns.Add("Total", "Total");
+            dataGridView.Columns.Add("Price per unit", "Price per unit");
+            dataGridView.Columns.Add("Discount", "Discount");
+            dataGridView.Columns.Add("Shipping", "Shipping");
+
+            // Add 100 rows with various values
+            for (int i = 1; i <= 100; i++)
+            {
+                dataGridView.Rows.Add();
+                dataGridView.Rows[i - 1].Cells["Total"].Value = (i * 10).ToString();
+                dataGridView.Rows[i - 1].Cells["Price per unit"].Value = (i * 2).ToString();
+                dataGridView.Rows[i - 1].Cells["Discount"].Value = (i * 0.5m).ToString();
+                dataGridView.Rows[i - 1].Cells["Shipping"].Value = (i * 0.3m).ToString();
+            }
+
+            // Act
+            var thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
+
+            // Assert - With 100 items, we use 90th percentile for high, 10th for low
+            Assert.IsNotNull(thresholds);
+
+            // High thresholds should be around 90% of max
+            Assert.IsTrue(thresholds.HighTotal > 800 && thresholds.HighTotal < 1000,
+                $"Expected HighTotal around 900, got {thresholds.HighTotal}");
+            Assert.IsTrue(thresholds.HighPrice > 160 && thresholds.HighPrice < 200,
+                $"Expected HighPrice around 180, got {thresholds.HighPrice}");
+
+            // Low thresholds should be around 10% of max
+            Assert.IsTrue(thresholds.LowTotal > 0 && thresholds.LowTotal < 200,
+                $"Expected LowTotal around 100, got {thresholds.LowTotal}");
+            Assert.IsTrue(thresholds.LowPrice > 0 && thresholds.LowPrice < 40,
+                $"Expected LowPrice around 20, got {thresholds.LowPrice}");
+        }
+
+        [TestMethod]
+        public void CalculateAllThresholds_WithMissingColumns_UsesFallbackDefaults()
+        {
+            // Arrange
+            var dataGridView = new DataGridView();
+            dataGridView.Columns.Add("Total", "Total");
+            // Only add Total column, other columns missing
+
+            for (int i = 1; i <= 100; i++)
+            {
+                dataGridView.Rows.Add();
+                dataGridView.Rows[i - 1].Cells["Total"].Value = (i * 10).ToString();
+            }
+
+            // Act
+            var thresholds = PercentileCalculator.CalculateAllThresholds(dataGridView);
+
+            // Assert - Total should be calculated, others should use defaults
+            Assert.IsNotNull(thresholds);
+            Assert.IsTrue(thresholds.HighTotal > 0); // Calculated from data
+            Assert.AreEqual(100, thresholds.HighPrice); // Default value
+            Assert.AreEqual(5, thresholds.HighDiscount); // Default value
+        }
+
+        [TestMethod]
+        public void DynamicThresholds_CreateDefault_ReturnsExpectedValues()
+        {
+            // Act
+            var defaults = DynamicThresholds.CreateDefault();
+
+            // Assert
+            Assert.AreEqual(200, defaults.HighTotal);
+            Assert.AreEqual(50, defaults.LowTotal);
+            Assert.AreEqual(100, defaults.HighPrice);
+            Assert.AreEqual(50, defaults.LowPrice);
+            Assert.AreEqual(5, defaults.HighDiscount);
+            Assert.AreEqual(0, defaults.LowDiscount);
+            Assert.AreEqual(20, defaults.HighShipping);
+            Assert.AreEqual(0, defaults.LowShipping);
+        }
+
+        [TestMethod]
+        public void DynamicThresholds_ToString_ReturnsFormattedString()
+        {
+            // Arrange
+            var thresholds = new DynamicThresholds
+            {
+                HighTotal = 500,
+                LowTotal = 100,
+                HighPrice = 200,
+                LowPrice = 50
+            };
+
+            // Act
+            string result = thresholds.ToString();
+
+            // Assert
+            Assert.IsTrue(result.Contains("500.00"));
+            Assert.IsTrue(result.Contains("100.00"));
+            Assert.IsTrue(result.Contains("Total:"));
+            Assert.IsTrue(result.Contains("Price:"));
+        }
     }
 }

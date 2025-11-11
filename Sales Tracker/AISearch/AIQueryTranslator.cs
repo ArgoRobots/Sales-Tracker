@@ -32,9 +32,9 @@ namespace Sales_Tracker.AI
         /// Translates a natural language query into structured search parameters.
         /// </summary>
         /// <param name="naturalLanguageQuery">The user's search query in natural language</param>
-        /// <param name="expensiveThreshold">Optional dynamic threshold for "expensive" items. If null, uses default value of 200.</param>
+        /// <param name="thresholds">Optional dynamic thresholds for numerical fields. If null, uses default values.</param>
         /// <returns>A structured search query that can be used with SearchDataGridView.</returns>
-        public async Task<string> TranslateQueryAsync(string naturalLanguageQuery, decimal? expensiveThreshold = null)
+        public async Task<string> TranslateQueryAsync(string naturalLanguageQuery, DynamicThresholds thresholds = null)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Sales_Tracker.AI
                 }
 
                 // Create the prompt for the AI
-                string prompt = BuildPrompt(naturalLanguageQuery, expensiveThreshold);
+                string prompt = BuildPrompt(naturalLanguageQuery, thresholds);
 
                 // Send request to AI API
                 string response = await SendApiRequestAsync(prompt);
@@ -63,10 +63,13 @@ namespace Sales_Tracker.AI
                 return naturalLanguageQuery;
             }
         }
-        private static string BuildPrompt(string naturalLanguageQuery, decimal? expensiveThreshold = null)
+        private static string BuildPrompt(string naturalLanguageQuery, DynamicThresholds thresholds = null)
         {
             // Create a detailed prompt that explains the search system and what we need
             StringBuilder promptBuilder = new();
+
+            // Use provided thresholds or fall back to defaults
+            thresholds ??= DynamicThresholds.CreateDefault();
 
             promptBuilder.AppendLine("You are a search query translator for a sales tracking application. Your role is to convert natural language queries into structured search syntax.");
             promptBuilder.AppendLine("\nThe application supports the following search syntax:");
@@ -99,15 +102,23 @@ namespace Sales_Tracker.AI
             promptBuilder.AppendLine("6. Middle East: Use 'Country:United Arab Emirates|Saudi Arabia|Israel|Turkey|Qatar|Kuwait|Bahrain|Oman'");
             promptBuilder.AppendLine("7. Oceania: Use 'Country:Australia|New Zealand|Fiji|Papua New Guinea'");
 
-            // Use dynamic threshold if provided, otherwise fall back to default value
-            decimal threshold = expensiveThreshold ?? 200;
-
-            // Explanation of "high" and "low" value thresholds
-            promptBuilder.AppendLine("\nThresholds for qualitative terms:");
-            promptBuilder.AppendLine("- \"high discount\" means discount values > 5");
-            promptBuilder.AppendLine("- \"low price\" means price values < 50");
-            promptBuilder.AppendLine($"- \"expensive\" means total cost > {threshold:F2}");
-            promptBuilder.AppendLine("- \"cheap\" means total cost < 50");
+            // Explanation of "high" and "low" value thresholds - now using ALL dynamic thresholds
+            promptBuilder.AppendLine("\nThresholds for qualitative terms (dynamically calculated based on actual data):");
+            promptBuilder.AppendLine($"- \"expensive\" OR \"high cost\" OR \"high total\" means Total > {thresholds.HighTotal:F2}");
+            promptBuilder.AppendLine($"- \"cheap\" OR \"low cost\" OR \"low total\" means Total < {thresholds.LowTotal:F2}");
+            promptBuilder.AppendLine($"- \"high price\" OR \"expensive price\" means Price per unit > {thresholds.HighPrice:F2}");
+            promptBuilder.AppendLine($"- \"low price\" OR \"cheap price\" means Price per unit < {thresholds.LowPrice:F2}");
+            promptBuilder.AppendLine($"- \"high discount\" OR \"large discount\" means Discount > {thresholds.HighDiscount:F2}");
+            promptBuilder.AppendLine($"- \"low discount\" OR \"small discount\" means Discount < {thresholds.LowDiscount:F2}");
+            promptBuilder.AppendLine($"- \"high shipping\" OR \"expensive shipping\" means Shipping > {thresholds.HighShipping:F2}");
+            promptBuilder.AppendLine($"- \"low shipping\" OR \"cheap shipping\" means Shipping < {thresholds.LowShipping:F2}");
+            promptBuilder.AppendLine($"- \"free shipping\" means Shipping = 0");
+            promptBuilder.AppendLine($"- \"high tax\" means Tax > {thresholds.HighTax:F2}");
+            promptBuilder.AppendLine($"- \"low tax\" means Tax < {thresholds.LowTax:F2}");
+            promptBuilder.AppendLine($"- \"high fee\" means Fee > {thresholds.HighFee:F2}");
+            promptBuilder.AppendLine($"- \"low fee\" means Fee < {thresholds.LowFee:F2}");
+            promptBuilder.AppendLine($"- \"high quantity\" OR \"large order\" OR \"bulk\" means Total items > {thresholds.HighQuantity:F2}");
+            promptBuilder.AppendLine($"- \"low quantity\" OR \"small order\" means Total items < {thresholds.LowQuantity:F2}");
 
             // Add rules for using country fields
             promptBuilder.AppendLine("\nIMPORTANT RULES FOR COUNTRY FIELDS:");
@@ -127,10 +138,10 @@ namespace Sales_Tracker.AI
             promptBuilder.AppendLine("Translation: \"+Country of destination:United Kingdom +Date:>2023-12-01\"");
 
             promptBuilder.AppendLine("\nQuery: \"aliexpress orders with high discount\"");
-            promptBuilder.AppendLine("Translation: \"+Company of origin:aliexpress +Discount:>5\"");
+            promptBuilder.AppendLine($"Translation: \"+Company of origin:aliexpress +Discount:>{thresholds.HighDiscount:F2}\"");
 
             promptBuilder.AppendLine("\nQuery: \"expensive purchases from last month\"");
-            promptBuilder.AppendLine($"Translation: \"+Total:>{threshold:F2} +Date:>2023-12-01\"");
+            promptBuilder.AppendLine($"Translation: \"+Total:>{thresholds.HighTotal:F2} +Date:>2023-12-01\"");
 
             promptBuilder.AppendLine("\nQuery: \"sales with free shipping that are not from Germany\"");
             promptBuilder.AppendLine("Translation: \"+Shipping:0 -Company of origin:Germany\"");
@@ -155,6 +166,18 @@ namespace Sales_Tracker.AI
 
             promptBuilder.AppendLine("\nQuery: \"sales to asian countries last month\"");
             promptBuilder.AppendLine("Translation: \"+Country of destination:China|Japan|South Korea|India|Taiwan|Singapore|Vietnam|Thailand|Malaysia|Indonesia|Philippines +Date:>2023-12-01\"");
+
+            promptBuilder.AppendLine("\nQuery: \"cheap items with low shipping\"");
+            promptBuilder.AppendLine($"Translation: \"+Total:<{thresholds.LowTotal:F2} +Shipping:<{thresholds.LowShipping:F2}\"");
+
+            promptBuilder.AppendLine("\nQuery: \"bulk orders with high discounts\"");
+            promptBuilder.AppendLine($"Translation: \"+Total items:>{thresholds.HighQuantity:F2} +Discount:>{thresholds.HighDiscount:F2}\"");
+
+            promptBuilder.AppendLine("\nQuery: \"expensive items with low price per unit\"");
+            promptBuilder.AppendLine($"Translation: \"+Total:>{thresholds.HighTotal:F2} +Price per unit:<{thresholds.LowPrice:F2}\"");
+
+            promptBuilder.AppendLine("\nQuery: \"small orders with high shipping costs\"");
+            promptBuilder.AppendLine($"Translation: \"+Total items:<{thresholds.LowQuantity:F2} +Shipping:>{thresholds.HighShipping:F2}\"");
 
             // Finally, add the user's query
             promptBuilder.AppendLine("\nUser Query: \"" + naturalLanguageQuery + "\"");

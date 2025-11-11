@@ -158,5 +158,88 @@ namespace Sales_Tracker.AISearch
             // Calculate and return the threshold
             return CalculatePercentile(values, percentile);
         }
+
+        /// <summary>
+        /// Calculates both high and low thresholds for a specific column.
+        /// </summary>
+        /// <param name="dataGridView">The DataGridView containing the data</param>
+        /// <param name="columnName">Name of the column to analyze</param>
+        /// <param name="highThreshold">Output: The high threshold value</param>
+        /// <param name="lowThreshold">Output: The low threshold value</param>
+        /// <returns>True if thresholds were calculated successfully, false if no data available</returns>
+        private static bool CalculateColumnThresholds(DataGridView dataGridView, string columnName,
+            out decimal? highThreshold, out decimal? lowThreshold)
+        {
+            highThreshold = null;
+            lowThreshold = null;
+
+            var values = GetColumnDecimalValues(dataGridView, columnName);
+
+            if (values.Count == 0)
+                return false;
+
+            // Determine the appropriate percentile based on data size
+            double highPercentile = GetDynamicPercentileThreshold(values.Count);
+            double lowPercentile = 100 - highPercentile; // Mirror: if high is 90th, low is 10th
+
+            // Calculate thresholds
+            highThreshold = CalculatePercentile(values, highPercentile);
+            lowThreshold = CalculatePercentile(values, lowPercentile);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Calculates dynamic thresholds for all numerical fields in the DataGridView.
+        /// This provides context-aware values for qualitative search terms.
+        /// </summary>
+        /// <param name="dataGridView">The DataGridView containing the data</param>
+        /// <returns>DynamicThresholds object containing all calculated thresholds</returns>
+        public static DynamicThresholds CalculateAllThresholds(DataGridView dataGridView)
+        {
+            var thresholds = new DynamicThresholds();
+
+            if (dataGridView == null)
+                return DynamicThresholds.CreateDefault();
+
+            try
+            {
+                // Calculate thresholds for each numerical field
+                CalculateColumnThresholds(dataGridView, "Total", out thresholds.HighTotal, out thresholds.LowTotal);
+                CalculateColumnThresholds(dataGridView, "Price per unit", out thresholds.HighPrice, out thresholds.LowPrice);
+                CalculateColumnThresholds(dataGridView, "Discount", out thresholds.HighDiscount, out thresholds.LowDiscount);
+                CalculateColumnThresholds(dataGridView, "Shipping", out thresholds.HighShipping, out thresholds.LowShipping);
+                CalculateColumnThresholds(dataGridView, "Tax", out thresholds.HighTax, out thresholds.LowTax);
+                CalculateColumnThresholds(dataGridView, "Fee", out thresholds.HighFee, out thresholds.LowFee);
+                CalculateColumnThresholds(dataGridView, "Total items", out thresholds.HighQuantity, out thresholds.LowQuantity);
+                CalculateColumnThresholds(dataGridView, "Charged difference", out thresholds.HighChargedDifference, out thresholds.LowChargedDifference);
+
+                // For any fields that don't have data, use defaults
+                var defaults = DynamicThresholds.CreateDefault();
+                thresholds.HighTotal ??= defaults.HighTotal;
+                thresholds.LowTotal ??= defaults.LowTotal;
+                thresholds.HighPrice ??= defaults.HighPrice;
+                thresholds.LowPrice ??= defaults.LowPrice;
+                thresholds.HighDiscount ??= defaults.HighDiscount;
+                thresholds.LowDiscount ??= defaults.LowDiscount;
+                thresholds.HighShipping ??= defaults.HighShipping;
+                thresholds.LowShipping ??= defaults.LowShipping;
+                thresholds.HighTax ??= defaults.HighTax;
+                thresholds.LowTax ??= defaults.LowTax;
+                thresholds.HighFee ??= defaults.HighFee;
+                thresholds.LowFee ??= defaults.LowFee;
+                thresholds.HighQuantity ??= defaults.HighQuantity;
+                thresholds.LowQuantity ??= defaults.LowQuantity;
+                thresholds.HighChargedDifference ??= defaults.HighChargedDifference;
+                thresholds.LowChargedDifference ??= defaults.LowChargedDifference;
+
+                return thresholds;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error calculating dynamic thresholds: {0}", ex.Message);
+                return DynamicThresholds.CreateDefault();
+            }
+        }
     }
 }
