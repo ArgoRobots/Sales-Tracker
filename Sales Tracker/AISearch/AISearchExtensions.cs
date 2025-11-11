@@ -1,8 +1,9 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.AnonymousData;
+using Sales_Tracker.Classes;
 using System.Diagnostics;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.AISearch
 {
     /// <summary>
     /// Extension to the existing search functionality to add AI capabilities.
@@ -35,8 +36,25 @@ namespace Sales_Tracker.Classes
                 string naturalLanguageQuery = userQuery.Substring(1).Trim();
                 _originalQuery = naturalLanguageQuery;
 
+                // Calculate dynamic thresholds for all numerical fields based on current data
+                DynamicThresholds thresholds = null;
+                try
+                {
+                    var selectedDataGridView = MainMenu_Form.Instance?.SelectedDataGridView;
+                    if (selectedDataGridView != null)
+                    {
+                        thresholds = PercentileCalculator.CalculateAllThresholds(selectedDataGridView);
+                        Log.WriteWithFormat(2, "Calculated dynamic thresholds: {0}", thresholds.ToString());
+                    }
+                }
+                catch (Exception thresholdEx)
+                {
+                    Log.WriteWithFormat(1, "Failed to calculate dynamic thresholds, using defaults: {0}", thresholdEx.Message);
+                    thresholds = null; // Will use defaults in translator
+                }
+
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
+                _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery, thresholds);
                 stopwatch.Stop();
 
                 // Track the API usage data
