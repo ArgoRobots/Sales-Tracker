@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
-using Sales_Tracker.Classes;
+using Sales_Tracker.AI;
 using System.Net;
 using FieldInfo = System.Reflection.FieldInfo;
 

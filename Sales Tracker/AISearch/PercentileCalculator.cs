@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.AISearch
 {
     /// <summary>
     /// Provides methods for calculating percentile-based thresholds for filtering data.
@@ -19,22 +14,28 @@ namespace Sales_Tracker.Classes
         public static decimal CalculatePercentile(List<decimal> values, double percentile)
         {
             if (values == null || values.Count == 0)
+            {
                 return 0;
+            }
 
             if (percentile < 0 || percentile > 100)
+            {
                 throw new ArgumentOutOfRangeException(nameof(percentile), "Percentile must be between 0 and 100");
+            }
 
             // Sort the values
             var sortedValues = values.OrderBy(v => v).ToList();
 
             // Calculate the index
-            double index = (percentile / 100.0) * (sortedValues.Count - 1);
+            double index = percentile / 100.0 * (sortedValues.Count - 1);
             int lowerIndex = (int)Math.Floor(index);
             int upperIndex = (int)Math.Ceiling(index);
 
             // If the index is a whole number, return that value
             if (lowerIndex == upperIndex)
+            {
                 return sortedValues[lowerIndex];
+            }
 
             // Otherwise, interpolate between the two nearest values
             decimal lowerValue = sortedValues[lowerIndex];
@@ -53,7 +54,9 @@ namespace Sales_Tracker.Classes
         public static double GetDynamicPercentileThreshold(int transactionCount)
         {
             if (transactionCount <= 0)
-                return 95; // Default to top 5%
+            {
+                return 95;  // Default to top 5%
+            }
 
             // Sliding scale based on transaction count:
             // - Very few transactions (1-20): top 50% (percentile 50)
@@ -63,15 +66,25 @@ namespace Sales_Tracker.Classes
             // - Lots of transactions (500+): top 2% (percentile 98)
 
             if (transactionCount <= 20)
+            {
                 return 50;  // Top 50% - with only 10 items, this gives us ~5 items
+            }
             else if (transactionCount <= 50)
+            {
                 return 75;  // Top 25%
+            }
             else if (transactionCount <= 200)
+            {
                 return 90;  // Top 10%
+            }
             else if (transactionCount <= 500)
+            {
                 return 95;  // Top 5%
+            }
             else
+            {
                 return 98;  // Top 2%
+            }
         }
 
         /// <summary>
@@ -82,10 +95,12 @@ namespace Sales_Tracker.Classes
         /// <returns>List of decimal values from the column</returns>
         public static List<decimal> GetColumnDecimalValues(DataGridView dataGridView, string columnName)
         {
-            var values = new List<decimal>();
+            List<decimal> values = [];
 
             if (dataGridView == null || string.IsNullOrWhiteSpace(columnName))
+            {
                 return values;
+            }
 
             // Find the column
             DataGridViewColumn column = null;
@@ -100,15 +115,19 @@ namespace Sales_Tracker.Classes
             }
 
             if (column == null)
+            {
                 return values;
+            }
 
             // Extract all decimal values from the column
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (row.IsNewRow)
+                {
                     continue;
+                }
 
-                var cellValue = row.Cells[column.Index].Value;
+                object? cellValue = row.Cells[column.Index].Value;
                 if (cellValue != null && decimal.TryParse(cellValue.ToString(), out decimal decimalValue))
                 {
                     values.Add(decimalValue);
@@ -126,10 +145,12 @@ namespace Sales_Tracker.Classes
         /// <returns>The threshold value above which items are considered "expensive"</returns>
         public static decimal GetExpensiveItemThreshold(DataGridView dataGridView, string columnName = "Total")
         {
-            var values = GetColumnDecimalValues(dataGridView, columnName);
+            List<decimal> values = GetColumnDecimalValues(dataGridView, columnName);
 
             if (values.Count == 0)
-                return 200; // Fallback to hardcoded default if no data
+            {
+                return 200;  // Fallback to hardcoded default if no data
+            }
 
             // Determine the appropriate percentile based on data size
             double percentile = GetDynamicPercentileThreshold(values.Count);

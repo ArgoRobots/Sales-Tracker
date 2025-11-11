@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using System.Text;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.AI
 {
     /// <summary>
     /// Translates natural language queries into structured search parameters for the SearchDataGridView functionality.
@@ -255,8 +256,8 @@ namespace Sales_Tracker.Classes
             if (string.IsNullOrEmpty(input)) return input;
 
             // Remove leading and trailing " or ' if present
-            if ((input.StartsWith('\"') && input.EndsWith('\"')) ||
-                (input.StartsWith('\'') && input.EndsWith('\'')))
+            if (input.StartsWith('\"') && input.EndsWith('\"') ||
+                input.StartsWith('\'') && input.EndsWith('\''))
             {
                 return input.Substring(1, input.Length - 2);
             }

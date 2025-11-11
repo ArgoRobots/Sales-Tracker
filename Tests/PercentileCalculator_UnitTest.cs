@@ -1,4 +1,4 @@
-using Sales_Tracker.Classes;
+using Sales_Tracker.AISearch;
 using System.Windows.Forms;
 
 namespace Tests
@@ -10,7 +10,7 @@ namespace Tests
         public void CalculatePercentile_WithValidData_ReturnsCorrectValue()
         {
             // Arrange
-            var values = new List<decimal> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+            List<decimal> values = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
             // Act
             decimal percentile50 = PercentileCalculator.CalculatePercentile(values, 50);
@@ -27,7 +27,7 @@ namespace Tests
         public void CalculatePercentile_WithSingleValue_ReturnsThatValue()
         {
             // Arrange
-            var values = new List<decimal> { 42 };
+            List<decimal> values = [42];
 
             // Act
             decimal result = PercentileCalculator.CalculatePercentile(values, 50);
@@ -40,7 +40,7 @@ namespace Tests
         public void CalculatePercentile_WithEmptyList_ReturnsZero()
         {
             // Arrange
-            var values = new List<decimal>();
+            List<decimal> values = [];
 
             // Act
             decimal result = PercentileCalculator.CalculatePercentile(values, 50);
@@ -50,14 +50,13 @@ namespace Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CalculatePercentile_WithInvalidPercentile_ThrowsException()
         {
             // Arrange
-            var values = new List<decimal> { 10, 20, 30 };
+            List<decimal> values = [10, 20, 30];
 
             // Act & Assert
-            PercentileCalculator.CalculatePercentile(values, 150); // Invalid percentile
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => PercentileCalculator.CalculatePercentile(values, 150)); // Invalid percentile
         }
 
         [TestMethod]
@@ -122,7 +121,7 @@ namespace Tests
         public void GetColumnDecimalValues_WithValidColumn_ReturnsValues()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             dataGridView.Rows.Add();
@@ -134,7 +133,7 @@ namespace Tests
             dataGridView.Rows[2].Cells["Total"].Value = "300.25";
 
             // Act
-            var values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "Total");
+            List<decimal> values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "Total");
 
             // Assert
             Assert.AreEqual(3, values.Count);
@@ -147,11 +146,11 @@ namespace Tests
         public void GetColumnDecimalValues_WithInvalidColumn_ReturnsEmptyList()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             // Act
-            var values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "NonExistentColumn");
+            List<decimal> values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "NonExistentColumn");
 
             // Assert
             Assert.AreEqual(0, values.Count);
@@ -161,7 +160,7 @@ namespace Tests
         public void GetColumnDecimalValues_WithNullValues_SkipsThem()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             dataGridView.Rows.Add();
@@ -173,7 +172,7 @@ namespace Tests
             dataGridView.Rows[2].Cells["Total"].Value = "200";
 
             // Act
-            var values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "Total");
+            List<decimal> values = PercentileCalculator.GetColumnDecimalValues(dataGridView, "Total");
 
             // Assert
             Assert.AreEqual(2, values.Count);
@@ -185,7 +184,7 @@ namespace Tests
         public void GetExpensiveItemThreshold_WithNoData_ReturnsDefault()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             // Act
@@ -199,7 +198,7 @@ namespace Tests
         public void GetExpensiveItemThreshold_WithData_ReturnsPercentileValue()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             // Add 10 rows (which should trigger 50th percentile threshold)
@@ -221,7 +220,7 @@ namespace Tests
         public void GetExpensiveItemThreshold_WithManyTransactions_UsesHigherPercentile()
         {
             // Arrange
-            var dataGridView = new DataGridView();
+            DataGridView dataGridView = new();
             dataGridView.Columns.Add("Total", "Total");
 
             // Add 1000 rows (which should trigger 98th percentile threshold)
