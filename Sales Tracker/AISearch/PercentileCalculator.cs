@@ -210,15 +210,43 @@ namespace Sales_Tracker.AISearch
 
             try
             {
+                // Use local variables for out parameters, then assign to properties
+                decimal? highTotal, lowTotal;
+                decimal? highPrice, lowPrice;
+                decimal? highDiscount, lowDiscount;
+                decimal? highShipping, lowShipping;
+                decimal? highTax, lowTax;
+                decimal? highFee, lowFee;
+                decimal? highQuantity, lowQuantity;
+                decimal? highChargedDiff, lowChargedDiff;
+
                 // Calculate thresholds for each numerical field
-                CalculateColumnThresholds(dataGridView, "Total", out thresholds.HighTotal, out thresholds.LowTotal);
-                CalculateColumnThresholds(dataGridView, "Price per unit", out thresholds.HighPrice, out thresholds.LowPrice);
-                CalculateColumnThresholds(dataGridView, "Discount", out thresholds.HighDiscount, out thresholds.LowDiscount);
-                CalculateColumnThresholds(dataGridView, "Shipping", out thresholds.HighShipping, out thresholds.LowShipping);
-                CalculateColumnThresholds(dataGridView, "Tax", out thresholds.HighTax, out thresholds.LowTax);
-                CalculateColumnThresholds(dataGridView, "Fee", out thresholds.HighFee, out thresholds.LowFee);
-                CalculateColumnThresholds(dataGridView, "Total items", out thresholds.HighQuantity, out thresholds.LowQuantity);
-                CalculateColumnThresholds(dataGridView, "Charged difference", out thresholds.HighChargedDifference, out thresholds.LowChargedDifference);
+                CalculateColumnThresholds(dataGridView, "Total", out highTotal, out lowTotal);
+                CalculateColumnThresholds(dataGridView, "Price per unit", out highPrice, out lowPrice);
+                CalculateColumnThresholds(dataGridView, "Discount", out highDiscount, out lowDiscount);
+                CalculateColumnThresholds(dataGridView, "Shipping", out highShipping, out lowShipping);
+                CalculateColumnThresholds(dataGridView, "Tax", out highTax, out lowTax);
+                CalculateColumnThresholds(dataGridView, "Fee", out highFee, out lowFee);
+                CalculateColumnThresholds(dataGridView, "Total items", out highQuantity, out lowQuantity);
+                CalculateColumnThresholds(dataGridView, "Charged difference", out highChargedDiff, out lowChargedDiff);
+
+                // Assign to thresholds object
+                thresholds.HighTotal = highTotal;
+                thresholds.LowTotal = lowTotal;
+                thresholds.HighPrice = highPrice;
+                thresholds.LowPrice = lowPrice;
+                thresholds.HighDiscount = highDiscount;
+                thresholds.LowDiscount = lowDiscount;
+                thresholds.HighShipping = highShipping;
+                thresholds.LowShipping = lowShipping;
+                thresholds.HighTax = highTax;
+                thresholds.LowTax = lowTax;
+                thresholds.HighFee = highFee;
+                thresholds.LowFee = lowFee;
+                thresholds.HighQuantity = highQuantity;
+                thresholds.LowQuantity = lowQuantity;
+                thresholds.HighChargedDifference = highChargedDiff;
+                thresholds.LowChargedDifference = lowChargedDiff;
 
                 // For any fields that don't have data, use defaults
                 DynamicThresholds defaults = DynamicThresholds.CreateDefault();
