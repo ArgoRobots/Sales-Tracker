@@ -31,8 +31,9 @@ namespace Sales_Tracker.Classes
         /// Translates a natural language query into structured search parameters.
         /// </summary>
         /// <param name="naturalLanguageQuery">The user's search query in natural language</param>
+        /// <param name="expensiveThreshold">Optional dynamic threshold for "expensive" items. If null, uses default value of 200.</param>
         /// <returns>A structured search query that can be used with SearchDataGridView.</returns>
-        public async Task<string> TranslateQueryAsync(string naturalLanguageQuery)
+        public async Task<string> TranslateQueryAsync(string naturalLanguageQuery, decimal? expensiveThreshold = null)
         {
             try
             {
@@ -43,7 +44,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Create the prompt for the AI
-                string prompt = BuildPrompt(naturalLanguageQuery);
+                string prompt = BuildPrompt(naturalLanguageQuery, expensiveThreshold);
 
                 // Send request to AI API
                 string response = await SendApiRequestAsync(prompt);
@@ -61,7 +62,7 @@ namespace Sales_Tracker.Classes
                 return naturalLanguageQuery;
             }
         }
-        private static string BuildPrompt(string naturalLanguageQuery)
+        private static string BuildPrompt(string naturalLanguageQuery, decimal? expensiveThreshold = null)
         {
             // Create a detailed prompt that explains the search system and what we need
             StringBuilder promptBuilder = new();
@@ -97,11 +98,14 @@ namespace Sales_Tracker.Classes
             promptBuilder.AppendLine("6. Middle East: Use 'Country:United Arab Emirates|Saudi Arabia|Israel|Turkey|Qatar|Kuwait|Bahrain|Oman'");
             promptBuilder.AppendLine("7. Oceania: Use 'Country:Australia|New Zealand|Fiji|Papua New Guinea'");
 
+            // Use dynamic threshold if provided, otherwise fall back to default value
+            decimal threshold = expensiveThreshold ?? 200;
+
             // Explanation of "high" and "low" value thresholds
             promptBuilder.AppendLine("\nThresholds for qualitative terms:");
             promptBuilder.AppendLine("- \"high discount\" means discount values > 5");
             promptBuilder.AppendLine("- \"low price\" means price values < 50");
-            promptBuilder.AppendLine("- \"expensive\" means total cost > 200");
+            promptBuilder.AppendLine($"- \"expensive\" means total cost > {threshold:F2}");
             promptBuilder.AppendLine("- \"cheap\" means total cost < 50");
 
             // Add rules for using country fields
@@ -125,7 +129,7 @@ namespace Sales_Tracker.Classes
             promptBuilder.AppendLine("Translation: \"+Company of origin:aliexpress +Discount:>5\"");
 
             promptBuilder.AppendLine("\nQuery: \"expensive purchases from last month\"");
-            promptBuilder.AppendLine("Translation: \"+Total:>200 +Date:>2023-12-01\"");
+            promptBuilder.AppendLine($"Translation: \"+Total:>{threshold:F2} +Date:>2023-12-01\"");
 
             promptBuilder.AppendLine("\nQuery: \"sales with free shipping that are not from Germany\"");
             promptBuilder.AppendLine("Translation: \"+Shipping:0 -Company of origin:Germany\"");

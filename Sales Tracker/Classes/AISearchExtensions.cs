@@ -35,8 +35,25 @@ namespace Sales_Tracker.Classes
                 string naturalLanguageQuery = userQuery.Substring(1).Trim();
                 _originalQuery = naturalLanguageQuery;
 
+                // Calculate dynamic threshold for "expensive" items based on current data
+                decimal? expensiveThreshold = null;
+                try
+                {
+                    var selectedDataGridView = MainMenu_Form.Instance?.SelectedDataGridView;
+                    if (selectedDataGridView != null)
+                    {
+                        expensiveThreshold = PercentileCalculator.GetExpensiveItemThreshold(selectedDataGridView);
+                        Log.WriteWithFormat(2, "Calculated dynamic expensive threshold: {0:F2}", expensiveThreshold.Value);
+                    }
+                }
+                catch (Exception thresholdEx)
+                {
+                    Log.WriteWithFormat(1, "Failed to calculate dynamic threshold, using default: {0}", thresholdEx.Message);
+                    expensiveThreshold = null; // Will use default 200 in translator
+                }
+
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
+                _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery, expensiveThreshold);
                 stopwatch.Stop();
 
                 // Track the API usage data
