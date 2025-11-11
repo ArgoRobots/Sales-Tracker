@@ -194,16 +194,7 @@ namespace Sales_Tracker
 
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
-
-            try
-            {
-                AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(1, $"Could not load rentals data: {ex.Message}");
-            }
-
+            AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals);
         }
         private void LoadCustomColumnHeaders()
         {
@@ -1328,7 +1319,6 @@ namespace Sales_Tracker
             UpdateTotalLabels();
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
         }
-
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Sales) { return; }
@@ -1424,7 +1414,6 @@ namespace Sales_Tracker
         {
             Tools.OpenForm(new Categories_Form(true));
         }
-
         private void Customers_Button_Click(object sender, EventArgs e)
         {
             Tools.OpenForm(new Customers_Form());

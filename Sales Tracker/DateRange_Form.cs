@@ -217,7 +217,7 @@ namespace Sales_Tracker
         }
         private static DateTime GetOldestDateFromDataGridView(DataGridView dataGridView)
         {
-            DateTime oldestDate = DateTime.MaxValue;
+            DateTime oldestDate = DateTime.Now;
             string dateColumn = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date];
 
             foreach (DataGridViewRow row in dataGridView.Rows)

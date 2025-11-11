@@ -709,25 +709,25 @@ namespace Sales_Tracker
                 {
                     case nameof(Customers_Form.Column.CustomerID):
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.CustomerID], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel, "standard");
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Customers_Form.Column.FirstName):
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.FirstName], left, Panel);
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel);
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Customers_Form.Column.LastName):
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.LastName], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel, "standard");
+                        ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel);
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Customers_Form.Column.Email):
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Email], left, Panel);
-                        Guna2TextBox emailTextBox = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.None, false, Panel, "large");
+                        Guna2TextBox emailTextBox = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.None, false, Panel);
                         TextBoxValidation.ValidateEmail(emailTextBox);
                         emailTextBox.TextChanged += ValidateInputs;
                         left += ScaledLargeWidth + CustomControls.SpaceBetweenControls;
@@ -744,7 +744,7 @@ namespace Sales_Tracker
                         // Phone number text box with label "phone number"
                         int phoneLeft = left + 180 + CustomControls.SpaceBetweenControls;
                         ConstructLabel("phone number", phoneLeft, Panel);
-                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel, "large");
+                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel);
                         _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
                         _phoneNumberTextBox.TextChanged += ValidateInputs;
 
@@ -754,7 +754,7 @@ namespace Sales_Tracker
                     case nameof(Customers_Form.Column.Address):
                         _secondRow = true;
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Address], 0, _secondPanel ?? CreateSecondPanel());
-                        ConstructTextBox(0, columnName, cellValue, 200, CustomControls.KeyPressValidation.None, false, _secondPanel, "large");
+                        ConstructTextBox(0, columnName, cellValue, 200, CustomControls.KeyPressValidation.None, false, _secondPanel);
                         break;
                 }
             }
