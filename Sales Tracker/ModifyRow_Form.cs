@@ -788,12 +788,8 @@ namespace Sales_Tracker
                         // Parse phone number to extract country code and number
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
 
-                        // Initialize selected country code
-                        _selectedCountryCode = CountryCode.GetCountryCodeByCode(countryCode);
-                        if (_selectedCountryCode == null)
-                        {
-                            _selectedCountryCode = CountryCode.GetCountryCodeByCode("+1"); // Default to US
-                        }
+                        // Initialize selected country code using GetCountryCodeFromText
+                        _selectedCountryCode = CountryCode.GetCountryCodeFromText(countryCode);
 
                         // Country code search box with label "phone number ext."
                         ConstructLabel("phone number ext.", left, Panel);
@@ -1784,8 +1780,10 @@ namespace Sales_Tracker
                 }
             }
 
-            // Save customers to file
+            // Save customers to file and log the change
             MainMenu_Form.Instance.SaveCustomersToFile();
+            string message = $"Modified customer '{customer.FullName}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, message);
         }
 
         // Validate TextBoxes in other forms
