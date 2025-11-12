@@ -447,7 +447,7 @@ namespace Sales_Tracker
                 Name = nameof(Products_Form.Column.Rentable),
                 Checked = isChecked
             };
-            ThemeManager.SetThemeForControls(new Control[] { _rentable_CheckBox });
+            ThemeManager.SetThemeForControls([_rentable_CheckBox]);
             Panel.Controls.Add(_rentable_CheckBox);
 
             // Create label
@@ -1017,7 +1017,7 @@ namespace Sales_Tracker
                     }
                     else if (column == nameof(Products_Form.Column.ProductName))
                     {
-                        ProcessProductNameColumn(textBox,  processedColumns);
+                        ProcessProductNameColumn(textBox, processedColumns);
                     }
                     else if (column == Products_Form.Column.ProductCategory.ToString())
                     {
@@ -1099,7 +1099,7 @@ namespace Sales_Tracker
                 cells[ReadOnlyVariables.Company_column].Value = product.CompanyOfOrigin;
             }
         }
-        private void ProcessProductNameColumn(Guna2TextBox textBox,  HashSet<string> processedColumns)
+        private void ProcessProductNameColumn(Guna2TextBox textBox, HashSet<string> processedColumns)
         {
             string text = textBox.Text.Trim();
 
