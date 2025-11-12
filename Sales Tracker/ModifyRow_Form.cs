@@ -385,12 +385,13 @@ namespace Sales_Tracker
                     case nameof(Products_Form.Column.ProductID):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
                         _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
-                        productIDLeft = left; // Store position for Rentable checkbox
+                        productIDLeft = left;  // Store position for Rentable checkbox
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Products_Form.Column.ProductName):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
+
                         Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         SearchBox.Attach(textBox, this, GetSearchResults, searchBoxMaxHeight, true, false, false, true);
                         _oldProductName = cellValue;
@@ -489,7 +490,7 @@ namespace Sales_Tracker
         private Label _rentable_Label;
         private (int, int) ConstructControlsForPurchaseOrSale()
         {
-            ConstructPanel();
+            ConstructSecondPanel();
             int left = 0, secondLeft = 0;
             byte searchBoxMaxHeight = 200;
 
@@ -607,7 +608,6 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Date):
-                        _secondRow = true;
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], secondLeft, _secondPanel);
                         DateTime date = Tools.ParseDateOrToday(cellValue);
                         ConstructDatePicker(secondLeft, columnName, date, _secondPanel);
@@ -615,7 +615,6 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.TotalItems):
-                        _secondRow = true;
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
                         string productName = _selectedRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
@@ -796,12 +795,7 @@ namespace Sales_Tracker
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
                         _selectedCountryCode = CountryCode.GetCountryCodeFromText(countryCode);
 
-                        // Create second panel for phone number row
-                        _secondRow = true;
-                        if (_secondPanel == null)
-                        {
-                            ConstructPanel();
-                        }
+                        ConstructSecondPanel();
 
                         // Country code search box with label "phone number ext."
                         ConstructLabel("phone number ext.", secondLeft, _secondPanel);
@@ -844,11 +838,6 @@ namespace Sales_Tracker
             TextBoxManager.Attach(notesTextBox);
 
             return Math.Max(left - CustomControls.SpaceBetweenControls, secondLeft - CustomControls.SpaceBetweenControls);
-        }
-        private Panel CreateSecondPanel()
-        {
-            ConstructPanel();
-            return _secondPanel;
         }
         private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
         {
@@ -1246,14 +1235,13 @@ namespace Sales_Tracker
 
                 // Get new category
                 Category newCategory;
-                if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                    MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+                if (Products_Form.Instance.Purchase_RadioButton.Checked)
                 {
-                    newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
+                    newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
                 }
                 else
                 {
-                    newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
+                    newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
                 }
 
                 // Add product to new category
@@ -1523,14 +1511,14 @@ namespace Sales_Tracker
         private void UpdateCategory()
         {
             Category category;
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+
+            if (Categories_Form.Instance.Purchase_RadioButton.Checked)
             {
-                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
+                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
             }
             else
             {
-                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
+                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
             }
 
             string oldCategory = category.Name;
@@ -1544,16 +1532,15 @@ namespace Sales_Tracker
         private void UpdateProduct()
         {
             Category category;
-            bool isProductSale = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                                 MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales;
+            bool isProductPurchase = Products_Form.Instance.Purchase_RadioButton.Checked;
 
-            if (isProductSale)
+            if (isProductPurchase)
             {
-                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
             else
             {
-                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
 
             Product product = category.ProductList.FirstOrDefault(p => p.Name == _listOfOldValues[1]);
@@ -1562,16 +1549,7 @@ namespace Sales_Tracker
             {
                 UpdateProductDetails(product);
                 UpdateProductInDataGridViews(product);
-
-                // Save the categories to file
-                if (isProductSale)
-                {
-                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
-                }
-                else
-                {
-                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
-                }
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
             }
         }
         private bool HasProductChanged(Product product)
@@ -1611,7 +1589,8 @@ namespace Sales_Tracker
                             product.ProductID = textBox.Text;
                             break;
                         case nameof(Products_Form.Column.ProductName):
-                            product.Name = textBox.Text;
+                            string newName = textBox.Text.Split('>')[2].Trim();
+                            product.Name = newName;
                             break;
                         case nameof(Products_Form.Column.CountryOfOrigin):
                             product.CountryOfOrigin = textBox.Text;
@@ -1885,8 +1864,10 @@ namespace Sales_Tracker
 
         // Construct controls
         private Panel _secondPanel;
-        private void ConstructPanel()
+        private void ConstructSecondPanel()
         {
+            _secondRow = true;
+
             _secondPanel = new()
             {
                 Size = Panel.Size,
