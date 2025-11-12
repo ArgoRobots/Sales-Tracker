@@ -2388,6 +2388,13 @@ namespace Sales_Tracker
             string json = JsonConvert.SerializeObject(categoryList, Formatting.Indented);
             Directories.WriteTextToFile(filePath, json);
         }
+        public void SaveCustomersToFile()
+        {
+            if (IsProgramLoading) { return; }
+
+            string json = JsonConvert.SerializeObject(CustomerList, Formatting.Indented);
+            Directories.WriteTextToFile(Directories.Customers_file, json);
+        }
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);

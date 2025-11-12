@@ -743,7 +743,8 @@ namespace Sales_Tracker
         }
 
         // Construct controls for customer
-        private readonly CountryCode _selectedCountryCode;
+        private CountryCode _selectedCountryCode;
+        private Guna2TextBox _countryCodeTextBox;
         private Guna2TextBox _phoneNumberTextBox;
         private int ConstructControlsForCustomer()
         {
@@ -787,8 +788,21 @@ namespace Sales_Tracker
                         // Parse phone number to extract country code and number
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
 
+                        // Initialize selected country code
+                        _selectedCountryCode = CountryCode.GetCountryCodeByCode(countryCode);
+                        if (_selectedCountryCode == null)
+                        {
+                            _selectedCountryCode = CountryCode.GetCountryCodeByCode("+1"); // Default to US
+                        }
+
                         // Country code search box with label "phone number ext."
                         ConstructLabel("phone number ext.", left, Panel);
+                        _countryCodeTextBox = ConstructTextBox(left, "CountryCode_TextBox", countryCode, 10, CustomControls.KeyPressValidation.None, false, Panel);
+                        _countryCodeTextBox.Width = 180;
+                        float scale = DpiHelper.GetRelativeDpiScale();
+                        int searchBoxMaxHeight = (int)(255 * scale);
+                        SearchBox.Attach(_countryCodeTextBox, this, CountryCode.GetCountryCodeSearchResults, searchBoxMaxHeight, false, true, true, false);
+                        _countryCodeTextBox.TextChanged += CountryCode_TextBox_TextChanged;
 
                         // Phone number text box with label "phone number"
                         int phoneLeft = left + 180 + CustomControls.SpaceBetweenControls;
@@ -894,6 +908,21 @@ namespace Sales_Tracker
                 _phoneNumberTextBox.SelectionStart = Math.Max(0, newCursorPosition);
 
                 _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+            }
+        }
+        private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            // Parse the country code from the search result text
+            CountryCode? selectedCountry = CountryCode.GetCountryCodeFromText(_countryCodeTextBox.Text);
+            if (selectedCountry != null)
+            {
+                _selectedCountryCode = selectedCountry;
+
+                // Reformat the existing phone number with the new country format
+                if (!string.IsNullOrWhiteSpace(_phoneNumberTextBox.Text))
+                {
+                    FormatPhoneNumberInModifyForm();
+                }
             }
         }
         private static List<SearchResult> GetProductListForSearchBox()
@@ -1754,6 +1783,9 @@ namespace Sales_Tracker
                     }
                 }
             }
+
+            // Save customers to file
+            MainMenu_Form.Instance.SaveCustomersToFile();
         }
 
         // Validate TextBoxes in other forms
