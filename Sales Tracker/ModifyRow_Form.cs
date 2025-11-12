@@ -371,6 +371,8 @@ namespace Sales_Tracker
         {
             int left = 0;
             int searchBoxMaxHeight = 100;
+            int productIDLeft = 0; // Store ProductID position for Rentable checkbox
+            bool rentableValue = false;
 
             foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
             {
@@ -383,6 +385,7 @@ namespace Sales_Tracker
                     case nameof(Products_Form.Column.ProductID):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
                         _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        productIDLeft = left; // Store position for Rentable checkbox
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
@@ -420,12 +423,15 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(Products_Form.Column.Rentable):
-                        bool isRentable = cellValue.Equals("True", StringComparison.OrdinalIgnoreCase);
-                        ConstructRentableCheckBox(left, isRentable);
-                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        rentableValue = cellValue.Equals("True", StringComparison.OrdinalIgnoreCase);
+                        // Don't increment left here - will be positioned below ProductID
                         break;
                 }
             }
+
+            // Construct Rentable checkbox below ProductID
+            ConstructRentableCheckBox(productIDLeft, rentableValue);
+
             return left - CustomControls.SpaceBetweenControls;
         }
         private List<SearchResult> GetSearchResults()
@@ -438,11 +444,14 @@ namespace Sales_Tracker
         }
         private void ConstructRentableCheckBox(int left, bool isChecked)
         {
+            // Position below ProductID textbox
+            int topPosition = 45 + CustomControls.SpaceBetweenControls + ScaledControlHeight + 20;
+
             // Create checkbox
             _rentable_CheckBox = new Guna2CustomCheckBox
             {
                 Size = new Size(20, 20),
-                Location = new Point(left, 45 + CustomControls.SpaceBetweenControls + 15),
+                Location = new Point(left, topPosition),
                 Animated = true,
                 Name = nameof(Products_Form.Column.Rentable),
                 Checked = isChecked
