@@ -955,7 +955,7 @@ namespace Sales_Tracker
             }
 
             // Track which columns have been processed to avoid overwriting
-            HashSet<string> processedColumns = new();
+            HashSet<string> processedColumns = [];
 
             foreach (Control control in allControls)
             {
@@ -978,7 +978,7 @@ namespace Sales_Tracker
                     }
                     else if (column == nameof(Products_Form.Column.ProductName))
                     {
-                        ProcessProductNameColumn(textBox, allControls, processedColumns);
+                        ProcessProductNameColumn(textBox,  processedColumns);
                     }
                     else if (column == Products_Form.Column.ProductCategory.ToString())
                     {
@@ -1055,7 +1055,7 @@ namespace Sales_Tracker
                 cells[ReadOnlyVariables.Company_column].Value = product.CompanyOfOrigin;
             }
         }
-        private void ProcessProductNameColumn(Guna2TextBox textBox, IEnumerable<Control> allControls, HashSet<string> processedColumns)
+        private void ProcessProductNameColumn(Guna2TextBox textBox,  HashSet<string> processedColumns)
         {
             string text = textBox.Text.Trim();
 
