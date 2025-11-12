@@ -1405,8 +1405,10 @@ namespace Sales_Tracker
         private void UpdateProduct()
         {
             Category category;
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+            bool isProductSale = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
+                                 MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales;
+
+            if (isProductSale)
             {
                 category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
@@ -1421,6 +1423,16 @@ namespace Sales_Tracker
             {
                 UpdateProductDetails(product);
                 UpdateProductInDataGridViews(product);
+
+                // Save the categories to file
+                if (isProductSale)
+                {
+                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
+                }
+                else
+                {
+                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
+                }
             }
         }
         private bool HasProductChanged(Product product)
