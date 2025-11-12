@@ -787,27 +787,24 @@ namespace Sales_Tracker
                     case nameof(Customers_Form.Column.PhoneNumber):
                         // Parse phone number to extract country code and number
                         (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
-
-                        // Initialize selected country code using GetCountryCodeFromText
                         _selectedCountryCode = CountryCode.GetCountryCodeFromText(countryCode);
 
                         // Country code search box with label "phone number ext."
                         ConstructLabel("phone number ext.", left, Panel);
                         _countryCodeTextBox = ConstructTextBox(left, "CountryCode_TextBox", countryCode, 10, CustomControls.KeyPressValidation.None, false, Panel);
-                        _countryCodeTextBox.Width = 180;
                         float scale = DpiHelper.GetRelativeDpiScale();
                         int searchBoxMaxHeight = (int)(255 * scale);
                         SearchBox.Attach(_countryCodeTextBox, this, CountryCode.GetCountryCodeSearchResults, searchBoxMaxHeight, false, true, true, false);
                         _countryCodeTextBox.TextChanged += CountryCode_TextBox_TextChanged;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
 
                         // Phone number text box with label "phone number"
-                        int phoneLeft = left + 180 + CustomControls.SpaceBetweenControls;
-                        ConstructLabel("phone number", phoneLeft, Panel);
-                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel);
+                        ConstructLabel("phone number", left, Panel);
+                        _phoneNumberTextBox = ConstructTextBox(left, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, Panel);
                         _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
                         _phoneNumberTextBox.TextChanged += ValidateInputs;
 
-                        left = phoneLeft + ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Customers_Form.Column.Address):
