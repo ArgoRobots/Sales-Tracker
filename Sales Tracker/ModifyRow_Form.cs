@@ -420,7 +420,10 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(Products_Form.Column.Rentable):
-                        continue;
+                        bool isRentable = cellValue.Equals("True", StringComparison.OrdinalIgnoreCase);
+                        ConstructRentableCheckBox(left, isRentable);
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
                 }
             }
             return left - CustomControls.SpaceBetweenControls;
@@ -433,12 +436,48 @@ namespace Sales_Tracker
 
             return SearchBox.ConvertToSearchResults(productNames);
         }
+        private void ConstructRentableCheckBox(int left, bool isChecked)
+        {
+            // Create checkbox
+            _rentable_CheckBox = new Guna2CustomCheckBox
+            {
+                Size = new Size(20, 20),
+                Location = new Point(left, 45 + CustomControls.SpaceBetweenControls + 15),
+                Animated = true,
+                Name = nameof(Products_Form.Column.Rentable),
+                Checked = isChecked
+            };
+            ThemeManager.SetThemeForControls(new Control[] { _rentable_CheckBox });
+            Panel.Controls.Add(_rentable_CheckBox);
+
+            // Create label
+            _rentable_Label = new Label
+            {
+                Text = Products_Form.ColumnHeaders[Products_Form.Column.Rentable],
+                Name = "Rentable_Label",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9),
+                ForeColor = CustomColors.Text,
+                Location = new Point(_rentable_CheckBox.Right + 5, _rentable_CheckBox.Top),
+                Cursor = Cursors.Hand
+            };
+            _rentable_Label.Click += (_, _) => { _rentable_CheckBox.Checked = !_rentable_CheckBox.Checked; };
+            Panel.Controls.Add(_rentable_Label);
+
+            // Adjust vertical alignment so checkbox and label are centered together
+            int labelY = _rentable_CheckBox.Top + (_rentable_CheckBox.Height / 2) - (_rentable_Label.Height / 2);
+            _rentable_Label.Top = labelY;
+        }
 
         // Construct controls for purchase or sale
         private Label _selectedReceipt_Label;
         private Guna2ImageButton _removeReceipt_ImageButton;
         private Guna2Button _receipt_Button;
         private bool _containsReceipt, _removedReceipt, _addedReceipt;
+
+        // Rentable checkbox for products
+        private Guna2CustomCheckBox _rentable_CheckBox;
+        private Label _rentable_Label;
         private (int, int) ConstructControlsForPurchaseOrSale()
         {
             ConstructPanel();
@@ -1019,6 +1058,11 @@ namespace Sales_Tracker
                     string columnName = datePicker.Name;
                     _selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
                 }
+                else if (control is Guna2CustomCheckBox checkBox)
+                {
+                    string columnName = checkBox.Name;
+                    _selectedRow.Cells[columnName].Value = checkBox.Checked;
+                }
             }
 
             Close();
@@ -1498,7 +1542,8 @@ namespace Sales_Tracker
                    product.Name != newProduct.Name ||
                    product.CountryOfOrigin != newProduct.CountryOfOrigin ||
                    product.CompanyOfOrigin != newProduct.CompanyOfOrigin ||
-                   product.ItemType != newProduct.ItemType;
+                   product.ItemType != newProduct.ItemType ||
+                   product.IsRentable != newProduct.IsRentable;
         }
         private void UpdateProductDetails(Product product)
         {
@@ -1509,6 +1554,7 @@ namespace Sales_Tracker
             product.CountryOfOrigin = newProduct.CountryOfOrigin;
             product.CompanyOfOrigin = newProduct.CompanyOfOrigin;
             product.ItemType = newProduct.ItemType;
+            product.IsRentable = newProduct.IsRentable;
         }
         private Product GetNewProductInfo()
         {
@@ -1538,6 +1584,10 @@ namespace Sales_Tracker
                 else if (control is Guna2ComboBox comboBox && comboBox.Name == nameof(Products_Form.Column.Type))
                 {
                     product.ItemType = comboBox.SelectedIndex == 0 ? Product.TypeOption.Product : Product.TypeOption.Service;
+                }
+                else if (control is Guna2CustomCheckBox checkBox && checkBox.Name == nameof(Products_Form.Column.Rentable))
+                {
+                    product.IsRentable = checkBox.Checked;
                 }
             }
             return product;
