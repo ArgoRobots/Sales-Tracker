@@ -954,6 +954,9 @@ namespace Sales_Tracker
                 allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
             }
 
+            // Track which columns have been processed to avoid overwriting
+            HashSet<string> processedColumns = new();
+
             foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox textBox)
@@ -973,9 +976,16 @@ namespace Sales_Tracker
                     {
                         ProcessProductColumn(textBox);
                     }
+                    else if (column == nameof(Products_Form.Column.ProductName))
+                    {
+                        ProcessProductNameColumn(textBox, allControls, processedColumns);
+                    }
                     else if (column == Products_Form.Column.ProductCategory.ToString())
                     {
-                        ProcessProductCategoryColumn(textBox, allControls);
+                        if (!processedColumns.Contains(column))
+                        {
+                            ProcessProductCategoryColumn(textBox, allControls);
+                        }
                     }
                     else if (column == ReadOnlyVariables.Note_column || column == "Notes_TextBox")
                     {
@@ -994,7 +1004,7 @@ namespace Sales_Tracker
                             _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
                         }
                     }
-                    else if (column != "Notes_TextBox")
+                    else if (column != "Notes_TextBox" && !processedColumns.Contains(column))
                     {
                         _selectedRow.Cells[column].Value = textBox.Text.Trim();
                     }
@@ -1043,6 +1053,51 @@ namespace Sales_Tracker
                 cells[ReadOnlyVariables.Category_column].Value = category.Name;
                 cells[ReadOnlyVariables.Country_column].Value = product.CountryOfOrigin;
                 cells[ReadOnlyVariables.Company_column].Value = product.CompanyOfOrigin;
+            }
+        }
+        private void ProcessProductNameColumn(Guna2TextBox textBox, IEnumerable<Control> allControls, HashSet<string> processedColumns)
+        {
+            string text = textBox.Text.Trim();
+
+            // Parse the product info from the full path format (Company > Category > Product)
+            string[] parts = text.Split('>');
+            if (parts.Length >= 3)
+            {
+                // Full path format: "Company > Category > Product"
+                string companyName = parts[0].Trim();
+                string categoryName = parts[1].Trim();
+                string productName = parts[2].Trim();
+
+                // Update ProductName cell
+                _selectedRow.Cells[nameof(Products_Form.Column.ProductName)].Value = productName;
+                processedColumns.Add(nameof(Products_Form.Column.ProductName));
+
+                // Update ProductCategory cell
+                _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value = categoryName;
+                processedColumns.Add(nameof(Products_Form.Column.ProductCategory));
+
+                // Update CompanyOfOrigin cell
+                _selectedRow.Cells[nameof(Products_Form.Column.CompanyOfOrigin)].Value = companyName;
+                processedColumns.Add(nameof(Products_Form.Column.CompanyOfOrigin));
+
+                // Get the category list based on current selection
+                List<Category> categoryList = Products_Form.Instance.Sale_RadioButton.Checked
+                    ? MainMenu_Form.Instance.CategorySaleList
+                    : MainMenu_Form.Instance.CategoryPurchaseList;
+
+                // Get the product to update CountryOfOrigin
+                Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, productName, companyName);
+                if (product != null)
+                {
+                    _selectedRow.Cells[nameof(Products_Form.Column.CountryOfOrigin)].Value = product.CountryOfOrigin;
+                    processedColumns.Add(nameof(Products_Form.Column.CountryOfOrigin));
+                }
+            }
+            else
+            {
+                // Just a simple product name without full path
+                _selectedRow.Cells[nameof(Products_Form.Column.ProductName)].Value = text;
+                processedColumns.Add(nameof(Products_Form.Column.ProductName));
             }
         }
         private static (string ProductName, string CompanyName) ParseProductInfo(string text)
