@@ -1081,9 +1081,9 @@ namespace Sales_Tracker
                 processedColumns.Add(nameof(Products_Form.Column.CompanyOfOrigin));
 
                 // Get the category list based on current selection
-                List<Category> categoryList = Products_Form.Instance.Sale_RadioButton.Checked
-                    ? MainMenu_Form.Instance.CategorySaleList
-                    : MainMenu_Form.Instance.CategoryPurchaseList;
+                List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
+                    ? MainMenu_Form.Instance.CategoryPurchaseList
+                    : MainMenu_Form.Instance.CategorySaleList;
 
                 // Get the product to update CountryOfOrigin
                 Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, productName, companyName);
