@@ -392,7 +392,12 @@ namespace Sales_Tracker
                     case nameof(Products_Form.Column.ProductName):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
 
-                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        // Construct full path: Company > Category > Product Name
+                        string companyOfOrigin = _selectedRow.Cells[nameof(Products_Form.Column.CompanyOfOrigin)].Value?.ToString() ?? "";
+                        string productCategory = _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value?.ToString() ?? "";
+                        string fullProductPath = $"{companyOfOrigin} > {productCategory} > {cellValue}";
+
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         SearchBox.Attach(textBox, this, GetSearchResults, searchBoxMaxHeight, true, false, false, true);
                         _oldProductName = cellValue;
                         textBox.TextChanged += ValidateInputs;
