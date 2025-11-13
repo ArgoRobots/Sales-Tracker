@@ -407,7 +407,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
-                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
@@ -910,7 +910,7 @@ namespace Sales_Tracker
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
         {
             // When ProductName changes, update CompanyOfOrigin textbox to keep them in sync
-            if (sender is Guna2TextBox productNameTextBox && productNameTextBox.Text.Contains(">"))
+            if (sender is Guna2TextBox productNameTextBox && productNameTextBox.Text.Contains('>'))
             {
                 string[] parts = productNameTextBox.Text.Split('>');
                 if (parts.Length >= 3)
@@ -1604,7 +1604,7 @@ namespace Sales_Tracker
                 .OfType<Guna2TextBox>()
                 .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName));
 
-            if (productNameTextBox != null && productNameTextBox.Text.Contains(">"))
+            if (productNameTextBox != null && productNameTextBox.Text.Contains('>'))
             {
                 string[] parts = productNameTextBox.Text.Split('>');
                 if (parts.Length >= 3)
@@ -1655,7 +1655,7 @@ namespace Sales_Tracker
                             break;
                         case nameof(Products_Form.Column.ProductName):
                             // Extract just the product name from "Company > Category > Product" format
-                            if (textBox.Text.Contains(">"))
+                            if (textBox.Text.Contains('>'))
                             {
                                 string[] parts = textBox.Text.Split('>');
                                 if (parts.Length >= 3)
