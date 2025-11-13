@@ -14,6 +14,7 @@ namespace Sales_Tracker
         private readonly string _selectedTag = "";
         private readonly DataGridViewRow _selectedRow;
         private string _receiptFilePath;
+        private readonly Dictionary<Control, Label> _validationLabels = new();
 
         // Form Width/Height properties
         private static int ScaledLargeWidth => (int)(350 * DpiHelper.GetRelativeDpiScale());
@@ -1077,7 +1078,15 @@ namespace Sales_Tracker
                     }
                     else if (column != "Notes_TextBox" && !processedColumns.Contains(column))
                     {
-                        _selectedRow.Cells[column].Value = textBox.Text.Trim();
+                        // ProductID is optional - set to EmptyCell if empty
+                        if (column == nameof(Products_Form.Column.ProductID) && string.IsNullOrWhiteSpace(textBox.Text))
+                        {
+                            _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
+                        }
+                        else
+                        {
+                            _selectedRow.Cells[column].Value = textBox.Text.Trim();
+                        }
                     }
                 }
                 else if (control is Guna2ComboBox comboBox)
@@ -1186,24 +1195,44 @@ namespace Sales_Tracker
                 allControls = allControls.Concat(_secondPanel.Controls.Cast<Control>());
             }
 
+            bool isValid = true;
+
             foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
-                    if (string.IsNullOrEmpty(gunaTextBox.Text)
-                        || gunaTextBox.Text == ReadOnlyVariables.EmptyCell
-                        || gunaTextBox.Tag?.ToString() == "0")
+                    // ProductID is optional for products
+                    bool isProductID = _selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product) &&
+                                       gunaTextBox.Name == nameof(Products_Form.Column.ProductID);
+
+                    bool isEmpty = string.IsNullOrEmpty(gunaTextBox.Text) ||
+                                   gunaTextBox.Text == ReadOnlyVariables.EmptyCell ||
+                                   gunaTextBox.Tag?.ToString() == "0";
+
+                    if (isEmpty && !isProductID)
                     {
-                        Save_Button.Enabled = false;
-                        return;
+                        ShowValidationMessage(gunaTextBox, "This field is required", Color.Red);
+                        gunaTextBox.BorderColor = Color.Red;
+                        isValid = false;
+                    }
+                    else
+                    {
+                        HideValidationMessage(gunaTextBox);
+                        gunaTextBox.BorderColor = CustomColors.BorderColor;
                     }
                 }
                 else if (control is Guna2ComboBox gunaComboBox)
                 {
                     if (string.IsNullOrEmpty(gunaComboBox.Text))
                     {
-                        Save_Button.Enabled = false;
-                        return;
+                        ShowValidationMessage(gunaComboBox, "This field is required", Color.Red);
+                        gunaComboBox.BorderColor = Color.Red;
+                        isValid = false;
+                    }
+                    else
+                    {
+                        HideValidationMessage(gunaComboBox);
+                        gunaComboBox.BorderColor = CustomColors.BorderColor;
                     }
                 }
             }
@@ -1211,19 +1240,66 @@ namespace Sales_Tracker
             // Check for duplicate product names in the same category and company
             if (_selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product))
             {
-                if (IsDuplicateProduct(allControls))
+                Guna2TextBox productNameTextBox = allControls
+                    .OfType<Guna2TextBox>()
+                    .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName));
+
+                if (productNameTextBox != null && IsDuplicateProduct(allControls))
                 {
-                    Save_Button.Enabled = false;
-                    return;
+                    ShowValidationMessage(productNameTextBox, "A product with this name already exists in this category and company", Color.Red);
+                    productNameTextBox.BorderColor = Color.Red;
+                    isValid = false;
+                }
+                else if (productNameTextBox != null && !string.IsNullOrWhiteSpace(productNameTextBox.Text))
+                {
+                    HideValidationMessage(productNameTextBox);
+                    productNameTextBox.BorderColor = CustomColors.BorderColor;
                 }
             }
 
             if (!Controls.Contains(_selectedReceipt_Label) && _containsReceipt && Properties.Settings.Default.PurchaseReceipts)
             {
-                Save_Button.Enabled = false;
+                isValid = false;
+            }
+
+            Save_Button.Enabled = isValid;
+        }
+        private void ShowValidationMessage(Control control, string message, Color color)
+        {
+            // Check if validation label already exists for this control
+            if (_validationLabels.TryGetValue(control, out Label existingLabel))
+            {
+                existingLabel.Text = message;
+                existingLabel.ForeColor = color;
+                existingLabel.Visible = true;
                 return;
             }
-            Save_Button.Enabled = true;
+
+            // Create new validation label
+            Label validationLabel = new()
+            {
+                Text = message,
+                ForeColor = color,
+                Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                AutoSize = true,
+                Location = new Point(control.Left, control.Bottom + 2),
+                Name = $"{control.Name}_ValidationLabel"
+            };
+
+            // Add to the appropriate panel
+            Control parent = control.Parent;
+            parent.Controls.Add(validationLabel);
+            validationLabel.BringToFront();
+
+            // Store reference
+            _validationLabels[control] = validationLabel;
+        }
+        private void HideValidationMessage(Control control)
+        {
+            if (_validationLabels.TryGetValue(control, out Label validationLabel))
+            {
+                validationLabel.Visible = false;
+            }
         }
         private bool IsDuplicateProduct(IEnumerable<Control> allControls)
         {
@@ -1613,7 +1689,7 @@ namespace Sales_Tracker
                     switch (textBox.Name)
                     {
                         case nameof(Products_Form.Column.ProductID):
-                            product.ProductID = textBox.Text;
+                            product.ProductID = string.IsNullOrWhiteSpace(textBox.Text) ? ReadOnlyVariables.EmptyCell : textBox.Text;
                             break;
                         case nameof(Products_Form.Column.ProductName):
                             product.Name = textBox.Text.Trim();
