@@ -1605,13 +1605,15 @@ namespace Sales_Tracker
         private bool HasProductChanged(Product product)
         {
             Product newProduct = GetNewProductInfo();
+            string newCategoryName = GetNewCategoryFromProductName();
 
             return product.ProductID != newProduct.ProductID ||
                    product.Name != newProduct.Name ||
                    product.CountryOfOrigin != newProduct.CountryOfOrigin ||
                    product.CompanyOfOrigin != newProduct.CompanyOfOrigin ||
                    product.ItemType != newProduct.ItemType ||
-                   product.IsRentable != newProduct.IsRentable;
+                   product.IsRentable != newProduct.IsRentable ||
+                   newCategoryName != _listOfOldValues[2]; // Check if category changed
         }
         private void UpdateProductDetails(Product product)
         {
@@ -1628,6 +1630,30 @@ namespace Sales_Tracker
         {
             Product product = new();
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
+            string productNameTextBoxValue = null;
+
+            // First pass: get the ProductName textbox value to extract company and category
+            foreach (Control control in allControls)
+            {
+                if (control is Guna2TextBox textBox && textBox.Name == nameof(Products_Form.Column.ProductName))
+                {
+                    productNameTextBoxValue = textBox.Text;
+                    break;
+                }
+            }
+
+            // Parse the full path from ProductName textbox
+            string extractedCompany = null;
+            string extractedProduct = null;
+            if (productNameTextBoxValue != null && productNameTextBoxValue.Contains(">"))
+            {
+                string[] parts = productNameTextBoxValue.Split('>');
+                if (parts.Length >= 3)
+                {
+                    extractedCompany = parts[0].Trim();
+                    extractedProduct = parts[2].Trim();
+                }
+            }
 
             foreach (Control control in allControls)
             {
@@ -1639,14 +1665,15 @@ namespace Sales_Tracker
                             product.ProductID = textBox.Text;
                             break;
                         case nameof(Products_Form.Column.ProductName):
-                            string newName = textBox.Text.Split('>')[2].Trim();
-                            product.Name = newName;
+                            // Use extracted product name from full path
+                            product.Name = extractedProduct ?? textBox.Text.Trim();
                             break;
                         case nameof(Products_Form.Column.CountryOfOrigin):
                             product.CountryOfOrigin = textBox.Text;
                             break;
                         case nameof(Products_Form.Column.CompanyOfOrigin):
-                            product.CompanyOfOrigin = textBox.Text;
+                            // Use extracted company from ProductName full path if available
+                            product.CompanyOfOrigin = extractedCompany ?? textBox.Text;
                             break;
                     }
                 }
