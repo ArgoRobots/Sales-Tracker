@@ -1536,22 +1536,40 @@ namespace Sales_Tracker
         }
         private void UpdateProduct()
         {
-            Category category;
+            Category oldCategory;
             bool isProductPurchase = Products_Form.Instance.Purchase_RadioButton.Checked;
+            List<Category> categoryList;
 
             if (isProductPurchase)
             {
-                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
+                oldCategory = categoryList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
             else
             {
-                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                categoryList = MainMenu_Form.Instance.CategorySaleList;
+                oldCategory = categoryList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
 
-            Product product = category.ProductList.FirstOrDefault(p => p.Name == _listOfOldValues[1]);
+            Product product = oldCategory.ProductList.FirstOrDefault(p => p.Name == _listOfOldValues[1]);
 
             if (HasProductChanged(product))
             {
+                // Get the new category name from the ProductName textbox (format: Company > Category > Product)
+                string newCategoryName = GetNewCategoryFromProductName();
+
+                // Check if category has changed
+                if (newCategoryName != _listOfOldValues[2])
+                {
+                    // Move product to new category
+                    Category newCategory = categoryList.FirstOrDefault(c => c.Name == newCategoryName);
+                    if (newCategory != null)
+                    {
+                        oldCategory.ProductList.Remove(product);
+                        newCategory.ProductList.Add(product);
+                    }
+                }
+
                 UpdateProductDetails(product);
                 UpdateProductInDataGridViews(product);
 
@@ -1565,6 +1583,24 @@ namespace Sales_Tracker
                 string message = $"Modified product '{product.Name}'";
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Products_Form.ThingsThatHaveChangedInFile, 4, message);
             }
+        }
+        private string GetNewCategoryFromProductName()
+        {
+            // Find the ProductName textbox and extract category from "Company > Category > Product" format
+            Guna2TextBox productNameTextBox = Panel.Controls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName));
+
+            if (productNameTextBox != null && productNameTextBox.Text.Contains(">"))
+            {
+                string[] parts = productNameTextBox.Text.Split('>');
+                if (parts.Length >= 3)
+                {
+                    return parts[1].Trim(); // Return the category part
+                }
+            }
+
+            return _listOfOldValues[2]; // Return old category if parsing fails
         }
         private bool HasProductChanged(Product product)
         {
