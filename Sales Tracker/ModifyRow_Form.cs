@@ -399,7 +399,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Column.ProductCategory):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
-                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         // Attach SearchBox for categories
                         List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
                             ? MainMenu_Form.Instance.CategoryPurchaseList
@@ -412,7 +412,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
-                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
