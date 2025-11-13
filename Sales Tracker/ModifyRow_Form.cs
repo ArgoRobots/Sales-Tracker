@@ -1174,66 +1174,8 @@ namespace Sales_Tracker
         // Methods
         private void ProcessProductCategoryColumn(Guna2TextBox textBox, IEnumerable<Control> allControls)
         {
-            List<Category> categoryList = [];
-            if (Products_Form.Instance.Purchase_RadioButton.Checked)
-            {
-                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
-            }
-            else
-            {
-                categoryList = MainMenu_Form.Instance.CategorySaleList;
-            }
-
-            string newCategoryName = textBox.Text.Trim();
-            string newProductName = allControls.FirstOrDefault(item => item.Name == Products_Form.Column.ProductName.ToString())?.Text;
-            string companyName = allControls.FirstOrDefault(item =>
-                item.Name == Products_Form.Column.CompanyOfOrigin.ToString())?.Text;
-
-            Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName, companyName);
-            Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName, companyName);
-
-            if (category.Name != textBox.Text)
-            {
-                // Remove product from old category
-                category.ProductList.Remove(product);
-
-                // Get new category
-                Category newCategory;
-                if (Products_Form.Instance.Purchase_RadioButton.Checked)
-                {
-                    newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
-                }
-                else
-                {
-                    newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
-                }
-
-                // Add product to new category
-                newCategory.ProductList.Add(product);
-
-                // Update all instances in DataGridViews
-                string categoryColumn = ReadOnlyVariables.Category_column;
-                string nameColumn = ReadOnlyVariables.Product_column;
-                foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
-                {
-                    if (row.Cells[categoryColumn].Value.ToString() == category.Name
-                        && row.Cells[nameColumn].Value.ToString() == product.Name)
-                    {
-                        row.Cells[categoryColumn].Value = newCategory.Name;
-                    }
-                }
-            }
-
-            MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
-
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
-            {
-                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategoryPurchaseList, true);
-            }
-            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
-            {
-                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategorySaleList, true);
-            }
+            // Simply update the ProductCategory cell - UpdateProduct() will handle moving the product between categories
+            _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value = textBox.Text.Trim();
         }
         private void ValidateInputs(object sender, EventArgs e)
         {
