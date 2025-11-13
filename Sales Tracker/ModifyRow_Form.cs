@@ -1542,7 +1542,22 @@ namespace Sales_Tracker
             category.Name = newCategory;
 
             UpdateAllDataGridViewRows(ReadOnlyVariables.Category_column, oldCategory, newCategory, true);
+
+            // Update Products_Form if it's open
+            if (Products_Form.Instance != null)
+            {
+                UpdateProductsFormCategory(oldCategory, newCategory);
+            }
+
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
+        }
+        private static void UpdateProductsFormCategory(string oldCategory, string newCategory)
+        {
+            // Update ProductCategory column in both Purchase and Sale DataGridViews
+            UpdateRowsInDataGridView(Products_Form.Instance.Purchase_DataGridView,
+                nameof(Products_Form.Column.ProductCategory), oldCategory, newCategory, false);
+            UpdateRowsInDataGridView(Products_Form.Instance.Sale_DataGridView,
+                nameof(Products_Form.Column.ProductCategory), oldCategory, newCategory, false);
         }
         private void UpdateProduct()
         {
