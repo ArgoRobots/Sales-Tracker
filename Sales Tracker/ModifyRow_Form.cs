@@ -1554,7 +1554,16 @@ namespace Sales_Tracker
             {
                 UpdateProductDetails(product);
                 UpdateProductInDataGridViews(product);
-                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
+
+                // Save the correct category list based on the product type
+                MainMenu_Form.SelectedOption optionToSave = isProductPurchase
+                    ? MainMenu_Form.SelectedOption.CategoryPurchases
+                    : MainMenu_Form.SelectedOption.CategorySales;
+                MainMenu_Form.Instance.SaveCategoriesToFile(optionToSave);
+
+                // Log the change
+                string message = $"Modified product '{product.Name}'";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Products_Form.ThingsThatHaveChangedInFile, 4, message);
             }
         }
         private bool HasProductChanged(Product product)
