@@ -1207,12 +1207,75 @@ namespace Sales_Tracker
                     }
                 }
             }
+
+            // Check for duplicate product names in the same category and company
+            if (_selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product))
+            {
+                if (IsDuplicateProduct(allControls))
+                {
+                    Save_Button.Enabled = false;
+                    return;
+                }
+            }
+
             if (!Controls.Contains(_selectedReceipt_Label) && _containsReceipt && Properties.Settings.Default.PurchaseReceipts)
             {
                 Save_Button.Enabled = false;
                 return;
             }
             Save_Button.Enabled = true;
+        }
+        private bool IsDuplicateProduct(IEnumerable<Control> allControls)
+        {
+            // Get new values from textboxes
+            string newProductName = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName))?.Text.Trim();
+
+            string newCategory = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductCategory))?.Text.Trim();
+
+            string newCompany = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.CompanyOfOrigin))?.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(newProductName) || string.IsNullOrWhiteSpace(newCategory) || string.IsNullOrWhiteSpace(newCompany))
+            {
+                return false; // Can't check for duplicates if values are missing
+            }
+
+            // Get old values
+            string oldProductName = _listOfOldValues[1];
+            string oldCategory = _listOfOldValues[2];
+            string oldCompany = _listOfOldValues[4];
+
+            // If nothing changed, it's not a duplicate
+            if (newProductName == oldProductName && newCategory == oldCategory && newCompany == oldCompany)
+            {
+                return false;
+            }
+
+            // Get the appropriate category list
+            List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
+
+            // Find the category
+            Category category = categoryList.FirstOrDefault(c => c.Name == newCategory);
+            if (category == null)
+            {
+                return false; // Category doesn't exist, can't be a duplicate
+            }
+
+            // Check if a product with this name and company already exists in this category
+            bool duplicateExists = category.ProductList.Any(p =>
+                p.Name.Equals(newProductName, StringComparison.OrdinalIgnoreCase) &&
+                p.CompanyOfOrigin.Equals(newCompany, StringComparison.OrdinalIgnoreCase) &&
+                !(p.Name.Equals(oldProductName, StringComparison.OrdinalIgnoreCase) &&
+                  p.CompanyOfOrigin.Equals(oldCompany, StringComparison.OrdinalIgnoreCase)));
+
+            return duplicateExists;
         }
         private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProductForm)
         {
