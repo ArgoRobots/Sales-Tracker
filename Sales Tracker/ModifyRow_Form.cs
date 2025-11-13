@@ -14,7 +14,7 @@ namespace Sales_Tracker
         private readonly string _selectedTag = "";
         private readonly DataGridViewRow _selectedRow;
         private string _receiptFilePath;
-        private readonly Dictionary<Control, Label> _validationLabels = new();
+        private readonly Dictionary<Control, Label> _validationLabels = [];
 
         // Form Width/Height properties
         private static int ScaledLargeWidth => (int)(350 * DpiHelper.GetRelativeDpiScale());
@@ -1056,7 +1056,7 @@ namespace Sales_Tracker
                     {
                         if (!processedColumns.Contains(column))
                         {
-                            ProcessProductCategoryColumn(textBox, allControls);
+                            ProcessProductCategoryColumn(textBox);
                         }
                     }
                     else if (column == ReadOnlyVariables.Note_column || column == "Notes_TextBox")
@@ -1181,7 +1181,7 @@ namespace Sales_Tracker
         }
 
         // Methods
-        private void ProcessProductCategoryColumn(Guna2TextBox textBox, IEnumerable<Control> allControls)
+        private void ProcessProductCategoryColumn(Guna2TextBox textBox)
         {
             // Simply update the ProductCategory cell - UpdateProduct() will handle moving the product between categories
             _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value = textBox.Text.Trim();
@@ -1211,28 +1211,28 @@ namespace Sales_Tracker
 
                     if (isEmpty && !isProductID)
                     {
-                        ShowValidationMessage(gunaTextBox, "This field is required", Color.Red);
-                        gunaTextBox.BorderColor = Color.Red;
+                        ShowValidationMessage(gunaTextBox, "This field is required");
+                        gunaTextBox.BorderColor = CustomColors.AccentRed;
                         isValid = false;
                     }
                     else
                     {
                         HideValidationMessage(gunaTextBox);
-                        gunaTextBox.BorderColor = CustomColors.BorderColor;
+                        gunaTextBox.BorderColor = CustomColors.ControlBorder;
                     }
                 }
                 else if (control is Guna2ComboBox gunaComboBox)
                 {
                     if (string.IsNullOrEmpty(gunaComboBox.Text))
                     {
-                        ShowValidationMessage(gunaComboBox, "This field is required", Color.Red);
-                        gunaComboBox.BorderColor = Color.Red;
+                        ShowValidationMessage(gunaComboBox, "This field is required");
+                        gunaComboBox.BorderColor = CustomColors.AccentRed;
                         isValid = false;
                     }
                     else
                     {
                         HideValidationMessage(gunaComboBox);
-                        gunaComboBox.BorderColor = CustomColors.BorderColor;
+                        gunaComboBox.BorderColor = CustomColors.ControlBorder;
                     }
                 }
             }
@@ -1246,14 +1246,14 @@ namespace Sales_Tracker
 
                 if (productNameTextBox != null && IsDuplicateProduct(allControls))
                 {
-                    ShowValidationMessage(productNameTextBox, "A product with this name already exists in this category and company", Color.Red);
-                    productNameTextBox.BorderColor = Color.Red;
+                    ShowValidationMessage(productNameTextBox, "A product with this name already exists in this category and company");
+                    productNameTextBox.BorderColor = CustomColors.AccentRed;
                     isValid = false;
                 }
                 else if (productNameTextBox != null && !string.IsNullOrWhiteSpace(productNameTextBox.Text))
                 {
                     HideValidationMessage(productNameTextBox);
-                    productNameTextBox.BorderColor = CustomColors.BorderColor;
+                    productNameTextBox.BorderColor = CustomColors.ControlBorder;
                 }
             }
 
@@ -1264,13 +1264,12 @@ namespace Sales_Tracker
 
             Save_Button.Enabled = isValid;
         }
-        private void ShowValidationMessage(Control control, string message, Color color)
+        private void ShowValidationMessage(Control control, string message)
         {
             // Check if validation label already exists for this control
             if (_validationLabels.TryGetValue(control, out Label existingLabel))
             {
                 existingLabel.Text = message;
-                existingLabel.ForeColor = color;
                 existingLabel.Visible = true;
                 return;
             }
@@ -1279,8 +1278,8 @@ namespace Sales_Tracker
             Label validationLabel = new()
             {
                 Text = message,
-                ForeColor = color,
-                Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                ForeColor = CustomColors.AccentRed,
+                Font = new Font("Segoe UI", 9, FontStyle.Regular),
                 AutoSize = true,
                 Location = new Point(control.Left, control.Bottom + 2),
                 Name = $"{control.Name}_ValidationLabel"
