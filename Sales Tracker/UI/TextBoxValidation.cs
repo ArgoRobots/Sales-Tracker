@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Theme;
 using System.Text;
 
 namespace Sales_Tracker.UI
@@ -64,31 +63,53 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Checks if email contains @ sign and sets border color accordingly.
+        /// Checks if an email is valid (contains @ and . with text on both sides).
+        /// </summary>
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return true;
+            }
+
+            string trimmed = email.Trim();
+
+            // Must contain exactly one @ and cannot be at start or end
+            int atIndex = trimmed.IndexOf('@');
+            if (atIndex <= 0 || atIndex == trimmed.Length - 1)
+            {
+                return false;
+            }
+
+            // Check for multiple @ symbols
+            if (trimmed.IndexOf('@', atIndex + 1) != -1)
+            {
+                return false;
+            }
+
+            // Get the part after @
+            string afterAt = trimmed.Substring(atIndex + 1);
+
+            // Must contain at least one . after @ and cannot be end
+            int dotIndex = afterAt.IndexOf('.');
+            if (dotIndex <= 0 || dotIndex == afterAt.Length - 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if email contains @ and . with text on both sides, and sets tag accordingly.
+        /// Does not change border color - that's handled on Leave event.
         /// </summary>
         private static void ValidateEmailFormat(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
             string text = textBox.Text.Trim();
 
-            if (string.IsNullOrEmpty(text))
-            {
-                // Reset to default when empty
-                textBox.BorderColor = CustomColors.ControlBorder;
-                textBox.Tag = "valid";
-            }
-            else if (!text.Contains('@'))
-            {
-                // Invalid - missing @ sign
-                textBox.BorderColor = CustomColors.AccentRed;
-                textBox.Tag = "invalid";
-            }
-            else
-            {
-                // Valid
-                textBox.BorderColor = CustomColors.AccentGreen;
-                textBox.Tag = "valid";
-            }
+            textBox.Tag = IsValidEmail(text) ? "valid" : "invalid";
         }
 
         /// <summary>
@@ -97,11 +118,11 @@ namespace Sales_Tracker.UI
         private static void OnlyAllowPhoneCharactersInTextBox(object sender, KeyPressEventArgs e)
         {
             // Allow digits, parentheses, dashes, spaces, plus sign, and letters (for "ext")
-            if (!char.IsControl(e.KeyChar) && 
-                !char.IsDigit(e.KeyChar) && 
-                e.KeyChar != '(' && 
-                e.KeyChar != ')' && 
-                e.KeyChar != '-' && 
+            if (!char.IsControl(e.KeyChar) &&
+                !char.IsDigit(e.KeyChar) &&
+                e.KeyChar != '(' &&
+                e.KeyChar != ')' &&
+                e.KeyChar != '-' &&
                 e.KeyChar != ' ' &&
                 e.KeyChar != '+' &&
                 !char.IsLetter(e.KeyChar))
@@ -132,15 +153,15 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static string CleanPhoneNumber(string input)
         {
-            if (string.IsNullOrEmpty(input)) return "";
+            if (string.IsNullOrEmpty(input)) { return ""; }
 
             StringBuilder result = new();
             string lowerInput = input.ToLower();
-            
+
             for (int i = 0; i < input.Length; i++)
             {
                 char c = input[i];
-                
+
                 // Allow digits, parentheses, dashes, spaces, and plus sign
                 if (char.IsDigit(c) || c == '(' || c == ')' || c == '-' || c == ' ' || c == '+')
                 {
@@ -155,8 +176,8 @@ namespace Sales_Tracker.UI
                         string sequence = lowerInput.Substring(i, 3);
                         if (sequence == "ext")
                         {
-                            result.Append(input.Substring(i, 3));
-                            i += 2; 
+                            result.Append(input.AsSpan(i, 3));
+                            i += 2;
                         }
                     }
                     else if (i + 1 < input.Length)
@@ -164,7 +185,7 @@ namespace Sales_Tracker.UI
                         string sequence = lowerInput.Substring(i, 2);
                         if ("ext".StartsWith(sequence))
                         {
-                            result.Append(input.Substring(i, 2));
+                            result.Append(input.AsSpan(i, 2));
                             i += 1;
                         }
                     }

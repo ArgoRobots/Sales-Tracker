@@ -44,7 +44,7 @@
             ModifyRow_Label.Anchor = AnchorStyles.Top;
             ModifyRow_Label.AutoSize = true;
             ModifyRow_Label.Font = new Font("Segoe UI", 16F);
-            ModifyRow_Label.Location = new Point(379, 22);
+            ModifyRow_Label.Location = new Point(399, 22);
             ModifyRow_Label.Name = "ModifyRow_Label";
             ModifyRow_Label.Size = new Size(182, 45);
             ModifyRow_Label.TabIndex = 0;
@@ -65,7 +65,7 @@
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(564, 330);
+            Cancel_Button.Location = new Point(603, 277);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Cancel_Button.Size = new Size(174, 45);
@@ -88,7 +88,7 @@
             Save_Button.FillColor = Color.White;
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(746, 330);
+            Save_Button.Location = new Point(785, 277);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Save_Button.Size = new Size(174, 45);
@@ -99,7 +99,7 @@
             // Panel
             // 
             Panel.Anchor = AnchorStyles.Top;
-            Panel.Location = new Point(49, 82);
+            Panel.Location = new Point(69, 82);
             Panel.Name = "Panel";
             Panel.Size = new Size(840, 150);
             Panel.TabIndex = 15;
@@ -108,7 +108,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(939, 387);
+            ClientSize = new Size(978, 334);
             Controls.Add(Panel);
             Controls.Add(Save_Button);
             Controls.Add(Cancel_Button);

@@ -5,7 +5,6 @@ using Sales_Tracker.LostProduct;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
-using Sales_Tracker.Language;
 
 namespace Sales_Tracker.GridView
 {
@@ -77,238 +76,6 @@ namespace Sales_Tracker.GridView
             RentOut_Button = CustomControls.ConstructBtnForMenu("Rent out", CustomControls.PanelBtnWidth, flowPanel);
             RentOut_Button.Click += RentOut;
         }
-
-        private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
-        {
-            FlowLayoutPanel flowPanel = RightClickDataGridViewRowMenu.Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            RightClickDataGridViewRowMenu.Panel.Tag = grid;  // This is used in the button event handlers
-
-            // First, hide all buttons
-            foreach (Control control in flowPanel.Controls)
-            {
-                control.Visible = false;
-            }
-
-            MainMenu_Form.SelectedOption selectedOption = MainMenu_Form.Instance.Selected;
-            bool isSingleRowSelected = grid.SelectedRows.Count == 1;
-            bool isPurchasesOrSales = selectedOption == MainMenu_Form.SelectedOption.Purchases ||
-                                      selectedOption == MainMenu_Form.SelectedOption.Sales;
-            bool isTransactionView = selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                                     selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
-            int currentIndex = 0;
-
-            bool isRentalInventory = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.RentalInventory.ToString();
-
-            // Add buttons for Rental Inventory
-            if (isRentalInventory)
-            { 
-                if(isSingleRowSelected)
-                {
-                    // Check if item has available quantity
-                    if (grid.SelectedRows[0].Tag is RentalItem rentalItem && rentalItem.QuantityAvailable > 0)
-                    {
-                        RightClickDataGridViewRowMenu.RentOut_Button.Visible = true;
-                        flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.RentOut_Button, currentIndex++);
-                    }
-
-                    RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
-                }
-
-                RightClickDataGridViewRowMenu.Delete_Button.Visible = true;
-                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex++);
-
-                return;  // Don't add any more buttons
-            }
-
-            // Add buttons for Receipts_Form
-            if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
-            {
-                if (isSingleRowSelected)
-                {
-                    ViewReceipt_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ViewReceipt_Button, currentIndex++);
-
-                    ExportReceipt_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ExportReceipt_Button, currentIndex++);
-                }
-
-                return;  // Don't add any more buttons
-            }
-
-            // Add Modify_Button
-            if (isSingleRowSelected)
-            {
-                Modify_Button.Visible = true;
-                flowPanel.Controls.SetChildIndex(Modify_Button, currentIndex++);
-            }
-
-            // Add Move_Button
-            if (selectedOption == MainMenu_Form.SelectedOption.CategoryPurchases)
-            {
-                string text = LanguageManager.TranslateString("Move category to sales");
-                Move_Button.Visible = true;
-                Move_Button.Text = text;
-                flowPanel.Controls.SetChildIndex(Move_Button, currentIndex++);
-            }
-            else if (selectedOption == MainMenu_Form.SelectedOption.CategorySales)
-            {
-                string text = LanguageManager.TranslateString("Move category to purchases");
-                Move_Button.Visible = true;
-                Move_Button.Text = text;
-                flowPanel.Controls.SetChildIndex(Move_Button, currentIndex++);
-            }
-
-            if (isPurchasesOrSales)
-            {
-                // Add ShowItems_Button
-                if (isSingleRowSelected && grid.SelectedRows[0].Tag is (List<string>, TagData))
-                {
-                    ShowItems_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ShowItems_Button, currentIndex++);
-                }
-
-                // Add ViewReceipt_Button and ExportReceipt_Button
-                if (AnySelectedRowHasReceipt(grid))
-                {
-                    if (isSingleRowSelected)
-                    {
-                        ViewReceipt_Button.Visible = true;
-                        flowPanel.Controls.SetChildIndex(ViewReceipt_Button, currentIndex++);
-                    }
-
-                    ExportReceipt_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ExportReceipt_Button, currentIndex++);
-                }
-            }
-
-            // Add view details and action buttons based on current status
-            if (isSingleRowSelected && (isPurchasesOrSales || isTransactionView))
-            {
-                DataGridViewRow selectedRow;
-
-                // Check if we're in the items view of a transaction
-                if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
-                    selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
-                {
-                    // Use the main transaction row for status checks
-                    selectedRow = DataGridViewManager.SelectedRowInMainMenu;
-                }
-                else
-                {
-                    // Normal case - we're in the main purchases/sales view
-                    selectedRow = grid.SelectedRows[0];
-                }
-
-                // Check return status
-                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
-                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
-                bool hasAnyReturns = isFullyReturned || isPartiallyReturned;
-
-                // Check loss status
-                bool isFullyLost = LostManager.IsTransactionFullyLost(selectedRow);
-                bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(selectedRow);
-                bool hasAnyLoss = isFullyLost || isPartiallyLost;
-
-                // View Details buttons - show when there's information to view
-                if (hasAnyReturns)
-                {
-                    ViewReturnDetails_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ViewReturnDetails_Button, currentIndex++);
-                }
-
-                if (hasAnyLoss)
-                {
-                    ViewLossDetails_Button.Visible = true;
-                    flowPanel.Controls.SetChildIndex(ViewLossDetails_Button, currentIndex++);
-                }
-
-                // Return action buttons
-                if (isFullyReturned)
-                {
-                    // Fully returned - only show undo button
-                    UndoReturn_Button.Visible = true;
-                    UndoReturn_Button.Text = LanguageManager.TranslateString("Undo return");
-                    flowPanel.Controls.SetChildIndex(UndoReturn_Button, currentIndex++);
-                }
-                else if (isPartiallyReturned)
-                {
-                    // Partially returned - show both buttons
-                    Return_Button.Visible = true;
-                    Return_Button.Text = LanguageManager.TranslateString("Return more items");
-                    flowPanel.Controls.SetChildIndex(Return_Button, currentIndex++);
-
-                    UndoReturn_Button.Visible = true;
-                    UndoReturn_Button.Text = LanguageManager.TranslateString("Undo partial return");
-                    flowPanel.Controls.SetChildIndex(UndoReturn_Button, currentIndex++);
-                }
-                else if (!isFullyLost && !isPartiallyLost)
-                {
-                    // Not returned and not lost - show return button
-                    Return_Button.Visible = true;
-                    Return_Button.Text = LanguageManager.TranslateString("Return product");
-                    flowPanel.Controls.SetChildIndex(Return_Button, currentIndex++);
-                }
-
-                // Loss action buttons
-                if (isFullyLost)
-                {
-                    // Fully lost - only show undo loss button
-                    UndoLoss_Button.Visible = true;
-                    UndoLoss_Button.Text = LanguageManager.TranslateString("Undo loss");
-                    flowPanel.Controls.SetChildIndex(UndoLoss_Button, currentIndex++);
-                }
-                else if (isPartiallyLost)
-                {
-                    // Partially lost - show both buttons
-                    MarkAsLost_Button.Visible = true;
-                    MarkAsLost_Button.Text = LanguageManager.TranslateString("Mark more items as lost");
-                    flowPanel.Controls.SetChildIndex(MarkAsLost_Button, currentIndex++);
-
-                    UndoLoss_Button.Visible = true;
-                    UndoLoss_Button.Text = LanguageManager.TranslateString("Undo partial loss");
-                    flowPanel.Controls.SetChildIndex(UndoLoss_Button, currentIndex++);
-                }
-                else if (!isFullyReturned && !isPartiallyReturned)
-                {
-                    // Not lost and not returned - show mark as lost button
-                    MarkAsLost_Button.Visible = true;
-                    MarkAsLost_Button.Text = LanguageManager.TranslateString("Mark as lost");
-                    flowPanel.Controls.SetChildIndex(MarkAsLost_Button, currentIndex++);
-                }
-            }
-
-            // Add DeleteBtn
-            Delete_Button.Visible = true;
-            flowPanel.Controls.SetChildIndex(Delete_Button, currentIndex);
-        }
-
-        private static bool AnySelectedRowHasReceipt(DataGridView grid)
-        {
-            foreach (DataGridViewRow row in grid.SelectedRows)
-            {
-                if (row.Tag is (List<string> tagList, TagData) && IsLastItemAReceipt(tagList[^1]))
-                {
-                    return true;
-                }
-                else if (row.Tag is (string item, TagData) && IsLastItemAReceipt(item))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool IsLastItemAReceipt(string lastItem)
-        {
-            if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
-            {
-                lastItem = ReceiptManager.ProcessReceiptTextFromRowTag(lastItem);
-                return File.Exists(lastItem);
-            }
-            return false;
-        }
-
         private static void ModifyRow(object sender, EventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
@@ -823,6 +590,17 @@ namespace Sales_Tracker.GridView
                         identifier = grid.SelectedRows[0].Cells[Products_Form.Column.ProductName.ToString()].Value?.ToString() ?? "Unknown";
                         break;
 
+                    case MainMenu_Form.SelectedOption.Customers:
+                        itemType = "the customer";
+                        string firstName = grid.SelectedRows[0].Cells[Customers_Form.Column.FirstName.ToString()].Value?.ToString() ?? "";
+                        string lastName = grid.SelectedRows[0].Cells[Customers_Form.Column.LastName.ToString()].Value?.ToString() ?? "";
+                        identifier = $"{firstName} {lastName}".Trim();
+                        if (string.IsNullOrEmpty(identifier))
+                        {
+                            identifier = "Unknown";
+                        }
+                        break;
+
                     case MainMenu_Form.SelectedOption.Purchases:
                     case MainMenu_Form.SelectedOption.Sales:
                     case MainMenu_Form.SelectedOption.ItemsInPurchase:
@@ -851,6 +629,7 @@ namespace Sales_Tracker.GridView
                     MainMenu_Form.SelectedOption.Companies => "companies",
                     MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales => "categories",
                     MainMenu_Form.SelectedOption.ProductPurchases or MainMenu_Form.SelectedOption.ProductSales => "products",
+                    MainMenu_Form.SelectedOption.Customers => "customers",
                     MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales => "transactions",
                     _ => "rows"
                 };

@@ -363,7 +363,7 @@ namespace Sales_Tracker.ReportGenerator.Elements
         }
         private Rectangle CalculateCenterBounds()
         {
-            if (_cachedImage == null) return Bounds;
+            if (_cachedImage == null) { return Bounds; }
 
             int x = Bounds.X + (Bounds.Width - _cachedImage.Width) / 2;
             int y = Bounds.Y + (Bounds.Height - _cachedImage.Height) / 2;

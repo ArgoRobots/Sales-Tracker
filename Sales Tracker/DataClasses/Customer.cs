@@ -7,7 +7,9 @@ namespace Sales_Tracker.DataClasses
     {
         // Getters and setters
         public string CustomerID { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string FullName => $"{FirstName} {LastName}";
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
@@ -31,13 +33,15 @@ namespace Sales_Tracker.DataClasses
         // Default constructor required for deserialization
         public Customer() { }
 
-        public Customer(string customerID, string name, string email, string phoneNumber, string address)
+        public Customer(string customerID, string firstName, string lastName, string email, string phoneNumber, string address, string notes)
         {
             CustomerID = customerID;
-            Name = name;
+            FirstName = firstName;
+            LastName = lastName;
             Email = email;
             PhoneNumber = phoneNumber;
             Address = address;
+            Notes = notes;
         }
 
         /// <summary>

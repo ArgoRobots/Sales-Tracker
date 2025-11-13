@@ -1,7 +1,5 @@
-using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.GridView;
 using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -10,15 +8,13 @@ namespace Sales_Tracker
 {
     public partial class AddRentalItem_Form : BaseForm
     {
-        private static AddRentalItem_Form _instance;
-
-        public static AddRentalItem_Form Instance => _instance;
+        // Properties
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
+        // Init.
         public AddRentalItem_Form()
         {
             InitializeComponent();
-            _instance = this;
 
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
@@ -35,10 +31,9 @@ namespace Sales_Tracker
             Application.AddMessageFilter(panelCloseFilter);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-
         private void AddEventHandlersToTextBoxes()
         {
-            byte searchBoxMaxHeight = 255;  
+            byte searchBoxMaxHeight = 255;
 
             TextBoxManager.Attach(RentalItemID_TextBox);
             RentalItemID_TextBox.TextChanged += ValidateInputs;
@@ -68,17 +63,14 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(Notes_TextBox);
         }
-
         private List<SearchResult> GetSearchResultsForProducts()
         {
             return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetRentableProductPurchaseNames());
         }
-
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
         }
-
         private void SetAccessibleDescriptions()
         {
             Label[] labelsToAlignLeftCenter =
@@ -106,18 +98,15 @@ namespace Sales_Tracker
         {
             CheckIfProductsExist();
         }
-
         private void AddRentalItem_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
             RentalItemID_TextBox.Focus();
         }
-
         private void AddRentalItem_Form_Resize(object sender, EventArgs e)
         {
             ClosePanels();
         }
-
         private void AddRentalItem_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             ClosePanels();
@@ -129,7 +118,6 @@ namespace Sales_Tracker
             if (!AddRentalItem()) { return; }
             ClearInputs();
         }
-
         private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Tools.OpenForm(new Products_Form(true));
@@ -148,7 +136,6 @@ namespace Sales_Tracker
             SecurityDeposit_TextBox.Clear();
             Notes_TextBox.Clear();
         }
-
         private bool AddRentalItem()
         {
             string rentalItemID = RentalItemID_TextBox.Text.Trim();
@@ -179,7 +166,7 @@ namespace Sales_Tracker
 
             string productID = $"{companyName}-{productName}";
             int totalQuantity = int.Parse(TotalQuantity_TextBox.Text);
-            
+
             decimal dailyRate = string.IsNullOrWhiteSpace(DailyRate_TextBox.Text)
                 ? 0
                 : decimal.Parse(DailyRate_TextBox.Text);
@@ -220,10 +207,7 @@ namespace Sales_Tracker
             RentalInventoryManager.AddRentalItem(newItem);
 
             // Refresh the ManageRentals form if it's open
-            if (ManageRentals_Form.Instance != null)
-            {
-                ManageRentals_Form.Instance.RefreshDataGridView();
-            }
+            ManageRentals_Form.Instance?.RefreshDataGridView();
 
             string logMessage = $"Added rental item '{rentalItemID}' - {productName}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 3, logMessage);
@@ -236,7 +220,6 @@ namespace Sales_Tracker
 
             return true;
         }
-
         private void CheckIfProductsExist()
         {
             if (MainMenu_Form.Instance.GetProductPurchaseNames().Count == 0)
@@ -250,7 +233,6 @@ namespace Sales_Tracker
                 WarningProduct_LinkLabel.Visible = false;
             }
         }
-
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(RentalItemID_TextBox.Text) &&
@@ -265,26 +247,10 @@ namespace Sales_Tracker
 
             AddRentalItem_Button.Enabled = allFieldsFilled && hasAtLeastOneRate;
         }
-
         private void ClosePanels()
         {
             TextBoxManager.HideRightClickPanel();
             SearchBox.Close();
-        }
-
-        private void AddRentalItem_Label_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void WeeklyRate_Label_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MonthlyRate_Label_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

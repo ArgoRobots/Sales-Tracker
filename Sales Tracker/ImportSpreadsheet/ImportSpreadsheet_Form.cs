@@ -13,7 +13,6 @@ namespace Sales_Tracker.ImportSpreadsheet
     {
         // Properties
         private string _spreadsheetFilePath, _receiptsFolderPath;
-        private readonly MainMenu_Form.SelectedOption _oldOption;
         private string _selectedSourceCurrency = "USD";  // Default to USD
 
         // Scaled dimensions
@@ -26,7 +25,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             InitializeComponent();
 
-            _oldOption = MainMenu_Form.Instance.Selected;
             InitContainerPanel();
             InitCurrencyControls();
             UpdateTheme();
@@ -517,42 +515,42 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             if (summary.CompaniesImported > 0)
             {
-                string template = summary.CompaniesImported == 1 
+                string template = summary.CompaniesImported == 1
                     ? "{0} " + LanguageManager.TranslateString("company")
                     : "{0} " + LanguageManager.TranslateString("companies");
                 importedItems.Add(string.Format(template, summary.CompaniesImported));
             }
             if (summary.PurchaseProductsImported > 0)
             {
-                string template = summary.PurchaseProductsImported == 1 
+                string template = summary.PurchaseProductsImported == 1
                     ? "{0} " + LanguageManager.TranslateString("purchase product")
                     : "{0} " + LanguageManager.TranslateString("purchase products");
                 importedItems.Add(string.Format(template, summary.PurchaseProductsImported));
             }
             if (summary.SaleProductsImported > 0)
             {
-                string template = summary.SaleProductsImported == 1 
+                string template = summary.SaleProductsImported == 1
                     ? "{0} " + LanguageManager.TranslateString("sale product")
                     : "{0} " + LanguageManager.TranslateString("sale products");
                 importedItems.Add(string.Format(template, summary.SaleProductsImported));
             }
             if (summary.PurchaseTransactionsImported > 0)
             {
-                string template = summary.PurchaseTransactionsImported == 1 
+                string template = summary.PurchaseTransactionsImported == 1
                     ? "{0} " + LanguageManager.TranslateString("purchase")
                     : "{0} " + LanguageManager.TranslateString("purchases");
                 importedItems.Add(string.Format(template, summary.PurchaseTransactionsImported));
             }
             if (summary.SaleTransactionsImported > 0)
             {
-                string template = summary.SaleTransactionsImported == 1 
+                string template = summary.SaleTransactionsImported == 1
                     ? "{0} " + LanguageManager.TranslateString("sale")
                     : "{0} " + LanguageManager.TranslateString("sales");
                 importedItems.Add(string.Format(template, summary.SaleTransactionsImported));
             }
             if (summary.ReceiptsImported > 0)
             {
-                string template = summary.ReceiptsImported == 1 
+                string template = summary.ReceiptsImported == 1
                     ? "{0} " + LanguageManager.TranslateString("receipt")
                     : "{0} " + LanguageManager.TranslateString("receipts");
                 importedItems.Add(string.Format(template, summary.ReceiptsImported));
@@ -607,9 +605,9 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
 
             CustomMessageBox.Show(
-                LanguageManager.TranslateString("Import Completed"), 
-                message, 
-                CustomMessageBoxIcon.Success, 
+                LanguageManager.TranslateString("Import Completed"),
+                message,
+                CustomMessageBoxIcon.Success,
                 CustomMessageBoxButtons.Ok);
         }
         private static void ShowNoImportMessage(ImportSummary summary)
@@ -634,9 +632,9 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
 
             CustomMessageBox.Show(
-                LanguageManager.TranslateString("No Data Imported"), 
-                message, 
-                CustomMessageBoxIcon.Info, 
+                LanguageManager.TranslateString("No Data Imported"),
+                message,
+                CustomMessageBoxIcon.Info,
                 CustomMessageBoxButtons.Ok);
         }
         private ImportSummary ImportSpreadsheetAndReceipts(ImportSession importSession)
@@ -803,7 +801,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             // Calculate bottom margin
             int bottomMargin = (int)(70 * DpiHelper.GetRelativeDpiScale());
-            
+
             _centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
@@ -815,7 +813,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             // Set bottom position to ensure it doesn't overlap with buttons on different DPI settings
             _centeredFlowPanel.Height = ClientSize.Height - _centeredFlowPanel.Top - bottomMargin;
         }
-        private Panel CreatePanel(List<string> items, string worksheetName)
+        private static Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()
             {
