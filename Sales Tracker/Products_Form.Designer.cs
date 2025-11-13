@@ -115,6 +115,7 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.Size = new Size(300, 50);
             CountryOfOrigin_TextBox.TabIndex = 6;
             CountryOfOrigin_TextBox.Tag = "1";
+            CountryOfOrigin_TextBox.TextChanged += CountryOfOrigin_TextBox_TextChanged;
             // 
             // AddProduct_Label
             // 
@@ -217,6 +218,7 @@ namespace Sales_Tracker
             ProductCategory_TextBox.Size = new Size(300, 50);
             ProductCategory_TextBox.TabIndex = 5;
             ProductCategory_TextBox.Tag = "1";
+            ProductCategory_TextBox.TextChanged += ProductCategory_TextBox_TextChanged;
             // 
             // ProductID_TextBox
             // 
@@ -378,6 +380,7 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.Size = new Size(300, 50);
             CompanyOfOrigin_TextBox.TabIndex = 7;
             CompanyOfOrigin_TextBox.Tag = "1";
+            CompanyOfOrigin_TextBox.TextChanged += CompanyOfOrigin_TextBox_TextChanged;
             // 
             // WarningCompany_PictureBox
             // 
