@@ -48,6 +48,9 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(SaleNumber_TextBox);
 
+            TextBoxManager.Attach(Customer_TextBox);
+            SearchBox.Attach(Customer_TextBox, this, GetSearchResultsForCustomers, searchBoxMaxHeight, false, false, true, false);
+
             TextBoxManager.Attach(ProductName_TextBox);
             SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, true, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
@@ -83,12 +86,18 @@ namespace Sales_Tracker
         {
             return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames());
         }
+        private List<SearchResult> GetSearchResultsForCustomers()
+        {
+            return SearchBox.ConvertToSearchResults(
+                MainMenu_Form.Instance.CustomerList.Select(c => c.FullName).ToList());
+        }
         private void SetAccessibleDescriptions()
         {
             Label[] labelsToAlignLeftCenter =
             [
                MultipleItems_Label,
                SaleNumber_Label,
+               Customer_Label,
                ProductName_Label,
                Date_Label,
                Quantity_Label,
@@ -211,6 +220,7 @@ namespace Sales_Tracker
         {
             RemoveReceiptLabel();
             SaleNumber_TextBox.Clear();
+            Customer_TextBox.Clear();
             Quantity_TextBox.Clear();
             PricePerUnit_TextBox.Clear();
             Shipping_TextBox.Clear();
@@ -220,9 +230,87 @@ namespace Sales_Tracker
             Credited_TextBox.Clear();
             Notes_TextBox.Clear();
         }
+        private bool CheckAndPromptForNewCustomer()
+        {
+            string customerName = Customer_TextBox.Text.Trim();
+
+            // If customer field is empty, allow the sale to proceed
+            if (string.IsNullOrWhiteSpace(customerName))
+            {
+                return true;
+            }
+
+            // Check if customer exists in the customer list
+            bool customerExists = MainMenu_Form.Instance.CustomerList.Any(c =>
+                c.FullName.Equals(customerName, StringComparison.OrdinalIgnoreCase));
+
+            if (!customerExists)
+            {
+                // Ask user if they want to add the new customer
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Customer not found",
+                    "The customer '{0}' does not exist. Would you like to add this customer?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    customerName);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return false;
+                }
+
+                // Parse customer name into first and last name
+                string[] nameParts = customerName.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries);
+                string firstName = nameParts.Length > 0 ? nameParts[0] : customerName;
+                string lastName = nameParts.Length > 1 ? nameParts[1] : "";
+
+                // Create new customer with minimal information
+                Customer newCustomer = new(
+                    ReadOnlyVariables.EmptyCell,  // customerID
+                    firstName,
+                    lastName,
+                    "",  // email
+                    "",  // phoneNumber
+                    "",  // address
+                    ""); // notes
+
+                // Add to customer list
+                MainMenu_Form.Instance.CustomerList.Add(newCustomer);
+
+                // If Customers_Form is open, add to DataGridView
+                if (Tools.IsFormOpen<Customers_Form>())
+                {
+                    int newRowIndex = Customers_Form.Instance.Customers_DataGridView.Rows.Add(
+                        newCustomer.CustomerID,
+                        newCustomer.FirstName,
+                        newCustomer.LastName,
+                        newCustomer.Email,
+                        newCustomer.PhoneNumber,
+                        newCustomer.Address,
+                        newCustomer.CurrentPaymentStatus.ToString(),
+                        newCustomer.OutstandingBalance,
+                        newCustomer.IsBanned,
+                        newCustomer.RentalRecords.Count,
+                        newCustomer.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-");
+
+                    Customers_Form.Instance.Customers_DataGridView.Rows[newRowIndex].Tag = newCustomer;
+                    DataGridViewManager.DataGridViewRowsAdded(Customers_Form.Instance.Customers_DataGridView,
+                        new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                }
+
+                string logMessage = $"Added customer '{newCustomer.FullName}'";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, logMessage);
+            }
+
+            return true;
+        }
         private bool AddSale()
         {
             string saleNumber = SaleNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(saleNumber))
+            {
+                saleNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
@@ -238,6 +326,12 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+
+            // Check if customer exists, and prompt to add if not
+            if (!CheckAndPromptForNewCustomer())
+            {
+                return false;
             }
 
             // Get values from TextBoxes
@@ -334,6 +428,7 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
                 MainMenu_Form.SelectedAccountant,
+                Customer_TextBox.Text.Trim(),
                 productName,
                 categoryName,
                 country,
@@ -380,6 +475,10 @@ namespace Sales_Tracker
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
             string saleNumber = SaleNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(saleNumber))
+            {
+                saleNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
@@ -395,6 +494,12 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+
+            // Check if customer exists, and prompt to add if not
+            if (!CheckAndPromptForNewCustomer())
+            {
+                return false;
             }
 
             // Get values from TextBoxes
@@ -522,6 +627,7 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
                 MainMenu_Form.SelectedAccountant,
+                Customer_TextBox.Text.Trim(),
                 ReadOnlyVariables.MultipleItems_text,
                 finalCategoryName,
                 finalCountry,
@@ -648,12 +754,15 @@ namespace Sales_Tracker
             // Center controls
             SaleNumber_TextBox.Left = (ClientSize.Width -
                 SaleNumber_TextBox.Width - space -
+                Customer_TextBox.Width - space -
                 ProductName_TextBox.Width - space -
                 CountryOfDestinaion_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            ProductName_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_Label.Left = Customer_TextBox.Left;
+            ProductName_TextBox.Left = Customer_TextBox.Right + space;
             ProductName_Label.Left = ProductName_TextBox.Left;
             CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + space;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
@@ -715,11 +824,14 @@ namespace Sales_Tracker
             // Center controls
             SaleNumber_TextBox.Left = (ClientSize.Width -
                 SaleNumber_TextBox.Width - space -
+                Customer_TextBox.Width - space -
                 CountryOfDestinaion_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            CountryOfDestinaion_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_TextBox.Left = SaleNumber_TextBox.Right + space;
+            Customer_Label.Left = Customer_TextBox.Left;
+            CountryOfDestinaion_TextBox.Left = Customer_TextBox.Right + space;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
             Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + space;
 
@@ -1007,8 +1119,7 @@ namespace Sales_Tracker
         }
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleNumber_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
                 !string.IsNullOrWhiteSpace(Credited_TextBox.Text);
 
             if (Properties.Settings.Default.SaleReceipts)

@@ -99,6 +99,10 @@ namespace Sales_Tracker.GridView
                     HandleSalesDeletion(e);
                     break;
 
+                case MainMenu_Form.SelectedOption.Rentals:
+                    HandleRentalsDeletion(e);
+                    break;
+
                 case MainMenu_Form.SelectedOption.ProductPurchases:
                     HandleProductPurchasesDeletion(e);
                     break;
@@ -133,10 +137,14 @@ namespace Sales_Tracker.GridView
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            DataGridViewRowChanged((Guna2DataGridView)sender, MainMenu_Form.Instance.Selected);
+            DataGridViewRowChanged((Guna2DataGridView)sender);
 
             // Remove receipt from file
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && _removedRow?.Tag != null)
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases
+                or MainMenu_Form.SelectedOption.Sales
+                or MainMenu_Form.SelectedOption.Rentals
+                && _removedRow?.Tag != null)
+
             {
                 string tagValue = "";
 
@@ -157,9 +165,13 @@ namespace Sales_Tracker.GridView
                 _removedRow = null;
             }
         }
-        public static void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
+        public static void DataGridViewRowChanged(Guna2DataGridView dataGridView)
         {
-            if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
+            MainMenu_Form.SelectedOption selected = MainMenu_Form.Instance.Selected;
+
+            if (selected is MainMenu_Form.SelectedOption.Purchases
+                or MainMenu_Form.SelectedOption.Sales
+                or MainMenu_Form.SelectedOption.Rentals)
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
@@ -170,7 +182,9 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.Instance.SaveCategoriesToFile(selected);
             }
-            else if (selected is MainMenu_Form.SelectedOption.Accountants or MainMenu_Form.SelectedOption.Companies)
+            else if (selected is MainMenu_Form.SelectedOption.Accountants
+                or MainMenu_Form.SelectedOption.Companies
+                or MainMenu_Form.SelectedOption.Customers)
             {
                 MainMenu_Form.SaveDataGridViewToFile(dataGridView, selected);
             }
@@ -336,6 +350,15 @@ namespace Sales_Tracker.GridView
         private static void HandleSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "sale";
+            string columnName = ReadOnlyVariables.ID_column;
+            string name = e.Row.Cells[columnName].Value?.ToString();
+
+            string message = $"Deleted {type} '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
+        }
+        private static void HandleRentalsDeletion(DataGridViewRowCancelEventArgs e)
+        {
+            string type = "rental";
             string columnName = ReadOnlyVariables.ID_column;
             string name = e.Row.Cells[columnName].Value?.ToString();
 
@@ -626,6 +649,29 @@ namespace Sales_Tracker.GridView
                                      selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
             int currentIndex = 0;
 
+            bool isRentalInventory = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.RentalInventory.ToString();
+
+            // Add buttons for Rental Inventory
+            if (isRentalInventory)
+            {
+                if (isSingleRowSelected)
+                {
+                    // Check if item has available quantity  
+                    if (grid.SelectedRows[0].Tag is RentalItem rentalItem && rentalItem.QuantityAvailable > 0)
+                    {
+                        RightClickDataGridViewRowMenu.RentOut_Button.Visible = true;
+                        flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.RentOut_Button, currentIndex++);
+                    }
+
+                    RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
+                }
+
+                RightClickDataGridViewRowMenu.Delete_Button.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex++);
+
+                return;  // Don't add any more buttons
+            }
             // Add buttons for Receipts_Form
             if (selectedOption == MainMenu_Form.SelectedOption.Receipts)
             {
@@ -898,7 +944,7 @@ namespace Sales_Tracker.GridView
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            DataGridViewRowChanged(grid, MainMenu_Form.Instance.Selected);
+            DataGridViewRowChanged(grid);
             DataGridViewRow row;
 
             if (e.RowIndex >= 0 && e.RowIndex < grid.Rows.Count)
@@ -955,7 +1001,8 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.SelectedOption.Purchases => Directories.Purchases_file,
                 MainMenu_Form.SelectedOption.Sales => Directories.Sales_file,
-                //MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
+                MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
+                MainMenu_Form.SelectedOption.Customers => Directories.Customers_file,
                 MainMenu_Form.SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
                 MainMenu_Form.SelectedOption.CategorySales => Directories.CategorySales_file,
                 MainMenu_Form.SelectedOption.ProductPurchases => Directories.CategoryPurchases_file,

@@ -108,14 +108,19 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart = ConstructMainChart("purchaseDistribution_Chart", false) as PieChart;
             TotalSales_Chart = ConstructMainChart("saleTotals_Chart", true) as CartesianChart;
             DistributionOfSales_Chart = ConstructMainChart("saleDistribution_Chart", false) as PieChart;
+            TotalRentals_Chart = ConstructMainChart("rentalTotals_Chart", true) as CartesianChart;
+            DistributionOfRentals_Chart = ConstructMainChart("rentalDistribution_Chart", false) as PieChart;
             Profits_Chart = ConstructMainChart("profits_Chart", true) as CartesianChart;
 
             LoadChart.ConfigurePieChart(DistributionOfPurchases_Chart);
             LoadChart.ConfigurePieChart(DistributionOfSales_Chart);
+            LoadChart.ConfigurePieChart(DistributionOfRentals_Chart);
 
             MouseClickChartManager.InitCharts([
                 TotalPurchases_Chart, DistributionOfPurchases_Chart,
-                TotalSales_Chart, DistributionOfSales_Chart, Profits_Chart
+                TotalSales_Chart, DistributionOfSales_Chart,
+                TotalRentals_Chart, DistributionOfRentals_Chart,
+                Profits_Chart
             ]);
         }
         private Control ConstructMainChart(string name, bool isCartesian)
@@ -162,6 +167,8 @@ namespace Sales_Tracker
             Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
+
+            CustomerList.Clear();
         }
         private void InitDataGridViews()
         {
@@ -171,7 +178,7 @@ namespace Sales_Tracker
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
             Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-            //DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
+            DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
             Rental_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
         }
         public void LoadData()
@@ -182,9 +189,12 @@ namespace Sales_Tracker
             AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
+            LoadCustomersFromFile();
+            RentalInventoryManager.LoadInventory();
+
             AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
-            //AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals); Commented out until rentals are implemented
+            AddRowsFromFile(Rental_DataGridView, SelectedOption.Rentals);
         }
         private void LoadCustomColumnHeaders()
         {
@@ -208,6 +218,24 @@ namespace Sales_Tracker
             if (loadedCategories != null)
             {
                 categoryList.AddRange(loadedCategories);
+            }
+        }
+        private void LoadCustomersFromFile()
+        {
+            // Create the file if it doesn't exist
+            if (!File.Exists(Directories.Customers_file))
+            {
+                Directories.CreateFile(Directories.Customers_file);
+                return;
+            }
+
+            string json = Directories.ReadAllTextInFile(Directories.Customers_file);
+            if (string.IsNullOrWhiteSpace(json)) { return; }
+
+            List<Customer>? loadedCustomers = JsonConvert.DeserializeObject<List<Customer>>(json);
+            if (loadedCustomers != null)
+            {
+                CustomerList.AddRange(loadedCustomers);
             }
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
@@ -239,6 +267,21 @@ namespace Sales_Tracker
                 {
                     LoadChart.LoadDistributionIntoChart(Sale_DataGridView, DistributionOfSales_Chart, PieChartGrouping.Top12);
                     SetChartTitle(DistributionOfSales_Chart, TranslatedChartTitles.RevenueDistribution);
+                }
+            }
+
+            // Load rental charts
+            if (Selected == SelectedOption.Rentals || Rental_DataGridView.Visible)
+            {
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Rental_DataGridView, TotalRentals_Chart, isLine);
+                string translatedRentalRevenue = LanguageManager.TranslateString("Total rental revenue");
+                SetChartTitle(TotalRentals_Chart, $"{translatedRentalRevenue}: {CurrencySymbol}{totalsData.Total:N2}");
+
+                if (!onlyLoadForLineCharts)
+                {
+                    LoadChart.LoadDistributionIntoChart(Rental_DataGridView, DistributionOfRentals_Chart, PieChartGrouping.Top12);
+                    string translatedDistribution = LanguageManager.TranslateString("Distribution of rental revenue");
+                    SetChartTitle(DistributionOfRentals_Chart, translatedDistribution);
                 }
             }
 
@@ -327,10 +370,10 @@ namespace Sales_Tracker
             {
                 Sales_Button.BorderColor = CustomColors.AccentBlue;
             }
-            //else if (Rentals_Button.BorderThickness == 2)
-            //{
-            //    Rentals_Button.BorderColor = CustomColors.AccentBlue;
-            //}
+            else if (Rentals_Button.BorderThickness == 2)
+            {
+                Rentals_Button.BorderColor = CustomColors.AccentBlue;
+            }
             else if (Analytics_Button.BorderThickness == 2)
             {
                 Analytics_Button.BorderColor = CustomColors.AccentBlue;
@@ -353,6 +396,8 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             DistributionOfSales_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            TotalRentals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            DistributionOfRentals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
             // Geographic Analysis Charts
@@ -455,13 +500,14 @@ namespace Sales_Tracker
             [
                Purchases_Button,
                Sales_Button,
-               //Rentals_Button,
+               Rentals_Button,
                Analytics_Button,
                AddPurchase_Button,
                AddSale_Button,
                Products_Button,
                Categories_Button,
                Companies_Button,
+               Customers_Button,
                Accountants_Button,
                TimeRange_Button,
             ];
@@ -534,8 +580,16 @@ namespace Sales_Tracker
         {
             if (!File.Exists(filePath))
             {
-                Log.Error_WriteToFile(Directories.CompanyName);
-                return false;
+                try
+                {
+                    Directories.CreateFile(filePath);
+                    Log.Write(2, $"Created new data file: {filePath}");
+                }
+                catch
+                {
+                    Log.Write(1, $"Failed to create data file: {filePath}");
+                    return false;
+                }
             }
             return true;
         }
@@ -550,7 +604,7 @@ namespace Sales_Tracker
         }
         private static void ProcessRow(Guna2DataGridView dataGridView, Dictionary<string, object> rowData)
         {
-            string?[] cellValues = ExtractCellValues(rowData);
+            string?[] cellValues = ExtractCellValues(rowData, dataGridView);
             // Cast to object[] to match the expected parameter type
             int rowIndex = dataGridView.Rows.Add(cellValues.Cast<object>().ToArray());
 
@@ -558,12 +612,36 @@ namespace Sales_Tracker
             ProcessNoteText(dataGridView, rowData, rowIndex);
             ProcessHasReceipt(dataGridView, rowIndex);
         }
-        private static string?[] ExtractCellValues(Dictionary<string, object> rowData)
+        private static string?[] ExtractCellValues(Dictionary<string, object> rowData, Guna2DataGridView dataGridView)
         {
-            return rowData
-                .Where(kv => kv.Key != _rowTagKey && kv.Key != _noteTextKey)
-                .Select(kv => kv.Value?.ToString())
-                .ToArray();
+            // Get column names from the DataGridView
+            List<string> columnNames = dataGridView.Columns.Cast<DataGridViewColumn>()
+                .Select(col => col.Name)
+                .ToList();
+
+            // Build cell values array in the correct column order
+            List<string?> cellValues = [];
+            foreach (string columnName in columnNames)
+            {
+                // Skip special columns
+                if (columnName == Column.HasReceipt.ToString())
+                {
+                    continue;
+                }
+
+                // Get value from rowData, or use empty cell if missing (for migration)
+                if (rowData.TryGetValue(columnName, out object? value))
+                {
+                    cellValues.Add(value?.ToString());
+                }
+                else
+                {
+                    // Column doesn't exist in saved data (e.g., Customer column for old data)
+                    cellValues.Add(ReadOnlyVariables.EmptyCell);
+                }
+            }
+
+            return [.. cellValues];
         }
         private static void ProcessRowTag(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
         {
@@ -702,10 +780,9 @@ namespace Sales_Tracker
 
             IsProgramLoading = false;
 
-            SortTheDataGridViewByDate();
+            SortDataGridViewsByDate();
             CenterAndResizeControls();
 
-            // Total_Panel only needs to be set once
             Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
             Total_Panel.Width = SelectedDataGridView.Width;
         }
@@ -823,8 +900,8 @@ namespace Sales_Tracker
 
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
-            // Handle dropdown menu for narrow windows
-            if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
+            // Handle dropdown menu for narrow windows - check if AddPurchase_Button overlaps with Edit_Button
+            if (Edit_Button.Right + 25 > AddPurchase_Button.Left)
             {
                 AddControlsDropDown();
             }
@@ -863,8 +940,10 @@ namespace Sales_Tracker
                 int rightX = middleX + chartWidth + spaceBetweenCharts;
 
                 // Position the currently visible charts
-                Control totalsChart = Sale_DataGridView.Visible ? TotalSales_Chart : TotalPurchases_Chart;
-                Control distributionChart = Sale_DataGridView.Visible ? DistributionOfSales_Chart : DistributionOfPurchases_Chart;
+                Control totalsChart = Rental_DataGridView.Visible ? TotalRentals_Chart :
+                                      Sale_DataGridView.Visible ? TotalSales_Chart : TotalPurchases_Chart;
+                Control distributionChart = Rental_DataGridView.Visible ? DistributionOfRentals_Chart :
+                                            Sale_DataGridView.Visible ? DistributionOfSales_Chart : DistributionOfPurchases_Chart;
 
                 SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, _chartTop);
                 SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, _chartTop);
@@ -1070,6 +1149,27 @@ namespace Sales_Tracker
                         SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
                     }
                     break;
+
+                case AnalyticsTab.Customers:
+                    // 2x3 grid layout
+                    if (charts.Count >= 6)
+                    {
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
+
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
+
+                        // Top row - 3 charts
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY);
+
+                        // Bottom row - 3 charts
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[4], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
+                        SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
+                    }
+                    break;
             }
         }
         private void SetMainChartsHeight(int height)
@@ -1078,6 +1178,8 @@ namespace Sales_Tracker
             DistributionOfPurchases_Chart.Height = height;
             TotalSales_Chart.Height = height;
             DistributionOfSales_Chart.Height = height;
+            TotalRentals_Chart.Height = height;
+            DistributionOfRentals_Chart.Height = height;
             Profits_Chart.Height = height;
         }
         private static void SetChartPosition(Control chart, Size size, int left, int top)
@@ -1125,7 +1227,8 @@ namespace Sales_Tracker
         {
             return [
                 Accountants_Button, Categories_Button, Companies_Button,
-                Products_Button, AddSale_Button, AddPurchase_Button];
+                Products_Button, Customers_Button, ManageRentals_Button,
+                AddSale_Button, AddPurchase_Button];
         }
 
         // Event handlers - top bar
@@ -1197,12 +1300,15 @@ namespace Sales_Tracker
             SelectedDataGridView = Purchase_DataGridView;
             Purchase_DataGridView.Visible = true;
             Sale_DataGridView.Visible = false;
+            Rental_DataGridView.Visible = false;
 
-            // Show purchase charts, hide sale charts
+            // Show purchase charts, hide sale and rental charts
             TotalPurchases_Chart.Visible = true;
             DistributionOfPurchases_Chart.Visible = true;
             TotalSales_Chart.Visible = false;
             DistributionOfSales_Chart.Visible = false;
+            TotalRentals_Chart.Visible = false;
+            DistributionOfRentals_Chart.Visible = false;
 
             SelectButton(Purchases_Button);
             CenterAndResizeControls();
@@ -1223,12 +1329,15 @@ namespace Sales_Tracker
             SelectedDataGridView = Sale_DataGridView;
             Sale_DataGridView.Visible = true;
             Purchase_DataGridView.Visible = false;
+            Rental_DataGridView.Visible = false;
 
-            // Show sale charts, hide purchase charts
+            // Show sale charts, hide purchase and rental charts
             TotalSales_Chart.Visible = true;
             DistributionOfSales_Chart.Visible = true;
             TotalPurchases_Chart.Visible = false;
             DistributionOfPurchases_Chart.Visible = false;
+            TotalRentals_Chart.Visible = false;
+            DistributionOfRentals_Chart.Visible = false;
 
             SelectButton(Sales_Button);
             CenterAndResizeControls();
@@ -1239,33 +1348,35 @@ namespace Sales_Tracker
             UpdateTotalLabels();
             Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
-        //private void Rentals_Button_Click(object sender, EventArgs e)
-        //{
-        //    if (Selected == SelectedOption.Rentals) { return; }
+        private void Rentals_Button_Click(object sender, EventArgs e)
+        {
+            if (Selected == SelectedOption.Rentals) { return; }
 
-        //    Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Rental_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-        //    ShowMainControls();
-        //    SelectedDataGridView = Rental_DataGridView;
-        //    Rental_DataGridView.Visible = true;
-        //    Purchase_DataGridView.Visible = false;
-        //    Sale_DataGridView.Visible = false;
+            ShowMainControls();
+            SelectedDataGridView = Rental_DataGridView;
+            Rental_DataGridView.Visible = true;
+            Purchase_DataGridView.Visible = false;
+            Sale_DataGridView.Visible = false;
 
-        //    // TODO: Create Rentals Charts
-        //    SaleTotals_Chart.Visible = false;
-        //    SaleDistribution_Chart.Visible = false;
-        //    PurchaseTotals_Chart.Visible = false;
-        //    PurchaseDistribution_Chart.Visible = false;
+            // Show rental charts, hide other charts
+            TotalRentals_Chart.Visible = true;
+            DistributionOfRentals_Chart.Visible = true;
+            TotalSales_Chart.Visible = false;
+            DistributionOfSales_Chart.Visible = false;
+            TotalPurchases_Chart.Visible = false;
+            DistributionOfPurchases_Chart.Visible = false;
 
-        //    SelectButton(Rentals_Button);
-        //    CenterAndResizeControls();
-        //    RefreshDataGridViewAndCharts();
+            SelectButton(Rentals_Button);
+            CenterAndResizeControls();
+            RefreshDataGridViewAndCharts();
 
-        //    Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
-        //    AlignTotalLabels();
-        //    UpdateTotalLabels();
-        //    Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
-        //}
+            Rental_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for rentals");
+        }
         private void Analytics_Button_Click(object sender, EventArgs e)
         {
             if (Selected == SelectedOption.Analytics) { return; }
@@ -1283,6 +1394,10 @@ namespace Sales_Tracker
         {
             Tools.OpenForm(new AddSale_Form());
         }
+        private void ManageRentals_Button_Click(object sneder, EventArgs e)
+        {
+            Tools.OpenForm(new ManageRentals_Form());
+        }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
             Tools.OpenForm(new Accountants_Form());
@@ -1298,6 +1413,10 @@ namespace Sales_Tracker
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
             Tools.OpenForm(new Categories_Form(true));
+        }
+        private void Customers_Button_Click(object sender, EventArgs e)
+        {
+            Tools.OpenForm(new Customers_Form());
         }
         private void LineChart_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -1436,11 +1555,11 @@ namespace Sales_Tracker
         {
             Purchases_Button.BorderThickness = 1;
             Sales_Button.BorderThickness = 1;
-            //Rentals_Button.BorderThickness = 1;
+            Rentals_Button.BorderThickness = 1;
             Analytics_Button.BorderThickness = 1;
             Purchases_Button.BorderColor = CustomColors.ControlBorder;
             Sales_Button.BorderColor = CustomColors.ControlBorder;
-            //Rentals_Button.BorderColor = CustomColors.ControlBorder;
+            Rentals_Button.BorderColor = CustomColors.ControlBorder;
             Analytics_Button.BorderColor = CustomColors.ControlBorder;
         }
 
@@ -1702,7 +1821,7 @@ namespace Sales_Tracker
         {
             ShowingResultsFor_Label.Visible = false;
         }
-        private void SortTheDataGridViewByDate()
+        private void SortDataGridViewsByDate()
         {
             string dateColumnHeader = SalesColumnHeaders[Column.Date];
             Sale_DataGridView.Sort(Sale_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
@@ -1716,6 +1835,7 @@ namespace Sales_Tracker
         public List<Category> CategoryPurchaseList { get; } = [];
         public List<string> AccountantList { get; private set; } = [];
         public List<string> CompanyList { get; private set; } = [];
+        public List<Customer> CustomerList { get; private set; } = [];
 
         // List methods
         public List<string> GetCategorySaleNames()
@@ -1860,6 +1980,26 @@ namespace Sales_Tracker
         public List<string> GetProductPurchaseNames() => GetFormattedProductNames(CategoryPurchaseList);
 
         /// <summary>
+        /// Gets a list of formatted product names for rentable items.
+        /// Format: "CompanyOfOrigin > CategoryName > ProductName"
+        /// </summary>
+        public List<string> GetRentableProductPurchaseNames()
+        {
+            List<string> names = [];
+            foreach (Category category in CategoryPurchaseList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.IsRentable)
+                    {
+                        names.Add($"{product.CompanyOfOrigin} > {category.Name} > {product.Name}");
+                    }
+                }
+            }
+            return names;
+        }
+
+        /// <summary>
         /// Helper method to format product names from a category list.
         /// </summary>
         private static List<string> GetFormattedProductNames(List<Category> categories)
@@ -1883,10 +2023,13 @@ namespace Sales_Tracker
             {
                 Accountants_Form => SelectedOption.Accountants,
                 Companies_Form => SelectedOption.Companies,
-                Categories_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.CategoryPurchases : SelectedOption.CategorySales,
-                Products_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
+                Categories_Form => Categories_Form.Instance.Purchase_RadioButton.Checked ? SelectedOption.CategoryPurchases : SelectedOption.CategorySales,
+                Products_Form => Products_Form.Instance.Purchase_RadioButton.Checked ? SelectedOption.ProductPurchases : SelectedOption.ProductSales,
                 Receipts_Form => SelectedOption.Receipts,
                 ItemsInTransaction_Form => IsButtonSelected(Purchases_Button) ? SelectedOption.ItemsInPurchase : SelectedOption.ItemsInSale,
+                Customers_Form => SelectedOption.Customers,
+                AddCustomer_Form => SelectedOption.Customers,
+                AddRentalItem_Form => SelectedOption.Rentals,
                 _ => GetButtonBasedOption()
             };
         }
@@ -1894,7 +2037,10 @@ namespace Sales_Tracker
         {
             if (IsButtonSelected(Purchases_Button)) { return SelectedOption.Purchases; }
             if (IsButtonSelected(Sales_Button)) { return SelectedOption.Sales; }
-            return SelectedOption.Analytics;
+            if (IsButtonSelected(Rentals_Button)) { return SelectedOption.Rentals; }
+            if (IsButtonSelected(Analytics_Button)) { return SelectedOption.Analytics; }
+
+            return SelectedOption.Analytics;  // Default fallback
         }
 
         // DataGridView getters
@@ -1903,13 +2049,15 @@ namespace Sales_Tracker
         public Guna2DataGridView Rental_DataGridView { get; private set; } = new();
         public Guna2DataGridView SelectedDataGridView { get; private set; }
         public CartesianChart Profits_Chart { get; private set; }
+        public CartesianChart TotalRentals_Chart { get; private set; }
+        public PieChart DistributionOfRentals_Chart { get; private set; }
 
         // DataGridView enums
         public enum SelectedOption
         {
             Purchases,
             Sales,
-            //Rentals,
+            Rentals,
             ProductPurchases,
             ProductSales,
             CategoryPurchases,
@@ -1919,12 +2067,14 @@ namespace Sales_Tracker
             Companies,
             Analytics,
             ItemsInPurchase,
-            ItemsInSale
+            ItemsInSale,
+            Customers
         }
         public enum Column
         {
             ID,
             Accountant,
+            Customer,
             Product,
             Category,
             Country,
@@ -1978,6 +2128,7 @@ namespace Sales_Tracker
         {
             { Column.ID, "Sale #" },
             { Column.Accountant, "Accountant" },
+            { Column.Customer, "Customer" },
             { Column.Product, "Product / Service" },
             { Column.Category, "Category" },
             { Column.Country, "Country of destination" },
@@ -2022,7 +2173,9 @@ namespace Sales_Tracker
             Company,
             Product,
             Accountant,
-            ItemsInPurchase
+            ItemsInPurchase,
+            Customer,
+            RentalInventory
         }
 
         // DataGridView methods
@@ -2066,7 +2219,7 @@ namespace Sales_Tracker
         }
         public void UpdateTotalLabels()
         {
-            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales /*&& Selected != SelectedOption.Rentals*/)
+            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales && Selected != SelectedOption.Rentals)
             {
                 return;
             }
@@ -2139,7 +2292,7 @@ namespace Sales_Tracker
                 totalItems--;  // Don't count receipt
             }
 
-            if (totalItems == 0) return 0m;
+            if (totalItems == 0) { return 0m; }
 
             int affectedItems = 0;
 
@@ -2235,6 +2388,13 @@ namespace Sales_Tracker
             string json = JsonConvert.SerializeObject(categoryList, Formatting.Indented);
             Directories.WriteTextToFile(filePath, json);
         }
+        public void SaveCustomersToFile()
+        {
+            if (IsProgramLoading) { return; }
+
+            string json = JsonConvert.SerializeObject(CustomerList, Formatting.Indented);
+            Directories.WriteTextToFile(Directories.Customers_file, json);
+        }
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
@@ -2274,7 +2434,8 @@ namespace Sales_Tracker
             Performance,
             Operational,
             Returns,
-            LostProducts
+            LostProducts,
+            Customers
         }
         public enum ChartDataType
         {
@@ -2338,6 +2499,12 @@ namespace Sales_Tracker
         public PieChart LossesByCategory_Chart { get; private set; }
         public PieChart LossesByProduct_Chart { get; private set; }
         public PieChart PurchaseVsSaleLosses_Chart { get; private set; }
+        public CartesianChart TopCustomersByRevenue_Chart { get; private set; }
+        public PieChart CustomerPaymentStatus_Chart { get; private set; }
+        public CartesianChart CustomerGrowth_Chart { get; private set; }
+        public PieChart ActiveVsInactiveCustomers_Chart { get; private set; }
+        public CartesianChart CustomerLifetimeValue_Chart { get; private set; }
+        public CartesianChart AverageRentalsPerCustomer_Chart { get; private set; }
         public GeoMap WorldMap_GeoMap { get; private set; }
 
         // GeoMap properties
@@ -2360,7 +2527,9 @@ namespace Sales_Tracker
                 DistributionOfPurchases_Chart,
                 TotalSales_Chart,
                 DistributionOfSales_Chart,
-           //     Rental_DataGridView,
+                TotalRentals_Chart,
+                DistributionOfRentals_Chart,
+                Rental_DataGridView,
                 Profits_Chart,
                 Total_Panel
             ];
@@ -2404,11 +2573,42 @@ namespace Sales_Tracker
             }
 
             // Reset chart positions in case returning from analytics
-            TotalPurchases_Chart.Top = _analyticChartTop;
-            DistributionOfPurchases_Chart.Top = _analyticChartTop;
-            TotalSales_Chart.Top = _analyticChartTop;
-            DistributionOfSales_Chart.Top = _analyticChartTop;
-            Profits_Chart.Top = _analyticChartTop;
+            TotalPurchases_Chart.Top = _chartTop;
+            DistributionOfPurchases_Chart.Top = _chartTop;
+            TotalSales_Chart.Top = _chartTop;
+            DistributionOfSales_Chart.Top = _chartTop;
+            TotalRentals_Chart.Top = _chartTop;
+            DistributionOfRentals_Chart.Top = _chartTop;
+            Profits_Chart.Top = _chartTop;
+
+            // Set which charts should actually be visible based on current view
+            if (Selected == SelectedOption.Purchases)
+            {
+                TotalPurchases_Chart.Visible = true;
+                DistributionOfPurchases_Chart.Visible = true;
+                TotalSales_Chart.Visible = false;
+                DistributionOfSales_Chart.Visible = false;
+                TotalRentals_Chart.Visible = false;
+                DistributionOfRentals_Chart.Visible = false;
+            }
+            else if (Selected == SelectedOption.Sales)
+            {
+                TotalPurchases_Chart.Visible = false;
+                DistributionOfPurchases_Chart.Visible = false;
+                TotalSales_Chart.Visible = true;
+                DistributionOfSales_Chart.Visible = true;
+                TotalRentals_Chart.Visible = false;
+                DistributionOfRentals_Chart.Visible = false;
+            }
+            else if (Selected == SelectedOption.Rentals)
+            {
+                TotalPurchases_Chart.Visible = false;
+                DistributionOfPurchases_Chart.Visible = false;
+                TotalSales_Chart.Visible = false;
+                DistributionOfSales_Chart.Visible = false;
+                TotalRentals_Chart.Visible = true;
+                DistributionOfRentals_Chart.Visible = true;
+            }
         }
         private void ConstructControlsForAnalytics()
         {
@@ -2433,6 +2633,12 @@ namespace Sales_Tracker
             LossesByCategory_Chart = ConstructAnalyticsChart("lossesByCategory_Chart", false) as PieChart;
             LossesByProduct_Chart = ConstructAnalyticsChart("lossesByProduct_Chart", false) as PieChart;
             PurchaseVsSaleLosses_Chart = ConstructAnalyticsChart("purchaseVsSaleLosses_Chart", false) as PieChart;
+            TopCustomersByRevenue_Chart = ConstructAnalyticsChart("topCustomersByRevenue_Chart", true) as CartesianChart;
+            CustomerPaymentStatus_Chart = ConstructAnalyticsChart("customerPaymentStatus_Chart", false) as PieChart;
+            CustomerGrowth_Chart = ConstructAnalyticsChart("customerGrowth_Chart", true) as CartesianChart;
+            ActiveVsInactiveCustomers_Chart = ConstructAnalyticsChart("activeVsInactiveCustomers_Chart", false) as PieChart;
+            CustomerLifetimeValue_Chart = ConstructAnalyticsChart("customerLifetimeValue_Chart", true) as CartesianChart;
+            AverageRentalsPerCustomer_Chart = ConstructAnalyticsChart("averageRentalsPerCustomer_Chart", true) as CartesianChart;
 
             WorldMap_GeoMap = ConstructGeoMap();
             ConstructWorldMapDataControls();
@@ -2510,6 +2716,9 @@ namespace Sales_Tracker
 
             Guna2Button lostProductsButton = CreateTabButton("Lost Products", AnalyticsTab.LostProducts, Resources.Loss);
             tabButtons.Add(lostProductsButton);
+
+            Guna2Button customersButton = CreateTabButton("Customers", AnalyticsTab.Customers, Resources.User);
+            tabButtons.Add(customersButton);
 
             _tabButtons = tabButtons;
 
@@ -2642,6 +2851,16 @@ namespace Sales_Tracker
                 PurchaseVsSaleLosses_Chart
             ]);
 
+            _tabControls[AnalyticsTab.Customers].AddRange(
+            [
+                TopCustomersByRevenue_Chart,
+                CustomerPaymentStatus_Chart,
+                CustomerGrowth_Chart,
+                ActiveVsInactiveCustomers_Chart,
+                CustomerLifetimeValue_Chart,
+                AverageRentalsPerCustomer_Chart
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
@@ -2670,6 +2889,12 @@ namespace Sales_Tracker
                 LossesByCategory_Chart,
                 LossesByProduct_Chart,
                 PurchaseVsSaleLosses_Chart,
+                TopCustomersByRevenue_Chart,
+                CustomerPaymentStatus_Chart,
+                CustomerGrowth_Chart,
+                ActiveVsInactiveCustomers_Chart,
+                CustomerLifetimeValue_Chart,
+                AverageRentalsPerCustomer_Chart
             ];
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
@@ -2772,6 +2997,26 @@ namespace Sales_Tracker
 
                     LoadChart.LoadPurchaseVsSaleLossesChart(PurchaseVsSaleLosses_Chart);
                     SetChartTitle(PurchaseVsSaleLosses_Chart, TranslatedChartTitles.PurchaseVsSaleLosses);
+                    break;
+
+                case AnalyticsTab.Customers:
+                    LoadChart.LoadTopCustomersByRevenueChart(TopCustomersByRevenue_Chart);
+                    SetChartTitle(TopCustomersByRevenue_Chart, "Top Customers by Revenue");
+
+                    LoadChart.LoadCustomerPaymentStatusChart(CustomerPaymentStatus_Chart);
+                    SetChartTitle(CustomerPaymentStatus_Chart, "Customer Payment Status");
+
+                    LoadChart.LoadCustomerGrowthChart(CustomerGrowth_Chart, isLine);
+                    SetChartTitle(CustomerGrowth_Chart, "Customer Growth Over Time");
+
+                    LoadChart.LoadActiveVsInactiveCustomersChart(ActiveVsInactiveCustomers_Chart);
+                    SetChartTitle(ActiveVsInactiveCustomers_Chart, "Active vs Inactive Customers");
+
+                    LoadChart.LoadCustomerLifetimeValueChart(CustomerLifetimeValue_Chart);
+                    SetChartTitle(CustomerLifetimeValue_Chart, "Customer Lifetime Value");
+
+                    LoadChart.LoadAverageRentalsPerCustomerChart(AverageRentalsPerCustomer_Chart, isLine);
+                    SetChartTitle(AverageRentalsPerCustomer_Chart, "Average Rentals per Customer");
                     break;
             }
         }
@@ -2891,6 +3136,11 @@ namespace Sales_Tracker
                     case AnalyticsTab.LostProducts:
                         LoadChart.LoadLossesOverTimeChart(LossesOverTime_Chart, isLine);
                         LoadChart.LoadLossFinancialImpactChart(LossFinancialImpact_Chart, isLine);
+                        break;
+
+                    case AnalyticsTab.Customers:
+                        LoadChart.LoadCustomerGrowthChart(CustomerGrowth_Chart, isLine);
+                        LoadChart.LoadAverageRentalsPerCustomerChart(AverageRentalsPerCustomer_Chart, isLine);
                         break;
                 }
             }

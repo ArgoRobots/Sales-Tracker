@@ -14,10 +14,11 @@ namespace Sales_Tracker
         private readonly string _selectedTag = "";
         private readonly DataGridViewRow _selectedRow;
         private string _receiptFilePath;
+        private readonly Dictionary<Control, Label> _validationLabels = [];
 
         // Form Width/Height properties
-        private static int ScaledLargeWidth => (int)(300 * DpiHelper.GetRelativeDpiScale());
-        private static int ScaledStandardWidth => (int)(220 * DpiHelper.GetRelativeDpiScale());
+        private static int ScaledLargeWidth => (int)(350 * DpiHelper.GetRelativeDpiScale());
+        private static int ScaledStandardWidth => (int)(250 * DpiHelper.GetRelativeDpiScale());
         private static int ScaledDatePickerWidth => (int)(300 * DpiHelper.GetRelativeDpiScale());
         private static int ScaledControlHeight => (int)(50 * DpiHelper.GetRelativeDpiScale());
 
@@ -143,11 +144,11 @@ namespace Sales_Tracker
         private void Save_Button_Click(object sender, EventArgs e)
         {
             SaveInListsAndUpdateMainMenuForm();
-            SaveInMainMenuRow();
+            SaveInSelectedRow();
             UpdateChargedDifferenceInMainMenuRow();
             HandleReceiptChanges();
 
-            DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView, MainMenu_Form.Instance.Selected);
+            DataGridViewManager.DataGridViewRowChanged((Guna2DataGridView)_selectedRow.DataGridView);
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -180,11 +181,15 @@ namespace Sales_Tracker
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
-                (left, secondLeft) = ConstructControlsForSaleOrPurchase();
+                (left, secondLeft) = ConstructControlsForPurchaseOrSale();
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.ItemsInPurchase.ToString())
             {
                 left = ConstructControlsForItemsInTransaction();
+            }
+            else if (_selectedTag == MainMenu_Form.DataGridViewTag.Customer.ToString())
+            {
+                left = ConstructControlsForCustomer();
             }
 
             SizeControls(left, secondLeft);
@@ -206,7 +211,6 @@ namespace Sales_Tracker
 
                 Height += (int)(100 * scale);
                 _secondPanel.Width = secondLeft;
-
             }
 
             if (_notes)
@@ -239,7 +243,7 @@ namespace Sales_Tracker
 
         private bool _secondRow = false, _notes = false;
         private readonly List<string> _listOfOldValues = [];
-        private string _oldProductName, _oldCategoryName;
+        private string _oldProductName;
         private void ConstructControlsForAccountant()
         {
             string columnName = _selectedRow.DataGridView.Columns[0].Name;
@@ -367,73 +371,130 @@ namespace Sales_Tracker
         private int ConstructControlsForProduct()
         {
             int left = 0;
+            int searchBoxMaxHeight = 100;
+            int productIDLeft = 0; // Store ProductID position for Rentable checkbox
+            bool rentableValue = false;
 
             foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
             {
                 string columnName = column.Name;
                 string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
                 _listOfOldValues.Add(cellValue);
-                int searchBoxMaxHeight = 100;
 
                 switch (columnName)
                 {
                     case nameof(Products_Form.Column.ProductID):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
                         _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        productIDLeft = left;  // Store position for Rentable checkbox
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Products_Form.Column.ProductName):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
-                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        Guna2TextBox productNameTextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         _oldProductName = cellValue;
+                        productNameTextBox.TextChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Products_Form.Column.ProductCategory):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
-
-                        Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
-                        SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight, false, false, false, true);
-                        ProductCategory_TextBox.TextChanged += ValidateInputs;
-                        _oldCategoryName = cellValue;
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        // Attach SearchBox for categories
+                        List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
+                            ? MainMenu_Form.Instance.CategoryPurchaseList
+                            : MainMenu_Form.Instance.CategorySaleList;
+                        List<SearchResult> categorySearchResults = SearchBox.ConvertToSearchResults(categoryList.Select(c => c.Name).ToList());
+                        SearchBox.Attach(textBox, this, () => categorySearchResults, searchBoxMaxHeight, false, false, false, true);
+                        textBox.TextChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
-
-                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
                     case nameof(Products_Form.Column.CompanyOfOrigin):
                         ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
-
                         textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
                         List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
                         SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, true);
                         textBox.TextChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Products_Form.Column.Type):
+                        ConstructLabel(Products_Form.ColumnHeaders[Products_Form.Column.Type], left, Panel);
+                        Guna2ComboBox comboBox = ConstructComboBox(left, columnName, cellValue, Panel);
+                        comboBox.SelectedIndexChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Products_Form.Column.Rentable):
+                        rentableValue = cellValue.Equals("True", StringComparison.OrdinalIgnoreCase);
+                        // Don't increment left here - will be positioned below ProductID
                         break;
                 }
-                left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
             }
-            return left - ScaledStandardWidth - CustomControls.SpaceBetweenControls * 2;
+
+            // Construct Rentable checkbox below ProductID
+            ConstructRentableCheckBox(productIDLeft, rentableValue);
+
+            return left - CustomControls.SpaceBetweenControls;
         }
-        private List<SearchResult> GetSearchResults()
+        private void ConstructRentableCheckBox(int left, bool isChecked)
         {
-            List<string> categoryNames = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales
-                ? MainMenu_Form.Instance.GetCategorySaleNames()
-                : MainMenu_Form.Instance.GetCategoryPurchaseNames();
+            // Position below ProductID textbox
+            int topPosition = 45 + CustomControls.SpaceBetweenControls + ScaledControlHeight + 20;
 
-            return SearchBox.ConvertToSearchResults(categoryNames);
+            // Create checkbox
+            _rentable_CheckBox = new Guna2CustomCheckBox
+            {
+                Size = new Size(20, 20),
+                Location = new Point(left, topPosition),
+                Animated = true,
+                Name = nameof(Products_Form.Column.Rentable),
+                Checked = isChecked
+            };
+            ThemeManager.SetThemeForControls([_rentable_CheckBox]);
+            Panel.Controls.Add(_rentable_CheckBox);
+
+            // Create label
+            _rentable_Label = new Label
+            {
+                Text = Products_Form.ColumnHeaders[Products_Form.Column.Rentable],
+                Name = "Rentable_Label",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9),
+                ForeColor = CustomColors.Text,
+                Location = new Point(_rentable_CheckBox.Right + 5, _rentable_CheckBox.Top),
+                Cursor = Cursors.Hand
+            };
+            _rentable_Label.Click += (_, _) => { _rentable_CheckBox.Checked = !_rentable_CheckBox.Checked; };
+            Panel.Controls.Add(_rentable_Label);
+
+            // Adjust vertical alignment so checkbox and label are centered together
+            int labelY = _rentable_CheckBox.Top + (_rentable_CheckBox.Height / 2) - (_rentable_Label.Height / 2);
+            _rentable_Label.Top = labelY;
         }
 
+        // Construct controls for purchase or sale
         private Label _selectedReceipt_Label;
         private Guna2ImageButton _removeReceipt_ImageButton;
         private Guna2Button _receipt_Button;
         private bool _containsReceipt, _removedReceipt, _addedReceipt;
-        private (int, int) ConstructControlsForSaleOrPurchase()
+
+        // Rentable checkbox for products
+        private Guna2CustomCheckBox _rentable_CheckBox;
+        private Label _rentable_Label;
+        private (int, int) ConstructControlsForPurchaseOrSale()
         {
-            ConstructPanel();
+            ConstructSecondPanel();
             int left = 0, secondLeft = 0;
             byte searchBoxMaxHeight = 200;
 
@@ -551,7 +612,6 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Date):
-                        _secondRow = true;
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], secondLeft, _secondPanel);
                         DateTime date = Tools.ParseDateOrToday(cellValue);
                         ConstructDatePicker(secondLeft, columnName, date, _secondPanel);
@@ -559,7 +619,6 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.TotalItems):
-                        _secondRow = true;
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
                         string productName = _selectedRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
@@ -685,6 +744,182 @@ namespace Sales_Tracker
             }
             return left;
         }
+
+        // Construct controls for customer
+        private CountryCode _selectedCountryCode;
+        private Guna2TextBox _countryCodeTextBox;
+        private Guna2TextBox _phoneNumberTextBox;
+        private int ConstructControlsForCustomer()
+        {
+            int left = 0;
+            int secondLeft = 0;
+
+            foreach (DataGridViewColumn column in _selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = _selectedRow.Cells[column.Index].Value?.ToString() ?? ReadOnlyVariables.EmptyCell;
+                _listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Customers_Form.Column.CustomerID):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.CustomerID], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.FirstName):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.FirstName], left, Panel);
+                        _controlToFocus = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel);
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.LastName):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.LastName], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.OnlyLetters, false, Panel);
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.Email):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Email], left, Panel);
+                        Guna2TextBox emailTextBox = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.None, false, Panel);
+                        TextBoxValidation.ValidateEmail(emailTextBox);
+                        emailTextBox.TextChanged += ValidateInputs;
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.Address):
+                        ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Address], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 200, CustomControls.KeyPressValidation.None, false, Panel);
+                        left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
+                        break;
+
+                    case nameof(Customers_Form.Column.PhoneNumber):
+                        // Parse phone number to extract country code and number
+                        (string countryCode, string phoneNumber) = ParsePhoneNumber(cellValue);
+                        _selectedCountryCode = CountryCode.GetCountryCodeFromText(countryCode);
+
+                        ConstructSecondPanel();
+
+                        // Country code search box with label "phone number ext."
+                        ConstructLabel("phone number ext.", secondLeft, _secondPanel);
+                        _countryCodeTextBox = ConstructTextBox(secondLeft, "CountryCode_TextBox", countryCode, 10, CustomControls.KeyPressValidation.None, false, _secondPanel);
+                        _countryCodeTextBox.Width = 180;
+                        float scale = DpiHelper.GetRelativeDpiScale();
+                        int searchBoxMaxHeight = (int)(255 * scale);
+                        SearchBox.Attach(_countryCodeTextBox, this, CountryCode.GetCountryCodeSearchResults, searchBoxMaxHeight, false, true, true, false);
+                        _countryCodeTextBox.TextChanged += CountryCode_TextBox_TextChanged;
+
+                        // Phone number text box with label "phone number"
+                        int phoneLeft = secondLeft + 180 + CustomControls.SpaceBetweenControls;
+                        ConstructLabel("phone number", phoneLeft, _secondPanel);
+                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, _secondPanel);
+                        _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+                        _phoneNumberTextBox.TextChanged += ValidateInputs;
+
+                        secondLeft = phoneLeft + ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        break;
+                }
+            }
+
+            // Add notes textbox at the bottom
+            _notes = true;
+            Customer customer = _selectedRow.Tag as Customer;
+            string notes = customer?.Notes ?? "";
+
+            Label notesLabel = ConstructLabel("Notes", 0, this);
+            Guna2TextBox notesTextBox = ConstructTextBox(0, "Notes_TextBox", notes, 10, CustomControls.KeyPressValidation.None, false, this);
+
+            notesLabel.Location = new Point((ClientSize.Width - notesLabel.Width) / 2, _secondPanel.Bottom);
+            notesLabel.Anchor = AnchorStyles.Top;
+
+            int notesWidth = (int)(525 * DpiHelper.GetRelativeDpiScale());
+            notesTextBox.Location = new Point((ClientSize.Width - notesWidth) / 2, notesLabel.Bottom + 5);
+            notesTextBox.Multiline = true;
+            notesTextBox.Height = 125;
+            notesTextBox.Width = notesWidth;
+            notesTextBox.Anchor = AnchorStyles.Top;
+            TextBoxManager.Attach(notesTextBox);
+
+            return Math.Max(left - CustomControls.SpaceBetweenControls, secondLeft - CustomControls.SpaceBetweenControls);
+        }
+        private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(fullPhoneNumber) || fullPhoneNumber == ReadOnlyVariables.EmptyCell)
+            {
+                return ("+1", "");
+            }
+
+            // Try to extract country code (starts with +)
+            if (fullPhoneNumber.StartsWith('+'))
+            {
+                int spaceIndex = fullPhoneNumber.IndexOf(' ');
+                if (spaceIndex > 0)
+                {
+                    string code = fullPhoneNumber.Substring(0, spaceIndex);
+                    string number = fullPhoneNumber.Substring(spaceIndex + 1);
+                    return (code, number);
+                }
+            }
+
+            return ("+1", fullPhoneNumber);
+        }
+        private void PhoneNumber_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            FormatPhoneNumberInModifyForm();
+        }
+        private void FormatPhoneNumberInModifyForm()
+        {
+            if (_selectedCountryCode == null || _phoneNumberTextBox == null)
+            {
+                return;
+            }
+
+            int cursorPosition = _phoneNumberTextBox.SelectionStart;
+            string currentText = _phoneNumberTextBox.Text;
+
+            // Extract only digits from current text
+            string digitsOnly = new(currentText.Where(char.IsDigit).ToArray());
+
+            // Count maximum allowed digits based on format (count 'X' characters)
+            int maxDigits = _selectedCountryCode.Format.Count(c => c == 'X');
+
+            // Limit digits to the format's maximum
+            if (digitsOnly.Length > maxDigits)
+            {
+                digitsOnly = digitsOnly.Substring(0, maxDigits);
+            }
+
+            // Format the phone number
+            string formattedNumber = _selectedCountryCode.FormatPhoneNumber(digitsOnly);
+
+            if (currentText != formattedNumber)
+            {
+                _phoneNumberTextBox.TextChanged -= PhoneNumber_TextBox_TextChanged;
+                _phoneNumberTextBox.Text = formattedNumber;
+
+                // Adjust cursor position
+                int newCursorPosition = Math.Min(cursorPosition + (formattedNumber.Length - currentText.Length), formattedNumber.Length);
+                _phoneNumberTextBox.SelectionStart = Math.Max(0, newCursorPosition);
+
+                _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
+            }
+        }
+        private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            // Parse the country code from the search result text
+            CountryCode? selectedCountry = CountryCode.GetCountryCodeFromText(_countryCodeTextBox.Text);
+            if (selectedCountry != null)
+            {
+                _selectedCountryCode = selectedCountry;
+
+                // Reformat the existing phone number with the new country format
+                if (!string.IsNullOrWhiteSpace(_phoneNumberTextBox.Text))
+                {
+                    FormatPhoneNumberInModifyForm();
+                }
+            }
+        }
         private static List<SearchResult> GetProductListForSearchBox()
         {
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInSale or MainMenu_Form.SelectedOption.Sales)
@@ -778,7 +1013,7 @@ namespace Sales_Tracker
         }
 
         // Save in row
-        private void SaveInMainMenuRow()
+        private void SaveInSelectedRow()
         {
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
 
@@ -790,6 +1025,9 @@ namespace Sales_Tracker
             {
                 allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
             }
+
+            // Track which columns have been processed to avoid overwriting
+            HashSet<string> processedColumns = [];
 
             foreach (Control control in allControls)
             {
@@ -810,17 +1048,45 @@ namespace Sales_Tracker
                     {
                         ProcessProductColumn(textBox);
                     }
+                    else if (column == nameof(Products_Form.Column.ProductName))
+                    {
+                        ProcessProductNameColumn(textBox, processedColumns);
+                    }
                     else if (column == Products_Form.Column.ProductCategory.ToString())
                     {
-                        ProcessProductCategoryColumn(textBox, allControls);
+                        if (!processedColumns.Contains(column))
+                        {
+                            ProcessProductCategoryColumn(textBox);
+                        }
                     }
-                    else if (column == ReadOnlyVariables.Note_column)
+                    else if (column == ReadOnlyVariables.Note_column || column == "Notes_TextBox")
                     {
                         ProcessNoteColumn(textBox);
                     }
-                    else
+                    else if (column == nameof(Customers_Form.Column.PhoneNumber) && _selectedCountryCode != null)
                     {
-                        _selectedRow.Cells[column].Value = textBox.Text.Trim();
+                        // Save phone number with country code
+                        string phoneNumber = textBox.Text.Trim();
+                        if (!string.IsNullOrWhiteSpace(phoneNumber))
+                        {
+                            _selectedRow.Cells[column].Value = $"{_selectedCountryCode.Code} {phoneNumber}";
+                        }
+                        else
+                        {
+                            _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
+                        }
+                    }
+                    else if (column != "Notes_TextBox" && !processedColumns.Contains(column))
+                    {
+                        // ProductID is optional - set to EmptyCell if empty
+                        if (column == nameof(Products_Form.Column.ProductID) && string.IsNullOrWhiteSpace(textBox.Text))
+                        {
+                            _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
+                        }
+                        else
+                        {
+                            _selectedRow.Cells[column].Value = textBox.Text.Trim();
+                        }
                     }
                 }
                 else if (control is Guna2ComboBox comboBox)
@@ -833,7 +1099,13 @@ namespace Sales_Tracker
                     string columnName = datePicker.Name;
                     _selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
                 }
+                else if (control is Guna2CustomCheckBox checkBox)
+                {
+                    string columnName = checkBox.Name;
+                    _selectedRow.Cells[columnName].Value = checkBox.Checked;
+                }
             }
+
             Close();
         }
         private void ProcessNumericColumn(Guna2TextBox textBox, string column)
@@ -868,6 +1140,12 @@ namespace Sales_Tracker
                 cells[ReadOnlyVariables.Company_column].Value = product.CompanyOfOrigin;
             }
         }
+        private void ProcessProductNameColumn(Guna2TextBox textBox, HashSet<string> processedColumns)
+        {
+            // ProductName is now a simple textbox - just update the cell directly
+            _selectedRow.Cells[nameof(Products_Form.Column.ProductName)].Value = textBox.Text.Trim();
+            processedColumns.Add(nameof(Products_Form.Column.ProductName));
+        }
         private static (string ProductName, string CompanyName) ParseProductInfo(string text)
         {
             string[] parts = text.Split('>');
@@ -882,70 +1160,6 @@ namespace Sales_Tracker
                 ProductName: text.Trim(),
                 CompanyName: text.Trim()
             );
-        }
-        private void ProcessProductCategoryColumn(Guna2TextBox textBox, IEnumerable<Control> allControls)
-        {
-            List<Category> categoryList = [];
-            if (Products_Form.Instance.Purchase_RadioButton.Checked)
-            {
-                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
-            }
-            else
-            {
-                categoryList = MainMenu_Form.Instance.CategorySaleList;
-            }
-
-            string newCategoryName = textBox.Text.Trim();
-            string newProductName = allControls.FirstOrDefault(item => item.Name == Products_Form.Column.ProductName.ToString())?.Text;
-            string companyName = allControls.FirstOrDefault(item =>
-                item.Name == Products_Form.Column.CompanyOfOrigin.ToString())?.Text;
-
-            Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName, companyName);
-            Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName, companyName);
-
-            if (category.Name != textBox.Text)
-            {
-                // Remove product from old category
-                category.ProductList.Remove(product);
-
-                // Get new category
-                Category newCategory;
-                if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                    MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-                {
-                    newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
-                }
-                else
-                {
-                    newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
-                }
-
-                // Add product to new category
-                newCategory.ProductList.Add(product);
-
-                // Update all instances in DataGridViews
-                string categoryColumn = ReadOnlyVariables.Category_column;
-                string nameColumn = ReadOnlyVariables.Product_column;
-                foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
-                {
-                    if (row.Cells[categoryColumn].Value.ToString() == category.Name
-                        && row.Cells[nameColumn].Value.ToString() == product.Name)
-                    {
-                        row.Cells[categoryColumn].Value = newCategory.Name;
-                    }
-                }
-            }
-
-            MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
-
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
-            {
-                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategoryPurchaseList, true);
-            }
-            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
-            {
-                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategorySaleList, true);
-            }
         }
         private void ProcessNoteColumn(Guna2TextBox textBox)
         {
@@ -967,6 +1181,11 @@ namespace Sales_Tracker
         }
 
         // Methods
+        private void ProcessProductCategoryColumn(Guna2TextBox textBox)
+        {
+            // Simply update the ProductCategory cell - UpdateProduct() will handle moving the product between categories
+            _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value = textBox.Text.Trim();
+        }
         private void ValidateInputs(object sender, EventArgs e)
         {
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
@@ -976,33 +1195,162 @@ namespace Sales_Tracker
                 allControls = allControls.Concat(_secondPanel.Controls.Cast<Control>());
             }
 
+            bool isValid = true;
+
             foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
-                    if (string.IsNullOrEmpty(gunaTextBox.Text)
-                        || gunaTextBox.Text == ReadOnlyVariables.EmptyCell
-                        || gunaTextBox.Tag?.ToString() == "0")
+                    // ProductID is optional for products
+                    bool isProductID = _selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product) &&
+                                       gunaTextBox.Name == nameof(Products_Form.Column.ProductID);
+
+                    bool isEmpty = string.IsNullOrEmpty(gunaTextBox.Text) ||
+                                   gunaTextBox.Text == ReadOnlyVariables.EmptyCell ||
+                                   gunaTextBox.Tag?.ToString() == "0";
+
+                    if (isEmpty && !isProductID)
                     {
-                        Save_Button.Enabled = false;
-                        return;
+                        ShowValidationMessage(gunaTextBox, "This field is required");
+                        gunaTextBox.BorderColor = CustomColors.AccentRed;
+                        isValid = false;
+                    }
+                    else
+                    {
+                        HideValidationMessage(gunaTextBox);
+                        gunaTextBox.BorderColor = CustomColors.ControlBorder;
                     }
                 }
                 else if (control is Guna2ComboBox gunaComboBox)
                 {
                     if (string.IsNullOrEmpty(gunaComboBox.Text))
                     {
-                        Save_Button.Enabled = false;
-                        return;
+                        ShowValidationMessage(gunaComboBox, "This field is required");
+                        gunaComboBox.BorderColor = CustomColors.AccentRed;
+                        isValid = false;
+                    }
+                    else
+                    {
+                        HideValidationMessage(gunaComboBox);
+                        gunaComboBox.BorderColor = CustomColors.ControlBorder;
                     }
                 }
             }
+
+            // Check for duplicate product names in the same category and company
+            if (_selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product))
+            {
+                Guna2TextBox productNameTextBox = allControls
+                    .OfType<Guna2TextBox>()
+                    .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName));
+
+                if (productNameTextBox != null && IsDuplicateProduct(allControls))
+                {
+                    ShowValidationMessage(productNameTextBox, "A product with this name already exists in this category and company");
+                    productNameTextBox.BorderColor = CustomColors.AccentRed;
+                    isValid = false;
+                }
+                else if (productNameTextBox != null && !string.IsNullOrWhiteSpace(productNameTextBox.Text))
+                {
+                    HideValidationMessage(productNameTextBox);
+                    productNameTextBox.BorderColor = CustomColors.ControlBorder;
+                }
+            }
+
             if (!Controls.Contains(_selectedReceipt_Label) && _containsReceipt && Properties.Settings.Default.PurchaseReceipts)
             {
-                Save_Button.Enabled = false;
+                isValid = false;
+            }
+
+            Save_Button.Enabled = isValid;
+        }
+        private void ShowValidationMessage(Control control, string message)
+        {
+            // Check if validation label already exists for this control
+            if (_validationLabels.TryGetValue(control, out Label existingLabel))
+            {
+                existingLabel.Text = message;
+                existingLabel.Visible = true;
                 return;
             }
-            Save_Button.Enabled = true;
+
+            // Create new validation label
+            Label validationLabel = new()
+            {
+                Text = message,
+                ForeColor = CustomColors.AccentRed,
+                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                AutoSize = true,
+                Location = new Point(control.Left, control.Bottom + 2),
+                Name = $"{control.Name}_ValidationLabel"
+            };
+
+            // Add to the appropriate panel
+            Control parent = control.Parent;
+            parent.Controls.Add(validationLabel);
+            validationLabel.BringToFront();
+
+            // Store reference
+            _validationLabels[control] = validationLabel;
+        }
+        private void HideValidationMessage(Control control)
+        {
+            if (_validationLabels.TryGetValue(control, out Label validationLabel))
+            {
+                validationLabel.Visible = false;
+            }
+        }
+        private bool IsDuplicateProduct(IEnumerable<Control> allControls)
+        {
+            // Get new values from textboxes
+            string newProductName = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductName))?.Text.Trim();
+
+            string newCategory = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductCategory))?.Text.Trim();
+
+            string newCompany = allControls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.CompanyOfOrigin))?.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(newProductName) || string.IsNullOrWhiteSpace(newCategory) || string.IsNullOrWhiteSpace(newCompany))
+            {
+                return false; // Can't check for duplicates if values are missing
+            }
+
+            // Get old values
+            string oldProductName = _listOfOldValues[1];
+            string oldCategory = _listOfOldValues[2];
+            string oldCompany = _listOfOldValues[4];
+
+            // If nothing changed, it's not a duplicate
+            if (newProductName == oldProductName && newCategory == oldCategory && newCompany == oldCompany)
+            {
+                return false;
+            }
+
+            // Get the appropriate category list
+            List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
+
+            // Find the category
+            Category category = categoryList.FirstOrDefault(c => c.Name == newCategory);
+            if (category == null)
+            {
+                return false; // Category doesn't exist, can't be a duplicate
+            }
+
+            // Check if a product with this name and company already exists in this category
+            bool duplicateExists = category.ProductList.Any(p =>
+                p.Name.Equals(newProductName, StringComparison.OrdinalIgnoreCase) &&
+                p.CompanyOfOrigin.Equals(newCompany, StringComparison.OrdinalIgnoreCase) &&
+                !(p.Name.Equals(oldProductName, StringComparison.OrdinalIgnoreCase) &&
+                  p.CompanyOfOrigin.Equals(oldCompany, StringComparison.OrdinalIgnoreCase)));
+
+            return duplicateExists;
         }
         private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProductForm)
         {
@@ -1035,7 +1383,7 @@ namespace Sales_Tracker
 
                 string[] items = item.Split(',');
 
-                if (items[0] == _oldProductName && items[1] == _oldCategoryName)
+                if (items[0] == _oldProductName)
                 {
                     items[0] = productName;
                     items[1] = category;
@@ -1076,7 +1424,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (_receiptFilePath == null) { return; }
+            if (string.IsNullOrEmpty(_receiptFilePath)) { return; }
 
             // Case 1: Adding a receipt to a row that didn't have one
             if (_addedReceipt && !_removedReceipt)
@@ -1188,6 +1536,9 @@ namespace Sales_Tracker
                 case nameof(MainMenu_Form.DataGridViewTag.Accountant):
                     UpdateAccountant();
                     break;
+                case nameof(MainMenu_Form.DataGridViewTag.Customer):
+                    UpdateCustomer();
+                    break;
             }
 
             if (_hasChanges && _selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
@@ -1204,14 +1555,14 @@ namespace Sales_Tracker
         private void UpdateCategory()
         {
             Category category;
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+
+            if (Categories_Form.Instance.Purchase_RadioButton.Checked)
             {
-                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
+                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
             }
             else
             {
-                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
+                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[0]);
             }
 
             string oldCategory = category.Name;
@@ -1220,37 +1571,99 @@ namespace Sales_Tracker
             category.Name = newCategory;
 
             UpdateAllDataGridViewRows(ReadOnlyVariables.Category_column, oldCategory, newCategory, true);
+
+            // Update Products_Form if it's open
+            if (Products_Form.Instance != null)
+            {
+                UpdateProductsFormCategory(oldCategory, newCategory);
+            }
+
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
+        }
+        private static void UpdateProductsFormCategory(string oldCategory, string newCategory)
+        {
+            // Update ProductCategory column in both Purchase and Sale DataGridViews
+            UpdateRowsInDataGridView(Products_Form.Instance.Purchase_DataGridView,
+                nameof(Products_Form.Column.ProductCategory), oldCategory, newCategory, false);
+            UpdateRowsInDataGridView(Products_Form.Instance.Sale_DataGridView,
+                nameof(Products_Form.Column.ProductCategory), oldCategory, newCategory, false);
         }
         private void UpdateProduct()
         {
-            Category category;
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+            Category oldCategory;
+            bool isProductPurchase = Products_Form.Instance.Purchase_RadioButton.Checked;
+            List<Category> categoryList;
+
+            if (isProductPurchase)
             {
-                category = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
+                oldCategory = categoryList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
             else
             {
-                category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
+                categoryList = MainMenu_Form.Instance.CategorySaleList;
+                oldCategory = categoryList.FirstOrDefault(c => c.Name == _listOfOldValues[2]);
             }
 
-            Product product = category.ProductList.FirstOrDefault(p => p.Name == _listOfOldValues[1]);
+            Product product = oldCategory.ProductList.FirstOrDefault(p => p.Name == _listOfOldValues[1]);
 
             if (HasProductChanged(product))
             {
+                // Get the new category name from the ProductName textbox (format: Company > Category > Product)
+                string newCategoryName = GetNewCategoryFromProductName();
+
+                // Check if category has changed
+                if (newCategoryName != _listOfOldValues[2])
+                {
+                    // Move product to new category
+                    Category newCategory = categoryList.FirstOrDefault(c => c.Name == newCategoryName);
+                    if (newCategory != null)
+                    {
+                        oldCategory.ProductList.Remove(product);
+                        newCategory.ProductList.Add(product);
+                    }
+                }
+
                 UpdateProductDetails(product);
                 UpdateProductInDataGridViews(product);
+
+                // Save the correct category list based on the product type
+                MainMenu_Form.SelectedOption optionToSave = isProductPurchase
+                    ? MainMenu_Form.SelectedOption.CategoryPurchases
+                    : MainMenu_Form.SelectedOption.CategorySales;
+                MainMenu_Form.Instance.SaveCategoriesToFile(optionToSave);
+
+                // Log the change
+                string message = $"Modified product '{product.Name}'";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Products_Form.ThingsThatHaveChangedInFile, 4, message);
             }
+        }
+        private string GetNewCategoryFromProductName()
+        {
+            // Find the ProductCategory textbox
+            Guna2TextBox categoryTextBox = Panel.Controls
+                .OfType<Guna2TextBox>()
+                .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.ProductCategory));
+
+            if (categoryTextBox != null && !string.IsNullOrWhiteSpace(categoryTextBox.Text))
+            {
+                return categoryTextBox.Text.Trim();
+            }
+
+            return _listOfOldValues[2];  // Return old category if not found
         }
         private bool HasProductChanged(Product product)
         {
             Product newProduct = GetNewProductInfo();
+            string newCategoryName = GetNewCategoryFromProductName();
 
             return product.ProductID != newProduct.ProductID ||
                    product.Name != newProduct.Name ||
                    product.CountryOfOrigin != newProduct.CountryOfOrigin ||
-                   product.CompanyOfOrigin != newProduct.CompanyOfOrigin;
+                   product.CompanyOfOrigin != newProduct.CompanyOfOrigin ||
+                   product.ItemType != newProduct.ItemType ||
+                   product.IsRentable != newProduct.IsRentable ||
+                   newCategoryName != _listOfOldValues[2];  // Check if category changed
         }
         private void UpdateProductDetails(Product product)
         {
@@ -1260,6 +1673,8 @@ namespace Sales_Tracker
             product.Name = newProduct.Name;
             product.CountryOfOrigin = newProduct.CountryOfOrigin;
             product.CompanyOfOrigin = newProduct.CompanyOfOrigin;
+            product.ItemType = newProduct.ItemType;
+            product.IsRentable = newProduct.IsRentable;
         }
         private Product GetNewProductInfo()
         {
@@ -1273,10 +1688,10 @@ namespace Sales_Tracker
                     switch (textBox.Name)
                     {
                         case nameof(Products_Form.Column.ProductID):
-                            product.ProductID = textBox.Text;
+                            product.ProductID = string.IsNullOrWhiteSpace(textBox.Text) ? ReadOnlyVariables.EmptyCell : textBox.Text;
                             break;
                         case nameof(Products_Form.Column.ProductName):
-                            product.Name = textBox.Text;
+                            product.Name = textBox.Text.Trim();
                             break;
                         case nameof(Products_Form.Column.CountryOfOrigin):
                             product.CountryOfOrigin = textBox.Text;
@@ -1285,6 +1700,14 @@ namespace Sales_Tracker
                             product.CompanyOfOrigin = textBox.Text;
                             break;
                     }
+                }
+                else if (control is Guna2ComboBox comboBox && comboBox.Name == nameof(Products_Form.Column.Type))
+                {
+                    product.ItemType = comboBox.SelectedIndex == 0 ? Product.TypeOption.Product : Product.TypeOption.Service;
+                }
+                else if (control is Guna2CustomCheckBox checkBox && checkBox.Name == nameof(Products_Form.Column.Rentable))
+                {
+                    product.IsRentable = checkBox.Checked;
                 }
             }
             return product;
@@ -1374,6 +1797,79 @@ namespace Sales_Tracker
             }
 
             UpdateAllDataGridViewRows(ReadOnlyVariables.Accountant_column, oldAccountant, newAccountant, false);
+        }
+        private void UpdateCustomer()
+        {
+            // Get the customer object from the row tag
+            if (_selectedRow.Tag is not Customer customer)
+            {
+                return;
+            }
+
+            // Update customer object with new values from controls
+            foreach (Control control in Panel.Controls)
+            {
+                if (control is Guna2TextBox textBox)
+                {
+                    switch (textBox.Name)
+                    {
+                        case nameof(Customers_Form.Column.CustomerID):
+                            customer.CustomerID = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.FirstName):
+                            customer.FirstName = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.LastName):
+                            customer.LastName = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.Email):
+                            customer.Email = textBox.Text.Trim();
+                            break;
+                        case nameof(Customers_Form.Column.PhoneNumber):
+                            string phoneNumber = textBox.Text.Trim();
+                            if (_selectedCountryCode != null && !string.IsNullOrWhiteSpace(phoneNumber))
+                            {
+                                customer.PhoneNumber = $"{_selectedCountryCode.Code} {phoneNumber}";
+                            }
+                            else
+                            {
+                                customer.PhoneNumber = ReadOnlyVariables.EmptyCell;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            // Update address from second panel if it exists
+            if (_secondPanel != null)
+            {
+                foreach (Control control in _secondPanel.Controls)
+                {
+                    if (control is Guna2TextBox textBox && textBox.Name == nameof(Customers_Form.Column.Address))
+                    {
+                        customer.Address = textBox.Text.Trim();
+                        break;
+                    }
+                }
+            }
+
+            // Update notes from main form controls
+            if (_notes)
+            {
+                foreach (Control control in Controls)
+                {
+                    if (control is Guna2TextBox textBox && textBox.Name == "Notes_TextBox")
+                    {
+                        customer.Notes = textBox.Text.Trim();
+                        break;
+                    }
+                }
+            }
+
+            // Save customers to file and log the change
+            MainMenu_Form.Instance.SaveCustomersToFile();
+            string message = $"Modified customer '{customer.FullName}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, message);
         }
 
         // Validate TextBoxes in other forms
@@ -1469,8 +1965,10 @@ namespace Sales_Tracker
 
         // Construct controls
         private Panel _secondPanel;
-        private void ConstructPanel()
+        private void ConstructSecondPanel()
         {
+            _secondRow = true;
+
             _secondPanel = new()
             {
                 Size = Panel.Size,
@@ -1565,7 +2063,6 @@ namespace Sales_Tracker
                     else
                     {
                         // Press tab
-                        Control nextControl = GetNextControl(this, true);
                         SendKeys.Send("{TAB}");
                     }
                 }
@@ -1596,6 +2093,31 @@ namespace Sales_Tracker
             control.Controls.Add(gDatePicker);
 
             return gDatePicker;
+        }
+        private static Guna2ComboBox ConstructComboBox(int left, string name, string value, Control control)
+        {
+            Guna2ComboBox comboBox = new()
+            {
+                Location = new Point(left, 45 + CustomControls.SpaceBetweenControls),
+                Size = new Size(ScaledStandardWidth, ScaledControlHeight),
+                ItemHeight = (int)(44 * DpiHelper.GetRelativeDpiScale()),
+                FillColor = CustomColors.ControlBack,
+                ForeColor = CustomColors.Text,
+                BorderColor = CustomColors.ControlBorder,
+                BorderRadius = 3,
+                Name = name,
+                Font = new Font("Segoe UI", 9),
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
+                HoverState = { BorderColor = CustomColors.AccentBlue },
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            comboBox.Items.Add("Product");
+            comboBox.Items.Add("Service");
+            comboBox.SelectedIndex = value == "Service" ? 1 : 0;
+
+            control.Controls.Add(comboBox);
+            return comboBox;
         }
 
         // Misc.

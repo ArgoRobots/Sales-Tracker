@@ -45,6 +45,164 @@ namespace Sales_Tracker.UI
             textBox.TextChanged += ValidateLettersOnly;
         }
 
+        /// <summary>
+        /// Allows email format (requires @ sign).
+        /// </summary>
+        public static void ValidateEmail(Guna2TextBox textBox)
+        {
+            textBox.TextChanged += ValidateEmailFormat;
+        }
+
+        /// <summary>
+        /// Allows phone number format: digits, parentheses, dashes, spaces, and "ext".
+        /// </summary>
+        public static void ValidatePhoneNumber(Guna2TextBox textBox)
+        {
+            textBox.KeyPress += OnlyAllowPhoneCharactersInTextBox;
+            textBox.TextChanged += ValidatePhoneNumberFormat;
+        }
+
+        /// <summary>
+        /// Checks if an email is valid (contains @ and . with text on both sides).
+        /// </summary>
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return true;
+            }
+
+            string trimmed = email.Trim();
+
+            // Must contain exactly one @ and cannot be at start or end
+            int atIndex = trimmed.IndexOf('@');
+            if (atIndex <= 0 || atIndex == trimmed.Length - 1)
+            {
+                return false;
+            }
+
+            // Check for multiple @ symbols
+            if (trimmed.IndexOf('@', atIndex + 1) != -1)
+            {
+                return false;
+            }
+
+            // Get the part after @
+            string afterAt = trimmed.Substring(atIndex + 1);
+
+            // Must contain at least one . after @ and cannot be end
+            int dotIndex = afterAt.IndexOf('.');
+            if (dotIndex <= 0 || dotIndex == afterAt.Length - 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if email contains @ and . with text on both sides, and sets tag accordingly.
+        /// Does not change border color - that's handled on Leave event.
+        /// </summary>
+        private static void ValidateEmailFormat(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+            string text = textBox.Text.Trim();
+
+            textBox.Tag = IsValidEmail(text) ? "valid" : "invalid";
+        }
+
+        /// <summary>
+        /// Allows only valid phone number characters during typing.
+        /// </summary>
+        private static void OnlyAllowPhoneCharactersInTextBox(object sender, KeyPressEventArgs e)
+        {
+            // Allow digits, parentheses, dashes, spaces, plus sign, and letters (for "ext")
+            if (!char.IsControl(e.KeyChar) &&
+                !char.IsDigit(e.KeyChar) &&
+                e.KeyChar != '(' &&
+                e.KeyChar != ')' &&
+                e.KeyChar != '-' &&
+                e.KeyChar != ' ' &&
+                e.KeyChar != '+' &&
+                !char.IsLetter(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Validates phone number format and ensures only valid sequences.
+        /// </summary>
+        private static void ValidatePhoneNumberFormat(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+            int cursorPosition = textBox.SelectionStart;
+            string text = textBox.Text;
+            string cleanedText = CleanPhoneNumber(text);
+
+            if (text != cleanedText)
+            {
+                textBox.Text = cleanedText;
+                textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
+            }
+        }
+
+        /// <summary>
+        /// Cleans phone number to only allow valid characters and "ext" sequence.
+        /// </summary>
+        private static string CleanPhoneNumber(string input)
+        {
+            if (string.IsNullOrEmpty(input)) { return ""; }
+
+            StringBuilder result = new();
+            string lowerInput = input.ToLower();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char c = input[i];
+
+                // Allow digits, parentheses, dashes, spaces, and plus sign
+                if (char.IsDigit(c) || c == '(' || c == ')' || c == '-' || c == ' ' || c == '+')
+                {
+                    result.Append(c);
+                }
+                // Check for "ext" sequence
+                else if (char.IsLetter(c))
+                {
+                    // Check if this could be part of "ext"
+                    if (i + 2 < input.Length)
+                    {
+                        string sequence = lowerInput.Substring(i, 3);
+                        if (sequence == "ext")
+                        {
+                            result.Append(input.AsSpan(i, 3));
+                            i += 2;
+                        }
+                    }
+                    else if (i + 1 < input.Length)
+                    {
+                        string sequence = lowerInput.Substring(i, 2);
+                        if ("ext".StartsWith(sequence))
+                        {
+                            result.Append(input.AsSpan(i, 2));
+                            i += 1;
+                        }
+                    }
+                    else if (i < input.Length)
+                    {
+                        char lowerChar = lowerInput[i];
+                        if (lowerChar == 'e')
+                        {
+                            result.Append(c);
+                        }
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
         // Private methods
         private static void OnlyAllowNumbersInTextBox(object sender, KeyPressEventArgs e)
         {

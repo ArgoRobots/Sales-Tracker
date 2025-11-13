@@ -222,6 +222,10 @@ namespace Sales_Tracker
         private bool AddPurchase()
         {
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(purchaseNumber))
+            {
+                purchaseNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if purchase ID already exists
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
@@ -392,6 +396,10 @@ namespace Sales_Tracker
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(purchaseNumber))
+            {
+                purchaseNumber = ReadOnlyVariables.EmptyCell;
+            }
 
             // Check if purchase ID already exists
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
@@ -1030,8 +1038,7 @@ namespace Sales_Tracker
         }
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&
-                !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
 
             if (Properties.Settings.Default.PurchaseReceipts)
             {

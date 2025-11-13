@@ -24,6 +24,7 @@ namespace Sales_Tracker.GridView
         public static Guna2Button MarkAsLost_Button { get; private set; }
         public static Guna2Button UndoLoss_Button { get; private set; }
         public static Guna2Button Delete_Button { get; private set; }
+        public static Guna2Button RentOut_Button { get; private set; }
 
         // Methods
         public static void Construct()
@@ -71,6 +72,9 @@ namespace Sales_Tracker.GridView
             Delete_Button = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, flowPanel);
             Delete_Button.ForeColor = CustomColors.AccentRed;
             Delete_Button.Click += DeleteRow;
+
+            RentOut_Button = CustomControls.ConstructBtnForMenu("Rent out", CustomControls.PanelBtnWidth, flowPanel);
+            RentOut_Button.Click += RentOut;
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
@@ -586,6 +590,17 @@ namespace Sales_Tracker.GridView
                         identifier = grid.SelectedRows[0].Cells[Products_Form.Column.ProductName.ToString()].Value?.ToString() ?? "Unknown";
                         break;
 
+                    case MainMenu_Form.SelectedOption.Customers:
+                        itemType = "the customer";
+                        string firstName = grid.SelectedRows[0].Cells[Customers_Form.Column.FirstName.ToString()].Value?.ToString() ?? "";
+                        string lastName = grid.SelectedRows[0].Cells[Customers_Form.Column.LastName.ToString()].Value?.ToString() ?? "";
+                        identifier = $"{firstName} {lastName}".Trim();
+                        if (string.IsNullOrEmpty(identifier))
+                        {
+                            identifier = "Unknown";
+                        }
+                        break;
+
                     case MainMenu_Form.SelectedOption.Purchases:
                     case MainMenu_Form.SelectedOption.Sales:
                     case MainMenu_Form.SelectedOption.ItemsInPurchase:
@@ -614,6 +629,7 @@ namespace Sales_Tracker.GridView
                     MainMenu_Form.SelectedOption.Companies => "companies",
                     MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales => "categories",
                     MainMenu_Form.SelectedOption.ProductPurchases or MainMenu_Form.SelectedOption.ProductSales => "products",
+                    MainMenu_Form.SelectedOption.Customers => "customers",
                     MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales => "transactions",
                     _ => "rows"
                 };
@@ -663,6 +679,32 @@ namespace Sales_Tracker.GridView
                 }
             }
         }
+        private static void RentOut(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow = grid.SelectedRows[0];
+
+            // Get the rental item from the row tag
+            if (selectedRow.Tag is RentalItem rentalItem)
+            {
+                // Check if any units are available
+                if (rentalItem.QuantityAvailable == 0)
+                {
+                    CustomMessageBox.ShowWithFormat(
+                        "No Units Available",
+                        "'{0}' has no units available for rent. All units are currently rented or in maintenance.",
+                        CustomMessageBoxIcon.Info,
+                        CustomMessageBoxButtons.Ok,
+                        rentalItem.ProductName);
+                    return;
+                }
+
+                Tools.OpenForm(new RentOutItem_Form(rentalItem, selectedRow));
+                Hide();
+            }
+        }
 
         // Helper methods
         public static void Hide()
@@ -688,7 +730,7 @@ namespace Sales_Tracker.GridView
         private static string ProcessDirectoryFromString(string path)
         {
             string[] pathParts = path.Split(Path.DirectorySeparatorChar);
-            if (pathParts[7] == ReadOnlyVariables.CompanyName_text)
+            if (pathParts.Length > 7 && pathParts[7] == ReadOnlyVariables.CompanyName_text)
             {
                 pathParts[7] = Directories.CompanyName;
             }

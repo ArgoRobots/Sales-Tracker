@@ -14,7 +14,6 @@ namespace Sales_Tracker
         // Properties
         private static Receipts_Form _instance;
         private DateTime _oldestDate;
-        private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Getter
         public static Receipts_Form Instance => _instance;
@@ -24,8 +23,6 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             _instance = this;
-
-            _oldOption = MainMenu_Form.Instance.Selected;
 
             MainMenu_Form.IsProgramLoading = true;
             DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", ColumnHeaders, null, this);
