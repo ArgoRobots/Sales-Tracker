@@ -397,10 +397,11 @@ namespace Sales_Tracker
                         string productCategory = _selectedRow.Cells[nameof(Products_Form.Column.ProductCategory)].Value?.ToString() ?? "";
                         string fullProductPath = $"{companyOfOrigin} > {productCategory} > {cellValue}";
 
-                        Guna2TextBox textBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, Panel);
-                        SearchBox.Attach(textBox, this, GetSearchResults, searchBoxMaxHeight, true, false, false, true);
+                        Guna2TextBox productNameTextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, Panel);
+                        SearchBox.Attach(productNameTextBox, this, GetSearchResults, searchBoxMaxHeight, true, false, false, true);
                         _oldProductName = cellValue;
-                        textBox.TextChanged += ValidateInputs;
+                        productNameTextBox.TextChanged += ValidateInputs;
+                        productNameTextBox.TextChanged += ProductName_TextBox_TextChanged; // Sync other textboxes
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
 
@@ -906,6 +907,28 @@ namespace Sales_Tracker
                 _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             }
         }
+        private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            // When ProductName changes, update CompanyOfOrigin textbox to keep them in sync
+            if (sender is Guna2TextBox productNameTextBox && productNameTextBox.Text.Contains(">"))
+            {
+                string[] parts = productNameTextBox.Text.Split('>');
+                if (parts.Length >= 3)
+                {
+                    string extractedCompany = parts[0].Trim();
+
+                    // Find and update the CompanyOfOrigin textbox
+                    Guna2TextBox companyTextBox = Panel.Controls
+                        .OfType<Guna2TextBox>()
+                        .FirstOrDefault(tb => tb.Name == nameof(Products_Form.Column.CompanyOfOrigin));
+
+                    if (companyTextBox != null)
+                    {
+                        companyTextBox.Text = extractedCompany;
+                    }
+                }
+            }
+        }
         private void CountryCode_TextBox_TextChanged(object sender, EventArgs e)
         {
             // Parse the country code from the search result text
@@ -1158,18 +1181,8 @@ namespace Sales_Tracker
                 _selectedRow.Cells[nameof(Products_Form.Column.CompanyOfOrigin)].Value = companyName;
                 processedColumns.Add(nameof(Products_Form.Column.CompanyOfOrigin));
 
-                // Get the category list based on current selection
-                List<Category> categoryList = Products_Form.Instance.Purchase_RadioButton.Checked
-                    ? MainMenu_Form.Instance.CategoryPurchaseList
-                    : MainMenu_Form.Instance.CategorySaleList;
-
-                // Get the product to update CountryOfOrigin
-                Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, productName, companyName);
-                if (product != null)
-                {
-                    _selectedRow.Cells[nameof(Products_Form.Column.CountryOfOrigin)].Value = product.CountryOfOrigin;
-                    processedColumns.Add(nameof(Products_Form.Column.CountryOfOrigin));
-                }
+                // CountryOfOrigin should be updated from its own textbox, not looked up
+                // The UpdateProduct() method already handled updating the Product object properly
             }
             else
             {
@@ -1630,30 +1643,6 @@ namespace Sales_Tracker
         {
             Product product = new();
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
-            string productNameTextBoxValue = null;
-
-            // First pass: get the ProductName textbox value to extract company and category
-            foreach (Control control in allControls)
-            {
-                if (control is Guna2TextBox textBox && textBox.Name == nameof(Products_Form.Column.ProductName))
-                {
-                    productNameTextBoxValue = textBox.Text;
-                    break;
-                }
-            }
-
-            // Parse the full path from ProductName textbox
-            string extractedCompany = null;
-            string extractedProduct = null;
-            if (productNameTextBoxValue != null && productNameTextBoxValue.Contains(">"))
-            {
-                string[] parts = productNameTextBoxValue.Split('>');
-                if (parts.Length >= 3)
-                {
-                    extractedCompany = parts[0].Trim();
-                    extractedProduct = parts[2].Trim();
-                }
-            }
 
             foreach (Control control in allControls)
             {
@@ -1665,15 +1654,30 @@ namespace Sales_Tracker
                             product.ProductID = textBox.Text;
                             break;
                         case nameof(Products_Form.Column.ProductName):
-                            // Use extracted product name from full path
-                            product.Name = extractedProduct ?? textBox.Text.Trim();
+                            // Extract just the product name from "Company > Category > Product" format
+                            if (textBox.Text.Contains(">"))
+                            {
+                                string[] parts = textBox.Text.Split('>');
+                                if (parts.Length >= 3)
+                                {
+                                    product.Name = parts[2].Trim();
+                                }
+                                else
+                                {
+                                    product.Name = textBox.Text.Trim();
+                                }
+                            }
+                            else
+                            {
+                                product.Name = textBox.Text.Trim();
+                            }
                             break;
                         case nameof(Products_Form.Column.CountryOfOrigin):
                             product.CountryOfOrigin = textBox.Text;
                             break;
                         case nameof(Products_Form.Column.CompanyOfOrigin):
-                            // Use extracted company from ProductName full path if available
-                            product.CompanyOfOrigin = extractedCompany ?? textBox.Text;
+                            // CompanyOfOrigin textbox is kept in sync with ProductName via event handler
+                            product.CompanyOfOrigin = textBox.Text;
                             break;
                     }
                 }
