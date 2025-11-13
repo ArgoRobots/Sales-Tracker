@@ -1180,9 +1180,6 @@ namespace Sales_Tracker
                 // Update CompanyOfOrigin cell
                 _selectedRow.Cells[nameof(Products_Form.Column.CompanyOfOrigin)].Value = companyName;
                 processedColumns.Add(nameof(Products_Form.Column.CompanyOfOrigin));
-
-                // CountryOfOrigin should be updated from its own textbox, not looked up
-                // The UpdateProduct() method already handled updating the Product object properly
             }
             else
             {
@@ -1609,11 +1606,11 @@ namespace Sales_Tracker
                 string[] parts = productNameTextBox.Text.Split('>');
                 if (parts.Length >= 3)
                 {
-                    return parts[1].Trim(); // Return the category part
+                    return parts[1].Trim();  // Return the category part
                 }
             }
 
-            return _listOfOldValues[2]; // Return old category if parsing fails
+            return _listOfOldValues[2];  // Return old category if parsing fails
         }
         private bool HasProductChanged(Product product)
         {
@@ -1626,7 +1623,7 @@ namespace Sales_Tracker
                    product.CompanyOfOrigin != newProduct.CompanyOfOrigin ||
                    product.ItemType != newProduct.ItemType ||
                    product.IsRentable != newProduct.IsRentable ||
-                   newCategoryName != _listOfOldValues[2]; // Check if category changed
+                   newCategoryName != _listOfOldValues[2];  // Check if category changed
         }
         private void UpdateProductDetails(Product product)
         {
