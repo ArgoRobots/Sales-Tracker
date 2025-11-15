@@ -2043,7 +2043,6 @@ namespace Sales_Tracker
                 MaxLength = maxLength,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
-                Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
                 AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                 FocusedState = {
