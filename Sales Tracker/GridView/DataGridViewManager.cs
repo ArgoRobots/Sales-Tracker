@@ -234,7 +234,7 @@ namespace Sales_Tracker.GridView
                 if (result != CustomMessageBoxResult.Ok)
                 {
                     DoNotDeleteRows = true;
-                    UnselectAllRowsInCurrentDataGridView(grid);
+                    UnselectAllRowsInDataGridView(grid);
                 }
             }
         }
@@ -623,7 +623,7 @@ namespace Sales_Tracker.GridView
             }
             if (!grid.Rows[info.RowIndex].Selected)
             {
-                UnselectAllRowsInCurrentDataGridView(grid);
+                UnselectAllRowsInDataGridView(grid);
             }
 
             // Select current row
@@ -975,7 +975,7 @@ namespace Sales_Tracker.GridView
             }
 
             // Select the added row
-            UnselectAllRowsInCurrentDataGridView(grid);
+            UnselectAllRowsInDataGridView(grid);
             grid.Rows[row.Index].Selected = true;
         }
         private static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
@@ -1012,9 +1012,9 @@ namespace Sales_Tracker.GridView
                 _ => ""
             };
         }
-        private static void UnselectAllRowsInCurrentDataGridView(Guna2DataGridView grid)
+        private static void UnselectAllRowsInDataGridView(Guna2DataGridView dataGridView)
         {
-            foreach (DataGridViewRow row in grid.Rows)
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 row.Selected = false;
             }

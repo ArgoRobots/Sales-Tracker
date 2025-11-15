@@ -1893,11 +1893,6 @@ namespace Sales_Tracker
                     }
                 }
             }
-
-            // Save customers to file and log the change
-            MainMenu_Form.Instance.SaveCustomersToFile();
-            string message = $"Modified customer '{customer.FullName}'";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(Customers_Form.ThingsThatHaveChangedInFile, 4, message);
         }
 
         // Validate TextBoxes in other forms
