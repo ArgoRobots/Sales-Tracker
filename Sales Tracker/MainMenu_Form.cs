@@ -222,17 +222,11 @@ namespace Sales_Tracker
         }
         private void LoadCustomersFromFile()
         {
-            // Create the file if it doesn't exist
-            if (!File.Exists(Directories.Customers_file))
-            {
-                Directories.CreateFile(Directories.Customers_file);
-                return;
-            }
-
             string json = Directories.ReadAllTextInFile(Directories.Customers_file);
             if (string.IsNullOrWhiteSpace(json)) { return; }
 
             List<Customer>? loadedCustomers = JsonConvert.DeserializeObject<List<Customer>>(json);
+
             if (loadedCustomers != null)
             {
                 CustomerList.AddRange(loadedCustomers);
