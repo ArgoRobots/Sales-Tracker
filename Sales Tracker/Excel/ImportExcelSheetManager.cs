@@ -523,7 +523,6 @@ namespace Sales_Tracker.Excel
                 }
 
                 ReceiptManager.AddReceiptToTag(targetRow, newReceiptPath);
-                MainMenu_Form.SetHasReceiptColumn(targetRow, newReceiptPath);
 
                 importedCount++;
             }

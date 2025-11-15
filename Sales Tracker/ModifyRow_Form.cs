@@ -1482,8 +1482,6 @@ namespace Sales_Tracker
             {
                 ReceiptManager.RemoveReceiptFromTagAndFile(_selectedRow);
             }
-
-            MainMenu_Form.SetHasReceiptColumn(_selectedRow, _receiptFilePath);
         }
         private static void UpdateAllDataGridViewRows(string columnName, string oldValue, string newValue, bool updateItemsInTransaction = false)
         {

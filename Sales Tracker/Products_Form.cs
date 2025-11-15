@@ -511,7 +511,6 @@ namespace Sales_Tracker
             if (_isProgramLoading) { return; }
             SetProductsRemainingLabel();
         }
-
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             DataGridView grid = (DataGridView)sender;
@@ -594,7 +593,6 @@ namespace Sales_Tracker
             // Position the controls
             PositionRentableControls();
         }
-
         private void PositionRentableControls()
         {
             int leftMargin = ProductID_TextBox.Left;
@@ -607,7 +605,6 @@ namespace Sales_Tracker
             int labelY = Rentable_CheckBox.Top + (Rentable_CheckBox.Height / 2) - (Rentable_Label.Height / 2);
             Rentable_Label.Top = labelY;
         }
-
         private void Rentable_Label_Click(object sender, EventArgs e)
         {
             Rentable_CheckBox.Checked = !Rentable_CheckBox.Checked;

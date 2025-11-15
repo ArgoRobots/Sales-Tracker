@@ -445,9 +445,6 @@ namespace Sales_Tracker
                 noteLabel
             );
 
-            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
-            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
-
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
                 DataGridViewManager.AddNoteToCell(MainMenu_Form.Instance.SelectedDataGridView, newRowIndex, note);
@@ -643,9 +640,6 @@ namespace Sales_Tracker
                 totalPrice.ToString("N2"),
                 noteLabel
             );
-
-            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
-            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
 
             if (noteLabel == ReadOnlyVariables.Show_text)
             {

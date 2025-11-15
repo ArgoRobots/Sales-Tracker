@@ -159,27 +159,49 @@ namespace Sales_Tracker
         {
             CategoryPurchaseList.Clear();
             CategorySaleList.Clear();
-
             AccountantList.Clear();
             CompanyList.Clear();
-
             Purchase_DataGridView.Rows.Clear();
             Sale_DataGridView.Rows.Clear();
+            CustomerList.Clear();
 
             Search_TextBox.Clear();
-
-            CustomerList.Clear();
         }
         private void InitDataGridViews()
         {
             DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", PurchaseColumnHeaders, null, this);
             Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+            Purchase_DataGridView.CellFormatting += DataGridView_CellFormatting;
 
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", SalesColumnHeaders, null, this);
             Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+            Sale_DataGridView.CellFormatting += DataGridView_CellFormatting;
 
             DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
             Rental_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+            Rental_DataGridView.CellFormatting += DataGridView_CellFormatting;
+        }
+        private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView grid = (DataGridView)sender;
+
+            if (grid.Columns[e.ColumnIndex].Name == Column.HasReceipt.ToString())
+            {
+                string newReceipt = ReceiptManager.GetReceiptPathFromRow(grid.Rows[e.RowIndex]);
+
+                if (!string.IsNullOrEmpty(newReceipt) && File.Exists(newReceipt))
+                {
+                    e.Value = "✓";
+                    e.CellStyle.ForeColor = CustomColors.AccentGreen;
+                }
+                else
+                {
+                    e.Value = "✗";
+                    e.CellStyle.ForeColor = CustomColors.AccentRed;
+                }
+
+                e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
         }
         public void LoadData()
         {
@@ -604,7 +626,6 @@ namespace Sales_Tracker
 
             ProcessRowTag(dataGridView, rowData, rowIndex);
             ProcessNoteText(dataGridView, rowData, rowIndex);
-            ProcessHasReceipt(dataGridView, rowIndex);
         }
         private static string?[] ExtractCellValues(Dictionary<string, object> rowData, Guna2DataGridView dataGridView)
         {
@@ -728,36 +749,6 @@ namespace Sales_Tracker
             noteCell.Value = ReadOnlyVariables.Show_text;
             noteCell.Tag = noteValue;
             DataGridViewManager.AddUnderlineToCell(noteCell);
-        }
-
-        // "Has receipt" column
-        private static void ProcessHasReceipt(Guna2DataGridView dataGridView, int rowIndex)
-        {
-            DataGridViewRow row = dataGridView.Rows[rowIndex];
-            string? receipt = ReceiptManager.GetReceiptPathFromRow(row);
-
-            SetHasReceiptColumn(row, receipt);
-        }
-        public static void SetHasReceiptColumn(DataGridViewRow row, string? receipt)
-        {
-            string newReceipt = receipt != null ? ReceiptManager.ProcessReceiptTextFromRowTag(receipt) : null;
-            DataGridViewCell hasReceiptCell = row.Cells[Column.HasReceipt.ToString()];
-            SetReceiptStatusSymbol(hasReceiptCell, newReceipt);
-        }
-        private static void SetReceiptStatusSymbol(DataGridViewCell cell, string processedReceipt)
-        {
-            if (!string.IsNullOrEmpty(processedReceipt) && File.Exists(processedReceipt))
-            {
-                cell.Value = "✓";
-                cell.Style.ForeColor = CustomColors.AccentGreen;
-            }
-            else
-            {
-                cell.Value = "✗";
-                cell.Style.ForeColor = CustomColors.AccentRed;
-            }
-
-            cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
         public static void SetReceiptCellToX(DataGridViewCell cell)
         {
