@@ -26,9 +26,8 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             InitializeCountryCodeSearchBox();
             SetAccessibleDescriptions();
+            UpdateTheme();
 
-            ThemeManager.SetThemeForForm(this);
-            WarningEmail_Label.ForeColor = CustomColors.AccentRed;
             LanguageManager.UpdateLanguageForControl(this);
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
@@ -83,6 +82,12 @@ namespace Sales_Tracker
             Notes_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             WarningCustomerID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             WarningEmail_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+        }
+        private void UpdateTheme()
+        {
+            ThemeManager.SetThemeForForm(this);
+            WarningEmail_Label.ForeColor = CustomColors.AccentRed;
+            WarningCustomerID_Label.ForeColor = CustomColors.AccentRed;
         }
 
         // Form event handlers

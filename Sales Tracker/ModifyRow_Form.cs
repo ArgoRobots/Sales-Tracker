@@ -53,7 +53,6 @@ namespace Sales_Tracker
                 DpiHelper.ScaleImageButton(_removeReceipt_ImageButton);
             }
 
-
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels, SearchBox.SearchResultBoxContainer);
             Application.AddMessageFilter(panelCloseFilter);
 
@@ -69,6 +68,11 @@ namespace Sales_Tracker
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBluePrimary(Save_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
+
+            foreach ((_, Label label) in _validationLabels)
+            {
+                label.ForeColor = CustomColors.AccentRed;
+            }
         }
 
         // Form event handlers
@@ -1295,7 +1299,6 @@ namespace Sales_Tracker
             {
                 existingLabel.Text = message;
                 existingLabel.Visible = true;
-                existingLabel.ForeColor = CustomColors.AccentRed;
                 return;
             }
 
@@ -2040,7 +2043,6 @@ namespace Sales_Tracker
                 MaxLength = maxLength,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
-                BorderRadius = 3,
                 Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
                 AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
