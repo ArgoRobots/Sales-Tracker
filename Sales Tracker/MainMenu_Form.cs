@@ -1381,7 +1381,7 @@ namespace Sales_Tracker
         }
         private void ManageRentals_Button_Click(object sneder, EventArgs e)
         {
-            Tools.OpenForm(new ManageRentals_Form());
+            Tools.OpenForm(new Rentals_Form());
         }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {

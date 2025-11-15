@@ -28,10 +28,10 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Total_Label = new Label();
             AddCustomer_Button = new Guna.UI2.WinForms.Guna2Button();
             ShowingResultsFor_Label = new Label();
@@ -44,7 +44,7 @@ namespace Sales_Tracker
             Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Total_Label.Location = new Point(1148, 824);
+            Total_Label.Location = new Point(1220, 824);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(68, 31);
             Total_Label.TabIndex = 56;
@@ -54,13 +54,13 @@ namespace Sales_Tracker
             // 
             AddCustomer_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AddCustomer_Button.BorderRadius = 4;
-            AddCustomer_Button.CustomizableEdges = customizableEdges5;
+            AddCustomer_Button.CustomizableEdges = customizableEdges1;
             AddCustomer_Button.Font = new Font("Segoe UI", 10F);
             AddCustomer_Button.ForeColor = Color.White;
             AddCustomer_Button.Location = new Point(758, 33);
             AddCustomer_Button.Margin = new Padding(4, 5, 4, 5);
             AddCustomer_Button.Name = "AddCustomer_Button";
-            AddCustomer_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            AddCustomer_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             AddCustomer_Button.Size = new Size(220, 50);
             AddCustomer_Button.TabIndex = 82;
             AddCustomer_Button.Text = "Add Customer";
@@ -80,7 +80,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges7;
+            Search_TextBox.CustomizableEdges = customizableEdges3;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -98,7 +98,7 @@ namespace Sales_Tracker
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search for customers";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 84;
@@ -132,7 +132,9 @@ namespace Sales_Tracker
             Name = "Customers_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += Customers_Form_FormClosed;
             Shown += Customers_Form_Shown;
+            Resize += Customers_Form_Resize;
             ResumeLayout(false);
             PerformLayout();
         }

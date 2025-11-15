@@ -607,7 +607,7 @@ namespace Sales_Tracker.UI
             menuBtn.Click += (_, _) =>
             {
                 MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
-                Tools.OpenForm(new ManageRentals_Form());
+                Tools.OpenForm(new Rentals_Form());
             };
 
             ConstructSeparator(btnWidth, flowPanel);

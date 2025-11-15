@@ -61,6 +61,14 @@ namespace Sales_Tracker
             _customers_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void Customers_Form_Resize(object sender, EventArgs e)
+        {
+            ClosePanels();
+        }
+        private void Customers_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ClosePanels();
+        }
 
         // Event handlers
         private void AddCustomer_Button_Click(object sender, EventArgs e)
@@ -129,6 +137,10 @@ namespace Sales_Tracker
             _customers_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _customers_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Customer;
             _customers_DataGridView.CellFormatting += DataGridView_CellFormatting;
+
+            // Align controls
+            Search_TextBox.Left = _customers_DataGridView.Right - Search_TextBox.Width;
+            AddCustomer_Button.Left = Search_TextBox.Left - AddCustomer_Button.Width - CustomControls.SpaceBetweenControls;
         }
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {

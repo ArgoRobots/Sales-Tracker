@@ -209,17 +209,17 @@ namespace Sales_Tracker
             RentalInventoryManager.SaveInventory();
 
             // Update the inventory row
-            _inventoryRow.Cells[ManageRentals_Form.Column.Available.ToString()].Value = _rentalItem.QuantityAvailable;
-            _inventoryRow.Cells[ManageRentals_Form.Column.Rented.ToString()].Value = _rentalItem.QuantityRented;
-            _inventoryRow.Cells[ManageRentals_Form.Column.Status.ToString()].Value = _rentalItem.Status.ToString();
-            _inventoryRow.Cells[ManageRentals_Form.Column.LastRentalDate.ToString()].Value = _rentalItem.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-";
+            _inventoryRow.Cells[Rentals_Form.Column.Available.ToString()].Value = _rentalItem.QuantityAvailable;
+            _inventoryRow.Cells[Rentals_Form.Column.Rented.ToString()].Value = _rentalItem.QuantityRented;
+            _inventoryRow.Cells[Rentals_Form.Column.Status.ToString()].Value = _rentalItem.Status.ToString();
+            _inventoryRow.Cells[Rentals_Form.Column.LastRentalDate.ToString()].Value = _rentalItem.LastRentalDate?.ToString("yyyy-MM-dd") ?? "-";
 
             // Refresh the form if it's open
-            ManageRentals_Form.Instance?.RefreshDataGridView();
+            Rentals_Form.Instance?.RefreshDataGridView();
 
             string message = $"Rented out {quantity} unit(s) of '{_rentalItem.ProductName}' to {customer.FullName}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(
-                ManageRentals_Form.ThingsThatHaveChangedInFile,
+                Rentals_Form.ThingsThatHaveChangedInFile,
                 2,
                 message);
 

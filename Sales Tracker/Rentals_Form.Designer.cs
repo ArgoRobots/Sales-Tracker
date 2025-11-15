@@ -1,6 +1,6 @@
 namespace Sales_Tracker
 {
-    partial class ManageRentals_Form
+    partial class Rentals_Form
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -35,9 +35,9 @@ namespace Sales_Tracker
             Title_Label.Location = new Point(29, 33);
             Title_Label.Margin = new Padding(4, 0, 4, 0);
             Title_Label.Name = "Title_Label";
-            Title_Label.Size = new Size(374, 45);
+            Title_Label.Size = new Size(250, 45);
             Title_Label.TabIndex = 0;
-            Title_Label.Text = "Manage Rental Inventory";
+            Title_Label.Text = "Rental Inventory";
             // 
             // AddRentalItem_Button
             // 
@@ -46,7 +46,7 @@ namespace Sales_Tracker
             AddRentalItem_Button.CustomizableEdges = customizableEdges5;
             AddRentalItem_Button.Font = new Font("Segoe UI", 10F);
             AddRentalItem_Button.ForeColor = Color.White;
-            AddRentalItem_Button.Location = new Point(883, 33);
+            AddRentalItem_Button.Location = new Point(933, 33);
             AddRentalItem_Button.Margin = new Padding(4, 5, 4, 5);
             AddRentalItem_Button.Name = "AddRentalItem_Button";
             AddRentalItem_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -64,14 +64,14 @@ namespace Sales_Tracker
             Search_TextBox.IconRight = Properties.Resources.CloseGray;
             Search_TextBox.IconRightOffset = new Point(5, 0);
             Search_TextBox.IconRightSize = new Size(22, 22);
-            Search_TextBox.Location = new Point(1113, 33);
+            Search_TextBox.Location = new Point(1163, 33);
             Search_TextBox.Margin = new Padding(6, 8, 6, 8);
             Search_TextBox.MaxLength = 100;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search rental items";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Search_TextBox.Size = new Size(350, 50);
+            Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 2;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
@@ -95,14 +95,14 @@ namespace Sales_Tracker
             Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11F);
-            Total_Label.Location = new Point(1278, 705);
+            Total_Label.Location = new Point(1399, 705);
             Total_Label.Margin = new Padding(4, 0, 4, 0);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(64, 30);
             Total_Label.TabIndex = 4;
             Total_Label.Text = "Total:";
             // 
-            // ManageRentals_Form
+            // Rentals_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -115,7 +115,7 @@ namespace Sales_Tracker
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 5, 4, 5);
             MinimumSize = new Size(1500, 600);
-            Name = "ManageRentals_Form";
+            Name = "Rentals_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += ManageRentals_Form_FormClosed;

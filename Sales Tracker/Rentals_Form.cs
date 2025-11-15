@@ -8,18 +8,18 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class ManageRentals_Form : BaseForm
+    public partial class Rentals_Form : BaseForm
     {
         // Properties
-        private static ManageRentals_Form _instance;
+        private static Rentals_Form _instance;
         private readonly int _topForDataGridView;
 
         // Getters
-        public static ManageRentals_Form Instance => _instance;
+        public static Rentals_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
-        public ManageRentals_Form()
+        public Rentals_Form()
         {
             InitializeComponent();
             _instance = this;
@@ -108,6 +108,10 @@ namespace Sales_Tracker
             RentalInventory_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             RentalInventory_DataGridView.Tag = MainMenu_Form.DataGridViewTag.RentalInventory;
             RentalInventory_DataGridView.CellFormatting += DataGridView_CellFormatting;
+
+            // Align controls
+            Search_TextBox.Left = RentalInventory_DataGridView.Right - Search_TextBox.Width;
+            AddRentalItem_Button.Left = Search_TextBox.Left - AddRentalItem_Button.Width - CustomControls.SpaceBetweenControls;
         }
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
