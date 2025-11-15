@@ -97,6 +97,11 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static bool IsEmailDuplicate(string email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
             return MainMenu_Form.Instance.CustomerList.Any(c =>
                 c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }

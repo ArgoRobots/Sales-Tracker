@@ -1295,6 +1295,7 @@ namespace Sales_Tracker
             {
                 existingLabel.Text = message;
                 existingLabel.Visible = true;
+                existingLabel.ForeColor = CustomColors.AccentRed;
                 return;
             }
 

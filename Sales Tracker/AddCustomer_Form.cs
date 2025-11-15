@@ -28,6 +28,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
 
             ThemeManager.SetThemeForForm(this);
+            WarningEmail_Label.ForeColor = CustomColors.AccentRed;
             LanguageManager.UpdateLanguageForControl(this);
 
             PanelCloseFilter panelCloseFilter = new(this, ClosePanels,
@@ -272,7 +273,7 @@ namespace Sales_Tracker
             bool emailValid = true;
             if (!string.IsNullOrWhiteSpace(Email_TextBox.Text))
             {
-                emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text.Trim());
+                emailValid = TextBoxValidation.IsValidEmail(Email_TextBox.Text) && TextBoxValidation.IsEmailDuplicate(Email_TextBox.Text);
             }
 
             AddCustomer_Button.Enabled = requiredFieldsFilled && emailValid;
