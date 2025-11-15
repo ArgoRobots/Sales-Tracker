@@ -61,7 +61,6 @@ namespace Sales_Tracker
             LastName_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(LastName_TextBox);
 
-            TextBoxValidation.ValidateEmail(Email_TextBox);
             Email_TextBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(Email_TextBox);
 
@@ -128,7 +127,7 @@ namespace Sales_Tracker
                 WarningEmail_Label.Text = LanguageManager.TranslateString("Invalid email format");
                 Email_TextBox.BorderColor = CustomColors.AccentRed;
             }
-            else if (!string.IsNullOrWhiteSpace(email) && IsEmailDuplicate(email))
+            else if (!string.IsNullOrWhiteSpace(email) && TextBoxValidation.IsEmailDuplicate(email))
             {
                 WarningEmail_Label.Visible = true;
                 WarningEmail_Label.Text = LanguageManager.TranslateString("Email already exist");
@@ -257,11 +256,6 @@ namespace Sales_Tracker
 
                 PhoneNumber_TextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
             }
-        }
-        private static bool IsEmailDuplicate(string email)
-        {
-            return MainMenu_Form.Instance.CustomerList.Any(c =>
-                c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
         private static bool IsIdDuplicate(string customerID)
         {

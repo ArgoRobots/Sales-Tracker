@@ -46,14 +46,6 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Allows email format (requires @ sign).
-        /// </summary>
-        public static void ValidateEmail(Guna2TextBox textBox)
-        {
-            textBox.TextChanged += ValidateEmailFormat;
-        }
-
-        /// <summary>
         /// Allows phone number format: digits, parentheses, dashes, spaces, and "ext".
         /// </summary>
         public static void ValidatePhoneNumber(Guna2TextBox textBox)
@@ -101,15 +93,12 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Checks if email contains @ and . with text on both sides, and sets tag accordingly.
-        /// Does not change border color - that's handled on Leave event.
+        /// Determines whether the specified email address already exists in the customer list.
         /// </summary>
-        private static void ValidateEmailFormat(object sender, EventArgs e)
+        public static bool IsEmailDuplicate(string email)
         {
-            Guna2TextBox textBox = (Guna2TextBox)sender;
-            string text = textBox.Text.Trim();
-
-            textBox.Tag = IsValidEmail(text) ? "valid" : "invalid";
+            return MainMenu_Form.Instance.CustomerList.Any(c =>
+                c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>

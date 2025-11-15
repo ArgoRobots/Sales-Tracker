@@ -189,7 +189,7 @@ namespace Sales_Tracker
             }
             else if (_selectedTag == MainMenu_Form.DataGridViewTag.Customer.ToString())
             {
-                left = ConstructControlsForCustomer();
+                (left, secondLeft) = ConstructControlsForCustomer();
             }
 
             SizeControls(left, secondLeft);
@@ -211,6 +211,7 @@ namespace Sales_Tracker
 
                 Height += (int)(100 * scale);
                 _secondPanel.Width = secondLeft;
+                _secondPanel.Left = (Width - _secondPanel.Width) / 2;
             }
 
             if (_notes)
@@ -749,7 +750,7 @@ namespace Sales_Tracker
         private CountryCode _selectedCountryCode;
         private Guna2TextBox _countryCodeTextBox;
         private Guna2TextBox _phoneNumberTextBox;
-        private int ConstructControlsForCustomer()
+        private (int, int) ConstructControlsForCustomer()
         {
             int left = 0;
             int secondLeft = 0;
@@ -783,7 +784,6 @@ namespace Sales_Tracker
                     case nameof(Customers_Form.Column.Email):
                         ConstructLabel(Customers_Form.ColumnHeaders[Customers_Form.Column.Email], left, Panel);
                         Guna2TextBox emailTextBox = ConstructTextBox(left, columnName, cellValue, 100, CustomControls.KeyPressValidation.None, false, Panel);
-                        TextBoxValidation.ValidateEmail(emailTextBox);
                         emailTextBox.TextChanged += ValidateInputs;
                         left += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
@@ -804,20 +804,19 @@ namespace Sales_Tracker
                         // Country code search box with label "phone number ext."
                         ConstructLabel("phone number ext.", secondLeft, _secondPanel);
                         _countryCodeTextBox = ConstructTextBox(secondLeft, "CountryCode_TextBox", countryCode, 10, CustomControls.KeyPressValidation.None, false, _secondPanel);
-                        _countryCodeTextBox.Width = 180;
                         float scale = DpiHelper.GetRelativeDpiScale();
                         int searchBoxMaxHeight = (int)(255 * scale);
                         SearchBox.Attach(_countryCodeTextBox, this, CountryCode.GetCountryCodeSearchResults, searchBoxMaxHeight, false, true, true, false);
                         _countryCodeTextBox.TextChanged += CountryCode_TextBox_TextChanged;
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
 
                         // Phone number text box with label "phone number"
-                        int phoneLeft = secondLeft + 180 + CustomControls.SpaceBetweenControls;
-                        ConstructLabel("phone number", phoneLeft, _secondPanel);
-                        _phoneNumberTextBox = ConstructTextBox(phoneLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, _secondPanel);
+                        ConstructLabel("phone number", secondLeft, _secondPanel);
+                        _phoneNumberTextBox = ConstructTextBox(secondLeft, columnName, phoneNumber, 30, CustomControls.KeyPressValidation.None, false, _secondPanel);
                         _phoneNumberTextBox.TextChanged += PhoneNumber_TextBox_TextChanged;
                         _phoneNumberTextBox.TextChanged += ValidateInputs;
 
-                        secondLeft = phoneLeft + ScaledLargeWidth + CustomControls.SpaceBetweenControls;
+                        secondLeft += ScaledStandardWidth + CustomControls.SpaceBetweenControls;
                         break;
                 }
             }
@@ -841,7 +840,7 @@ namespace Sales_Tracker
             notesTextBox.Anchor = AnchorStyles.Top;
             TextBoxManager.Attach(notesTextBox);
 
-            return Math.Max(left - CustomControls.SpaceBetweenControls, secondLeft - CustomControls.SpaceBetweenControls);
+            return (left, secondLeft);
         }
         private static (string countryCode, string phoneNumber) ParsePhoneNumber(string fullPhoneNumber)
         {
@@ -1059,7 +1058,7 @@ namespace Sales_Tracker
                             ProcessProductCategoryColumn(textBox);
                         }
                     }
-                    else if (column == ReadOnlyVariables.Note_column || column == "Notes_TextBox")
+                    else if (column == ReadOnlyVariables.Note_column)
                     {
                         ProcessNoteColumn(textBox);
                     }
@@ -1076,7 +1075,8 @@ namespace Sales_Tracker
                             _selectedRow.Cells[column].Value = ReadOnlyVariables.EmptyCell;
                         }
                     }
-                    else if (column != "Notes_TextBox" && !processedColumns.Contains(column))
+                    // All other columns
+                    else if (column != "Notes_TextBox" && column != "CountryCode_TextBox" && !processedColumns.Contains(column))
                     {
                         // ProductID is optional - set to EmptyCell if empty
                         if (column == nameof(Products_Form.Column.ProductID) && string.IsNullOrWhiteSpace(textBox.Text))
@@ -1205,13 +1205,36 @@ namespace Sales_Tracker
                     bool isProductID = _selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product) &&
                                        gunaTextBox.Name == nameof(Products_Form.Column.ProductID);
 
+                    // Email, Address, and PhoneNumber are optional for customers
+                    bool isOptionalCustomerField = _selectedTag == nameof(MainMenu_Form.DataGridViewTag.Customer) &&
+                                                   (gunaTextBox.Name == nameof(Customers_Form.Column.CustomerID) ||
+                                                    gunaTextBox.Name == nameof(Customers_Form.Column.Email) ||
+                                                    gunaTextBox.Name == nameof(Customers_Form.Column.Address) ||
+                                                    gunaTextBox.Name == nameof(Customers_Form.Column.PhoneNumber));
+
+                    bool isEmailField = gunaTextBox.Name == nameof(Customers_Form.Column.Email);
+                    bool isValidEmail = !isEmailField || TextBoxValidation.IsValidEmail(gunaTextBox.Text);
+                    bool isUniqueEmail = !isEmailField || !TextBoxValidation.IsEmailDuplicate(gunaTextBox.Text);
+
                     bool isEmpty = string.IsNullOrEmpty(gunaTextBox.Text) ||
                                    gunaTextBox.Text == ReadOnlyVariables.EmptyCell ||
                                    gunaTextBox.Tag?.ToString() == "0";
 
-                    if (isEmpty && !isProductID)
+                    if (!isValidEmail)
                     {
-                        ShowValidationMessage(gunaTextBox, "This field is required");
+                        ShowValidationMessage(gunaTextBox, LanguageManager.TranslateString("Invalid email format"));
+                        gunaTextBox.BorderColor = CustomColors.AccentRed;
+                        isValid = false;
+                    }
+                    else if (!isUniqueEmail)
+                    {
+                        ShowValidationMessage(gunaTextBox, LanguageManager.TranslateString("Email already exist"));
+                        gunaTextBox.BorderColor = CustomColors.AccentRed;
+                        isValid = false;
+                    }
+                    else if (isEmpty && !isProductID && !isOptionalCustomerField)
+                    {
+                        ShowValidationMessage(gunaTextBox, LanguageManager.TranslateString("This field is required"));
                         gunaTextBox.BorderColor = CustomColors.AccentRed;
                         isValid = false;
                     }
@@ -1225,7 +1248,7 @@ namespace Sales_Tracker
                 {
                     if (string.IsNullOrEmpty(gunaComboBox.Text))
                     {
-                        ShowValidationMessage(gunaComboBox, "This field is required");
+                        ShowValidationMessage(gunaComboBox, LanguageManager.TranslateString("This field is required"));
                         gunaComboBox.BorderColor = CustomColors.AccentRed;
                         isValid = false;
                     }
@@ -1246,7 +1269,8 @@ namespace Sales_Tracker
 
                 if (productNameTextBox != null && IsDuplicateProduct(allControls))
                 {
-                    ShowValidationMessage(productNameTextBox, "A product with this name already exists in this category and company");
+                    string message = LanguageManager.TranslateString("A product with this name already exists in this category and company");
+                    ShowValidationMessage(productNameTextBox, message);
                     productNameTextBox.BorderColor = CustomColors.AccentRed;
                     isValid = false;
                 }
@@ -1972,7 +1996,7 @@ namespace Sales_Tracker
             _secondPanel = new()
             {
                 Size = Panel.Size,
-                Location = new Point(Panel.Left, Panel.Bottom + 40),
+                Location = new Point(Panel.Left, Panel.Bottom),
                 Anchor = AnchorStyles.Top
             };
             Controls.Add(_secondPanel);
