@@ -182,6 +182,10 @@ namespace Sales_Tracker.GridView
             {
                 MainMenu_Form.Instance.SaveCategoriesToFile(selected);
             }
+            else if (selected is MainMenu_Form.SelectedOption.Customers)
+            {
+                MainMenu_Form.Instance.SaveCustomersToFile();
+            }
             else if (selected is MainMenu_Form.SelectedOption.Accountants
                 or MainMenu_Form.SelectedOption.Companies
                 or MainMenu_Form.SelectedOption.Customers)
