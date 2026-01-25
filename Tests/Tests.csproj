@@ -7,8 +7,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     
-    <TargetFramework>net9.0-windows10.0.26100.1</TargetFramework>
-    <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
     <Platforms>AnyCPU;x86;x64</Platforms>
 
     <!-- Disable null warnings -->
@@ -25,22 +24,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
-		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
-    
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
-    <PackageReference Include="System.Management" Version="9.0.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sales Tracker\Sales Tracker.csproj" />
+    <ProjectReference Include="..\Argo Books\Argo Books.csproj" />
   </ItemGroup>
 
   <ItemGroup>
