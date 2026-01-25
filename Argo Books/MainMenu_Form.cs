@@ -187,7 +187,7 @@ namespace Argo_Books
             Sale_DataGridView.CellFormatting += DataGridView_CellFormatting;
 
             DataGridViewManager.InitializeDataGridView(Rental_DataGridView, "rentals_DataGridView", RentalColumnHeaders, null, this);
-            Rental_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+            Rental_DataGridView.Tag = DataGridViewTag.Rental;
             Rental_DataGridView.CellFormatting += DataGridView_CellFormatting;
         }
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -232,7 +232,8 @@ namespace Argo_Books
         {
             foreach (RentalItem rentalItem in RentalInventoryManager.RentalInventory)
             {
-                foreach (RentalRecord record in rentalItem.RentalRecords)
+                // Only show RETURNED rentals in MainMenu_Form (active rentals are in CurrentRentals_Form)
+                foreach (RentalRecord record in rentalItem.RentalRecords.Where(r => r.ReturnDate.HasValue))
                 {
                     // Get the product details from category lists
                     Product product = GetProductProductNameIsFrom(
@@ -328,7 +329,6 @@ namespace Argo_Books
                         OriginalChargedOrCredited = record.AmountCharged,
 
                         // Rental specific
-                        IsReturned = record.ReturnDate.HasValue,
                         ReturnDate = record.ReturnDate,
                         CustomerID = record.CustomerID,
                         CustomerName = customer?.FullName ?? "",
@@ -2287,7 +2287,9 @@ namespace Argo_Books
             Accountant,
             ItemsInPurchase,
             Customer,
-            RentalInventory
+            RentalInventory,
+            CurrentRentals,
+            Rental
         }
 
         // DataGridView methods

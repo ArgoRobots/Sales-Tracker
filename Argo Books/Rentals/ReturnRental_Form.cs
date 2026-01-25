@@ -188,9 +188,8 @@ namespace Argo_Books.Rentals
                 RentalInventoryManager.SaveInventory();
                 MainMenu_Form.Instance.SaveCustomersToFile();
 
-                // Refresh rental DataGridView from inventory
-                MainMenu_Form.Instance.Rental_DataGridView.Rows.Clear();
-                MainMenu_Form.Instance.LoadRentalsFromInventory();
+                // Add the returned rental row to DataGridView
+                AddRentalRowToDataGridView(returnDate);
 
                 // Refresh charts and UI
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
@@ -310,10 +309,29 @@ namespace Argo_Books.Rentals
                 DataGridViewManager.AddNoteToCell(MainMenu_Form.Instance.Rental_DataGridView, rowIndex, notes);
             }
 
-            // Create and attach TagData
+            // Create and attach TagData with USD values for currency conversion
             TagData tagData = new()
             {
-                IsReturned = true,
+                // USD values
+                PricePerUnitUSD = _rentalRecord.RateUSD,
+                ShippingUSD = _rentalRecord.ShippingUSD,
+                TaxUSD = _rentalRecord.TaxUSD,
+                FeeUSD = _rentalRecord.FeeUSD,
+                DiscountUSD = _rentalRecord.DiscountUSD,
+                ChargedDifferenceUSD = Math.Round(_rentalRecord.AmountChargedUSD - (_rentalRecord.RateUSD * _rentalRecord.Quantity + _rentalRecord.TaxUSD + _rentalRecord.FeeUSD + _rentalRecord.ShippingUSD - _rentalRecord.DiscountUSD), 2),
+                ChargedOrCreditedUSD = _rentalRecord.AmountChargedUSD,
+                OriginalCurrency = _rentalRecord.OriginalCurrency ?? "USD",
+
+                // Original values
+                OriginalPricePerUnit = _rentalRecord.Rate,
+                OriginalShipping = _rentalRecord.Shipping,
+                OriginalTax = _rentalRecord.Tax,
+                OriginalFee = _rentalRecord.Fee,
+                OriginalDiscount = _rentalRecord.Discount,
+                OriginalChargedDifference = chargedDifference,
+                OriginalChargedOrCredited = _rentalRecord.AmountCharged,
+
+                // Rental specific
                 ReturnDate = returnDate,
                 CustomerID = _customer.CustomerID,
                 CustomerName = _customer.FullName,

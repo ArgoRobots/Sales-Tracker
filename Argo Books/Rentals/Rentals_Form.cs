@@ -175,7 +175,7 @@ namespace Argo_Books.Rentals
         /// <summary>
         /// Gets formatted rental rate string (e.g., "$25.00/day", "$150.00/week", "$500.00/month")
         /// </summary>
-        private string GetFormattedRentalRate(RentalItem item)
+        private static string GetFormattedRentalRate(RentalItem item)
         {
             if (item.DailyRate > 0)
             {

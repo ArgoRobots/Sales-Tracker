@@ -142,7 +142,7 @@ namespace Argo_Books.Rentals
             // Convert values to USD for currency conversion
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             record.OriginalCurrency = defaultCurrency;
-            string date =Tools.FormatDateTime(record.StartDate);
+            string date = Tools.FormatDate(record.StartDate);
             decimal exchangeRateToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
             if (exchangeRateToUSD != -1)
             {
@@ -168,13 +168,6 @@ namespace Argo_Books.Rentals
             // Save changes
             RentalInventoryManager.SaveInventory();
             MainMenu_Form.Instance.SaveCustomersToFile();
-
-            // Refresh rental DataGridView from inventory (single source of truth)
-            MainMenu_Form.Instance.Rental_DataGridView.Rows.Clear();
-            MainMenu_Form.Instance.LoadRentalsFromInventory();
-
-            // Refresh charts and UI
-            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
 
             // Update the inventory row
             _inventoryRow.Cells[Rentals_Form.Column.Available.ToString()].Value = _rentalItem.QuantityAvailable;
@@ -211,110 +204,6 @@ namespace Argo_Books.Rentals
         }
 
         // Methods
-        private void CreateRentalTransaction(Customer customer, RentalRecord record, int quantity, decimal rate, decimal totalCost)
-        {
-            // Get the product details from category lists
-            Product product = MainMenu_Form.GetProductProductNameIsFrom(
-                MainMenu_Form.Instance.CategoryPurchaseList,
-                _rentalItem.ProductName,
-                _rentalItem.CompanyName);
-
-            if (product == null)
-            {
-                Log.Write(1, $"Product not found: {_rentalItem.ProductName} from {_rentalItem.CompanyName}");
-                return;
-            }
-
-            string categoryName = MainMenu_Form.GetCategoryNameProductIsFrom(
-                MainMenu_Form.Instance.CategoryPurchaseList,
-                _rentalItem.ProductName,
-                _rentalItem.CompanyName) ?? "";
-
-            // Generate a unique rental ID
-            string rentalID = GenerateNextRentalID();
-
-            // Format rental rate display
-            string ratePeriod = record.RateType switch
-            {
-                RentalRateType.Daily => "day",
-                RentalRateType.Weekly => "week",
-                RentalRateType.Monthly => "month",
-                _ => "day"
-            };
-            string formattedRate = $"{MainMenu_Form.CurrencySymbol}{rate:N2}/{ratePeriod}";
-
-            // End date is empty for active rentals (will be set when returned)
-            string endDate = "-";
-
-            // Prepare the row values (matching RentalColumnHeaders structure)
-            object[] rowValues =
-            [
-                rentalID,                                 // Rental #
-                record.Accountant,                        // Accountant
-                _rentalItem.ProductName,                  // Product / Service
-                categoryName,                             // Category
-                product.CountryOfOrigin ?? "-",           // Country of destination (using origin for rental)
-                _rentalItem.CompanyName,                  // Company of origin
-                record.StartDate.ToString("yyyy-MM-dd"),  // Start date
-                endDate,                                  // End date (empty for active rentals)
-                quantity,                                 // Total items
-                formattedRate,                            // Rental rate
-                "0.00",                                   // Shipping (not applicable for rentals)
-                "0.00",                                   // Tax
-                "0.00",                                   // Fee
-                "0.00",                                   // Discount
-                "0.00",                                   // Charged difference
-                totalCost.ToString("N2"),                 // Total rental revenue
-                "-",                                      // Notes
-                ReadOnlyVariables.EmptyCell               // Has receipt
-            ];
-
-            // Add the row to the DataGridView
-            int rowIndex = MainMenu_Form.Instance.Rental_DataGridView.Rows.Add(rowValues);
-
-            // Add note if present
-            if (!string.IsNullOrWhiteSpace(record.Notes))
-            {
-                DataGridViewManager.AddNoteToCell(MainMenu_Form.Instance.Rental_DataGridView, rowIndex, record.Notes);
-            }
-
-            // Create and attach TagData
-            TagData tagData = new()
-            {
-                CustomerID = customer.CustomerID,
-                CustomerName = customer.FullName,
-                RentalRecordID = record.RentalRecordID
-            };
-
-            MainMenu_Form.Instance.Rental_DataGridView.Rows[rowIndex].Tag = tagData;
-
-            // Set the Has Receipt cell
-            MainMenu_Form.SetReceiptCellToX(MainMenu_Form.Instance.Rental_DataGridView.Rows[rowIndex].Cells[MainMenu_Form.Column.HasReceipt.ToString()]);
-
-            // Trigger the RowsAdded event to save and refresh
-            DataGridViewRowsAddedEventArgs args = new(rowIndex, 1);
-            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Rental_DataGridView, args);
-        }
-        private static string GenerateNextRentalID()
-        {
-            int highestID = 0;
-
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Rental_DataGridView.Rows)
-            {
-                string idValue = row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString();
-
-                if (!string.IsNullOrEmpty(idValue) && idValue.StartsWith("R-"))
-                {
-                    string numberPart = idValue.Substring(2);
-                    if (int.TryParse(numberPart, out int id))
-                    {
-                        highestID = Math.Max(highestID, id);
-                    }
-                }
-            }
-
-            return $"R-{highestID + 1:D4}";
-        }
         private void ValidateInputs()
         {
             RentOut_Button.Enabled = _selectedCustomer != null;

@@ -784,7 +784,7 @@ namespace Argo_Books.GridView
 
                     case MainMenu_Form.SelectedOption.Rentals:
                         itemType = "rental item";
-                        identifier = grid.SelectedRows[0].Cells[Rentals_Form.Column.ProductName.ToString()].Value?.ToString() ?? "Unknown";
+                        identifier = grid.SelectedRows[0].Cells[ReadOnlyVariables.ID_column].Value?.ToString() ?? "Unknown";
                         break;
 
                     case MainMenu_Form.SelectedOption.Purchases:
@@ -898,48 +898,18 @@ namespace Argo_Books.GridView
 
             DataGridViewRow selectedRow = grid.SelectedRows[0];
 
-            // Handle rental inventory items (RentalItem tag)
-            if (selectedRow.Tag is RentalItem rentalItem)
+            // ReturnRental is only called from CurrentRentals_Form where Tag is always RentalRecord
+            if (selectedRow.Tag is RentalRecord rentalRecord)
             {
-                // Find all active rentals for this rental item across all customers
-                List<(Customer customer, RentalRecord rental)> activeRentals = [];
+                Customer customer = MainMenu_Form.Instance.CustomerList
+                    .FirstOrDefault(c => c.CustomerID == rentalRecord.CustomerID);
 
-                foreach (Customer customer in MainMenu_Form.Instance.CustomerList)
+                if (customer != null)
                 {
-                    List<RentalRecord> customerActiveRentals = customer.GetActiveRentals()
-                        .Where(r => r.RentalItemID == rentalItem.RentalItemID)
-                        .ToList();
-
-                    foreach (RentalRecord rental in customerActiveRentals)
-                    {
-                        activeRentals.Add((customer, rental));
-                    }
-                }
-
-                if (activeRentals.Count == 0)
-                {
-                    CustomMessageBox.Show(
-                        "No Active Rentals",
-                        "There are no active rentals for this item.",
-                        CustomMessageBoxIcon.Info,
-                        CustomMessageBoxButtons.Ok);
-                    return;
-                }
-
-                if (activeRentals.Count == 1)
-                {
-                    // Only one active rental, open the form with customer and rental record
-                    Tools.OpenForm(new ReturnRental_Form(activeRentals[0].customer, activeRentals[0].rental));
+                    Tools.OpenForm(new ReturnRental_Form(customer, rentalRecord));
                     Hide();
-                    return;
                 }
             }
-
-            CustomMessageBox.Show(
-                "Error",
-                "Unable to process this rental return. Invalid rental data.",
-                CustomMessageBoxIcon.Error,
-                CustomMessageBoxButtons.Ok);
         }
 
         // Helper methods

@@ -177,8 +177,7 @@ namespace Argo_Books.GridView
             }
             else if (selected is MainMenu_Form.SelectedOption.Rentals)
             {
-                // Rentals are stored in RentalInventory.txt (single source of truth)
-                // Don't save to rentals.txt
+                // Rentals are saved to RentalInventory_file via RentalInventoryManager, not to a separate file
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             }
@@ -369,19 +368,16 @@ namespace Argo_Books.GridView
         }
         private static void HandleRentalsDeletion(DataGridViewRowCancelEventArgs e)
         {
-            string rentalItemIDColumn = Rentals_Form.Column.RentalItemID.ToString();
-            string rentalItemID = e.Row.Cells[rentalItemIDColumn].Value?.ToString();
-
-            string productNameColumn = Rentals_Form.Column.ProductName.ToString();
-            string name = e.Row.Cells[productNameColumn].Value?.ToString();
+            string IDColumn = ReadOnlyVariables.ID_column;
+            string itemID = e.Row.Cells[IDColumn].Value?.ToString();
 
             // Remove the item from the rental inventory
-            if (!string.IsNullOrEmpty(rentalItemID))
+            if (!string.IsNullOrEmpty(itemID))
             {
-                RentalInventoryManager.RemoveRentalItem(rentalItemID);
+                RentalInventoryManager.RemoveRentalItem(itemID);
             }
 
-            string message = $"Deleted rental '{name}'";
+            string message = $"Deleted rental '{itemID}'";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleProductDeletion(DataGridViewRowCancelEventArgs e)
@@ -662,6 +658,7 @@ namespace Argo_Books.GridView
             int currentIndex = 0;
 
             bool isRentalInventory = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.RentalInventory.ToString();
+            bool isCurrentRental = grid.Tag?.ToString() == MainMenu_Form.DataGridViewTag.CurrentRentals.ToString();
 
             // Add buttons for Rental Inventory
             if (isRentalInventory)
@@ -676,13 +673,25 @@ namespace Argo_Books.GridView
                             RightClickDataGridViewRowMenu.RentOut_Button.Visible = true;
                             flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.RentOut_Button, currentIndex++);
                         }
+                    }
 
-                        // Check if item has rented quantity for returning
-                        if (rentalItem.QuantityRented > 0)
-                        {
+                    RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
+                    flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Modify_Button, currentIndex++);
+                }
+
+                RightClickDataGridViewRowMenu.Delete_Button.Visible = true;
+                flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.Delete_Button, currentIndex++);
+
+                return;  // Don't add any more buttons
+            }
+            if (isCurrentRental)
+            {
+                if (isSingleRowSelected)
+                {
+                    if (grid.SelectedRows[0].Tag is RentalRecord )
+                    {
                             RightClickDataGridViewRowMenu.ReturnRental_Button.Visible = true;
                             flowPanel.Controls.SetChildIndex(RightClickDataGridViewRowMenu.ReturnRental_Button, currentIndex++);
-                        }
                     }
 
                     RightClickDataGridViewRowMenu.Modify_Button.Visible = true;
@@ -1053,7 +1062,6 @@ namespace Argo_Books.GridView
             {
                 MainMenu_Form.SelectedOption.Purchases => Directories.Purchases_file,
                 MainMenu_Form.SelectedOption.Sales => Directories.Sales_file,
-                MainMenu_Form.SelectedOption.Rentals => Directories.Rentals_file,
                 MainMenu_Form.SelectedOption.Customers => Directories.Customers_file,
                 MainMenu_Form.SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
                 MainMenu_Form.SelectedOption.CategorySales => Directories.CategorySales_file,
@@ -1318,6 +1326,9 @@ namespace Argo_Books.GridView
         {
             int visibleRowIndex = 0;
 
+            // Check if this is the Rental DataGridView
+            bool isRentalGrid = dataGridView == MainMenu_Form.Instance?.Rental_DataGridView;
+
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
@@ -1329,6 +1340,7 @@ namespace Argo_Books.GridView
                 bool isPartiallyLost = LostManager.IsTransactionPartiallyLost(row);
 
                 // Priority order: Lost > Returned > Normal
+                // Note: For rentals, IsReturned means the rental ended normally, not a refund
                 if (isFullyLost)
                 {
                     // Fully lost - dark red/maroon background
@@ -1339,14 +1351,14 @@ namespace Argo_Books.GridView
                     // Partially lost - dark orange/brown background
                     LostManager.UpdateRowAppearanceForLoss(row, false, true);
                 }
-                else if (isFullyReturned)
+                else if (isFullyReturned && !isRentalGrid)
                 {
-                    // Fully returned - red background
+                    // Fully returned - red background (but not for rentals)
                     ReturnManager.UpdateRowAppearanceForReturn(row, true, false);
                 }
-                else if (isPartiallyReturned)
+                else if (isPartiallyReturned && !isRentalGrid)
                 {
-                    // Partially returned - orange background
+                    // Partially returned - orange background (but not for rentals)
                     ReturnManager.UpdateRowAppearanceForReturn(row, false, true);
                 }
                 else

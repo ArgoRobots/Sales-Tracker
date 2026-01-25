@@ -112,8 +112,8 @@ namespace Argo_Books.Rentals
             CurrentRentals_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
             CurrentRentals_DataGridView.Location = new Point((ClientSize.Width - CurrentRentals_DataGridView.Width) / 2, _topForDataGridView);
             CurrentRentals_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
+            CurrentRentals_DataGridView.Tag = MainMenu_Form.DataGridViewTag.CurrentRentals;
             CurrentRentals_DataGridView.CellFormatting += DataGridView_CellFormatting;
-            CurrentRentals_DataGridView.CellMouseDown += DataGridView_CellMouseDown;
 
             // Align controls
             Search_TextBox.Left = CurrentRentals_DataGridView.Right - Search_TextBox.Width;
@@ -164,31 +164,6 @@ namespace Argo_Books.Rentals
                     e.FormattingApplied = true;
                 }
             }
-        }
-        private void DataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
-            {
-                CurrentRentals_DataGridView.ClearSelection();
-                CurrentRentals_DataGridView.Rows[e.RowIndex].Selected = true;
-                ShowContextMenu(e.RowIndex);
-            }
-        }
-        private void ShowContextMenu(int rowIndex)
-        {
-            DataGridViewRow row = CurrentRentals_DataGridView.Rows[rowIndex];
-
-            if (row.Tag is not RentalRecord rentalRecord) { return; }
-
-            Customer customer = MainMenu_Form.Instance.CustomerList.FirstOrDefault(c => c.CustomerID == rentalRecord.CustomerID);
-
-            ContextMenuStrip contextMenu = new();
-            contextMenu.Items.Add("Return Rental", null, (s, e) => ReturnRental(rentalRecord, customer));
-            contextMenu.Items.Add("View Customer Details", null, (s, e) => ViewCustomerDetails(customer));
-            contextMenu.Items.Add(new ToolStripSeparator());
-            contextMenu.Items.Add("Refresh List", null, (s, e) => RefreshDataGridView());
-
-            contextMenu.Show(CurrentRentals_DataGridView, CurrentRentals_DataGridView.PointToClient(Cursor.Position));
         }
         private void LoadCurrentRentals()
         {
@@ -288,41 +263,6 @@ namespace Argo_Books.Rentals
         }
 
         // Methods
-        private void ReturnRental(RentalRecord record, Customer customer)
-        {
-            if (record == null || customer == null) { return; }
-
-            ReturnRental_Form returnForm = new(customer, record);
-            if (returnForm.ShowDialog() == DialogResult.OK)
-            {
-                RefreshDataGridView();
-                Rentals_Form.Instance?.RefreshDataGridView();
-            }
-        }
-        private static void ViewCustomerDetails(Customer customer)
-        {
-            if (customer == null) { return; }
-
-            // Open Customers_Form if not already open
-            if (Customers_Form.Instance == null)
-            {
-                Tools.OpenForm(new Customers_Form());
-            }
-
-            // Find the customer row in the Customers_Form DataGridView
-            if (Customers_Form.Instance != null)
-            {
-                foreach (DataGridViewRow row in Customers_Form.Instance.Customers_DataGridView.Rows)
-                {
-                    if (row.Cells[Customers_Form.Column.CustomerID.ToString()].Value?.ToString() == customer.CustomerID)
-                    {
-                        // Open ModifyRow_Form for this customer
-                        Tools.OpenForm(new ModifyRow_Form(row));
-                        break;
-                    }
-                }
-            }
-        }
         public void RefreshDataGridView()
         {
             CurrentRentals_DataGridView.Rows.Clear();
