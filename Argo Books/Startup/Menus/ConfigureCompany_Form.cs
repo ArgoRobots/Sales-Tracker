@@ -151,6 +151,7 @@ namespace Argo_Books.Startup.Menus
             Directories.CreateFile(Directories.CategoryRentals_file);
             Directories.CreateFile(Directories.Accountants_file);
             Directories.CreateFile(Directories.Companies_file);
+            Directories.CreateFile(Directories.Customers_file);
 
             // Set recently opened companies
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);

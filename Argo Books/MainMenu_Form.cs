@@ -375,6 +375,12 @@ namespace Argo_Books
         }
         private void LoadCustomersFromFile()
         {
+            // A company with no customers yet has no customers file, which is a
+            // normal state rather than an error. Companies created before the file
+            // was added to ConfigureCompany_Form will not have one either, so this
+            // returns quietly instead of logging a missing file every time.
+            if (!File.Exists(Directories.Customers_file)) { return; }
+
             string json = Directories.ReadAllTextInFile(Directories.Customers_file);
             if (string.IsNullOrWhiteSpace(json)) { return; }
 

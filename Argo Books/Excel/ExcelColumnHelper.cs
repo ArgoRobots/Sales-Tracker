@@ -20,6 +20,7 @@ namespace Argo_Books.Excel
             {
                 MainMenu_Form.Column.ID => IsIdMatch(excelHeader),
                 MainMenu_Form.Column.Accountant => IsAccountantMatch(excelHeader),
+                MainMenu_Form.Column.Customer => IsCustomerMatch(excelHeader),
                 MainMenu_Form.Column.Product => IsProductMatch(excelHeader),
                 MainMenu_Form.Column.Category => IsCategoryMatch(excelHeader),
                 MainMenu_Form.Column.Country => IsCountryMatch(excelHeader),
@@ -109,6 +110,11 @@ namespace Argo_Books.Excel
         {
             return excel.Contains("accountant") || excel.Contains("cpa") ||
                 excel.Contains("bookkeeper");
+        }
+        private static bool IsCustomerMatch(string excel)
+        {
+            return excel.Contains("customer") || excel.Contains("client") ||
+                excel.Contains("buyer");
         }
         private static bool IsShippingMatch(string excel)
         {
