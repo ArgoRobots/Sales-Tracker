@@ -1,7 +1,9 @@
 # Argo Books
 
 ## Introduction
-**Argo Books** is a Windows app designed to help small to medium sized companies manage their finances. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, very overpriced, and have a high learning curve. Argo Books offers advanced features while remaining easy to use, filling the gap between basic spreadsheets and enterprise-level solutions.
+**Argo Books** is easy-to-use accounting software for small and medium sized businesses, with purchase and sales tracking, product management, receipts, report generation, and an analytics dashboard. It fills the gap between a basic spreadsheet and an enterprise accounting suite: the features you actually need, without the learning curve.
+
+This is version 1, the original Windows-only release, built on WinForms. It has been superseded by [Argo Books 2](https://github.com/ArgoRobots/Argo-Books-Avalonia), a full rewrite on Avalonia that runs on Windows, macOS, and Linux. This repository is kept for reference.
 
 <img width="2400" height="1528" alt="Argo Books" src="https://github.com/user-attachments/assets/d0f3ecad-fd85-49d1-9c1b-8f38b14f32a8" />
 
